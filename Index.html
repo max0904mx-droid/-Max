@@ -1,1 +1,1656 @@
+import { useState, useEffect, useRef, useCallback } from “react”;
 
+const CSS = `*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none} @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}} @keyframes flash{0%,100%{opacity:1}50%{opacity:.1}} @keyframes glow{0%,100%{opacity:.7}50%{opacity:1}} @keyframes pulse{0%,100%{box-shadow:0 0 18px #8844ff66}50%{box-shadow:0 0 36px #aa66ffaa}} @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}} @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}} @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}} @keyframes idleFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}} @keyframes petWalk{0%{transform:scaleX(1) translateY(0)}25%{transform:scaleX(1) translateY(-3px)}50%{transform:scaleX(1) translateY(0)}75%{transform:scaleX(1) translateY(-2px)}100%{transform:scaleX(1) translateY(0)}} @keyframes petBounce{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.15) rotate(5deg)}} @keyframes petSwim{0%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(10deg) translateY(-5px)}100%{transform:rotate(-10deg) translateY(0)}} @keyframes petHover{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.05)}} @keyframes slideIn{from{transform:translateX(-30px);opacity:0}to{transform:translateX(0);opacity:1}} @keyframes superCharge{0%{box-shadow:0 0 0 #ff0}50%{box-shadow:0 0 30px #ff0, 0 0 60px #f80}100%{box-shadow:0 0 0 #ff0}} .btn{border:none;border-radius:12px;font-family:inherit;font-weight:900;cursor:pointer;transition:transform .1s;touch-action:manipulation} .btn:active{transform:scale(.93)} .bp{background:linear-gradient(135deg,#5533dd,#aa44ff);color:#fff} .br{background:linear-gradient(135deg,#cc2244,#ff4488);color:#fff} .bg{background:linear-gradient(135deg,#226633,#44bb66);color:#fff} .bs{background:#111128;border:2px solid #334466;color:#8899bb} .bt{background:linear-gradient(135deg,#005544,#00aa77);color:#fff} .bo{background:linear-gradient(135deg,#884400,#ff8800);color:#fff} ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#334466;border-radius:3px}`;
+
+// ── BALL DEFINITIONS ──
+const BALLS = {
+attack:  {id:“attack”,  name:“攻擊型”, emoji:“🔴”,color:”#ff4455”,atk:1.8,def:0.7, hp:80,
+avatar:{char:“⚔️”,name:“烈焰劍士”,bg:”#ff2244”,idle:“idleFloat”,poses:[“🗡️”,“💥”,“🔥”,“⚡”]},
+pet:{emoji:“🦊”,name:“小火狐”,anim:“petWalk”,color:”#ff6633”,desc:“熱血奔放，行動迅速”},
+skills:{basic:“⚡快速刺”,super:“🔥烈焰斬・超”,superDesc:“範圍大傷害×5”},
+theme:{bg:“linear-gradient(135deg,#1a0008,#2a0010)”,border:”#ff4455”,glow:”#ff2244”},
+desc:“凌厲攻勢，速攻破防”},
+defense: {id:“defense”, name:“防禦型”, emoji:“🔵”,color:”#4488ff”,atk:0.7,def:2.2, hp:150,
+avatar:{char:“🛡️”,name:“鐵壁衛士”,bg:”#1144aa”,idle:“idleFloat”,poses:[“🛡️”,“💎”,“🧊”,“❄️”]},
+pet:{emoji:“🐢”,name:“小鋼龜”,anim:“petBounce”,color:”#4488ff”,desc:“穩重慢速，防禦超強”},
+skills:{basic:“🛡️格擋”,super:“💎鑽石護盾・超”,superDesc:“無敵5秒+反傷”},
+theme:{bg:“linear-gradient(135deg,#000818,#001a3a)”,border:”#4488ff”,glow:”#2266ff”},
+desc:“鐵壁防禦，無懈可擊”},
+control: {id:“control”, name:“控制型”, emoji:“🟢”,color:”#44ee88”,atk:1.0,def:1.0, hp:100,
+avatar:{char:“🌀”,name:“自然術師”,bg:”#114422”,idle:“idleFloat”,poses:[“🌀”,“🌪️”,“⚡”,“🌊”]},
+pet:{emoji:“🐸”,name:“小雨蛙”,anim:“petHover”,color:”#44ee88”,desc:“靈活跳躍，操控地形”},
+skills:{basic:“🌀旋風踢”,super:“🌊大海嘯・超”,superDesc:“全場推開所有敵人”},
+theme:{bg:“linear-gradient(135deg,#001a08,#003318)”,border:”#44ee88”,glow:”#22cc66”},
+desc:“掌控場地，無所遁形”},
+support: {id:“support”, name:“支援型”, emoji:“🟡”,color:”#ffcc00”,atk:0.9,def:1.1, hp:110,
+avatar:{char:“✨”,name:“星光仙子”,bg:”#553300”,idle:“idleFloat”,poses:[“✨”,“⚡”,“💫”,“🌟”]},
+pet:{emoji:“🐥”,name:“小金雞”,anim:“petBounce”,color:”#ffcc00”,desc:“活潑開朗，回復能量”},
+skills:{basic:“⚡充能拳”,super:“🌟星光爆發・超”,superDesc:“自身+隊友全回血”},
+theme:{bg:“linear-gradient(135deg,#1a1000,#2a1a00)”,border:”#ffcc00”,glow:”#ffaa00”},
+desc:“輔助全隊，光芒閃耀”},
+ghost:   {id:“ghost”,   name:“幽靈型”, emoji:“👻”,color:”#cc88ff”,atk:1.1,def:0.9, hp:90,
+avatar:{char:“👻”,name:“暗夜幽靈”,bg:”#330055”,idle:“idleFloat”,poses:[“👻”,“💀”,“🌙”,“☠️”]},
+pet:{emoji:“🦇”,name:“小蝙蝠”,anim:“petHover”,color:”#cc88ff”,desc:“神秘莫測，夜行潛伏”},
+skills:{basic:“👻幽靈手”,super:“☠️死亡詛咒・超”,superDesc:“附近所有敵人HP-60%”},
+theme:{bg:“linear-gradient(135deg,#0d0018,#1a0033)”,border:”#cc88ff”,glow:”#aa44ff”},
+desc:“虛實之間，神出鬼沒”},
+gold:    {id:“gold”,    name:“黃金型”, emoji:“🟠”,color:”#ffd700”,atk:1.3,def:1.3, hp:120,
+avatar:{char:“👑”,name:“黃金帝王”,bg:”#553300”,idle:“idleFloat”,poses:[“👑”,“💰”,“✨”,“🌟”]},
+pet:{emoji:“🦁”,name:“小金獅”,anim:“petWalk”,color:”#ffd700”,desc:“王者風範，所向披靡”},
+skills:{basic:“💰黃金拳”,super:“👑帝王降臨・超”,superDesc:“全場傷害×3持續8秒”},
+theme:{bg:“linear-gradient(135deg,#1a0d00,#2a1800)”,border:”#ffd700”,glow:”#ffaa00”},
+desc:“財富與力量的象徵”},
+};
+const BL = Object.values(BALLS);
+const RANKS=[“銅牌”,“銀牌”,“金牌”,“白金”,“鑽石”,“大師”,“傳奇”];
+const RE=[“🥉”,“🥈”,“🥇”,“💠”,“💎”,“👑”,“🌟”];
+const RC=i=>[”#cd7f32”,”#c0c0c0”,”#ffd700”,”#88ccff”,”#44ddff”,”#ff88cc”,”#ffaa00”][Math.min(i,6)];
+const AI_N=[“鐵甲機器”,“量子核心”,“暗影刺客”,“冰霜法師”,“暴風戰士”,“閃電忍者”,“烈焰騎士”,“鋼鐵巨人”,“毒霧術師”,“暗金弓手”];
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const vd=(a,b)=>Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);
+const LV_BONUS=0.15;
+
+// ── PET SYSTEM ──
+const PET_ANIMS={
+petWalk:`petWalk 0.6s ease-in-out infinite`,
+petBounce:`petBounce 0.8s ease-in-out infinite`,
+petSwim:`petSwim 1.2s ease-in-out infinite`,
+petHover:`petHover 1.5s ease-in-out infinite`,
+};
+
+function PetDisplay({pet,size=40,style={}}){
+return(<div style={{display:“inline-flex”,flexDirection:“column”,alignItems:“center”,…style}}>
+<div style={{fontSize:size,animation:PET_ANIMS[pet.anim]||PET_ANIMS.petBounce,display:“inline-block”,filter:`drop-shadow(0 0 ${size*.1}px ${pet.color})`}}>
+{pet.emoji}
+</div>
+
+  </div>);}
+
+// ── DAILY PLAY ──
+function getTodayKey(){return new Date().toISOString().slice(0,10);}
+function hasPlayedScoreToday(){try{return localStorage.getItem(“score_date”)===getTodayKey();}catch(e){return false;}}
+function markPlayedScoreToday(){try{localStorage.setItem(“score_date”,getTodayKey());}catch(e){}}
+
+// ── BOXES (tiered drops) ──
+const BALL_IDS=Object.keys(BALLS);
+// Wood box: only coins + tiny shards, never legendary
+// Genesis box: guaranteed full marble + huge marblebills
+function buildRandomDrops(tier){
+const result=[];
+// Coins scale exponentially
+const coinBase=[10,25,60,120,200,350,500,800,1200,2000][Math.min(tier,9)];
+result.push({type:“coins”,amt:coinBase+Math.floor(Math.random()*coinBase*.5)});
+// Shard: low tier = 1-2, high = 5-15
+const shardAmt=Math.max(1,Math.floor(1+tier*1.5+Math.random()*tier));
+const shardBall=BALL_IDS[Math.floor(Math.random()*BALL_IDS.length)];
+result.push({type:“shard”,ballId:shardBall,amt:shardAmt,label:`${BALLS[shardBall].emoji}${BALLS[shardBall].name}碎片`});
+// Marblebills: only from tier 3+
+if(tier>=3){const mb=Math.floor((tier-2)*15+Math.random()*(tier*20));result.push({type:“marblebill”,amt:mb});}
+// Ticket: only tier 5+, low chance increases with tier
+const ticketChance=[0,0,0,0,0,0.06,0.12,0.22,0.38,0.6][Math.min(tier,9)];
+if(Math.random()<ticketChance){result.push({type:“ticket”,amt:1,label:“🎟️彈珠禮券”});}
+// Extra shard / full marble at high tiers
+if(tier>=7&&Math.random()<0.3){const fb=BALL_IDS[Math.floor(Math.random()*BALL_IDS.length)];result.push({type:“full”,ballId:fb,amt:1,label:`🎯完整彈珠·${BALLS[fb].emoji}`});}
+return result;}
+
+const BOXES=[
+{id:“wood”,   name:“木製寶箱”,emoji:“🪵”,color:”#8B6914”,cost:50,   rk:0,tier:0},
+{id:“stone”,  name:“石製寶箱”,emoji:“🪨”,color:”#888899”,cost:150,  rk:0,tier:1},
+{id:“bronze”, name:“銅製寶箱”,emoji:“🥉”,color:”#cd7f32”,cost:300,  rk:1,tier:2},
+{id:“silver”, name:“銀製寶箱”,emoji:“🥈”,color:”#c0c0c0”,cost:500,  rk:2,tier:3},
+{id:“gold”,   name:“金製寶箱”,emoji:“🥇”,color:”#ffd700”,cost:800,  rk:3,tier:4},
+{id:“plat”,   name:“白金寶箱”,emoji:“💠”,color:”#88ccff”,cost:1200, rk:4,tier:5},
+{id:“diamond”,name:“鑽石寶箱”,emoji:“💎”,color:”#44ddff”,cost:2000, rk:5,tier:6},
+{id:“crown”,  name:“王冠寶箱”,emoji:“👑”,color:”#ff88cc”,cost:3500, rk:6,tier:7},
+{id:“myth”,   name:“神話寶箱”,emoji:“🌟”,color:”#ff44ff”,cost:6000, rk:6,tier:8},
+{id:“genesis”,name:“創世寶箱”,emoji:“🌌”,color:”#ffaa00”,cost:12000,rk:6,tier:9},
+];
+const RANK_BOX={0:“wood”,1:“stone”,2:“bronze”,3:“silver”,4:“gold”,5:“plat”,6:“diamond”};
+const LV_COST=[0,20,30,50];
+
+// ── IMPROVED POWER BAR (hold past full → super charge 10s) ──
+function PowerBar({pct,charging,superPct,color=”#44ff88”}){
+const isFull=pct>=100;const c=isFull?”#ff4466”:pct>=70?”#ffd700”:color;
+return(<div style={{width:“100%”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:2}}>
+<span style={{fontSize:9,color:charging?”#ddeeff”:”#334466”,fontWeight:700}}>{isFull?“⚡超級蓄力！”:“🔋蓄力”}</span>
+<span style={{fontSize:10,fontWeight:900,color:c}}>{charging?(isFull?`超蓄: ${superPct}%`:`${pct}%`):“按住蓄力・放開發射”}</span>
+</div>
+<div style={{background:”#0d0d22”,borderRadius:8,height:18,overflow:“hidden”,border:`1.5px solid ${charging?c+"55":"#22224433"}`,position:“relative”}}>
+{[25,50,75].map(m=><div key={m} style={{position:“absolute”,left:`${m}%`,top:0,bottom:0,width:1,background:”#ffffff11”}}/>)}
+<div style={{position:“absolute”,inset:0,background:`linear-gradient(90deg,${color},${c})`,width:`${pct}%`,borderRadius:7,transition:“width .04s”}}/>
+{isFull&&superPct>0&&<div style={{position:“absolute”,inset:0,background:`linear-gradient(90deg,transparent,#ff440088)`,width:`${superPct}%`,borderRadius:7}}/>}
+</div>
+{isFull&&<div style={{textAlign:“center”,fontSize:9,color:”#ff4466”,fontWeight:700,marginTop:2,animation:“flash .5s infinite”}}>🔥繼續蓄力10秒達到超級！</div>}
+
+  </div>);}
+
+function useCharge(){
+const pw=useRef(0),superPw=useRef(0),ch=useRef(null),superCh=useRef(null);
+const [pct,setPct]=useState(0);const [superPct,setSuperPct]=useState(0);const [charging,setChg]=useState(false);
+const start=useCallback(()=>{pw.current=0;superPw.current=0;setChg(true);setPct(0);setSuperPct(0);
+ch.current=setInterval(()=>{
+if(pw.current<1){pw.current=Math.min(1,pw.current+.038);setPct(Math.round(pw.current*100));}
+else{// Full: now super charge for 10s
+superPw.current=Math.min(1,superPw.current+.01);setSuperPct(Math.round(superPw.current*100));}
+},30);},[]);
+const stop=useCallback(()=>{if(ch.current){clearInterval(ch.current);ch.current=null;}setChg(false);setPct(0);setSuperPct(0);const base=pw.current;const sup=superPw.current;pw.current=0;superPw.current=0;return{power:base,super:sup};},[]);
+useEffect(()=>()=>{if(ch.current)clearInterval(ch.current);},[]);
+return{pct,superPct,charging,start,stop};}
+
+function dMarble(ctx,x,y,r,color,emoji){
+ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+const g=ctx.createRadialGradient(x-r*.3,y-r*.3,1,x,y,r);
+g.addColorStop(0,”#fff”);g.addColorStop(.45,color);g.addColorStop(1,color+“88”);
+ctx.fillStyle=g;ctx.shadowColor=color;ctx.shadowBlur=16;ctx.fill();ctx.shadowBlur=0;
+ctx.fillStyle=”#fff”;ctx.font=`bold ${Math.floor(r*1.5)}px monospace`;ctx.textAlign=“center”;ctx.fillText(emoji,x,y+r*.4);}
+
+function dAim(ctx,bx,by,tx,ty,br,color){
+const dx=tx-bx,dy=ty-by,dn=Math.sqrt(dx*dx+dy*dy)||1,nx=dx/dn,ny=dy/dn;
+ctx.save();ctx.setLineDash([8,6]);
+for(let s=0;s<5;s++){ctx.globalAlpha=.65-s*.12;ctx.strokeStyle=color+“99”;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx+nx*(br+s*30),by+ny*(br+s*30));ctx.lineTo(bx+nx*(br+s*30+24),by+ny*(br+s*30+24));ctx.stroke();}
+ctx.globalAlpha=1;ctx.setLineDash([]);
+const ax=bx+nx*175,ay=by+ny*175;ctx.fillStyle=color+“cc”;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax-nx*14-ny*8,ay-ny*14+nx*8);ctx.lineTo(ax-nx*14+ny*8,ay-ny*14-nx*8);ctx.closePath();ctx.fill();
+ctx.restore();}
+// ── GACHA ──
+function GachaScreen({coins,tickets,rank,onClose,onSpend}){
+const [sel,setSel]=useState(null);const [anim,setAnim]=useState(false);const [res,setRes]=useState(null);
+const box=BOXES.find(b=>b.id===sel);
+const pull=()=>{if(!box||anim||coins<box.cost)return;setAnim(true);setRes(null);setTimeout(()=>{const r=buildRandomDrops(box.tier);setRes(r);setAnim(false);onSpend(box.cost,r);},1400);};
+return(<div style={{position:“fixed”,inset:0,background:”#000d”,zIndex:400,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:12}}>
+<div style={{background:”#0e0e28”,border:“2px solid #7744ff88”,borderRadius:20,padding:18,width:“100%”,maxWidth:390,maxHeight:“90vh”,overflowY:“auto”,animation:“pop .3s”,fontFamily:”‘Courier New’,monospace”,color:”#fff”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:8}}>
+<div><b style={{fontSize:16}}>🎁 寶箱</b><div style={{fontSize:9,color:”#ffd700”}}>💰{coins} 🎟️{tickets}禮券</div></div>
+<button className=“btn bs” onClick={onClose} style={{padding:“6px 12px”,fontSize:11}}>✕</button>
+</div>
+<div style={{fontSize:9,color:”#8877aa”,marginBottom:8}}>⚠️ 高級寶箱獎勵遠優於低級！禮券從鑽石+(tier6)才掉落</div>
+<div style={{display:“flex”,flexDirection:“column”,gap:6,marginBottom:10}}>
+{BOXES.map(bx=>{const locked=rank<bx.rk;return(
+<div key={bx.id} onClick={()=>{if(!locked){setSel(bx.id);setRes(null);}}} style={{background:sel===bx.id?”#1a1050”:”#111130”,border:`2px solid ${sel===bx.id?bx.color:locked?"#22224433":bx.color+"44"}`,borderRadius:10,padding:“8px 10px”,cursor:locked?“not-allowed”:“pointer”,opacity:locked?.35:1,display:“flex”,alignItems:“center”,gap:8}}>
+<span style={{fontSize:22,flexShrink:0}}>{bx.emoji}</span>
+<div style={{flex:1}}>
+<div style={{fontWeight:900,fontSize:11,color:bx.color}}>{bx.name}</div>
+<div style={{fontSize:8,color:”#8877aa”}}>
+{bx.tier<3?“基礎獎勵”:bx.tier<6?“中等獎勵，有彈珠幣”:bx.tier<8?“高級！有機率禮券”:“✨傳說！禮券保底”}
+{locked?` · 需${RANKS[bx.rk]}`:””}{bx.tier>=5?” 🎟️”:” “}
+</div>
+</div>
+<div style={{fontSize:11,fontWeight:900,color:”#ffd700”,flexShrink:0}}>💰{bx.cost}</div>
+</div>);})}
+</div>
+{sel&&<button onClick={pull} disabled={anim||coins<(box?.cost||0)} className=“btn” style={{width:“100%”,padding:“13px”,fontSize:13,background:coins>=(box?.cost||0)?`linear-gradient(135deg,${box.color},${box.color}aa)`:”#1a1a33”,color:”#fff”,border:“none”,borderRadius:12,fontFamily:“inherit”,fontWeight:900,marginBottom:10}}>{anim?“🌀開箱中…”:`✨ ${box?.name} 💰${box?.cost}`}</button>}
+{anim&&<div style={{textAlign:“center”,padding:“20px 0”}}><div style={{fontSize:56,animation:“spin 1s linear infinite”}}>{box?.emoji}</div><div style={{fontSize:12,color:”#aabbff”,marginTop:8,animation:“flash .6s infinite”}}>✨ 隨機掉落中…</div></div>}
+{res&&!anim&&(<div style={{background:”#111130”,border:“2px solid #8844ff55”,borderRadius:14,padding:“14px”,animation:“pop .4s”}}>
+<div style={{textAlign:“center”,fontSize:13,fontWeight:900,color:”#ffd700”,marginBottom:10}}>🎉 獲得！</div>
+<div style={{display:“flex”,flexWrap:“wrap”,gap:7,justifyContent:“center”}}>
+{res.map((r,i)=>(<div key={i} style={{background:”#1a1040”,border:`2px solid ${r.type==="ticket"?"#ff44ff":r.type==="full"?"#ffd700":r.type==="marblebill"?"#ff8800":"#5533dd"}`,borderRadius:10,padding:“8px 12px”,textAlign:“center”,minWidth:70,animation:“pop .3s”}}>
+<div style={{fontSize:18}}>{r.type===“shard”?(BALLS[r.ballId]?.emoji||“🧩”):r.type===“full”?“🎯”:r.type===“ticket”?“🎟️”:r.type===“marblebill”?“🪙”:“💰”}</div>
+<div style={{fontSize:9,fontWeight:700,color:”#ddeeff”,marginTop:3}}>{r.label||{coins:“💰金幣”,marblebill:“🪙彈珠幣”}[r.type]||r.type} ×{r.amt}</div>
+</div>))}
+</div>
+</div>)}
+</div>
+
+  </div>);}
+
+// ── PET GACHA ──
+function PetGachaScreen({tickets,ownedPets,onClose,onSpend}){
+const [anim,setAnim]=useState(false);const [res,setRes]=useState(null);
+const pull=()=>{if(anim||tickets<1)return;setAnim(true);setRes(null);setTimeout(()=>{const bt=BL[Math.floor(Math.random()*BL.length)];const pet=bt.pet;setRes({pet,ballId:bt.id});setAnim(false);onSpend(bt.id);},1400);};
+return(<div style={{position:“fixed”,inset:0,background:”#000d”,zIndex:400,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:12}}>
+<div style={{background:”#0e0e28”,border:“2px solid #ff44ff88”,borderRadius:20,padding:18,width:“100%”,maxWidth:360,fontFamily:”‘Courier New’,monospace”,color:”#fff”,animation:“pop .3s”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:12}}>
+<div><b style={{fontSize:15,color:”#ff88ff”}}>🐾 寵物抽取</b><div style={{fontSize:9,color:”#ff88aa”,marginTop:2}}>🎟️禮券: {tickets}</div></div>
+<button className=“btn bs” onClick={onClose} style={{padding:“6px 12px”,fontSize:11}}>✕</button>
+</div>
+<div style={{fontSize:10,color:”#8877aa”,marginBottom:10}}>消耗1張禮券隨機獲得寵物！<br/>禮券在鑽石+寶箱才會掉落</div>
+<div style={{display:“flex”,flexWrap:“wrap”,gap:8,marginBottom:12}}>
+{BL.map(b=>{const have=ownedPets.includes(b.id);return(<div key={b.id} style={{background:”#111130”,border:`2px solid ${have?b.color+"44":"#22224433"}`,borderRadius:10,padding:“8px 10px”,textAlign:“center”,width:“calc(33% - 6px)”,opacity:have?1:.5}}>
+<div style={{fontSize:24,animation:have?PET_ANIMS[b.pet.anim]:“none”,display:“inline-block”}}>{b.pet.emoji}</div>
+<div style={{fontSize:9,color:have?b.color:”#556688”,fontWeight:700}}>{b.pet.name}</div>
+{have&&<div style={{fontSize:8,color:”#44ff88”}}>✅</div>}
+</div>);})}
+</div>
+<button onClick={pull} disabled={anim||tickets<1} className=“btn bp” style={{width:“100%”,padding:“13px”,fontSize:13,opacity:tickets<1?.4:1}}>{anim?“🌀 召喚中…”:“🎟️ 消耗1張禮券召喚”}</button>
+{anim&&<div style={{textAlign:“center”,padding:“16px 0”}}><div style={{fontSize:50,animation:“spin 1s linear infinite”}}>🎟️</div></div>}
+{res&&!anim&&(<div style={{background:”#1a1040”,border:“2px solid #ff44ff55”,borderRadius:14,padding:“14px”,textAlign:“center”,animation:“pop .4s”,marginTop:10}}>
+<div style={{fontSize:48,animation:PET_ANIMS[res.pet.anim]}}>{res.pet.emoji}</div>
+<div style={{fontSize:14,fontWeight:900,color:”#ff88ff”,marginTop:4}}>{res.pet.name}!</div>
+<div style={{fontSize:10,color:”#8877aa”,marginTop:3}}>{res.pet.desc}</div>
+</div>)}
+</div>
+
+  </div>);}
+
+// ── SHARD SCREEN ──
+function ShardScreen({shards,owned,onRedeem,onClose}){
+return(<div style={{position:“fixed”,inset:0,background:”#000d”,zIndex:400,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:12}}>
+<div style={{background:”#0e0e28”,border:“2px solid #44ff8866”,borderRadius:20,padding:18,width:“100%”,maxWidth:390,maxHeight:“90vh”,overflowY:“auto”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,animation:“pop .3s”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:12}}>
+<b style={{fontSize:16,color:”#44ff88”}}>🧩 兌換彈珠</b>
+<button className=“btn bs” onClick={onClose} style={{padding:“6px 12px”,fontSize:11}}>✕</button>
+</div>
+{BL.map(b=>{const cnt=shards[b.id]||0,have=owned.includes(b.id),can=cnt>=10&&!have;return(
+<div key={b.id} style={{background:”#111130”,border:`2px solid ${can?"#44ff8855":have?"#5533dd55":"#22225544"}`,borderRadius:12,padding:“10px”,marginBottom:7,display:“flex”,alignItems:“center”,gap:10}}>
+<div style={{width:42,height:42,borderRadius:10,background:b.avatar.bg,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:20,flexShrink:0}}>{b.emoji}</div>
+<div style={{flex:1}}>
+<div style={{fontWeight:700,fontSize:12,color:have?”#aa88ff”:”#ddeeff”}}>{b.avatar.name}{have?” ✅”:””}</div>
+<div style={{fontSize:8,color:”#8877aa”,marginBottom:3}}>{b.emoji}碎片 ({b.name})</div>
+<div style={{background:”#1a1a33”,borderRadius:5,height:6}}><div style={{background:`linear-gradient(90deg,${b.color},#ffd700)`,height:6,borderRadius:5,width:`${Math.min(100,(cnt/10)*100)}%`}}/></div>
+<div style={{fontSize:8,color:cnt>=10?”#44ff88”:”#8877aa”,marginTop:2}}>{cnt}/10</div>
+</div>
+{can&&<button className=“btn bg” onClick={()=>onRedeem(b.id)} style={{padding:“7px 10px”,fontSize:10,flexShrink:0}}>兌換</button>}
+{have&&<div style={{fontSize:9,color:”#7755aa”,flexShrink:0}}>已有</div>}
+</div>);})}
+</div>
+
+  </div>);}
+
+// ── UPGRADE ──
+function UpgradeScreen({shards,marblebills,ballLevels,onUpgrade,onClose}){
+return(<div style={{position:“fixed”,inset:0,background:”#000d”,zIndex:400,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:12}}>
+<div style={{background:”#0e0e28”,border:“2px solid #ffd70066”,borderRadius:20,padding:18,width:“100%”,maxWidth:390,maxHeight:“90vh”,overflowY:“auto”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,animation:“pop .3s”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:12}}>
+<div><b style={{fontSize:15,color:”#ffd700”}}>⬆️ 升級</b><div style={{fontSize:9,color:”#8877aa”}}>🪙{marblebills}</div></div>
+<button className=“btn bs” onClick={onClose} style={{padding:“6px 12px”,fontSize:11}}>✕</button>
+</div>
+{BL.map(b=>{const lv=ballLevels[b.id]||1;const cnt=shards[b.id]||0;const sc=LV_COST[lv-1]||0;const bc=lv*30;const canUp=lv<4&&cnt>=sc&&marblebills>=bc;
+return(<div key={b.id} style={{background:”#111130”,border:`2px solid ${b.color}44`,borderRadius:12,padding:“10px”,marginBottom:7}}>
+<div style={{display:“flex”,alignItems:“center”,gap:8,marginBottom:6}}>
+<div style={{width:40,height:40,borderRadius:10,background:b.avatar.bg,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:18}}>{b.emoji}</div>
+<div style={{flex:1}}><div style={{fontSize:12,fontWeight:700}}>{b.avatar.name}</div><div style={{display:“flex”,gap:3,marginTop:2}}>{[…Array(4)].map((_,i)=><div key={i} style={{width:16,height:16,borderRadius:4,background:i<lv?”#ffd700”:”#222244”,border:`2px solid ${i<lv?"#ffaa00":"#334466"}`,fontSize:8,display:“flex”,alignItems:“center”,justifyContent:“center”}}>⭐</div>)}<span style={{fontSize:9,color:”#ffd700”,fontWeight:900,alignSelf:“center”}}>Lv{lv}</span></div></div>
+<div style={{fontSize:9,color:”#8877aa”,textAlign:“right”}}>攻:{Math.round(b.atk*(1+LV_BONUS*(lv-1))*10)/10}×<br/>防:{Math.round(b.def*(1+LV_BONUS*(lv-1))*10)/10}×</div>
+</div>
+{lv<4?(<div style={{background:”#0d0d22”,borderRadius:8,padding:“7px 9px”,display:“flex”,alignItems:“center”,gap:6}}>
+<div style={{flex:1,fontSize:8,color:cnt>=sc?”#44ff88”:”#ff4466”}}>{b.emoji}碎片:{cnt}/{sc}</div>
+<div style={{flex:1,fontSize:8,color:marblebills>=bc?”#44ff88”:”#ff4466”}}>🪙:{marblebills}/{bc}</div>
+<button onClick={()=>onUpgrade(b.id,sc,bc)} disabled={!canUp} className=“btn bo” style={{padding:“6px 12px”,fontSize:10,opacity:canUp?1:.4}}>升級</button>
+</div>):<div style={{textAlign:“center”,fontSize:11,color:”#ffd700”,fontWeight:900}}>✨ MAX Lv4</div>}
+</div>);})}
+</div>
+
+  </div>);}
+
+// ── REWARD / RANK POPUPS ──
+function RewardMarble({onOpen,onClose}){
+const [clicks,setClicks]=useState(0);const [done,setDone]=useState(false);const need=10;
+const tap=()=>{if(done)return;const nc=clicks+1;setClicks(nc);if(nc>=need)setDone(true);};
+return(<div style={{position:“fixed”,inset:0,background:”#000e”,zIndex:500,display:“flex”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”}}>
+<div style={{textAlign:“center”,color:”#fff”,padding:24,maxWidth:280}}>
+<div style={{fontSize:13,color:”#ffd700”,letterSpacing:3,marginBottom:6}}>🏆 10勝獎勵！</div>
+<div style={{fontSize:72,animation:done?“spin 1s linear infinite”:“bounce 1s infinite”,cursor:“pointer”}} onClick={tap}>🎁</div>
+<div style={{display:“flex”,gap:3,justifyContent:“center”,margin:“10px 0”}}>{Array.from({length:need},(_,i)=><div key={i} style={{width:15,height:15,borderRadius:“50%”,background:i<clicks?”#ffd700”:”#333355”}}/>)}</div>
+<div style={{fontSize:12,color:done?”#44ff88”:”#ffd700”,fontWeight:700}}>{done?“🎉 開啟！”:`點 ${need-clicks} 次`}</div>
+{done&&<button className=“btn bp” onClick={onOpen} style={{marginTop:14,padding:“12px 28px”,fontSize:13,width:“100%”}}>✨ 領取</button>}
+<button className=“btn bs” onClick={onClose} style={{marginTop:8,padding:“9px 22px”,fontSize:11}}>稍後</button>
+</div>
+
+  </div>);}
+
+function RankPopup({rank,boxId,onClaim}){
+const bx=BOXES.find(b=>b.id===boxId);
+return(<div style={{position:“fixed”,inset:0,background:”#000e”,zIndex:600,display:“flex”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”}}>
+<div style={{background:”#0e0e28”,border:`2px solid ${RC(rank)}88`,borderRadius:20,padding:26,maxWidth:300,width:“90%”,textAlign:“center”,animation:“pop .4s”,color:”#fff”}}>
+<div style={{fontSize:48,animation:“bounce 1s infinite”}}>{RE[rank]}</div>
+<div style={{fontSize:15,fontWeight:900,color:”#ffd700”,marginBottom:3}}>🎊 段位提升！</div>
+<div style={{fontSize:17,fontWeight:900,color:RC(rank),marginBottom:3}}>{RANKS[rank]}</div>
+<div style={{fontSize:10,color:”#8877aa”,marginBottom:14}}>{bx?.name}！</div>
+<button className=“btn bp” onClick={onClaim} style={{width:“100%”,padding:“12px”,fontSize:13}}>✨ 開啟</button>
+</div>
+
+  </div>);}
+
+function WinRankUp({stars,rank,onClose}){
+const starsInRank=stars%9;
+return(<div style={{position:“fixed”,inset:0,background:”#000c”,zIndex:550,display:“flex”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”}}>
+<div style={{background:”#0e0e28”,border:“2px solid #ffd70066”,borderRadius:18,padding:20,maxWidth:260,width:“88%”,textAlign:“center”,animation:“pop .3s”,color:”#fff”}}>
+<div style={{fontSize:36,animation:“bounce 1s infinite”}}>⭐</div>
+<div style={{fontSize:15,fontWeight:900,color:”#ffd700”}}>勝利！+1 顆星</div>
+<div style={{fontSize:11,color:RC(rank),marginTop:4}}>{RANKS[rank]}</div>
+<div style={{display:“flex”,justifyContent:“center”,gap:3,margin:“8px 0”}}>
+{Array.from({length:9},(_,i)=><div key={i} style={{width:14,height:14,borderRadius:“50%”,background:i<starsInRank?”#ffd700”:”#1a1a33”,border:`1.5px solid ${i<starsInRank?"#ffaa00":"#334466"}`,boxShadow:i===starsInRank-1?“0 0 6px #ffd700”:””}}/>)}
+</div>
+<div style={{fontSize:10,color:”#8877aa”}}>{starsInRank}/9 顆星 → 滿9顆升段</div>
+<button className=“btn bp” onClick={onClose} style={{marginTop:12,padding:“10px 22px”,fontSize:12,width:“100%”}}>繼續！</button>
+</div>
+
+  </div>);}
+
+function BallPicker({owned,equip,ballLevels,ownedPets,equipPet,onPick,onPickPet,onClose}){
+const [tab,setTab]=useState(“ball”);
+return(<div style={{position:“fixed”,inset:0,background:”#000d”,zIndex:400,display:“flex”,alignItems:“center”,justifyContent:“center”,padding:12}}>
+<div style={{background:”#0e0e28”,border:“2px solid #8866ff88”,borderRadius:20,padding:16,width:“100%”,maxWidth:360,fontFamily:”‘Courier New’,monospace”,color:”#fff”,animation:“pop .3s”,maxHeight:“85vh”,overflowY:“auto”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:12}}>
+<div style={{display:“flex”,gap:8}}>
+{[“ball”,“pet”].map(t=><button key={t} className=“btn” onClick={()=>setTab(t)} style={{padding:“5px 12px”,fontSize:11,background:tab===t?”#5533dd”:”#111130”,color:tab===t?”#fff”:”#8899bb”,border:`2px solid ${tab===t?"#8866ff":"#334466"}`,borderRadius:9,fontFamily:“inherit”,fontWeight:700}}>{t===“ball”?“⚔️彈珠”:“🐾寵物”}</button>)}
+</div>
+<button className=“btn bs” onClick={onClose} style={{padding:“6px 11px”,fontSize:11}}>✕</button>
+</div>
+{tab===“ball”&&BL.map(b=>{const have=owned.includes(b.id),isEq=equip===b.id,lv=ballLevels[b.id]||1;return(
+<div key={b.id} onClick={()=>{if(have){onPick(b.id);onClose();}}} style={{background:isEq?”#1a1050”:”#111130”,border:`2px solid ${isEq?"#aa88ff":have?b.color+"44":"#22224433"}`,borderRadius:12,padding:“9px”,marginBottom:7,cursor:have?“pointer”:“default”,opacity:have?1:.32,display:“flex”,alignItems:“center”,gap:9}}>
+<div style={{width:40,height:40,borderRadius:9,background:b.avatar.bg,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:18,flexShrink:0}}>{b.emoji}</div>
+<div style={{flex:1}}><div style={{fontSize:12,fontWeight:700,color:”#ddeeff”}}>{b.avatar.name} <span style={{color:”#ffd700”,fontSize:9}}>Lv{lv}</span></div><div style={{fontSize:8,color:”#8877aa”}}>{b.desc}</div></div>
+{isEq&&<span style={{fontSize:10,color:”#aa88ff”}}>✅</span>}
+</div>);})}
+{tab===“pet”&&BL.map(b=>{const have=ownedPets.includes(b.id),isEq=equipPet===b.id;return(
+<div key={b.id} onClick={()=>{if(have){onPickPet(b.id);onClose();}}} style={{background:isEq?”#1a1050”:”#111130”,border:`2px solid ${isEq?"#ff88ff":have?b.pet.color+"44":"#22224433"}`,borderRadius:12,padding:“9px”,marginBottom:7,cursor:have?“pointer”:“default”,opacity:have?1:.32,display:“flex”,alignItems:“center”,gap:9}}>
+<div style={{fontSize:28,flexShrink:0,animation:have?PET_ANIMS[b.pet.anim]:“none”,display:“inline-block”}}>{b.pet.emoji}</div>
+<div style={{flex:1}}><div style={{fontSize:12,fontWeight:700,color:”#ddeeff”}}>{b.pet.name}</div><div style={{fontSize:8,color:”#8877aa”}}>{b.pet.desc}</div></div>
+{isEq&&<span style={{fontSize:10,color:”#ff88ff”}}>✅</span>}
+{!have&&<span style={{fontSize:9,color:”#334455”}}>需禮券</span>}
+</div>);})}
+</div>
+
+  </div>);}
+
+// ── ANIME CHAR + MAIN MENU ──
+const MODES=[
+{id:“score”,  emoji:“🎯”,name:“積分彈珠”,desc:“每日一次・得分換金幣”,       color:”#5533dd”},
+{id:“battle”, emoji:“⚔️”,name:“金庫攻防”, desc:“摧毀對方金庫獲勝”,          color:”#cc2244”},
+{id:“brawl”,  emoji:“🥊”,name:“大亂鬥”,   desc:“10人混戰活到剩2人勝”,       color:”#aa4400”},
+{id:“soccer”, emoji:“⚽”,name:“彈珠足球”, desc:“進2球獲勝・動態傳球”,        color:”#226633”},
+{id:“basket”, emoji:“🏀”,name:“彈珠籃球”, desc:“先10分獲勝・節奏投籃”,       color:”#884400”},
+{id:“snake”,  emoji:“🐍”,name:“蛇蛇大混戰”,desc:“10蛇對戰·活到剩2蛇勝”,    color:”#335500”},
+];
+
+function ModeSelect({onSelect,onBack,equipBt}){
+return(<div style={{background:”#07071a”,minHeight:“100vh”,fontFamily:”‘Courier New’,monospace”,color:”#fff”}}>
+<style>{CSS}</style>
+<div style={{padding:“14px 14px 0”,display:“flex”,alignItems:“center”,gap:10}}>
+<button className=“btn bs” onClick={onBack} style={{padding:“8px 12px”,fontSize:11}}>← 返回</button>
+<div><div style={{fontSize:9,color:”#7766aa”,letterSpacing:3}}>選擇模式</div><div style={{fontSize:15,fontWeight:900}}>開始遊戲</div></div>
+</div>
+<div style={{padding:“12px 14px 40px”,display:“flex”,flexDirection:“column”,gap:9}}>
+{MODES.map(m=>(
+<div key={m.id} onClick={()=>onSelect(m.id)} style={{background:”#111128”,border:`2px solid ${m.color}55`,borderRadius:14,padding:“14px”,cursor:“pointer”,display:“flex”,alignItems:“center”,gap:12,boxShadow:`0 0 12px ${m.color}18`}}>
+<div style={{width:50,height:50,borderRadius:12,background:`${m.color}22`,border:`2px solid ${m.color}44`,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:26,flexShrink:0}}>{m.emoji}</div>
+<div style={{flex:1}}><div style={{fontWeight:900,fontSize:14,color:”#fff”}}>{m.name}</div><div style={{fontSize:9,color:”#8877aa”,marginTop:1}}>{m.desc}</div></div>
+<span style={{fontSize:16,color:m.color}}>▶</span>
+</div>))}
+</div>
+
+  </div>);}
+
+function MainMenu({onPlay,coins,shards,owned,equip,equipPet,ownedPets,onEquip,rank,stars,wins,canReward,onGacha,onShard,onReward,onUpgrade,marblebills,ballLevels,tickets,onPetGacha,playerName}){
+const bt=BALLS[equip]||BALLS.attack;const lv=ballLevels[equip]||1;
+const [charAction,setCharAction]=useState(null);const [atTimer,setAT]=useState(null);
+const starsInRank=stars%9;const levelInRank=Math.floor(starsInRank/3)+1;const starsInLevel=starsInRank%3;
+const totalShards=Object.values(shards).reduce((a,b)=>a+b,0);
+const doAction=()=>{if(atTimer)return;const a=Math.floor(Math.random()*bt.avatar.poses.length);setCharAction(a);const t=setTimeout(()=>{setCharAction(null);setAT(null);},700);setAT(t);};
+useEffect(()=>()=>{if(atTimer)clearTimeout(atTimer);},[atTimer]);
+const pet=bt.pet;
+
+return(<div style={{background:bt.theme.bg,minHeight:“100vh”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,overflowY:“auto”,position:“relative”}}>
+<style>{CSS}</style>
+{/* Stars bg */}
+{[…Array(12)].map((_,i)=><div key={i} style={{position:“fixed”,top:`${(i*17)%100}%`,left:`${(i*23)%100}%`,width:2,height:2,borderRadius:“50%”,background:”#ffffff88”,animation:`flash ${1+i*.2}s infinite ${i*.15}s`,pointerEvents:“none”}}/>)}
+<div style={{position:“relative”,zIndex:1}}>
+{/* TOP ROW: all stats */}
+<div style={{padding:“10px 12px 0”,display:“flex”,gap:5,alignItems:“center”,flexWrap:“wrap”}}>
+<div style={{background:”#00000044”,border:`1.5px solid ${bt.theme.border}44`,borderRadius:10,padding:“4px 8px”,fontSize:11,fontWeight:700,color:”#ffd700”}}>💰{coins}</div>
+<div style={{background:”#00000044”,border:“1.5px solid #ffd70033”,borderRadius:10,padding:“4px 8px”,fontSize:10,fontWeight:700,color:”#ffd799”}}>🪙{marblebills}</div>
+<div style={{background:”#00000044”,border:“1.5px solid #8877aa44”,borderRadius:10,padding:“4px 8px”,fontSize:10,color:”#aabb88”}}>🧩{totalShards}</div>
+<div style={{background:”#00000044”,border:“1.5px solid #8877aa44”,borderRadius:10,padding:“4px 8px”,fontSize:10,color:”#88aacc”}}>🏆{wins}勝</div>
+<div style={{background:”#00000044”,border:“1.5px solid #ff44ff44”,borderRadius:10,padding:“4px 8px”,fontSize:10,color:”#ff88ff”}}>🎟️{tickets}</div>
+<div style={{marginLeft:“auto”,background:”#00000055”,border:`2px solid ${RC(rank)}55`,borderRadius:10,padding:“4px 8px”,textAlign:“center”}}>
+<div style={{fontSize:13,filter:`drop-shadow(0 0 5px ${RC(rank)})`}}>{RE[rank]}</div>
+<div style={{fontSize:7,color:RC(rank),fontWeight:900}}>{RANKS[rank]}</div>
+<div style={{display:“flex”,gap:1,justifyContent:“center”}}>{Array.from({length:3},(_,i)=><span key={i} style={{fontSize:7,opacity:i<starsInLevel?1:.15}}>⭐</span>)}</div>
+</div>
+</div>
+{/* Rank bar */}
+<div style={{margin:“8px 12px 0”,background:”#00000044”,border:`1px solid ${RC(rank)}33`,borderRadius:10,padding:“6px 10px”}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:3}}>
+<span style={{fontSize:10,color:RC(rank),fontWeight:700}}>{RANKS[rank]} · Lv{levelInRank}</span>
+<span style={{fontSize:9,color:”#8877aa”}}>⭐{starsInLevel}/3 ({starsInRank}/9)</span>
+</div>
+<div style={{background:”#1a1a33”,borderRadius:5,height:7}}>
+<div style={{background:`linear-gradient(90deg,${RC(rank)},#ffd700)`,height:7,borderRadius:5,width:`${(starsInRank/9)*100}%`,transition:“width .5s”}}/>
+</div>
+</div>
+{/* Character */}
+<div style={{display:“flex”,flexDirection:“column”,alignItems:“center”,padding:“10px 0 4px”,cursor:“pointer”}} onClick={doAction}>
+<div style={{position:“relative”,width:150,height:150,borderRadius:“50%”,background:`radial-gradient(circle,${bt.theme.glow}44 0%,transparent 70%)`,display:“flex”,alignItems:“center”,justifyContent:“center”,border:`3px solid ${bt.theme.border}55`,boxShadow:`0 0 30px ${bt.theme.glow}33`}}>
+<div style={{fontSize:80,animation:charAction!==null?“pop .3s”:“idleFloat 3s infinite”,filter:`drop-shadow(0 0 12px ${bt.color})`}}>
+{charAction!==null?bt.avatar.poses[charAction%bt.avatar.poses.length]:bt.avatar.char}
+</div>
+{/* Pet companion */}
+{equipPet&&BALLS[equipPet]&&<div style={{position:“absolute”,bottom:0,right:-8,fontSize:28,animation:PET_ANIMS[BALLS[equipPet].pet.anim],filter:`drop-shadow(0 0 6px ${BALLS[equipPet].pet.color})`}}>{BALLS[equipPet].pet.emoji}</div>}
+<div style={{position:“absolute”,bottom:-12,left:“50%”,transform:“translateX(-50%)”,background:”#00000088”,borderRadius:8,padding:“2px 8px”,fontSize:9,color:”#fff”,whiteSpace:“nowrap”,maxWidth:120,overflow:“hidden”,textOverflow:“ellipsis”}}>{playerName||bt.avatar.name}</div>
+</div>
+<div style={{marginTop:16,textAlign:“center”}}>
+<div style={{fontSize:13,fontWeight:900,color:bt.theme.border}}>{bt.avatar.name} <span style={{fontSize:9,color:”#ffd700”}}>Lv{lv}</span></div>
+<div style={{fontSize:9,color:”#8877aa”}}>{bt.desc}</div>
+<div style={{fontSize:8,color:”#556688”,marginTop:2}}>點我！</div>
+</div>
+</div>
+{/* PLAY BUTTON */}
+<div style={{padding:“6px 14px 0”}}>
+<div onClick={onPlay} style={{background:`linear-gradient(135deg,${bt.theme.border}88,${bt.theme.glow}44)`,border:`3px solid ${bt.theme.border}88`,borderRadius:18,padding:“16px”,cursor:“pointer”,textAlign:“center”,boxShadow:`0 0 24px ${bt.theme.glow}44`,animation:“pulse 2s infinite”}}>
+<div style={{fontSize:26}}>▶️</div>
+<div style={{fontSize:18,fontWeight:900,color:”#fff”,letterSpacing:2,marginTop:3}}>開始遊戲</div>
+</div>
+</div>
+{/* Buttons */}
+<div style={{padding:“10px 14px 80px”,display:“flex”,flexWrap:“wrap”,gap:7,marginTop:4}}>
+<button onClick={onEquip}   className=“btn bs”  style={{flex:1,padding:“10px”,fontSize:11}}>⚔️ 更換</button>
+<button onClick={onGacha}   className=“btn bp”  style={{flex:1,padding:“10px”,fontSize:11}}>🎁 寶箱</button>
+<button onClick={onShard}   className=“btn bt”  style={{flex:1,padding:“10px”,fontSize:11}}>🧩 兌換</button>
+<button onClick={onUpgrade} className=“btn bo”  style={{flex:1,padding:“10px”,fontSize:11}}>⬆️ 升級</button>
+<button onClick={onPetGacha} className=“btn” style={{flex:1,padding:“10px”,fontSize:11,background:“linear-gradient(135deg,#550055,#aa00aa)”,color:”#fff”,border:“none”,borderRadius:12,fontFamily:“inherit”,fontWeight:900}}>🐾 寵物</button>
+{canReward&&<button onClick={onReward} className=“btn” style={{flex:“0 0 100%”,padding:“11px”,fontSize:12,background:“linear-gradient(135deg,#884400,#ff8800)”,color:”#fff”,border:“none”,borderRadius:12,fontFamily:“inherit”,fontWeight:900,animation:“pulse 2s infinite”}}>🏆 10勝獎勵！</button>}
+</div>
+</div>
+
+  </div>);}
+// ── VAULT BATTLE (金庫攻防) ──
+const VB_W=400,VB_H=480;
+function BattleGame({ballId,ballLevels,onBack,onFinish}){
+  const rawBt=BALLS[ballId]||BALLS.attack;const lv=ballLevels[ballId]||1;const myBt={...rawBt,atk:rawBt.atk*(1+LV_BONUS*(lv-1)),def:rawBt.def*(1+LV_BONUS*(lv-1))};
+  const aiName=useRef(AI_N[Math.floor(Math.random()*AI_N.length)]).current;const aiBt=useRef(BL[Math.floor(Math.random()*6)]).current;
+  const [myVHP,setMVHP]=useState(300);const [aiVHP,setAVHP]=useState(300);const [myS,setMyS]=useState(0);const [aiS,setAiS]=useState(0);const [log,setLog]=useState(["⚔️ 金庫攻防！"]);const [phase,setPhase]=useState("play");const [turn,setTurn]=useState("my");const [winner,setWinner]=useState(null);
+  const {pct,superPct,charging,start,stop}=useCharge();const cvRef=useRef(null);const simR=useRef(null);const tRef=useRef("my");const phRef=useRef("play");const aimR=useRef({x:VB_W*.7,y:VB_H*.3});
+  const addLog=useCallback(m=>setLog(l=>[m,...l].slice(0,6)),[]);
+  const initSim=useCallback(()=>{simR.current={my:{x:90,y:VB_H/2-30,vx:0,vy:0,r:14,alive:true},ai:{x:VB_W-90,y:VB_H/2+30,vx:0,vy:0,r:14,alive:true},myVault:{x:28,y:VB_H/2,hp:300,maxHp:300},aiVault:{x:VB_W-28,y:VB_H/2,hp:300,maxHp:300},walls:[{x:VB_W/2,y:190,w:12,h:100},{x:140,y:280,w:12,h:80},{x:VB_W-140,y:200,w:12,h:80}].map(w=>({...w,hp:3,alive:true})),gz:{x:VB_W/2,y:VB_H/2,r:55,f:.22},running:true};},[]);
+  const pSt=useCallback(ball=>{const s=simR.current;if(!s||!ball.alive)return;ball.vy+=.18;ball.x+=ball.vx;ball.y+=ball.vy;ball.vx*=.99;ball.vy*=.99;if(ball.x-ball.r<6){ball.x=6+ball.r;ball.vx=Math.abs(ball.vx)*.78;}if(ball.x+ball.r>VB_W-6){ball.x=VB_W-6-ball.r;ball.vx=-Math.abs(ball.vx)*.78;}if(ball.y-ball.r<6){ball.y=6+ball.r;ball.vy=Math.abs(ball.vy)*.78;}if(ball.y+ball.r>VB_H-6){ball.y=VB_H-6-ball.r;ball.vy=-Math.abs(ball.vy)*.78;}const gz=s.gz,gx=gz.x-ball.x,gy=gz.y-ball.y,gd=Math.sqrt(gx*gx+gy*gy);if(gd<gz.r+ball.r&&gd>1){ball.vx+=(gx/gd)*gz.f;ball.vy+=(gy/gd)*gz.f;}s.walls.forEach(w=>{if(!w.alive)return;const l=w.x-w.w/2,r=w.x+w.w/2,t=w.y-w.h/2,b2=w.y+w.h/2;if(ball.x+ball.r>l&&ball.x-ball.r<r&&ball.y+ball.r>t&&ball.y-ball.r<b2){w.hp--;if(w.hp<=0)w.alive=false;ball.vx*=-.7;ball.vy*=-.7;}});},[]);
+  const fly=useCallback((ball,isMe,superMult,done)=>{const s=simR.current;let t=0;const step=()=>{if(!s||!s.running||t++>500){done();return;}pSt(ball);const myV=s.myVault,aiV=s.aiVault;
+    if(isMe&&vd(ball,{x:aiV.x,y:aiV.y})<ball.r+28){const dmg=Math.floor((50+superMult*100)*myBt.atk);aiV.hp=Math.max(0,aiV.hp-dmg);setAVHP(aiV.hp);setMyS(sc=>sc+dmg);addLog(`💥 -${dmg}HP${superMult>.5?" 超級！":""}`);if(aiV.hp<=0){s.running=false;setWinner("my");setPhase("over");phRef.current="over";}done();return;}
+    if(!isMe&&vd(ball,{x:myV.x,y:myV.y})<ball.r+28){const dmg=Math.floor((50+superMult*80)*aiBt.atk);myV.hp=Math.max(0,myV.hp-dmg);setMVHP(myV.hp);setAiS(sc=>sc+dmg);addLog(`❗ -${dmg}HP`);if(myV.hp<=0){s.running=false;setWinner("ai");setPhase("over");phRef.current="over";}done();return;}
+    const opp=isMe?s.ai:s.my;if(opp.alive){const dx=ball.x-opp.x,dy=ball.y-opp.y,d=Math.sqrt(dx*dx+dy*dy);if(d<ball.r+opp.r){const nx=dx/d,ny=dy/d,imp=(ball.vx*nx+ball.vy*ny);opp.vx+=nx*imp;opp.vy+=ny*imp;ball.vx-=nx*imp*.5;ball.vy-=ny*imp*.5;addLog(isMe?"🏀 碰撞！":"AI碰撞！");done();return;}}
+    if(Math.sqrt(ball.vx**2+ball.vy**2)<.28){done();return;}setTimeout(step,16);}; step();},[pSt,myBt,aiBt,addLog]);
+  const aiTurn=useCallback(()=>{if(phRef.current!=="play")return;const s=simR.current;if(!s)return;setTurn("ai");tRef.current="ai";const ai=s.ai,tgt=s.myVault;const dx=tgt.x-ai.x,dy=tgt.y-ai.y,d=Math.sqrt(dx*dx+dy*dy)||1,spd=(9+Math.random()*6)*aiBt.atk;ai.vx=(dx/d)*spd+(Math.random()-.5)*3;ai.vy=(dy/d)*spd+(Math.random()-.5)*3;const sp=Math.random()<.25?.8:0;fly(ai,false,sp,()=>{if(phRef.current==="play"){setTurn("my");tRef.current="my";}});},[aiBt,fly]);
+  const shoot=useCallback((tx,ty,power,sp)=>{if(tRef.current!=="my"||phRef.current!=="play")return;const s=simR.current;if(!s)return;tRef.current="fly";setTurn("fly");const b=s.my,dx=tx-b.x,dy=ty-b.y,d=Math.sqrt(dx*dx+dy*dy)||1,spd=(8+power*10)*myBt.atk*(1+sp*2);b.vx=(dx/d)*spd;b.vy=(dy/d)*spd;fly(b,true,sp,()=>{if(phRef.current==="play")setTimeout(aiTurn,800);});},[myBt,fly,aiTurn]);
+  useEffect(()=>{if(phase!=="play")return;const cv=cvRef.current;if(!cv)return;const ctx=cv.getContext("2d");let af;const draw=()=>{const s=simR.current;if(!s){af=requestAnimationFrame(draw);return;}ctx.clearRect(0,0,VB_W,VB_H);ctx.fillStyle="#080818";ctx.fillRect(0,0,VB_W,VB_H);const gz=s.gz;ctx.beginPath();ctx.arc(gz.x,gz.y,gz.r,0,Math.PI*2);ctx.fillStyle="rgba(100,180,255,.07)";ctx.fill();ctx.strokeStyle="#44aaffaa";ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#44aaff88";ctx.font="10px monospace";ctx.textAlign="center";ctx.fillText("⊕引力",gz.x,gz.y+4);s.walls.forEach(w=>{if(!w.alive)return;ctx.fillStyle="#4466aa44";ctx.fillRect(w.x-w.w/2,w.y-w.h/2,w.w,w.h);ctx.strokeStyle="#4466aa";ctx.lineWidth=2;ctx.strokeRect(w.x-w.w/2,w.y-w.h/2,w.w,w.h);});[[s.myVault,myBt.color,true],[s.aiVault,aiBt.color,false]].forEach(([v,col,isMy])=>{ctx.fillStyle=col+"22";ctx.strokeStyle=col;ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(v.x-22,v.y-34,44,68,8);ctx.fill();ctx.stroke();ctx.fillStyle=col;ctx.font="bold 18px monospace";ctx.textAlign="center";ctx.fillText("🏦",v.x,v.y+6);const hpPct=v.hp/v.maxHp;ctx.fillStyle="#1a1a33";ctx.fillRect(v.x-20,v.y-44,40,7);ctx.fillStyle=hpPct>.6?"#44ff88":hpPct>.3?"#ffd700":"#ff4466";ctx.fillRect(v.x-20,v.y-44,40*hpPct,7);ctx.fillStyle="#fff";ctx.font="bold 8px monospace";ctx.fillText(v.hp,v.x,v.y-48);ctx.fillStyle="#ffffff88";ctx.font="7px monospace";ctx.fillText(isMy?"我方":"AI",v.x,v.y+26);});if(tRef.current==="my"&&s.my.alive)dAim(ctx,s.my.x,s.my.y,aimR.current.x,aimR.current.y,14,myBt.color);dMarble(ctx,s.my.x,s.my.y,14,myBt.color,myBt.emoji);dMarble(ctx,s.ai.x,s.ai.y,14,aiBt.color,aiBt.emoji);af=requestAnimationFrame(draw);};draw();return()=>cancelAnimationFrame(af);},[phase,myBt,aiBt]);
+  useEffect(()=>{initSim();},[initSim]);
+  const mA=(cx,cy)=>{const r=cvRef.current?.getBoundingClientRect();if(!r)return;aimR.current={x:(cx-r.left)*(VB_W/r.width),y:(cy-r.top)*(VB_H/r.height)};};
+  const dD=(cx,cy)=>{if(tRef.current!=="my")return;mA(cx,cy);start();};
+  const dU=(cx,cy)=>{const {power,super:sp}=stop();mA(cx,cy);const r=cvRef.current?.getBoundingClientRect();if(!r)return;shoot((cx-r.left)*(VB_W/r.width),(cy-r.top)*(VB_H/r.height),power,sp);};
+  if(phase==="over"){const w=winner==="my";return(<div style={{background:"#07071a",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'Courier New',monospace",color:"#fff",gap:14,padding:24}}><style>{CSS}</style><div style={{fontSize:46}}>{w?"🏆":"💔"}</div><div style={{fontSize:20,fontWeight:900,color:w?"#ffd700":"#ff6688"}}>{w?"金庫守護！":"金庫被毀！"}</div><div style={{display:"flex",gap:10}}>{[{l:"你",s:myS,bt:myBt,hp:myVHP,w},{l:aiName,s:aiS,bt:aiBt,hp:aiVHP,w:!w}].map((p,i)=>(<div key={i} style={{background:"#111128",border:`2px solid ${p.w?"#ffd70077":"#22225566"}`,borderRadius:14,padding:"12px 16px",textAlign:"center",minWidth:95}}><div style={{fontSize:24}}>{p.bt.emoji}</div><div style={{fontSize:9,color:"#8877aa"}}>{p.l}</div><div style={{fontSize:20,fontWeight:900,color:p.w?"#ffd700":"#fff"}}>{p.s}</div><div style={{fontSize:9,color:"#8877aa"}}>金庫:{p.hp}</div></div>))}</div><div style={{display:"flex",gap:10}}><button className="btn bs" onClick={()=>onFinish(w)} style={{padding:"11px 16px",fontSize:12}}>🏠</button><button className="btn br" onClick={()=>{setPhase("play");phRef.current="play";setMyS(0);setAiS(0);setMVHP(300);setAVHP(300);setLog([]);setWinner(null);setTurn("my");tRef.current="my";initSim();}} style={{padding:"11px 22px",fontSize:12}}>🔄 再戰</button></div></div>);}
+  return(<div style={{background:"#06060f",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",fontFamily:"'Courier New',monospace",gap:6,padding:10}}><style>{CSS}</style>
+    <div style={{display:"flex",justifyContent:"space-between",width:"100%",maxWidth:400}}><div style={{fontSize:10,color:"#ff88cc",fontWeight:700}}>⚔️ 金庫攻防</div><div style={{fontSize:10,color:"#7766aa"}}>超蓄=超級傷害</div></div>
+    <div style={{display:"flex",gap:7,width:"100%",maxWidth:400}}>{[{l:"你的金庫",hp:myVHP,col:myBt.color},{l:"AI金庫",hp:aiVHP,col:aiBt.color}].map((v,i)=>(<div key={i} style={{flex:1,background:"#111128",border:`2px solid ${v.col}55`,borderRadius:11,padding:"7px"}}>
+      <div style={{fontSize:9,color:v.col,fontWeight:700}}>{v.l}</div><div style={{fontSize:16,fontWeight:900}}>{v.hp}<span style={{fontSize:8,color:"#8877aa"}}>/300</span></div>
+      <div style={{background:"#1a1a33",borderRadius:4,height:5,marginTop:3}}><div style={{background:v.hp>150?"#44ff88":v.hp>80?"#ffd700":"#ff4466",height:5,borderRadius:4,width:`${(v.hp/300)*100}%`}}/></div>
+    </div>))}</div>
+    <div style={{fontSize:11,fontWeight:900,color:turn==="my"?"#44ff88":turn==="ai"?"#ff8877":"#ffd700",animation:turn==="my"?"glow 1.5s infinite":"none"}}>{turn==="my"?"▶ 瞄準金庫！":turn==="ai"?"⏳ AI...":"🎯 飛行中"}</div>
+    <PowerBar pct={pct} superPct={superPct} charging={charging} color={myBt.color}/>
+    <canvas ref={cvRef} width={VB_W} height={VB_H} style={{border:`2px solid ${turn==="my"?"#44ff8855":"#ff447733"}`,borderRadius:11,display:"block",width:"100%",maxWidth:400,touchAction:"none",cursor:turn==="my"?"crosshair":"default"}}
+      onPointerMove={e=>{e.preventDefault();mA(e.clientX,e.clientY);}} onPointerDown={e=>{e.preventDefault();dD(e.clientX,e.clientY);}} onPointerUp={e=>{e.preventDefault();dU(e.clientX,e.clientY);}} onPointerLeave={()=>stop()}
+      onTouchStart={e=>{e.preventDefault();dD(e.touches[0].clientX,e.touches[0].clientY);}} onTouchMove={e=>{e.preventDefault();mA(e.touches[0].clientX,e.touches[0].clientY);}} onTouchEnd={e=>{e.preventDefault();dU(e.changedTouches[0].clientX,e.changedTouches[0].clientY);}}/>
+    <div style={{width:"100%",maxWidth:400,background:"#0d0d1e",borderRadius:9,padding:"5px 9px",fontSize:10,color:"#8877aa",maxHeight:44,overflowY:"hidden"}}>{log.slice(0,3).map((l,i)=><div key={i} style={{opacity:1-i*.3,lineHeight:1.6}}>{l}</div>)}</div>
+    <button className="btn bs" onClick={onBack} style={{width:"100%",maxWidth:400,padding:"9px",fontSize:11}}>🏠 返回</button>
+  </div>);}
+
+// ── 積分彈珠 (完全重寫，統一pointer+touch) ──
+const SGW=300,SGH=480;
+const SG_PEGS=(()=>{const p=[];for(let r=0;r<8;r++)for(let c=0;c<(r%2===0?6:5);c++)p.push({x:30+(r%2===0?0:15)+c*45,y:90+r*46,lit:0});return p;})();
+const SG_HOLES=[{x:30,pts:50,color:”#ff4466”},{x:75,pts:200,color:”#ffd700”},{x:120,pts:100,color:”#44aaff”},{x:165,pts:300,color:”#ff4466”},{x:210,pts:100,color:”#44aaff”},{x:255,pts:200,color:”#ffd700”},{x:285,pts:50,color:”#ff4466”}];
+
+function ScoreGame({ballId,ballLevels,onBack,onFinish}){
+const rawBt=BALLS[ballId]||BALLS.attack;
+const lv=ballLevels[ballId]||1;
+const bt={…rawBt,atk:rawBt.atk*(1+LV_BONUS*(lv-1))};
+const playedToday=hasPlayedScoreToday();
+
+const cvRef=useRef(null);
+// All game state in one ref — no stale closure issues
+const S=useRef({ball:null,left:5,score:0,aimX:SGW/2,pegs:SG_PEGS.map(p=>({…p,lit:0})),holes:SG_HOLES.map(h=>({…h,lit:0})),popup:null,active:true,canShoot:true,mult:1});
+const [ui,setUi]=useState({score:0,left:5,last:null,mult:1,charging:false,pct:0});
+const chargeRef=useRef({t:null,pw:0});
+const afRef=useRef(null);
+
+// Spawn ball at aim position
+const spawn=useCallback(()=>{const s=S.current;if(s.left<=0||!s.active)return;s.ball={x:s.aimX,y:52,vx:0,vy:0,r:12,moving:false};s.canShoot=true;},[]);
+
+// Shoot with given power
+const fire=useCallback((pw)=>{
+const s=S.current;
+if(!s.active||!s.ball||s.ball.moving||!s.canShoot||s.left<=0)return;
+s.canShoot=false;
+const spd=7+pw*9;
+s.ball.vx=(Math.random()-.5)*1.2;
+s.ball.vy=spd*(bt.atk||1);
+s.ball.moving=true;
+},[bt.atk]);
+
+// Start charging
+const startCharge=useCallback(()=>{
+const c=chargeRef.current;
+if(c.t)return;
+c.pw=0;
+setUi(u=>({…u,charging:true,pct:0}));
+c.t=setInterval(()=>{
+c.pw=Math.min(1,c.pw+0.04);
+const pct=Math.round(c.pw*100);
+setUi(u=>({…u,pct}));
+if(pct>=100){
+clearInterval(c.t);c.t=null;
+setUi(u=>({…u,charging:false,pct:0}));
+fire(1);
+}
+},30);
+},[fire]);
+
+const stopCharge=useCallback(()=>{
+const c=chargeRef.current;
+if(!c.t)return;
+clearInterval(c.t);c.t=null;
+const pw=c.pw;c.pw=0;
+setUi(u=>({…u,charging:false,pct:0}));
+fire(pw);
+},[fire]);
+
+// Aim: move ball horizontally
+const aim=useCallback((clientX)=>{
+const cv=cvRef.current;if(!cv)return;
+const r=cv.getBoundingClientRect();
+const nx=cl((clientX-r.left)*(SGW/r.width),18,SGW-18);
+S.current.aimX=nx;
+const b=S.current.ball;if(b&&!b.moving)b.x=nx;
+},[]);
+
+// Game loop
+useEffect(()=>{
+const s=S.current;
+spawn();
+const cv=cvRef.current;if(!cv)return;
+const ctx=cv.getContext(“2d”);
+const loop=()=>{
+if(!s.active){afRef.current=null;return;}
+s.pegs.forEach(p=>{if(p.lit>0)p.lit=Math.max(0,p.lit-.055);});
+s.holes.forEach(h=>{if(h.lit>0)h.lit=Math.max(0,h.lit-.025);});
+if(s.popup){s.popup.t–;s.popup.y-=.6;if(s.popup.t<=0)s.popup=null;}
+const b=s.ball;
+if(b&&b.moving){
+b.vy+=.28;b.x+=b.vx;b.y+=b.vy;
+if(b.x-b.r<2){b.x=2+b.r;b.vx=Math.abs(b.vx)*.75;}
+if(b.x+b.r>SGW-2){b.x=SGW-2-b.r;b.vx=-Math.abs(b.vx)*.75;}
+s.pegs.forEach(p=>{const dx=b.x-p.x,dy=b.y-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<b.r+7){const nx=dx/d,ny=dy/d;b.x=p.x+nx*(b.r+8);b.y=p.y+ny*(b.r+8);const dot=b.vx*nx+b.vy*ny;b.vx-=2*dot*nx;b.vy-=2*dot*ny;const sp=Math.sqrt(b.vx**2+b.vy**2);if(sp<3.5){b.vx*=3.5/sp;b.vy*=3.5/sp;}p.lit=1;}});
+if(b.y+b.r>SGH-68){
+let hit=false;
+for(const h of s.holes){if(Math.abs(b.x-h.x)<22){let pts=Math.floor(h.pts*s.mult*(bt.atk||1)*(rawBt.id===“gold”?2:rawBt.id===“attack”?1.5:1));s.score+=pts;s.left–;h.lit=1;s.popup={pts,x:h.x,y:SGH-115,color:h.color,t:85};s.ball=null;s.canShoot=false;setUi(u=>({…u,score:s.score,left:s.left,last:pts}));if(s.left>0)setTimeout(spawn,600);else{s.active=false;setTimeout(()=>onFinish(s.score),900);}hit=true;break;}}
+if(!hit&&b.y>SGH-5){s.left–;s.ball=null;s.canShoot=false;setUi(u=>({…u,left:s.left,last:0}));if(s.left>0)setTimeout(spawn,600);else{s.active=false;setTimeout(()=>onFinish(s.score),900);}}}
+}
+// Draw
+ctx.clearRect(0,0,SGW,SGH);
+ctx.fillStyle=”#08081e”;ctx.fillRect(0,0,SGW,SGH);
+// Peg lights
+s.pegs.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fillStyle=p.lit>0?`rgba(255,220,100,${p.lit})`:”#223344”;ctx.fill();ctx.strokeStyle=p.lit>0?”#ffd700”:”#334466”;ctx.lineWidth=1.5;ctx.stroke();});
+// Holes
+s.holes.forEach(h=>{ctx.beginPath();ctx.arc(h.x,SGH-50,14,0,Math.PI*2);ctx.fillStyle=h.lit>0?h.color:h.color+“55”;ctx.fill();ctx.strokeStyle=h.color;ctx.lineWidth=2;ctx.stroke();ctx.fillStyle=”#fff”;ctx.font=“bold 9px monospace”;ctx.textAlign=“center”;ctx.fillText(h.pts,h.x,SGH-46);});
+// Aim line
+if(b&&!b.moving){ctx.save();ctx.setLineDash([6,5]);for(let i=0;i<7;i++){ctx.globalAlpha=.55-.07*i;ctx.strokeStyle=bt.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(s.aimX,52+i*28);ctx.lineTo(s.aimX,52+i*28+22);ctx.stroke();}ctx.restore();}
+// Ball
+if(b)dMarble(ctx,b.x,b.y,b.r,bt.color,bt.emoji);
+// Popup
+if(s.popup){ctx.globalAlpha=s.popup.t/85;ctx.fillStyle=s.popup.color;ctx.font=“bold 20px monospace”;ctx.textAlign=“center”;ctx.shadowColor=s.popup.color;ctx.shadowBlur=8;ctx.fillText(`+${s.popup.pts}`,s.popup.x,s.popup.y);ctx.shadowBlur=0;ctx.globalAlpha=1;}
+afRef.current=requestAnimationFrame(loop);};
+afRef.current=requestAnimationFrame(loop);
+return()=>{s.active=false;if(chargeRef.current.t){clearInterval(chargeRef.current.t);chargeRef.current.t=null;}if(afRef.current)cancelAnimationFrame(afRef.current);};
+},[spawn,fire,bt,rawBt,onFinish]);
+
+// Unified input handler — works for both pointer and touch
+const onDown=useCallback(e=>{e.preventDefault();const x=e.touches?e.touches[0].clientX:e.clientX;aim(x);startCharge();},[aim,startCharge]);
+const onMove=useCallback(e=>{e.preventDefault();const x=e.touches?e.touches[0].clientX:e.clientX;aim(x);},[aim]);
+const onUp=useCallback(e=>{e.preventDefault();stopCharge();},[stopCharge]);
+
+if(playedToday)return(<div style={{background:”#06060f”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:14,padding:24}}><style>{CSS}</style>
+<div style={{fontSize:48}}>⏰</div><div style={{fontSize:16,fontWeight:900,color:”#ff8877”}}>今日已遊玩！</div>
+<div style={{fontSize:11,color:”#8877aa”,textAlign:“center”}}>積分彈珠每天限玩一次<br/>明天再來挑戰高分！</div>
+<button className=“btn bs” onClick={onBack} style={{padding:“12px 22px”,fontSize:12}}>🏠 返回</button>
+
+  </div>);
+
+return(<div style={{background:”#06060f”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,fontFamily:”‘Courier New’,monospace”,gap:7,padding:10}}><style>{CSS}</style>
+<div style={{display:“flex”,gap:7,width:“100%”,maxWidth:300}}>
+<div style={{background:”#111128”,border:`2px solid ${bt.color}55`,borderRadius:11,padding:“8px”,textAlign:“center”,minWidth:52}}>
+<div style={{fontSize:22}}>{bt.emoji}</div><div style={{fontSize:7,color:”#ffd700”}}>Lv{lv}</div>
+</div>
+<div style={{flex:1,background:”#111128”,borderRadius:11,padding:“8px”,textAlign:“center”}}>
+<div style={{fontSize:7,color:”#9977cc”,letterSpacing:3}}>得分</div>
+<div style={{fontSize:30,fontWeight:900,color:”#fff”,lineHeight:1}}>{ui.score}</div>
+<div style={{fontSize:9,color:”#ffd700”,marginTop:2}}>💰{Math.floor(ui.score/10)} 金幣</div>
+</div>
+<div style={{display:“flex”,flexDirection:“column”,gap:4,minWidth:58}}>
+<div style={{background:”#111128”,borderRadius:10,padding:“5px”,textAlign:“center”}}>
+<div style={{fontSize:8,color:”#4499cc”}}>剩餘球</div>
+<div style={{display:“flex”,gap:2,justifyContent:“center”,marginTop:2}}>
+{Array.from({length:5},(_,i)=><div key={i} style={{width:9,height:9,borderRadius:“50%”,background:i<ui.left?bt.color:”#1a1a33”}}/>)}
+</div>
+</div>
+{ui.last!==null&&<div style={{background:”#111128”,borderRadius:10,padding:“4px 5px”,textAlign:“center”}}>
+<div style={{fontSize:12,fontWeight:900,color:ui.last>0?bt.color:”#556688”}}>{ui.last>0?`+${ui.last}`:“Miss”}</div>
+</div>}
+</div>
+</div>
+<div style={{display:“flex”,gap:5,width:“100%”,maxWidth:300,alignItems:“center”}}>
+<span style={{fontSize:9,color:”#7766aa”}}>倍率：</span>
+{[1,2,3].map(m=><button key={m} onClick={()=>{S.current.mult=m;setUi(u=>({…u,mult:m}));}} style={{flex:1,padding:“6px”,border:`2px solid ${ui.mult===m?"#aa88ff":"#334466"}`,borderRadius:9,background:ui.mult===m?”#5533dd”:”#111130”,color:ui.mult===m?”#fff”:”#556688”,fontSize:13,fontWeight:900,fontFamily:“inherit”,cursor:“pointer”}}>{m}x</button>)}
+</div>
+<div style={{width:“100%”,maxWidth:300}}>
+<div style={{display:“flex”,justifyContent:“space-between”,marginBottom:2}}>
+<span style={{fontSize:9,color:ui.charging?”#ddeeff”:”#334466”,fontWeight:700}}>🔋蓄力</span>
+<span style={{fontSize:9,color:”#8877aa”}}>{ui.charging?`${ui.pct}%`:“按住蓄力‧放開發射”}</span>
+</div>
+<div style={{background:”#0d0d22”,borderRadius:7,height:14,overflow:“hidden”,border:`1.5px solid ${ui.charging?bt.color+"55":"#22224433"}`}}>
+<div style={{background:`linear-gradient(90deg,${bt.color},#ffd700)`,height:“100%”,width:`${ui.pct}%`,borderRadius:7}}/>
+</div>
+</div>
+<canvas ref={cvRef} width={SGW} height={SGH}
+style={{border:“2px solid #3344ff44”,borderRadius:10,display:“block”,width:“100%”,maxWidth:300,touchAction:“none”,cursor:“crosshair”}}
+onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}
+onTouchStart={onDown} onTouchMove={onMove} onTouchEnd={onUp}/>
+<button className=“btn bs” onClick={onBack} style={{width:“100%”,maxWidth:300,padding:“10px”,fontSize:11}}>🏠 返回（得分÷10=金幣）</button>
+
+  </div>);}
+// ── 大亂鬥 3v3 競技 (全新) ──
+// 雙搖桿 | 三發彈藥 | 脫戰回血 | 中央資源點 | 10分勝 | 死亡掉分 | 草叢+掩體
+// ══════════════════════════════════════════
+// ⚔️  大亂鬥 3v3  高自由度・位移技能・寵物實體碰撞
+// ══════════════════════════════════════════
+const BW=520,BH=520;
+const B_COVERS=[
+  {x:75, y:75, w:75,h:20},{x:370,y:75, w:75,h:20},
+  {x:75, y:425,w:75,h:20},{x:370,y:425,w:75,h:20},
+  {x:230,y:140,w:20,h:95},{x:230,y:285,w:20,h:95},
+  {x:130,y:250,w:90,h:20},{x:300,y:250,w:90,h:20},
+  {x:155,y:140,w:20,h:55},{x:345,y:325,w:20,h:55},
+];
+const B_BUSHES=[
+  {x:72, y:72, r:36},{x:448,y:72, r:36},
+  {x:72, y:448,r:36},{x:448,y:448,r:36},
+  {x:260,y:88, r:26},{x:260,y:432,r:26},
+];
+const B_RES_BW={x:260,y:260,r:30};
+const DASH_CD_F=240,SKILL_CD_F=480;
+const SKILL_DEFS={
+  attack: {name:"⚡衝刺斬",col:"#ff4455",desc:"位移+扇形傷害"},
+  defense:{name:"🛡磁力盾",col:"#4488ff",desc:"推開附近敵人"},
+  control:{name:"🌀旋風踢",col:"#44ee88",desc:"AOE擊退+傷害"},
+  support:{name:"✨閃現",  col:"#ffcc00",desc:"瞬移到右搖桿方向"},
+  ghost:  {name:"👻隱形衝",col:"#cc88ff",desc:"2秒隱身+加速"},
+  gold:   {name:"💰金幣爆",col:"#ffaa00",desc:"全場爆炸傷害"},
+};
+
+function BrawlGame({ballId,ballLevels,equipPet,playerName,onBack,onFinish}){
+const rawBt=BALLS[ballId]||BALLS.attack;
+const lv=ballLevels[ballId]||1;
+const myBt={…rawBt,atk:rawBt.atk*(1+LV_BONUS*(lv-1))};
+const sk=SKILL_DEFS[ballId]||SKILL_DEFS.attack;
+
+const cvRef=useRef(null);
+const G=useRef(null);
+// 雙搖桿 - pure ref, 零re-render延遲
+const jL=useRef({act:false,cx:0,cy:0,dx:0,dy:0});
+const jR=useRef({act:false,cx:0,cy:0,dx:0,dy:0});
+const jLDom=useRef(null);const jRDom=useRef(null);
+const [ui,setUi]=useState({ms:0,as:0,hp:100,maxHp:100,ammo:3,dc:0,sc:0,bush:false,res:0,result:null});
+
+useEffect(()=>{
+const baseHp=Math.round(80+rawBt.def*20);
+const mk=(team,idx)=>({
+x:team===0?85+idx*42:435-idx*42, y:185+idx*85,
+vx:0,vy:0,r:15,hp:baseHp,maxHp:baseHp,
+ammo:3,ammoT:0,combatT:0,dashCd:0,skillCd:0,shootCd:0,
+alive:true,team,idx,isPlayer:team===0&&idx===0,
+aimAng:team===0?0:Math.PI,inBush:false,invisible:0,regenT:0,id:team*3+idx,
+});
+G.current={
+players:[…Array(3).keys()].map(i=>mk(0,i)).concat([…Array(3).keys()].map(i=>mk(1,i))),
+bullets:[],scores:[0,0],resT:0,popups:[],petT:0,active:true,af:null,tick:0,
+};
+},[rawBt.def]);
+
+// 位移技能
+const doSkill=useCallback(()=>{
+const g=G.current;if(!g)return;
+const p=g.players[0];if(!p.alive||p.skillCd>0)return;
+p.skillCd=SKILL_CD_F;
+const ang=jR.current.act?Math.atan2(jR.current.dy,jR.current.dx):p.aimAng;
+const enemies=g.players.filter(e=>e.alive&&e.team===1);
+switch(ballId){
+case”attack”:{// 衝刺斬
+p.vx=Math.cos(ang)*22;p.vy=Math.sin(ang)*22;
+setTimeout(()=>{if(!g.active)return;
+enemies.forEach(e=>{if((e.x-p.x)**2+(e.y-p.y)**2<90**2){const d=Math.floor(50*myBt.atk);e.hp=Math.max(0,e.hp-d);e.combatT=120;if(!e.hp){e.alive=false;e.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:e.x,y:e.y-14,t:55,col:”#ff4455”,txt:`-${d}💥`});}});
+},110);break;}
+case”defense”:{// 磁力盾 - 推開
+enemies.forEach(e=>{const dx=e.x-p.x,dy=e.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<140){e.vx+=(dx/d)*16;e.vy+=(dy/d)*16;}});
+g.popups.push({x:p.x,y:p.y-22,t:65,col:”#4488ff”,txt:“🛡 磁力推！”});break;}
+case”control”:{// 旋風AOE
+enemies.forEach(e=>{const dx=e.x-p.x,dy=e.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<170){const dmg=22;e.hp=Math.max(0,e.hp-dmg);e.vx+=(dx/d)*11;e.vy+=(dy/d)*11;e.combatT=110;if(!e.hp){e.alive=false;e.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:e.x,y:e.y-12,t:50,col:”#44ee88”,txt:`-${dmg}🌀`});}});break;}
+case”support”:{// 閃現
+p.x=cl(p.x+Math.cos(ang)*140,p.r,BW-p.r);
+p.y=cl(p.y+Math.sin(ang)*140,p.r,BH-p.r);
+g.popups.push({x:p.x,y:p.y-18,t:55,col:”#ffcc00”,txt:“✨閃現！”});break;}
+case”ghost”:{// 隱形衝刺
+p.invisible=130;p.vx=Math.cos(ang)*14;p.vy=Math.sin(ang)*14;
+g.popups.push({x:p.x,y:p.y-18,t:55,col:”#cc88ff”,txt:“👻隱身！”});break;}
+case”gold”:{// 全場爆炸
+enemies.forEach(e=>{const dmg=Math.floor(38*myBt.atk);e.hp=Math.max(0,e.hp-dmg);e.combatT=110;e.vx+=(Math.random()-.5)*10;e.vy+=(Math.random()-.5)*10;if(!e.hp){e.alive=false;e.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:e.x,y:e.y-14,t:52,col:”#ffaa00”,txt:`-${dmg}💰`});});break;}
+}
+},[ballId,myBt.atk]);
+
+const doDash=useCallback(()=>{
+const g=G.current;if(!g)return;
+const p=g.players[0];if(!p.alive||p.dashCd>0)return;
+p.dashCd=DASH_CD_F;
+const ang=jL.current.act?Math.atan2(jL.current.dy,jL.current.dx):p.aimAng;
+p.vx=Math.cos(ang)*22;p.vy=Math.sin(ang)*22;
+g.popups.push({x:p.x,y:p.y-14,t:35,col:”#ffffff”,txt:“⚡衝！”});
+},[]);
+
+useEffect(()=>{
+const g=G.current;if(!g)return;
+const cv=cvRef.current;if(!cv)return;
+const ctx=cv.getContext(“2d”);
+const inCov=(x,y,r)=>B_COVERS.some(c=>x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);
+const inBsh=(x,y)=>B_BUSHES.some(b=>(x-b.x)**2+(y-b.y)**2<b.r**2);
+
+```
+const loop=()=>{
+  if(!g.active)return;
+  g.tick++;
+  const me=g.players[0];
+
+  // 資源點
+  g.resT=Math.min(180,g.resT+1);
+  if(g.resT>=180){
+    const cnt=[0,0];
+    g.players.forEach(p=>{if(p.alive&&(p.x-B_RES_BW.x)**2+(p.y-B_RES_BW.y)**2<(B_RES_BW.r+p.r+10)**2)cnt[p.team]++;});
+    if(cnt[0]>cnt[1])g.scores[0]+=2;else if(cnt[1]>cnt[0])g.scores[1]+=2;
+    g.resT=0;g.popups.push({x:B_RES_BW.x,y:B_RES_BW.y-28,t:80,col:"#ffd700",txt:"⚡+2分"});
+  }
+
+  // 寵物實體碰撞傷害
+  if(equipPet&&BALLS[equipPet]&&me.alive){
+    g.petT=(g.petT||0)+1;
+    const ang2=g.petT*.09;
+    const px2=me.x+Math.cos(ang2)*30,py2=me.y+Math.sin(ang2)*30;
+    g.players.forEach(p=>{if(!p.alive||p.team===0)return;
+      if((p.x-px2)**2+(p.y-py2)**2<(p.r+11)**2){
+        const dmg=3;p.hp=Math.max(0,p.hp-dmg);p.combatT=60;
+        if(!p.hp){p.alive=false;p.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}
+      }
+    });
+  }
+
+  // 更新每個玩家
+  g.players.forEach((p,pi)=>{
+    if(!p.alive){
+      p.regenT++;
+      if(p.regenT>195){p.alive=true;p.hp=p.maxHp;p.ammo=3;p.regenT=0;p.x=p.team===0?90+p.idx*42:430-p.idx*42;p.y=185+p.idx*85;}
+      return;
+    }
+    if(p.isPlayer){
+      const jl=jL.current;
+      if(jl.act){const d=Math.sqrt(jl.dx**2+jl.dy**2)||1;if(d>10){p.vx+=(jl.dx/d)*1.7;p.vy+=(jl.dy/d)*1.7;}}
+      const jr=jR.current;
+      if(jr.act&&(Math.abs(jr.dx)>8||Math.abs(jr.dy)>8)){
+        p.aimAng=Math.atan2(jr.dy,jr.dx);
+        if(p.ammo>0&&p.shootCd<=0){
+          p.ammo--;p.shootCd=16;p.combatT=130;
+          g.bullets.push({x:p.x+Math.cos(p.aimAng)*(p.r+6),y:p.y+Math.sin(p.aimAng)*(p.r+6),vx:Math.cos(p.aimAng)*11,vy:Math.sin(p.aimAng)*11,team:0,r:5,t:85,dmg:Math.floor(23*myBt.atk),ownerId:0});
+        }
+      }
+      if(p.invisible>0)p.invisible--;
+    } else {
+      // AI 走位博弈：動態保持中距離 + 橫移
+      const enemies2=g.players.filter(e=>e.alive&&e.team!==p.team);
+      const near=enemies2.sort((a,b2)=>(a.x-p.x)**2+(a.y-p.y)**2-(b2.x-p.x)**2-(b2.y-p.y)**2)[0];
+      if(near){
+        const dx=near.x-p.x,dy=near.y-p.y,dist=Math.sqrt(dx*dx+dy*dy)||1;
+        const pref=105+Math.sin(g.tick*.04+p.id*1.3)*28;
+        if(dist>pref+18){p.vx+=(dx/dist)*(.75+Math.random()*.2);p.vy+=(dy/dist)*(.75+Math.random()*.2);}
+        else if(dist<pref-25){p.vx-=(dx/dist)*.55;p.vy-=(dy/dist)*.55;}
+        else{// 橫移
+          const perp=Math.atan2(dy,dx)+Math.PI/2+((p.id%2)?0:Math.PI);
+          p.vx+=Math.cos(perp)*.7;p.vy+=Math.sin(perp)*.7;
+        }
+        p.aimAng=Math.atan2(dy,dx);
+        const canSee=!near.invisible||near.team===p.team;
+        if(canSee&&p.ammo>0&&p.shootCd<=0&&dist<210&&Math.random()<.035){
+          p.ammo--;p.shootCd=28;p.combatT=130;
+          const spread=(Math.random()-.5)*.22;
+          g.bullets.push({x:p.x,y:p.y,vx:Math.cos(p.aimAng+spread)*8.5,vy:Math.sin(p.aimAng+spread)*8.5,team:p.team,r:5,t:82,dmg:15,ownerId:pi});
+        }
+        if(p.dashCd<=0&&Math.random()<.003){p.dashCd=DASH_CD_F;p.vx+=(dx/dist)*17;p.vy+=(dy/dist)*17;}
+      }
+    }
+    if(p.ammo<3){p.ammoT++;if(p.ammoT>105){p.ammoT=0;p.ammo++;}}
+    if(p.combatT>0)p.combatT--;else if(p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+.13);
+    if(p.dashCd>0)p.dashCd--;if(p.skillCd>0)p.skillCd--;if(p.shootCd>0)p.shootCd--;
+    p.vx*=.77;p.vy*=.77;
+    const nx=cl(p.x+p.vx,p.r,BW-p.r),ny=cl(p.y+p.vy,p.r,BH-p.r);
+    if(!inCov(nx,p.y,p.r-2))p.x=nx;else p.vx*=-.28;
+    if(!inCov(p.x,ny,p.r-2))p.y=ny;else p.vy*=-.28;
+    p.x=cl(p.x,p.r,BW-p.r);p.y=cl(p.y,p.r,BH-p.r);
+    p.inBush=inBsh(p.x,p.y);
+    // 玩家間實體碰撞
+    for(let pi2=pi+1;pi2<g.players.length;pi2++){const p2=g.players[pi2];if(!p2.alive)continue;const ddx=p2.x-p.x,ddy=p2.y-p.y,dd=Math.sqrt(ddx*ddx+ddy*ddy)||1;if(dd<p.r+p2.r){const ov=(p.r+p2.r-dd)*.5,nx2=ddx/dd,ny2=ddy/dd;p.x-=nx2*ov;p.y-=ny2*ov;p2.x+=nx2*ov;p2.y+=ny2*ov;const imp=((p.vx-p2.vx)*nx2+(p.vy-p2.vy)*ny2)*.38;p.vx-=nx2*imp;p.vy-=ny2*imp;p2.vx+=nx2*imp;p2.vy+=ny2*imp;}}
+  });
+
+  // 子彈
+  g.bullets=g.bullets.filter(b=>{
+    b.x+=b.vx;b.y+=b.vy;b.t--;
+    if(b.t<=0||b.x<0||b.x>BW||b.y<0||b.y>BH)return false;
+    if(B_COVERS.some(c=>b.x>c.x&&b.x<c.x+c.w&&b.y>c.y&&b.y<c.y+c.h)){b.vx*=-.65;b.vy*=-.65;b.t=Math.min(b.t,12);return true;}
+    for(const p of g.players){
+      if(!p.alive||p.team===b.team||p.invisible>0||p.inBush)continue;
+      if((p.x-b.x)**2+(p.y-b.y)**2<(p.r+b.r)**2){
+        p.hp=Math.max(0,p.hp-b.dmg);p.combatT=130;
+        g.popups.push({x:p.x,y:p.y-14,t:46,col:"#ff4466",txt:`-${b.dmg}`});
+        if(p.hp<=0){p.alive=false;p.regenT=0;const kt=b.team;g.scores[kt]++;g.scores[1-kt]=Math.max(0,g.scores[1-kt]-1);g.popups.push({x:p.x,y:p.y-30,t:65,col:kt===0?"#4488ff":"#ff4455",txt:kt===0?"🔵+1":"🔴+1"});}
+        return false;
+      }
+    }
+    return true;
+  });
+  g.popups=g.popups.filter(p=>{p.t--;p.y-=.45;return p.t>0;});
+  if(g.scores[0]>=10||g.scores[1]>=10){g.active=false;setUi(u=>({...u,result:g.scores[0]>=10?"win":"lose"}));return;}
+
+  if(g.tick%3===0)setUi({ms:g.scores[0],as:g.scores[1],hp:Math.round(me.hp),maxHp:me.maxHp,ammo:me.ammo,dc:Math.round(me.dashCd/DASH_CD_F*100),sc:Math.round(me.skillCd/SKILL_CD_F*100),bush:me.alive&&me.inBush,res:Math.round(g.resT/180*100),result:null});
+
+  // ═══════════ DRAW ═══════════
+  ctx.clearRect(0,0,BW,BH);
+  const bgG=ctx.createLinearGradient(0,0,BW,BH);bgG.addColorStop(0,"#0a180a");bgG.addColorStop(1,"#0d0d1e");ctx.fillStyle=bgG;ctx.fillRect(0,0,BW,BH);
+  // 格線
+  ctx.strokeStyle="#ffffff05";ctx.lineWidth=1;
+  for(let x=0;x<=BW;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,BH);ctx.stroke();}
+  for(let y=0;y<=BH;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(BW,y);ctx.stroke();}
+  // 資源點
+  const rp=g.resT/180;
+  ctx.beginPath();ctx.arc(B_RES_BW.x,B_RES_BW.y,B_RES_BW.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,215,0,${.04+rp*.11})`;ctx.fill();ctx.strokeStyle=`rgba(255,215,0,${.35+rp*.65})`;ctx.lineWidth=3;ctx.stroke();
+  ctx.beginPath();ctx.arc(B_RES_BW.x,B_RES_BW.y,B_RES_BW.r+5,-Math.PI/2,-Math.PI/2+rp*Math.PI*2);ctx.strokeStyle="#ffd700";ctx.lineWidth=5;ctx.stroke();
+  ctx.fillStyle="#ffd700";ctx.font="bold 17px monospace";ctx.textAlign="center";ctx.fillText("⚡",B_RES_BW.x,B_RES_BW.y+7);
+  // 草叢
+  B_BUSHES.forEach(b=>{ctx.save();ctx.globalAlpha=.7;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle="#1a4a1a";ctx.fill();ctx.strokeStyle="#2a8a2a";ctx.lineWidth=2.5;ctx.stroke();for(let i=0;i<5;i++){ctx.font="12px serif";ctx.textAlign="center";ctx.fillText("🌿",b.x+Math.cos(i*1.26)*b.r*.6,b.y+Math.sin(i*1.26)*b.r*.6+4);}ctx.restore();});
+  // 掩體
+  B_COVERS.forEach(c=>{ctx.fillStyle="#00000044";ctx.fillRect(c.x+4,c.y+4,c.w,c.h);ctx.fillStyle="#2a3a55";ctx.fillRect(c.x,c.y,c.w,c.h);ctx.strokeStyle="#4466aa";ctx.lineWidth=2;ctx.strokeRect(c.x,c.y,c.w,c.h);});
+  // 玩家
+  g.players.forEach((p,pi)=>{
+    if(!p.alive)return;
+    const col=p.team===0?"#4488ff":"#ff4455";
+    if(p.invisible>0&&!p.isPlayer)return;
+    ctx.save();
+    ctx.globalAlpha=p.invisible>0?.28:p.inBush&&!p.isPlayer?.36:p.inBush?.52:1;
+    if(p.isPlayer){ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.strokeStyle="#ffffff44";ctx.lineWidth=2;ctx.stroke();}
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    const gr=ctx.createRadialGradient(p.x-3,p.y-3,1,p.x,p.y,p.r);gr.addColorStop(0,col);gr.addColorStop(1,col+"55");ctx.fillStyle=gr;ctx.fill();ctx.strokeStyle="#fff4";ctx.lineWidth=1.5;ctx.stroke();
+    ctx.font=`bold ${p.r+2}px monospace`;ctx.textAlign="center";ctx.fillText(p.isPlayer?rawBt.emoji:(BL[p.id%6]||BL[0]).emoji,p.x,p.y+5);
+    ctx.restore();ctx.globalAlpha=1;
+    const bw=p.r*2.8;ctx.fillStyle="#0a0a1a";ctx.fillRect(p.x-bw/2,p.y-p.r-10,bw,5);ctx.fillStyle=p.hp/p.maxHp>.6?"#44ff88":p.hp/p.maxHp>.3?"#ffd700":"#ff4466";ctx.fillRect(p.x-bw/2,p.y-p.r-10,bw*(p.hp/p.maxHp),5);
+    for(let a=0;a<3;a++){ctx.beginPath();ctx.arc(p.x-8+a*8,p.y+p.r+6,3,0,Math.PI*2);ctx.fillStyle=a<p.ammo?"#44ffdd":"#1a1a33";ctx.fill();}
+    ctx.save();ctx.globalAlpha=.38;ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(p.x+Math.cos(p.aimAng)*(p.r+2),p.y+Math.sin(p.aimAng)*(p.r+2));ctx.lineTo(p.x+Math.cos(p.aimAng)*(p.r+20),p.y+Math.sin(p.aimAng)*(p.r+20));ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    ctx.fillStyle=p.isPlayer?"#fff":"#bbb";ctx.font=`${p.isPlayer?9:7}px monospace`;ctx.textAlign="center";ctx.fillText(p.isPlayer?(playerName||"你"):AI_N[(p.id-1)%10]||"Bot",p.x,p.y-p.r-13);
+    if(p.isPlayer&&p.skillCd>0){ctx.strokeStyle=sk.col;ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(p.x,p.y,p.r+8,-Math.PI/2,-Math.PI/2+((SKILL_CD_F-p.skillCd)/SKILL_CD_F)*Math.PI*2);ctx.stroke();}
+  });
+  // 寵物繞圈
+  if(equipPet&&BALLS[equipPet]&&me.alive){const ang3=g.tick*.09;ctx.font="16px monospace";ctx.textAlign="center";ctx.fillText(BALLS[equipPet].pet.emoji,me.x+Math.cos(ang3)*30,me.y+Math.sin(ang3)*30+5);}
+  // 子彈
+  g.bullets.forEach(b=>{const bcol=b.team===0?"#66ccff":"#ff8866";ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=bcol;ctx.shadowColor=bcol;ctx.shadowBlur=7;ctx.fill();ctx.shadowBlur=0;});
+  // 浮字
+  g.popups.forEach(p2=>{ctx.globalAlpha=p2.t/55;ctx.fillStyle=p2.col;ctx.font="bold 11px monospace";ctx.textAlign="center";ctx.shadowColor=p2.col;ctx.shadowBlur=4;ctx.fillText(p2.txt,p2.x,p2.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+  if(g.active)g.af=requestAnimationFrame(loop);
+};
+g.af=requestAnimationFrame(loop);
+return()=>{g.active=false;if(g.af)cancelAnimationFrame(g.af);};
+```
+
+},[myBt,equipPet,playerName,rawBt,sk]);
+
+// 搖桿事件工廠
+const mkJH=(ref,dom)=>{
+const s=e=>{e.preventDefault();const r=dom.current?.getBoundingClientRect();if(!r)return;const cl2=e.touches?e.touches[0]:e;ref.current={act:true,cx:r.left+r.width/2,cy:r.top+r.height/2,dx:cl2.clientX-(r.left+r.width/2),dy:cl2.clientY-(r.top+r.height/2)};};
+const m=e=>{e.preventDefault();const j=ref.current;if(!j.act)return;const cl2=e.touches?e.touches[0]:e;j.dx=cl2.clientX-j.cx;j.dy=cl2.clientY-j.cy;};
+const u=e=>{e.preventDefault();ref.current={act:false,cx:0,cy:0,dx:0,dy:0};};
+return{onPointerDown:s,onPointerMove:m,onPointerUp:u,onPointerLeave:u,onTouchStart:s,onTouchMove:m,onTouchEnd:u};
+};
+const jLH=mkJH(jL,jLDom),jRH=mkJH(jR,jRDom);
+const JS=(col)=>({width:112,height:112,borderRadius:“50%”,background:”#0d0d22”,border:`3px solid ${col}66`,display:“flex”,alignItems:“center”,justifyContent:“center”,touchAction:“none”,position:“relative”,flexShrink:0});
+const arrs=(col)=>[“▲”,“▼”,“◄”,“►”].map((a,i)=><span key={i} style={{position:“absolute”,fontSize:12,color:col+“77”,…[{top:7,left:“50%”,transform:“translateX(-50%)”},{bottom:7,left:“50%”,transform:“translateX(-50%)”},{left:7,top:“50%”,transform:“translateY(-50%)”},{right:7,top:“50%”,transform:“translateY(-50%)”}][i]}}>{a}</span>);
+
+if(ui.result){const win=ui.result===“win”;
+return(<div style={{background:”#070e07”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:14,padding:24}}><style>{CSS}</style>
+<div style={{fontSize:52,animation:“pop .4s”}}>{win?“🏆”:“💔”}</div>
+<div style={{fontSize:18,fontWeight:900,color:win?”#ffd700”:”#ff6688”}}>{win?“3v3 大亂鬥勝利！”:“落敗退場”}</div>
+<div style={{background:”#111128”,border:“2px solid #33335566”,borderRadius:14,padding:“14px 30px”,display:“flex”,gap:28}}>
+<div style={{textAlign:“center”}}><div style={{fontSize:8,color:”#4488ff”}}>🔵我隊</div><div style={{fontSize:38,fontWeight:900,color:”#4488ff”}}>{ui.ms}</div></div>
+<div style={{alignSelf:“center”,color:”#555”,fontSize:16}}>:</div>
+<div style={{textAlign:“center”}}><div style={{fontSize:8,color:”#ff4455”}}>🔴AI隊</div><div style={{fontSize:38,fontWeight:900,color:”#ff4455”}}>{ui.as}</div></div>
+</div>
+<button className=“btn bs” onClick={()=>onFinish(win,ui.ms*20)} style={{padding:“12px 24px”,fontSize:13}}>🏠 返回</button>
+</div>);
+}
+
+const cdBtn=(label,cd,col,fn)=>(
+<button onPointerDown={fn} onTouchStart={e=>{e.preventDefault();fn();}} className=“btn”
+style={{padding:“7px 8px”,fontSize:9,background:cd>0?”#0d0d22”:col+“22”,color:cd>0?”#334455”:col,border:`1.5px solid ${cd>0?"#22334455":col+"55"}`,borderRadius:10,fontFamily:“inherit”,fontWeight:900,minWidth:58,position:“relative”,overflow:“hidden”}}>
+{cd>0&&<div style={{position:“absolute”,left:0,top:0,height:“100%”,width:`${100-cd}%`,background:col+“18”}}/>}
+{label}{cd>0&&<span style={{fontSize:7,display:“block”,color:”#446655”}}>{cd===ui.dc?`${Math.ceil(ui.dc/100*4)}s`:`${Math.ceil(ui.sc/100*8)}s`}</span>}
+</button>);
+
+return(<div style={{background:”#060c06”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,fontFamily:”‘Courier New’,monospace”,gap:4,padding:6,paddingBottom:148}}>
+<style>{CSS}</style>
+<div style={{display:“flex”,gap:5,width:“100%”,maxWidth:450,alignItems:“center”}}>
+<div style={{background:”#0d1a2a”,border:“2px solid #4488ff44”,borderRadius:9,padding:“3px 9px”,textAlign:“center”,minWidth:44}}><div style={{fontSize:7,color:”#4488ff”}}>🔵我隊</div><div style={{fontSize:20,fontWeight:900,color:”#4488ff”}}>{ui.ms}<span style={{fontSize:7,color:”#335566”}}>/10</span></div></div>
+<div style={{flex:1,background:”#111128”,borderRadius:8,padding:“3px 5px”}}>
+<div style={{height:5,borderRadius:3,background:”#1a1a33”,overflow:“hidden”,marginBottom:1}}><div style={{height:“100%”,background:”#ffd700”,width:`${ui.res}%`,transition:“width .12s”}}/></div>
+<div style={{fontSize:6,color:”#ffd70077”,textAlign:“center”}}>⚡資源點</div>
+{ui.bush&&<div style={{fontSize:7,color:”#44ff88”,fontWeight:700,textAlign:“center”}}>🌿隱身</div>}
+</div>
+<div style={{background:”#2a0d10”,border:“2px solid #ff445544”,borderRadius:9,padding:“3px 9px”,textAlign:“center”,minWidth:44}}><div style={{fontSize:7,color:”#ff4455”}}>🔴AI隊</div><div style={{fontSize:20,fontWeight:900,color:”#ff4455”}}>{ui.as}<span style={{fontSize:7,color:”#663344”}}>/10</span></div></div>
+</div>
+<div style={{display:“flex”,gap:4,width:“100%”,maxWidth:450,alignItems:“center”}}>
+<div style={{flex:1,background:”#1a1a33”,borderRadius:4,height:9,overflow:“hidden”}}><div style={{background:ui.hp/ui.maxHp>.6?”#44ff88”:ui.hp/ui.maxHp>.3?”#ffd700”:”#ff4466”,height:“100%”,width:`${(ui.hp/ui.maxHp)*100}%`,transition:“width .1s”}}/></div>
+<span style={{fontSize:9,color:”#8899bb”,minWidth:20}}>{ui.hp}</span>
+{[0,1,2].map(i=><div key={i} style={{width:10,height:10,borderRadius:“50%”,background:i<ui.ammo?”#44ffdd”:”#1a1a33”,border:“1.5px solid #223344”}}/>)}
+</div>
+<canvas ref={cvRef} width={BW} height={BH} style={{border:“2px solid #44aa4433”,borderRadius:10,display:“block”,width:“100%”,maxWidth:450,touchAction:“none”}}/>
+<div style={{position:“fixed”,bottom:0,left:0,right:0,background:”#060c06f0”,borderTop:“1.5px solid #1a2a1a”,padding:“7px 10px”,display:“flex”,justifyContent:“space-between”,alignItems:“center”,zIndex:60}}>
+<div>
+<div style={{fontSize:7,color:”#4488ff77”,textAlign:“center”,marginBottom:2}}>移動</div>
+<div ref={jLDom} {…jLH} style={JS(”#4488ff”)}>{arrs(”#4488ff”)}<div style={{width:40,height:40,borderRadius:“50%”,background:”#1a2a44”,border:“2px solid #4488ff66”,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:17}}>🕹️</div></div>
+</div>
+<div style={{display:“flex”,flexDirection:“column”,gap:4,alignItems:“center”}}>
+{cdBtn(“⚡衝刺”,ui.dc,”#66aaff”,doDash)}
+{cdBtn(sk.name,ui.sc,sk.col,doSkill)}
+<button className=“btn bs” onClick={onBack} style={{padding:“5px 9px”,fontSize:9}}>🏠</button>
+</div>
+<div>
+<div style={{fontSize:7,color:”#ff445577”,textAlign:“center”,marginBottom:2}}>瞄準射擊</div>
+<div ref={jRDom} {…jRH} style={JS(”#ff4455”)}>{arrs(”#ff4455”)}<div style={{width:40,height:40,borderRadius:“50%”,background:”#2a1a1a”,border:“2px solid #ff445566”,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:17}}>🎯</div></div>
+</div>
+</div>
+
+  </div>);
+}
+// ══════════════════════════════════════════
+// ⚽  足球  ──  一球定生死（進球即結束）
+// ══════════════════════════════════════════
+const SC_W=720,SC_H=380,SC_GW=38,SC_GH=85;
+// 互動寵物：繞著玩家轉，與球發生實體碰撞
+function SoccerGame({ballId,ballLevels,playerName,equipPet,onBack,onFinish}){
+  const rawBt=BALLS[ballId]||BALLS.attack;const lv=ballLevels[ballId]||1;
+  const bt={...rawBt,atk:rawBt.atk*(1+LV_BONUS*(lv-1))};
+  const [teamMode,setTeamMode]=useState(null);
+  const [result,setResult]=useState(null);// "win"|"lose"|null
+  const [pct,setPct]=useState(0);
+  const cvRef=useRef(null);const G=useRef(null);
+  const joy=useRef({act:false,cx:0,cy:0,dx:0,dy:0});
+  const joyDom=useRef(null);
+
+const init=useCallback((tm)=>{
+const n=tm===“1v1”?1:tm===“3v3”?3:5;const sp=SC_H/(n+1);
+G.current={
+myTeam:Array.from({length:n},(*,i)=>({x:160+i*22,y:sp*(i+1),vx:0,vy:0,r:15,hasB:i===0,id:i})),
+aiTeam:Array.from({length:n},(*,i)=>({x:SC_W-160-i*22,y:sp*(i+1),vx:0,vy:0,r:15,hasB:false,id:i+10})),
+ball:{x:SC_W/2,y:SC_H/2,vx:0,vy:0,r:12,holder:0,fly:false},
+petT:0,active:true,af:null,sel:0,scored:false,
+};
+setResult(null);setPct(0);
+},[]);
+
+useEffect(()=>{
+if(!teamMode||!G.current)return;
+const g=G.current;const cv=cvRef.current;if(!cv)return;
+const ctx=cv.getContext(“2d”);
+const loop=()=>{
+if(!g.active)return;
+const b=g.ball;g.petT++;
+// 球物理
+if(b.fly){
+b.x+=b.vx;b.y+=b.vy;b.vx*=.978;b.vy*=.978;
+if(b.x<SC_GW+b.r){
+if(Math.abs(b.y-SC_H/2)<SC_GH){g.active=false;setResult(“lose”);onFinish(false);return;}
+b.x=SC_GW+b.r;b.vx=Math.abs(b.vx)*.62;
+}
+if(b.x>SC_W-SC_GW-b.r){
+if(Math.abs(b.y-SC_H/2)<SC_GH){g.active=false;setResult(“win”);onFinish(true);return;}// ← 進球即結束
+b.x=SC_W-SC_GW-b.r;b.vx=-Math.abs(b.vx)*.62;
+}
+if(b.y<b.r){b.y=b.r;b.vy=Math.abs(b.vy)*.62;}
+if(b.y>SC_H-b.r){b.y=SC_H-b.r;b.vy=-Math.abs(b.vy)*.62;}
+if(Math.sqrt(b.vx**2+b.vy**2)<.18)b.fly=false;
+if(!b.fly){
+[…g.myTeam,…g.aiTeam].forEach(p=>{
+if(vd(p,b)<p.r+b.r){
+b.holder=p.id;b.fly=false;
+const pt=g.myTeam.find(m=>m.id===p.id);const at=g.aiTeam.find(a=>a.id===p.id);
+if(pt){pt.hasB=true;g.myTeam.forEach((m,i)=>m.hasB=m.id===p.id);const pi=g.myTeam.findIndex(m=>m.id===p.id);if(pi>=0&&pi!==g.sel){g.sel=pi;}}
+if(at){at.hasB=true;g.aiTeam.forEach(a=>a.hasB=a.id===p.id);}
+b.vx=0;b.vy=0;
+}
+});
+}
+}
+if(!b.fly&&b.holder!=null){const h=[…g.myTeam,…g.aiTeam].find(p=>p.id===b.holder);if(h){b.x=h.id<10?h.x+h.r+b.r+1:h.x-h.r-b.r-1;b.y=h.y;}}
+
+```
+  // 寵物實體碰撞：影響球軌跡
+  if(equipPet&&BALLS[equipPet]){
+    const ang=g.petT*.1;const px=g.myTeam[0].x+Math.cos(ang)*32,py=g.myTeam[0].y+Math.sin(ang)*32;
+    if(b.fly){const dx=b.x-px,dy=b.y-py,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<b.r+12){b.vx+=(dx/d)*2.5;b.vy+=(dy/d)*2.5;}}
+  }
+
+  // 我方球員：搖桿
+  const me=g.myTeam[g.sel];
+  if(me){const j=joy.current;if(j.act){const d=Math.sqrt(j.dx**2+j.dy**2)||1;if(d>10){me.vx+=(j.dx/d)*1.4;me.vy+=(j.dy/d)*1.4;}}
+    me.vx*=.83;me.vy*=.83;me.x=cl(me.x+me.vx,me.r,SC_W-me.r);me.y=cl(me.y+me.vy,me.r,SC_H-me.r);
+    if(me.hasB){b.x=me.x+me.r+b.r+1;b.y=me.y;}
+    // 持球＋向右高速衝刺→自動起腳
+    if(me.hasB&&me.vx>2.8&&joy.current.act&&joy.current.dx>25){
+      const tx=SC_W-40,ty=SC_H/2+(Math.random()-.5)*SC_GH*.9;
+      const dx=tx-b.x,dy=ty-b.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+      b.vx=(dx/d)*(8+bt.atk*5)*(Math.random()*.2+.9);b.vy=(dy/d)*(8+bt.atk*5)+(Math.random()-.5)*2.5;
+      b.fly=true;me.hasB=false;g.myTeam.forEach(p=>p.hasB=false);b.holder=null;
+    }
+  }
+  // 隊友AI
+  g.myTeam.forEach((p,i)=>{if(i===g.sel)return;const tX=p.hasB?SC_W-55:b.x<SC_W/2?b.x:SC_W*.55;p.vx+=(tX-p.x)*.038+(Math.random()-.5)*.08;p.vy+=(b.y-p.y)*.038+(Math.random()-.5)*.08;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,SC_W-p.r);p.y=cl(p.y+p.vy,p.r,SC_H-p.r);
+    if(!b.fly&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.myTeam.forEach((m,j)=>m.hasB=j===i);}
+    if(p.hasB&&p.x>SC_W-160&&Math.random()<.022){const dx=SC_W-40-b.x,dy=SC_H/2-b.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*9.5;b.vy=(dy/d)*9.5+(Math.random()-.5)*2;b.fly=true;p.hasB=false;g.myTeam.forEach(m=>m.hasB=false);b.holder=null;}
+  });
+  // AI隊
+  g.aiTeam.forEach((p,i)=>{const hasBall=p.hasB;const tX=hasBall?50:b.x>SC_W/2?b.x:SC_W*.45;p.vx+=(tX-p.x)*.04+(Math.random()-.5)*.1;p.vy+=(b.y-p.y)*.04+(Math.random()-.5)*.1;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,SC_W-p.r);p.y=cl(p.y+p.vy,p.r,SC_H-p.r);
+    if(!b.fly&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.aiTeam.forEach((a,j)=>a.hasB=j===i);}
+    if(hasBall&&p.x<160&&Math.random()<.018){const dx=50-b.x,dy=SC_H/2-b.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*9+(Math.random()-.5)*1.5;b.vy=(dy/d)*9+(Math.random()-.5)*3;b.fly=true;p.hasB=false;g.aiTeam.forEach(a=>a.hasB=false);b.holder=null;}
+  });
+
+  // ── DRAW ──
+  const CVW=400,CVH=255;ctx.clearRect(0,0,CVW,CVH);ctx.save();
+  if(me){const cX=cl(me.x-200,0,SC_W-400),cY=cl(me.y-127,0,SC_H-255);ctx.translate(-cX,-cY);}
+  // 球場
+  ctx.fillStyle="#1e5520";ctx.fillRect(0,0,SC_W,SC_H);
+  for(let x=0;x<SC_W;x+=65){ctx.fillStyle="rgba(255,255,255,.022)";ctx.fillRect(x,0,32,SC_H);}
+  ctx.strokeStyle="#fff4";ctx.lineWidth=2;ctx.strokeRect(3,3,SC_W-6,SC_H-6);ctx.beginPath();ctx.moveTo(SC_W/2,0);ctx.lineTo(SC_W/2,SC_H);ctx.stroke();ctx.beginPath();ctx.arc(SC_W/2,SC_H/2,55,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle="#fff2";ctx.fillRect(0,SC_H/2-SC_GH,SC_GW,SC_GH*2);ctx.strokeStyle="#fff";ctx.lineWidth=3;ctx.strokeRect(0,SC_H/2-SC_GH,SC_GW,SC_GH*2);ctx.fillRect(SC_W-SC_GW,SC_H/2-SC_GH,SC_GW,SC_GH*2);ctx.strokeRect(SC_W-SC_GW,SC_H/2-SC_GH,SC_GW,SC_GH*2);
+  // 一球定生死提示
+  ctx.fillStyle="#ffd70088";ctx.font="bold 9px monospace";ctx.textAlign="center";ctx.fillText("進球即勝！",SC_W/2,14);
+  g.aiTeam.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="#ff4455aa";ctx.fill();ctx.strokeStyle=p.hasB?"#ffd700":"#ff4455";ctx.lineWidth=2;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign="center";ctx.fillText("🔴",p.x,p.y+4);});
+  g.myTeam.forEach((p,i)=>{const sel=i===g.sel;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=bt.color+(sel?"dd":"88");ctx.fill();ctx.strokeStyle=sel?"#fff":bt.color;ctx.lineWidth=sel?3:1.5;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign="center";ctx.fillText(bt.avatar.char,p.x,p.y+4);if(sel){ctx.fillStyle="#fff";ctx.font="bold 8px monospace";ctx.fillText(playerName||"你",p.x,p.y-p.r-4);}if(p.hasB){ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.strokeStyle="#ffd700";ctx.lineWidth=2;ctx.stroke();}});
+  // 寵物
+  if(equipPet&&BALLS[equipPet]){const ang=g.petT*.1;const p2=g.myTeam[0];ctx.font="14px monospace";ctx.textAlign="center";ctx.fillText(BALLS[equipPet].pet.emoji,p2.x+Math.cos(ang)*32,p2.y+Math.sin(ang)*32+5);}
+  // 球
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.font="10px serif";ctx.textAlign="center";ctx.fillText("⚽",b.x,b.y+4);
+  // 球速拖影
+  if(b.fly){ctx.strokeStyle="#fff5";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x-b.vx*4,b.y-b.vy*4);ctx.stroke();}
+  ctx.restore();
+  if(g.active)g.af=requestAnimationFrame(loop);
+};
+g.af=requestAnimationFrame(loop);
+return()=>{g.active=false;if(g.af)cancelAnimationFrame(g.af);};
+```
+
+},[teamMode,bt,playerName,equipPet,rawBt,onFinish]);
+
+const pass=useCallback(()=>{const g=G.current;if(!g)return;const me=g.myTeam[g.sel];if(!me?.hasB)return;const t=g.myTeam.filter((_,i)=>i!==g.sel).sort((a,b2)=>vd(a,{x:SC_W,y:SC_H/2})-vd(b2,{x:SC_W,y:SC_H/2}))[0];if(!t)return;const dx=t.x-g.ball.x,dy=t.y-g.ball.y,d=Math.sqrt(dx*dx+dy*dy)||1;g.ball.vx=(dx/d)*9.5;g.ball.vy=(dy/d)*9.5;g.ball.fly=true;me.hasB=false;g.myTeam.forEach(p=>p.hasB=false);g.ball.holder=null;const ti=g.myTeam.indexOf(t);if(ti>=0)g.sel=ti;},[]);
+
+const jS=e=>{e.preventDefault();const r=joyDom.current?.getBoundingClientRect();if(!r)return;const cl2=e.touches?e.touches[0]:e;joy.current={act:true,cx:r.left+r.width/2,cy:r.top+r.height/2,dx:cl2.clientX-(r.left+r.width/2),dy:cl2.clientY-(r.top+r.height/2)};};
+const jM=e=>{e.preventDefault();const j=joy.current;if(!j.act)return;const cl2=e.touches?e.touches[0]:e;j.dx=cl2.clientX-j.cx;j.dy=cl2.clientY-j.cy;};
+const jE=()=>{joy.current={act:false,cx:0,cy:0,dx:0,dy:0};};
+
+if(!teamMode)return(<div style={{background:”#0a2a10”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:12,padding:20}}><style>{CSS}</style>
+<div style={{fontSize:36}}>⚽</div><div style={{fontSize:18,fontWeight:900,color:”#44ff88”}}>彈珠足球</div>
+<div style={{background:”#0d1a10”,border:“1px solid #44ff8844”,borderRadius:12,padding:“10px 16px”,textAlign:“center”,fontSize:10,color:”#8877aa”,lineHeight:2}}>
+⚡ 一球定生死！<br/>進球即結束比賽<br/>搖桿移動・高速衝刺自動起腳
+</div>
+<div style={{display:“flex”,gap:9}}>{[“1v1”,“3v3”,“5v5”].map(tm=><button key={tm} className=“btn bg” onClick={()=>{setTeamMode(tm);init(tm);}} style={{padding:“13px 20px”,fontSize:13}}>{tm}</button>)}</div>
+<button className=“btn bs” onClick={onBack} style={{padding:“9px 20px”,fontSize:11}}>返回</button>
+
+  </div>);
+
+if(result)return(<div style={{background:”#070e07”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:14,padding:24}}><style>{CSS}</style>
+<div style={{fontSize:54,animation:“pop .4s”}}>{result===“win”?“⚽”:“💨”}</div>
+<div style={{fontSize:18,fontWeight:900,color:result===“win”?”#44ff88”:”#ff6688”}}>{result===“win”?“進球！勝利！”:“失球…落敗”}</div>
+<div style={{fontSize:11,color:”#8877aa”,textAlign:“center”}}>一球定生死・極致緊張感</div>
+<button className=“btn bs” onClick={onBack} style={{padding:“12px 22px”,fontSize:12}}>🏠 返回</button>
+
+  </div>);
+
+const g=G.current;
+return(<div style={{background:”#07100a”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,fontFamily:”‘Courier New’,monospace”,gap:5,padding:8,paddingBottom:155}}><style>{CSS}</style>
+<div style={{background:”#0d2a12”,border:“2px solid #ffd70044”,borderRadius:10,padding:“5px 12px”,textAlign:“center”,width:“100%”,maxWidth:400}}>
+<div style={{fontSize:12,fontWeight:900,color:”#ffd700”}}>⚡ 一球定生死</div>
+<div style={{fontSize:9,color:”#8877aa”}}>進球即勝・搖桿移動・衝刺起腳</div>
+</div>
+<canvas ref={cvRef} width={400} height={255} style={{border:“2px solid #44ff8833”,borderRadius:10,display:“block”,width:“100%”,maxWidth:400,touchAction:“none”}}/>
+<div style={{display:“flex”,gap:5,width:“100%”,maxWidth:400}}>
+{g?.myTeam.map((_,i)=><button key={i} className=“btn” onClick={()=>{if(G.current){G.current.sel=i;}}} style={{flex:1,padding:“6px”,fontSize:10,background:i===g?.sel?bt.color:”#111130”,color:i===g?.sel?”#fff”:”#8899bb”,border:`2px solid ${i===g?.sel?bt.color:"#334466"}`,borderRadius:9,fontFamily:“inherit”,fontWeight:900}}>P{i+1}</button>)}
+<button className=“btn bg” onClick={pass} style={{flex:2,padding:“6px”,fontSize:10}}>↗️傳球</button>
+</div>
+<div style={{position:“fixed”,bottom:0,left:0,right:0,background:”#07100aee”,borderTop:“1.5px solid #1a3a1a”,padding:“9px 16px”,display:“flex”,justifyContent:“space-between”,alignItems:“center”,zIndex:50}}>
+<div ref={joyDom} onPointerDown={jS} onPointerMove={jM} onPointerUp={jE} onPointerLeave={jE} onTouchStart={jS} onTouchMove={jM} onTouchEnd={jE}
+style={{width:118,height:118,borderRadius:“50%”,background:”#111128”,border:`3px solid ${bt.color}77`,display:“flex”,alignItems:“center”,justifyContent:“center”,touchAction:“none”,position:“relative”,flexShrink:0}}>
+{[“▲”,“▼”,“◄”,“►”].map((a,i)=><span key={i} style={{position:“absolute”,fontSize:14,color:bt.color+“77”,…[{top:8,left:“50%”,transform:“translateX(-50%)”},{bottom:8,left:“50%”,transform:“translateX(-50%)”},{left:8,top:“50%”,transform:“translateY(-50%)”},{right:8,top:“50%”,transform:“translateY(-50%)”}][i]}}>{a}</span>)}
+<div style={{width:46,height:46,borderRadius:“50%”,background:”#2a3055”,border:`2px solid ${bt.color}`,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:20}}>🕹️</div>
+</div>
+<div style={{textAlign:“center”,fontSize:8,color:”#446633”,lineHeight:1.8}}>向右衝刺<br/>自動起腳<br/><button className=“btn bs” onClick={onBack} style={{padding:“6px 10px”,fontSize:9,marginTop:3}}>🏠</button></div>
+</div>
+
+  </div>);
+}
+
+// ══════════════════════════════════════════
+// 🏀 籃球 ── 熱區系統 + 真實彈道 + 球員動量
+// ══════════════════════════════════════════
+const BK_W=720,BK_H=340,BK_WIN=10;
+// 熱區：6個區域，各有命中率加成
+const HOT_ZONES=[
+{x:BK_W-60, y:BK_H/2,  r:55,  bonus:1.0, name:“禁區”,   col:”#ff4455”},
+{x:BK_W-130,y:BK_H/2,  r:60,  bonus:.80, name:“中距”,   col:”#ff8844”},
+{x:BK_W-200,y:BK_H*.25,r:52,  bonus:.65, name:“左翼3分”, col:”#ffd700”},
+{x:BK_W-200,y:BK_H*.75,r:52,  bonus:.65, name:“右翼3分”, col:”#ffd700”},
+{x:BK_W-280,y:BK_H/2,  r:50,  bonus:.55, name:“頂弧3分”, col:”#44aaff”},
+{x:BK_W-320,y:BK_H*.2, r:44,  bonus:.45, name:“底角3分”, col:”#8844ff”},
+];
+
+function BasketGame({ballId,ballLevels,playerName,equipPet,onBack,onFinish}){
+const rawBt=BALLS[ballId]||BALLS.attack;const lv=ballLevels[ballId]||1;
+const bt={…rawBt,atk:rawBt.atk*(1+LV_BONUS*(lv-1))};
+const [teamMode,setTeamMode]=useState(null);
+const [myS,setMy]=useState(0);const [aiS,setAi]=useState(0);
+const [hotZone,setHotZone]=useState(null);// 當前最近熱區
+const [rhythmActive,setRhythm]=useState(false);const [rhythmPos,setRP]=useState(50);
+const [shootResult,setSR]=useState(null);const [scored2,setS2]=useState(null);
+const [shotInfo,setShotInfo]=useState(null);// {pts, zone}
+const cvRef=useRef(null);const G=useRef(null);
+const joy=useRef({act:false,cx:0,cy:0,dx:0,dy:0});const joyDom=useRef(null);
+const rhythmAF=useRef(null);const rhythmR=useRef({pos:50,dir:1.6});
+const pw=useRef(0);const pwT=useRef(null);
+const [pct,setPct]=useState(0);
+
+const init=useCallback((tm)=>{
+const n=tm===“1v1”?1:tm===“3v3”?3:5;const sp=BK_H/(n+1);
+G.current={
+myTeam:Array.from({length:n},(*,i)=>({x:110+i*35,y:sp*(i+1),vx:0,vy:0,r:15,hasB:i===0,id:i,momentum:0})),
+aiTeam:Array.from({length:n},(*,i)=>({x:BK_W-110-i*35,y:sp*(i+1),vx:0,vy:0,r:15,hasB:false,id:i+10,momentum:0})),
+ball:{x:110,y:sp,vx:0,vy:0,vy_arc:0,r:12,inAir:false,holder:0,arc:0},// arc: 拋物線高度
+hoop:{x:BK_W-28,y:BK_H-38,r:21},myHoop:{x:28,y:BK_H-38,r:21},
+myS:0,aiS:0,active:true,af:null,sel:0,petT:0,
+};
+setMy(0);setAi(0);setS2(null);setHotZone(null);
+},[]);
+
+const resetBall=useCallback(()=>{const g=G.current;if(!g)return;g.ball={x:BK_W/2,y:BK_H/2,vx:0,vy:0,r:12,inAir:false,holder:g.myTeam[0].id,arc:0};g.myTeam.forEach((p,i)=>p.hasB=i===0);g.aiTeam.forEach(p=>p.hasB=false);setS2(null);},[]);
+
+// 熱區命中率計算
+const calcAccuracy=useCallback((x,y)=>{
+const baseAcc=.5+(bt.atk-.8)*.2;// 基礎50%+攻擊加成
+let best={bonus:0,name:“空檔”,col:”#fff”};
+HOT_ZONES.forEach(z=>{if((x-z.x)**2+(y-z.y)**2<z.r**2&&z.bonus>best.bonus)best=z;});
+const finalAcc=Math.min(.95,baseAcc+best.bonus*.3);
+return{acc:finalAcc,zone:best};
+},[bt.atk]);
+
+useEffect(()=>{if(!rhythmActive)return;const go=()=>{const r=rhythmR.current;r.pos+=r.dir;if(r.pos>=100||r.pos<=0){r.dir*=-1;if(Math.abs(r.dir)<3.5)r.dir*=1.07;}setRP(r.pos);rhythmAF.current=requestAnimationFrame(go);};rhythmAF.current=requestAnimationFrame(go);return()=>{if(rhythmAF.current)cancelAnimationFrame(rhythmAF.current);};},[rhythmActive]);
+
+const hitRhythm=useCallback(()=>{
+if(!rhythmActive)return;
+const g=G.current;if(!g)return;
+const me=g.myTeam[g.sel];if(!me?.hasB)return;
+const rPos=rhythmR.current.pos;
+const rhythmAcc=1-Math.abs(rPos-50)/50;// 0~1
+const{acc,zone}=calcAccuracy(me.x,me.y);
+const finalAcc=acc*.6+rhythmAcc*.4;// 熱區40%+節奏60%
+const success=Math.random()<finalAcc;
+if(success){
+const is3=vd(me,g.hoop)>220;
+const pts=is3?3:2;
+// 真實彈道：計算拋物線
+const dx=g.hoop.x-me.x,dy=g.hoop.y-me.y,dist=Math.sqrt(dx*dx+dy*dy)||1;
+g.ball.vx=(dx/dist)*(9.5+pw.current*5);
+g.ball.vy=(dy/dist)*(9.5+pw.current*5);
+g.ball.vy_arc=-Math.min(dist*.025,8);// 拋物線上升速度
+g.ball.arc=0;g.ball.inAir=true;g.ball.holder=null;me.hasB=false;
+setSR(rhythmAcc>.72?“🏀 PERFECT!”:rhythmAcc>.42?“👌 GOOD!”:“😅 OK”);
+setShotInfo({pts,zone:zone.name,acc:Math.round(finalAcc*100)});
+setTimeout(()=>{setSR(null);setShotInfo(null);},1200);
+}else{
+setSR(`❌ 失誤（熱區${zone.name}${Math.round(acc*100)}%）`);
+setTimeout(()=>setSR(null),1000);
+}
+if(rhythmAF.current)cancelAnimationFrame(rhythmAF.current);setRhythm(false);
+},[rhythmActive,calcAccuracy]);
+
+useEffect(()=>{
+if(!teamMode||!G.current)return;const g=G.current;const cv=cvRef.current;if(!cv)return;const ctx=cv.getContext(“2d”);
+const loop=()=>{
+if(!g.active)return;
+const b=g.ball;g.petT++;
+// 真實彈道：拋物線
+if(b.inAir){
+b.vy_arc+=.28;b.arc+=(b.vy_arc||0);// arc = 視覺高度偏移
+b.x+=b.vx;b.y+=b.vy;b.vx*=.988;b.vy*=.988;
+if(vd(b,g.hoop)<g.hoop.r+2&&b.vy>0&&Math.abs(b.x-g.hoop.x)<14&&(b.arc||0)>0){
+const me2=g.myTeam[g.sel];const pts=vd(me2,{x:BK_W/2,y:BK_H/2})>180?3:2;
+g.myS+=pts;setMy(g.myS);setS2(“my”);b.inAir=false;b.arc=0;
+if(g.myS>=BK_WIN){g.active=false;onFinish(true);return;}setTimeout(resetBall,1700);
+}
+if(vd(b,g.myHoop)<g.myHoop.r+2&&b.vy>0&&Math.abs(b.x-g.myHoop.x)<14){g.aiS+=2;setAi(g.aiS);setS2(“ai”);b.inAir=false;b.arc=0;if(g.aiS>=BK_WIN){g.active=false;onFinish(false);return;}setTimeout(resetBall,1700);}
+if(b.x<4||b.x>BK_W-4)b.vx*=-.8;
+if(b.y>BK_H){b.y=BK_H;b.inAir=false;b.arc=0;b.holder=null;}
+if(!b.inAir&&b.holder===null)[…g.myTeam,…g.aiTeam].forEach(p=>{if(vd(p,b)<p.r+b.r){b.holder=p.id;const pt=g.myTeam.find(m=>m.id===p.id);const at=g.aiTeam.find(a=>a.id===p.id);if(pt){pt.hasB=true;g.myTeam.forEach((m,i)=>m.hasB=m.id===p.id);const pi=g.myTeam.findIndex(m=>m.id===p.id);if(pi>=0){g.sel=pi;}}if(at){at.hasB=true;g.aiTeam.forEach(a=>a.hasB=a.id===p.id);}b.vx=0;b.vy=0;}});
+}
+if(!b.inAir&&b.holder!=null){const h=[…g.myTeam,…g.aiTeam].find(p=>p.id===b.holder);if(h){b.x=h.id<10?h.x+h.r+b.r+1:h.x-h.r-b.r-1;b.y=h.y;}}
+
+```
+  // 寵物實體碰撞→影響球
+  if(equipPet&&BALLS[equipPet]){
+    const ang=g.petT*.09;const p2=g.myTeam[0];
+    const px2=p2.x+Math.cos(ang)*30,py2=p2.y+Math.sin(ang)*30;
+    if(b.inAir){const dx=b.x-px2,dy=b.y-py2,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<b.r+12){b.vx+=(dx/d)*2;b.vy+=(dy/d)*2;}}
+  }
+
+  // 我方玩家：搖桿+球員動量(momentum)
+  const me=g.myTeam[g.sel];
+  if(me){
+    const j=joy.current;
+    const spd=Math.sqrt(j.dx**2+j.dy**2)||1;
+    if(j.act&&spd>10){me.vx+=(j.dx/spd)*1.4;me.vy+=(j.dy/spd)*1.4;me.momentum=Math.min(10,me.momentum+.4);}
+    else{me.momentum=Math.max(0,me.momentum-.3);}
+    me.vx*=.84;me.vy*=.84;me.x=cl(me.x+me.vx,me.r,BK_W-me.r);me.y=cl(me.y+me.vy,me.r,BK_H-me.r);
+    if(me.hasB){b.x=me.x+me.r+b.r+1;b.y=me.y;}
+    // 更新熱區提示
+    if(me.hasB&&g.tick%15===0){const{zone}=calcAccuracy(me.x,me.y);setHotZone(zone);}
+  }
+  // 隊友
+  g.myTeam.forEach((p,i)=>{if(i===g.sel)return;const tX=p.hasB?g.hoop.x:b.x<BK_W/2?b.x:BK_W*.6;p.vx+=(tX-p.x)*.038;p.vy+=(b.y-p.y)*.038;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,BK_W-p.r);p.y=cl(p.y+p.vy,p.r,BK_H-p.r);if(!b.inAir&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.myTeam.forEach((m,j)=>m.hasB=j===i);}if(p.hasB&&vd(p,g.hoop)<175&&Math.random()<.018){const dx=g.hoop.x-p.x,dy=g.hoop.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*(9.5+Math.random()*3.5);b.vy=(dy/d)*(9.5+Math.random()*3.5);b.vy_arc=-5;b.arc=0;b.inAir=true;p.hasB=false;g.myTeam.forEach(m=>m.hasB=false);b.holder=null;}});
+  // AI
+  g.aiTeam.forEach((p,i)=>{const hasBall=p.hasB;const tX=hasBall?g.myHoop.x:b.x>BK_W/2?b.x:BK_W*.4;p.vx+=(tX-p.x)*.04+(Math.random()-.5)*.08;p.vy+=(b.y-p.y)*.04+(Math.random()-.5)*.08;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,BK_W-p.r);p.y=cl(p.y+p.vy,p.r,BK_H-p.r);if(!b.inAir&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.aiTeam.forEach((a,j)=>a.hasB=j===i);}if(hasBall&&vd(p,g.myHoop)<175&&Math.random()<.016){const dx=g.myHoop.x-p.x,dy=g.myHoop.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*(8.5+Math.random()*4);b.vy=(dy/d)*(8.5+Math.random()*4);b.vy_arc=-4.5;b.arc=0;b.inAir=true;p.hasB=false;g.aiTeam.forEach(a=>a.hasB=false);b.holder=null;}});
+  g.tick=(g.tick||0)+1;
+
+  // ── DRAW ──
+  const CVW=400,CVH=220;ctx.clearRect(0,0,CVW,CVH);ctx.save();
+  if(me){const cX=cl(me.x-200,0,BK_W-400),cY=cl(me.y-110,0,BK_H-220);ctx.translate(-cX,-cY);}
+  ctx.fillStyle="#3a1a06";ctx.fillRect(0,0,BK_W,BK_H);
+  for(let x=0;x<BK_W;x+=48){ctx.fillStyle="rgba(255,255,255,.02)";ctx.fillRect(x,0,24,BK_H);}
+  ctx.strokeStyle="#fff3";ctx.lineWidth=2;ctx.strokeRect(2,2,BK_W-4,BK_H-4);ctx.beginPath();ctx.moveTo(BK_W/2,0);ctx.lineTo(BK_W/2,BK_H);ctx.stroke();ctx.beginPath();ctx.arc(BK_W/2,BK_H/2,42,0,Math.PI*2);ctx.stroke();
+  // 熱區
+  HOT_ZONES.forEach(z=>{const me2=g.myTeam[g.sel];const isHot=me2?.hasB&&(me2.x-z.x)**2+(me2.y-z.y)**2<z.r**2;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,Math.PI*2);ctx.fillStyle=z.col+(isHot?"33":"11");ctx.fill();ctx.strokeStyle=z.col+(isHot?"88":"33");ctx.lineWidth=isHot?2:1;ctx.stroke();if(isHot){ctx.fillStyle=z.col;ctx.font="bold 8px monospace";ctx.textAlign="center";ctx.fillText(`${z.name}${Math.round(Math.min(.95,(.5+(bt.atk-.8)*.2)+z.bonus*.3)*100)}%`,z.x,z.y+4);}});
+  [[g.hoop,"#ff8844"],[g.myHoop,"#4488ff"]].forEach(([h,col])=>{ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,Math.PI*2);ctx.strokeStyle=col;ctx.lineWidth=5;ctx.shadowColor=col;ctx.shadowBlur=8;ctx.stroke();ctx.shadowBlur=0;for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(h.x+(i-2)*6,h.y);ctx.lineTo(h.x+(i-2)*4,h.y+18);ctx.strokeStyle=col+"88";ctx.lineWidth=2;ctx.stroke();}});
+  g.aiTeam.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="#ff4444cc";ctx.fill();ctx.strokeStyle=p.hasB?"#ffd700":"#ff4444";ctx.lineWidth=p.hasB?3:1.5;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign="center";ctx.fillText("🔴",p.x,p.y+4);});
+  g.myTeam.forEach((p,i)=>{const sel=i===g.sel;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=(sel?bt.color:"#4488ff")+"cc";ctx.fill();ctx.strokeStyle=sel?"#fff":bt.color;ctx.lineWidth=sel?3:1.5;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign="center";ctx.fillText(bt.avatar.char,p.x,p.y+4);if(sel){ctx.font="bold 8px monospace";ctx.fillText(playerName||"你",p.x,p.y-p.r-5);}// 動量條
+    if(sel&&p.momentum>0){ctx.fillStyle="#ffd70044";ctx.fillRect(p.x-12,p.y+p.r+6,p.momentum*2.4,4);}
+    if(p.hasB){ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.strokeStyle="#ffd700";ctx.lineWidth=2;ctx.stroke();}});
+  // 寵物
+  if(equipPet&&BALLS[equipPet]){const ang=g.petT*.09;const p2=g.myTeam[0];ctx.font="14px monospace";ctx.textAlign="center";ctx.fillText(BALLS[equipPet].pet.emoji,p2.x+Math.cos(ang)*30,p2.y+Math.sin(ang)*30+5);}
+  // 球（含拋物線陰影）
+  const arcOff=b.inAir?(b.arc||0)*-1:0;
+  if(b.inAir&&arcOff<-3){ctx.beginPath();ctx.ellipse(b.x,b.y-arcOff+b.r+3,b.r*.6,b.r*.3,0,0,Math.PI*2);ctx.fillStyle="#00000044";ctx.fill();}
+  ctx.beginPath();ctx.arc(b.x,b.y+arcOff,b.r,0,Math.PI*2);const bbg=ctx.createRadialGradient(b.x-3,b.y+arcOff-3,1,b.x,b.y+arcOff,b.r);bbg.addColorStop(0,"#ff9933");bbg.addColorStop(1,"#cc5500");ctx.fillStyle=bbg;ctx.shadowColor="#ff6600";ctx.shadowBlur=b.inAir?10:4;ctx.fill();ctx.shadowBlur=0;
+  if(scored2){ctx.fillStyle=scored2==="my"?"#ff880015":"#ff220015";ctx.fillRect(0,0,BK_W,BK_H);ctx.font="bold 28px monospace";ctx.textAlign="center";ctx.fillStyle=scored2==="my"?"#ffd700":"#ff6644";ctx.fillText(scored2==="my"?"🏀 得分！":"🚫 AI得分",BK_W/2,BK_H/2);}
+  ctx.restore();
+  if(g.active)g.af=requestAnimationFrame(loop);
+};
+g.af=requestAnimationFrame(loop);
+return()=>{g.active=false;if(g.af)cancelAnimationFrame(g.af);};
+```
+
+},[teamMode,bt,playerName,equipPet,resetBall,calcAccuracy,onFinish]);
+
+const pass2=useCallback(()=>{const g=G.current;if(!g)return;const me=g.myTeam[g.sel];if(!me?.hasB)return;const t=g.myTeam.filter((_,i)=>i!==g.sel).sort((a,b2)=>vd(a,g.hoop)-vd(b2,g.hoop))[0];if(!t)return;const dx=t.x-g.ball.x,dy=t.y-g.ball.y,d=Math.sqrt(dx*dx+dy*dy)||1;g.ball.vx=(dx/d)*10;g.ball.vy=(dy/d)*10;g.ball.inAir=true;g.ball.holder=null;g.ball.arc=0;g.ball.vy_arc=0;me.hasB=false;g.myTeam.forEach(p=>p.hasB=false);const ti=g.myTeam.indexOf(t);if(ti>=0)g.sel=ti;},[]);
+
+const startShot=()=>{pw.current=0;if(pwT.current)clearInterval(pwT.current);setPct(0);pwT.current=setInterval(()=>{pw.current=Math.min(1,pw.current+.04);setPct(Math.round(pw.current*100));if(pw.current>=1){clearInterval(pwT.current);pwT.current=null;const g=G.current;if(g?.myTeam[g.sel]?.hasB){rhythmR.current={pos:50,dir:1.6};setRhythm(true);}setPct(0);}},30);};
+const releaseShot=()=>{if(pwT.current){clearInterval(pwT.current);pwT.current=null;}const g=G.current;if(g?.myTeam[g.sel]?.hasB){rhythmR.current={pos:50,dir:1.6};setRhythm(true);}setPct(0);};
+
+const jS=e=>{e.preventDefault();const r=joyDom.current?.getBoundingClientRect();if(!r)return;const cl2=e.touches?e.touches[0]:e;joy.current={act:true,cx:r.left+r.width/2,cy:r.top+r.height/2,dx:cl2.clientX-(r.left+r.width/2),dy:cl2.clientY-(r.top+r.height/2)};};
+const jM=e=>{e.preventDefault();const j=joy.current;if(!j.act)return;const cl2=e.touches?e.touches[0]:e;j.dx=cl2.clientX-j.cx;j.dy=cl2.clientY-j.cy;};
+const jE=()=>{joy.current={act:false,cx:0,cy:0,dx:0,dy:0};};
+
+if(!teamMode)return(<div style={{background:”#1a0a04”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:12,padding:20}}><style>{CSS}</style>
+<div style={{fontSize:36}}>🏀</div><div style={{fontSize:18,fontWeight:900,color:”#ffd700”}}>彈珠籃球</div>
+<div style={{background:”#160a03”,border:“1px solid #ff880044”,borderRadius:12,padding:“10px 16px”,textAlign:“center”,fontSize:9,color:”#8877aa”,lineHeight:2}}>
+先{BK_WIN}分獲勝・搖桿移動<br/>🔥 熱區系統：站對位置命中率更高<br/>🏀 真實彈道：球按拋物線飛行<br/>持球+投籃鍵→節奏條→點擊投出
+</div>
+<div style={{display:“flex”,gap:9}}>{[“1v1”,“3v3”,“5v5”].map(tm=><button key={tm} className=“btn bo” onClick={()=>{setTeamMode(tm);init(tm);}} style={{padding:“13px 20px”,fontSize:13}}>{tm}</button>)}</div>
+<button className=“btn bs” onClick={onBack} style={{padding:“9px 20px”,fontSize:11}}>返回</button>
+
+  </div>);
+
+const g=G.current;if(!g)return null;
+return(<div style={{background:”#120804”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,fontFamily:”‘Courier New’,monospace”,gap:4,padding:7,paddingBottom:155}}><style>{CSS}</style>
+<div style={{display:“flex”,gap:8,width:“100%”,maxWidth:400,justifyContent:“space-between”,alignItems:“center”}}>
+<div style={{background:”#1a0d05”,border:“2px solid #ff880044”,borderRadius:9,padding:“3px 10px”,textAlign:“center”}}><div style={{fontSize:8,color:”#ff8844”}}>{bt.avatar.char}</div><div style={{fontSize:22,fontWeight:900,color:”#ffd700”}}>{myS}/{BK_WIN}</div></div>
+{hotZone&&<div style={{background:”#1a1a0a”,border:`1.5px solid ${hotZone.col}55`,borderRadius:8,padding:“3px 8px”,textAlign:“center”}}>
+<div style={{fontSize:8,color:hotZone.col,fontWeight:700}}>🔥 {hotZone.name}</div>
+<div style={{fontSize:9,color:hotZone.col}}>{Math.round(Math.min(.95,(.5+(bt.atk-.8)*.2)+hotZone.bonus*.3)*100)}%</div>
+</div>}
+<div style={{background:”#1a0a0a”,border:“2px solid #ff446644”,borderRadius:9,padding:“3px 10px”,textAlign:“center”}}><div style={{fontSize:8,color:”#ff8877”}}>🔴AI</div><div style={{fontSize:22,fontWeight:900,color:”#ff6644”}}>{aiS}/{BK_WIN}</div></div>
+</div>
+{rhythmActive&&<div style={{width:“100%”,maxWidth:400}}>
+<div style={{fontSize:9,color:”#ffd700”,textAlign:“center”,marginBottom:2,fontWeight:900}}>🎯 點擊投籃！</div>
+<div style={{background:”#1a1a33”,borderRadius:7,height:20,position:“relative”,overflow:“hidden”}} onClick={hitRhythm}>
+<div style={{position:“absolute”,top:0,bottom:0,left:“38%”,width:“24%”,background:”#44ff8833”,borderRadius:4}}/>
+<div style={{position:“absolute”,top:2,bottom:2,left:`calc(${rhythmPos}% - 9px)`,width:18,background:”#ffd700”,borderRadius:6}}/>
+<div style={{position:“absolute”,inset:0,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:8,color:”#ffffff33”,pointerEvents:“none”}}>點此投籃</div>
+</div>
+</div>}
+{!rhythmActive&&pct>0&&<div style={{width:“100%”,maxWidth:400}}><div style={{background:”#0d0d22”,borderRadius:6,height:10,overflow:“hidden”}}><div style={{background:`linear-gradient(90deg,#44ff88,#ff4466)`,height:“100%”,width:`${pct}%`}}/></div></div>}
+{shootResult&&<div style={{fontSize:12,fontWeight:900,color:”#ffd700”,animation:“pop .3s”}}>{shootResult}</div>}
+{shotInfo&&<div style={{fontSize:9,color:”#88aaff”}}>{shotInfo.zone} · {shotInfo.acc}%命中率</div>}
+<canvas ref={cvRef} width={400} height={220} style={{border:“2px solid #ff880033”,borderRadius:10,display:“block”,width:“100%”,maxWidth:400,touchAction:“none”}}/>
+<div style={{display:“flex”,gap:4,width:“100%”,maxWidth:400}}>
+{g.myTeam.map((_,i)=><button key={i} className=“btn” onClick={()=>{if(G.current){G.current.sel=i;}}} style={{flex:1,padding:“5px”,fontSize:9,background:i===g.sel?bt.color:”#111130”,color:i===g.sel?”#fff”:”#8899bb”,border:`2px solid ${i===g.sel?bt.color:"#334466"}`,borderRadius:8,fontFamily:“inherit”,fontWeight:900}}>P{i+1}</button>)}
+<button className=“btn bg” onClick={pass2} style={{flex:2,padding:“5px”,fontSize:9}}>↗️傳球</button>
+</div>
+<div style={{position:“fixed”,bottom:0,left:0,right:0,background:”#120804ee”,borderTop:“1.5px solid #2a0d06”,padding:“8px 12px”,display:“flex”,justifyContent:“space-between”,alignItems:“center”,zIndex:50}}>
+<div ref={joyDom} onPointerDown={jS} onPointerMove={jM} onPointerUp={jE} onPointerLeave={jE} onTouchStart={jS} onTouchMove={jM} onTouchEnd={jE}
+style={{width:115,height:115,borderRadius:“50%”,background:”#111128”,border:`3px solid ${bt.color}77`,display:“flex”,alignItems:“center”,justifyContent:“center”,touchAction:“none”,position:“relative”,flexShrink:0}}>
+{[“▲”,“▼”,“◄”,“►”].map((a,i)=><span key={i} style={{position:“absolute”,fontSize:14,color:bt.color+“77”,…[{top:8,left:“50%”,transform:“translateX(-50%)”},{bottom:8,left:“50%”,transform:“translateX(-50%)”},{left:8,top:“50%”,transform:“translateY(-50%)”},{right:8,top:“50%”,transform:“translateY(-50%)”}][i]}}>{a}</span>)}
+<div style={{width:44,height:44,borderRadius:“50%”,background:”#2a3055”,border:`2px solid ${bt.color}`,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:20}}>🕹️</div>
+</div>
+<div style={{display:“flex”,flexDirection:“column”,gap:5,alignItems:“center”}}>
+<button className=“btn bo” onPointerDown={startShot} onPointerUp={releaseShot} onTouchStart={e=>{e.preventDefault();startShot();}} onTouchEnd={e=>{e.preventDefault();releaseShot();}}
+style={{padding:“10px 14px”,fontSize:11,minWidth:68}}>🏀投籃<br/><span style={{fontSize:7}}>按住蓄力</span></button>
+<button className=“btn bs” onClick={onBack} style={{padding:“5px 10px”,fontSize:9}}>🏠</button>
+</div>
+</div>
+
+  </div>);
+}
+const SK_W=22,SK_H=22,SK_SZ=17;
+const SK_COLORS=["#ff4455","#4488ff","#44ee88","#ffcc00","#cc88ff","#ff8844","#44ddff","#ff44cc","#88ff44","#ffdd44"];
+const SK_EMOJIS=["🔴","🔵","🟢","🟡","👻","🟠","💠","💖","💚","⭐"];
+
+function SnakeGame({ballId,equipPet,playerName,onBack,onEnd}){
+const bt=BALLS[ballId]||BALLS.attack;
+const cvRef=useRef(null);const G=useRef(null);
+const joyRef=useRef({active:false,cx:0,cy:0,dx:0,dy:0});const joyDom=useRef(null);
+const [myScore,setMyScore]=useState(0);const [aliveCount,setAlive]=useState(10);
+const [started,setStarted]=useState(false);const [result,setResult]=useState(null);
+
+const init=useCallback(()=>{
+const snakes=Array.from({length:10},(_,i)=>({body:[{x:3+Math.floor(i%5)*4,y:3+Math.floor(i/5)*10},{x:2+Math.floor(i%5)*4,y:3+Math.floor(i/5)*10}],dir:{x:1,y:0},nextDir:{x:1,y:0},alive:true,score:0,id:i,color:SK_COLORS[i],emoji:SK_EMOJIS[i],isPlayer:i===0,name:i===0?(playerName||“你”):AI_N[i-1]||`Bot${i}`}));
+const foods=Array.from({length:18},()=>({x:2+Math.floor(Math.random()*(SK_W-4)),y:2+Math.floor(Math.random()*(SK_H-4)),val:10}));
+G.current={snakes,foods,active:true,af:null};
+setMyScore(0);setAlive(10);setResult(null);
+},[playerName]);
+
+useEffect(()=>{if(started)init();},[started,init]);
+
+// AI steering
+const aiSteer=useCallback((s,foods,bodies)=>{
+if(!s.alive||s.isPlayer)return;
+const head=s.body[0];let best=null,bd=9999;
+foods.forEach(f=>{const d=Math.abs(f.x-head.x)+Math.abs(f.y-head.y);if(d<bd){bd=d;best=f;}});
+if(!best)return;
+const dx=best.x-head.x,dy=best.y-head.y;
+const opts=[];
+if(dx>0&&s.dir.x!==-1)opts.push({x:1,y:0,w:dx});
+if(dx<0&&s.dir.x!==1)opts.push({x:-1,y:0,w:-dx});
+if(dy>0&&s.dir.y!==-1)opts.push({x:0,y:1,w:dy});
+if(dy<0&&s.dir.y!==1)opts.push({x:0,y:-1,w:-dy});
+opts.sort((a,b)=>b.w-a.w);
+const cur={x:s.dir.x,y:s.dir.y};
+const all=[…opts,cur].filter(o=>{const nx=head.x+o.x,ny=head.y+o.y;return nx>=1&&nx<SK_W-1&&ny>=1&&ny<SK_H-1&&!bodies.some(b=>b.x===nx&&b.y===ny);});
+if(all.length)s.nextDir={x:all[0].x,y:all[0].y};
+},[]);
+
+// Joystick direction
+const updateDir=useCallback(()=>{
+const g=G.current;if(!g)return;const p=g.snakes[0];if(!p?.alive)return;
+const j=joyRef.current;if(!j.active)return;
+const ax=Math.abs(j.dx),ay=Math.abs(j.dy);
+if(ax<10&&ay<10)return;
+if(ax>ay){if(j.dx>0&&p.dir.x!==-1)p.nextDir={x:1,y:0};else if(j.dx<0&&p.dir.x!==1)p.nextDir={x:-1,y:0};}
+else{if(j.dy>0&&p.dir.y!==-1)p.nextDir={x:0,y:1};else if(j.dy<0&&p.dir.y!==1)p.nextDir={x:0,y:-1};}
+},[]);
+
+// Step logic
+useEffect(()=>{
+if(!started||!G.current)return;const g=G.current;
+const delays=g.snakes.map((_,i)=>({last:0,ms:i===0?170:190+(i*15%80)}));
+const step=ts=>{
+if(!g.active)return;
+updateDir();
+const allBodies=g.snakes.filter(s=>s.alive).flatMap(s=>s.body);
+g.snakes.forEach((s,si)=>{
+if(!s.alive)return;
+if(ts-delays[si].last<delays[si].ms)return;
+delays[si].last=ts;
+if(!s.isPlayer)aiSteer(s,g.foods,allBodies.filter(b=>!s.body.includes(b)));
+s.dir={…s.nextDir};
+const head=s.body[0];
+const nh={x:head.x+s.dir.x,y:head.y+s.dir.y};
+const die=()=>{s.alive=false;s.body.forEach((b,bi)=>{if(bi%2===0&&g.foods.length<20)g.foods.push({x:b.x,y:b.y,val:4});});if(s.isPlayer){g.active=false;setResult(“lose”);}else setAlive(g.snakes.filter(q=>q.alive).length);};
+if(nh.x<1||nh.x>=SK_W-1||nh.y<1||nh.y>=SK_H-1){die();return;}
+if(s.body.slice(2).some(b=>b.x===nh.x&&b.y===nh.y)){die();return;}
+let killed=false;
+g.snakes.forEach(other=>{if(other.id===s.id||!other.alive)return;if(other.body.slice(1).some(b=>b.x===nh.x&&b.y===nh.y)){die();killed=true;}});
+if(killed)return;
+s.body.unshift(nh);
+const fi=g.foods.findIndex(f=>f.x===nh.x&&f.y===nh.y);
+if(fi>=0){s.score+=g.foods[fi].val;g.foods.splice(fi,1);if(s.isPlayer)setMyScore(s.score);while(g.foods.length<12)g.foods.push({x:2+Math.floor(Math.random()*(SK_W-4)),y:2+Math.floor(Math.random()*(SK_H-4)),val:10});}
+else s.body.pop();
+});
+const alive=g.snakes.filter(s=>s.alive);
+setAlive(alive.length);
+if(alive.length<=2&&g.active){g.active=false;setResult(g.snakes[0].alive?“win”:“lose”);}
+g.af=requestAnimationFrame(step);};
+g.af=requestAnimationFrame(step);return()=>{g.active=false;if(g.af)cancelAnimationFrame(g.af);};},[started,aiSteer,updateDir]);
+
+// Draw loop
+useEffect(()=>{
+if(!started||!G.current)return;const g=G.current;const cv=cvRef.current;if(!cv)return;const ctx=cv.getContext(“2d”);let af2;
+const draw=()=>{
+const W=SK_W*SK_SZ,H=SK_H*SK_SZ;ctx.clearRect(0,0,W,H);
+ctx.fillStyle=”#050a05”;ctx.fillRect(0,0,W,H);
+// Grid
+ctx.strokeStyle=”#ffffff07”;ctx.lineWidth=.5;
+for(let x=0;x<=SK_W;x++){ctx.beginPath();ctx.moveTo(x*SK_SZ,0);ctx.lineTo(x*SK_SZ,H);ctx.stroke();}
+for(let y=0;y<=SK_H;y++){ctx.beginPath();ctx.moveTo(0,y*SK_SZ);ctx.lineTo(W,y*SK_SZ);ctx.stroke();}
+ctx.strokeStyle=”#ff444466”;ctx.lineWidth=3;ctx.strokeRect(SK_SZ,SK_SZ,(SK_W-2)*SK_SZ,(SK_H-2)*SK_SZ);
+// Food
+g.foods.forEach(f=>{const cx=f.x*SK_SZ+SK_SZ/2,cy=f.y*SK_SZ+SK_SZ/2;ctx.beginPath();ctx.arc(cx,cy,SK_SZ/2-3,0,Math.PI*2);ctx.fillStyle=”#ff4466”;ctx.shadowColor=”#ff4466”;ctx.shadowBlur=4;ctx.fill();ctx.shadowBlur=0;ctx.font=`${SK_SZ-5}px monospace`;ctx.textAlign=“center”;ctx.fillText(“🍎”,cx,cy+4);});
+// Snakes - circle bodies
+g.snakes.filter(s=>s.alive).forEach(s=>{
+s.body.forEach((seg,i)=>{
+const sx=seg.x*SK_SZ+SK_SZ/2,sy=seg.y*SK_SZ+SK_SZ/2;
+const r=i===0?SK_SZ/2-1:SK_SZ/2-3;
+const alpha=i===0?1:Math.max(.25,1-i/s.body.length*.6);
+ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);
+if(i===0){ctx.fillStyle=s.color;ctx.shadowColor=s.color;ctx.shadowBlur=s.isPlayer?12:4;}
+else{ctx.fillStyle=s.color+Math.floor(alpha*255).toString(16).padStart(2,“0”);}
+ctx.fill();ctx.shadowBlur=0;
+if(i===0){ctx.font=`bold ${SK_SZ-2}px monospace`;ctx.textAlign=“center”;ctx.fillText(s.emoji,sx,sy+SK_SZ*.28);
+ctx.fillStyle=s.isPlayer?”#fff”:”#ffffff88”;ctx.font=`${s.isPlayer?8:6}px monospace`;ctx.fillText(s.name,sx,sy-r-3);
+if(s.isPlayer&&equipPet&&BALLS[equipPet]){ctx.font=“10px monospace”;ctx.fillText(BALLS[equipPet].pet.emoji,sx+r+4,sy+3);}}
+});
+});
+af2=requestAnimationFrame(draw);};
+draw();return()=>cancelAnimationFrame(af2);},[started,equipPet]);
+
+// Keys
+useEffect(()=>{const kd=e=>{const g=G.current;if(!g)return;const p=g.snakes[0];if(!p?.alive)return;if(e.key===“ArrowUp”&&p.dir.y!==1)p.nextDir={x:0,y:-1};if(e.key===“ArrowDown”&&p.dir.y!==-1)p.nextDir={x:0,y:1};if(e.key===“ArrowLeft”&&p.dir.x!==1)p.nextDir={x:-1,y:0};if(e.key===“ArrowRight”&&p.dir.x!==-1)p.nextDir={x:1,y:0};e.preventDefault();};window.addEventListener(“keydown”,kd);return()=>window.removeEventListener(“keydown”,kd);},[]);
+const jStart=e=>{e.preventDefault();const r=joyDom.current?.getBoundingClientRect();if(!r)return;joyRef.current={active:true,cx:r.left+r.width/2,cy:r.top+r.height/2,dx:0,dy:0};};
+const jMove=e=>{e.preventDefault();const j=joyRef.current;if(!j.active)return;const x=e.touches?e.touches[0].clientX:e.clientX;const y2=e.touches?e.touches[0].clientY:e.clientY;j.dx=x-j.cx;j.dy=y2-j.cy;};
+const jEnd=()=>{joyRef.current={active:false,cx:0,cy:0,dx:0,dy:0};};
+
+if(result){
+const g=G.current;const myS=g?.snakes[0];const finalScore=myS?.score||myScore;const bodyLen=myS?.body?.length||0;const coinBonus=bodyLen*5;const win=result===“win”;
+return(<div style={{background:”#050a05”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:10,padding:14}}><style>{CSS}</style>
+<div style={{fontSize:36}}>{win?“🏆”:“💔”}</div>
+<div style={{fontSize:15,fontWeight:900,color:win?”#ffd700”:”#ff6688”}}>{win?“存活到最後！”:“被淘汰”}</div>
+<div style={{background:”#0d1a0d”,border:“1px solid #44ff8844”,borderRadius:12,padding:“10px 20px”,textAlign:“center”,display:“flex”,gap:16}}>
+<div><div style={{fontSize:9,color:”#8877aa”}}>分數</div><div style={{fontSize:22,fontWeight:900,color:”#ffd700”}}>{finalScore}</div></div>
+<div><div style={{fontSize:9,color:”#8877aa”}}>蛇身</div><div style={{fontSize:22,fontWeight:900,color:”#44ff88”}}>{bodyLen}</div></div>
+<div><div style={{fontSize:9,color:”#8877aa”}}>金幣</div><div style={{fontSize:22,fontWeight:900,color:”#ffd700”}}>+{coinBonus}</div></div>
+</div>
+<button className=“btn bs” onClick={()=>onEnd(finalScore,win?1:0,coinBonus)} style={{padding:“10px 18px”,fontSize:12}}>🏠 返回</button>
+</div>);
+}
+
+if(!started)return(<div style={{background:”#050a05”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:12,padding:20}}><style>{CSS}</style>
+<div style={{fontSize:44}}>{bt.emoji}</div>
+<div style={{fontSize:18,fontWeight:900,color:”#44ff88”}}>🐍 蛇蛇大混戰</div>
+<div style={{background:”#0d1a0d”,border:“1px solid #44ff8844”,borderRadius:12,padding:“12px 16px”,maxWidth:260,textAlign:“center”,fontSize:10,color:”#8877aa”,lineHeight:2}}>
+10蛇同場・活到剩2蛇獲勝<br/>🍎 吃食物成長・蛇身越長獎勵越多<br/>⬆️⬇️⬅️➡️ 鍵盤 或 搖桿操控
+</div>
+<button className=“btn bg” onClick={()=>setStarted(true)} style={{padding:“14px 32px”,fontSize:14}}>▶ 開始</button>
+<button className=“btn bs” onClick={onBack} style={{padding:“8px 18px”,fontSize:11}}>返回</button>
+
+  </div>);
+
+return(<div style={{background:”#050a05”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,fontFamily:”‘Courier New’,monospace”,gap:4,padding:6,paddingBottom:170}}>
+<style>{CSS}</style>
+<div style={{display:“flex”,gap:2,width:“100%”,maxWidth:420,overflowX:“auto”,paddingBottom:2}}>
+{G.current?.snakes.map((s,i)=><div key={i} style={{background:s.alive?”#111120”:”#060606”,border:`1.5px solid ${s.alive?s.color+"66":"#1a1a1a"}`,borderRadius:6,padding:“2px 4px”,textAlign:“center”,minWidth:32,flexShrink:0,opacity:s.alive?1:.3}}>
+<div style={{fontSize:10}}>{s.emoji}</div><div style={{fontSize:7,fontWeight:700,color:s.alive?s.color:”#333”}}>{s.score}</div>
+</div>)}
+</div>
+<div style={{fontSize:9,color:”#335533”}}>存活:{aliveCount}/10 · 我:{myScore} · ≤2條勝</div>
+<canvas ref={cvRef} width={SK_W*SK_SZ} height={SK_H*SK_SZ} style={{border:“2px solid #44ff8844”,borderRadius:9,display:“block”,width:“100%”,maxWidth:450,touchAction:“none”}}/>
+<div style={{position:“fixed”,bottom:0,left:0,right:0,background:”#050a05ee”,borderTop:“1.5px solid #1a3a1a”,padding:“10px 16px”,display:“flex”,justifyContent:“space-between”,alignItems:“center”,zIndex:50}}>
+<div ref={joyDom} onPointerDown={jStart} onPointerMove={jMove} onPointerUp={jEnd} onPointerLeave={jEnd} onTouchStart={jStart} onTouchMove={jMove} onTouchEnd={jEnd}
+style={{width:130,height:130,borderRadius:“50%”,background:”#0d0d22”,border:`3px solid ${bt.color}88`,display:“flex”,alignItems:“center”,justifyContent:“center”,touchAction:“none”,position:“relative”,flexShrink:0}}>
+{[“▲”,“▼”,“◄”,“►”].map((a,i)=><span key={i} style={{position:“absolute”,fontSize:16,color:bt.color+“99”,…[{top:8,left:“50%”,transform:“translateX(-50%)”},{bottom:8,left:“50%”,transform:“translateX(-50%)”},{left:8,top:“50%”,transform:“translateY(-50%)”},{right:8,top:“50%”,transform:“translateY(-50%)”}][i]}}>{a}</span>)}
+<div style={{width:52,height:52,borderRadius:“50%”,background:”#1a2244”,border:`2px solid ${bt.color}88`,display:“flex”,alignItems:“center”,justifyContent:“center”,fontSize:22}}>🕹️</div>
+</div>
+<div style={{textAlign:“center”,display:“flex”,flexDirection:“column”,gap:5}}>
+<div style={{fontSize:8,color:”#557744”}}>存活:{aliveCount}</div>
+<div style={{fontSize:10,fontWeight:900,color:”#ffd700”}}>{myScore}分</div>
+<button className=“btn bs” onClick={onBack} style={{padding:“8px 14px”,fontSize:11}}>🏠</button>
+</div>
+</div>
+
+  </div>);}
+export default function App(){
+  const [screen,setScreen]=useState("menu");
+  const [showModes,setShowModes]=useState(false);
+  const [playerName,setPlayerName]=useState("");
+  const [nameInput,setNameInput]=useState("");
+  const [nameDone,setNameDone]=useState(false);
+  const [coins,setCoins]=useState(1500);
+  const [shards,setShards]=useState({attack:3});
+  const [owned,setOwned]=useState(["attack"]);
+  const [equip,setEquip]=useState("attack");
+  const [equipPet,setEquipPet]=useState(null);
+  const [ownedPets,setOwnedPets]=useState([]);
+  const [tickets,setTickets]=useState(0);
+  const [rank,setRank]=useState(0);
+  const [stars,setStars]=useState(0);
+  const [wins,setWins]=useState(0);
+  const [winCount,setWinCount]=useState(0);
+  const [marblebills,setMB]=useState(0);
+  const [ballLevels,setBL2]=useState({attack:1,defense:1,control:1,support:1,ghost:1,gold:1});
+  const [showGacha,setGacha]=useState(false);
+  const [showShard,setShard]=useState(false);
+  const [showReward,setShowReward]=useState(false);
+  const [canReward,setCanReward]=useState(false);
+  const [showPicker,setPicker]=useState(false);
+  const [showUpgrade,setUpgrade]=useState(false);
+  const [showPetGacha,setPetGacha]=useState(false);
+  const [rankPopup,setRankPopup]=useState(null);
+  const [winRankUp,setWinRankUp]=useState(0);
+
+// ── 所有 hooks 必須在條件return之前 ──
+const applyDrops=useCallback((results)=>{
+results.forEach(r=>{
+if(r.type===“coins”)setCoins(c=>c+r.amt);
+else if(r.type===“shard”&&r.ballId)setShards(s=>({…s,[r.ballId]:(s[r.ballId]||0)+r.amt}));
+else if(r.type===“marblebill”)setMB(m=>m+r.amt);
+else if(r.type===“ticket”)setTickets(t=>t+r.amt);
+else if(r.type===“full”&&r.ballId)setShards(s=>({…s,[r.ballId]:(s[r.ballId]||0)+10}));});
+},[]);
+
+const addStars=useCallback((n,isWin)=>{
+if(!isWin)return;
+setStars(prev=>{
+const ns=prev+n;
+const oldRank=Math.min(6,Math.floor(prev/9));
+const newRank=Math.min(6,Math.floor(ns/9));
+setRank(newRank);
+if(newRank>oldRank){setTimeout(()=>setRankPopup({rank:newRank,boxId:RANK_BOX[newRank]||“gold”}),600);}
+else{setTimeout(()=>setWinRankUp(c=>c+1),400);}
+return ns;});
+},[]);
+
+const handleWin=useCallback((isWin,extraCoins=0)=>{
+if(isWin){
+setWins(w=>w+1);
+setCoins(c=>c+80+extraCoins);
+addStars(1,true);
+setWinCount(wc=>{const nwc=wc+1;if(nwc>=10){setCanReward(true);return 0;}return nwc;});}
+},[addStars]);
+
+const handleGachaSpend=useCallback((cost,results)=>{setCoins(c=>c-cost);applyDrops(results);},[applyDrops]);
+const handleRedeem=useCallback(bid=>{setShards(s=>({…s,[bid]:(s[bid]||0)-10}));setOwned(o=>o.includes(bid)?o:[…o,bid]);},[]);
+const handleUpgrade=useCallback((bid,sc,bc)=>{setShards(s=>({…s,[bid]:(s[bid]||0)-sc}));setMB(m=>m-bc);setBL2(lv=>({…lv,[bid]:(lv[bid]||1)+1}));},[]);
+const claimRankBox=useCallback(()=>{if(!rankPopup)return;const box=BOXES.find(b=>b.id===rankPopup.boxId);if(box)applyDrops(buildRandomDrops(box.tier));setRankPopup(null);},[rankPopup,applyDrops]);
+const back=useCallback(()=>{setScreen(“menu”);setShowModes(false);},[]);
+const equipBt=BALLS[equip]||BALLS.attack;
+
+// ── 名稱輸入畫面（hooks已在上方，可安全條件return）
+if(!nameDone){
+return(
+<div style={{background:”#07071a”,minHeight:“100vh”,display:“flex”,flexDirection:“column”,alignItems:“center”,justifyContent:“center”,fontFamily:”‘Courier New’,monospace”,color:”#fff”,gap:18,padding:24}}>
+<style>{CSS}</style>
+<div style={{fontSize:52,animation:“bounce 1s infinite”}}>🎮</div>
+<div style={{fontSize:22,fontWeight:900,color:”#aa88ff”,letterSpacing:2}}>彈珠競技場</div>
+<div style={{fontSize:12,color:”#8877aa”}}>請輸入你的暱稱（最多8字）</div>
+<input
+value={nameInput}
+onChange={e=>setNameInput(e.target.value.slice(0,8))}
+onKeyDown={e=>{if(e.key===“Enter”&&nameInput.trim()){
+const n=nameInput.trim();
+setPlayerName(n);
+if(n===“林宥辰”){
+setCoins(99999);setMB(9999);setShards({attack:99,defense:99,control:99,support:99,ghost:99,gold:99});
+setOwned([“attack”,“defense”,“control”,“support”,“ghost”,“gold”]);
+setEquip(“gold”);setTickets(99);setRank(6);setStars(54);setWins(999);
+setOwnedPets([“attack”,“defense”,“control”,“support”,“ghost”,“gold”]);
+setEquipPet(“gold”);
+setBL2({attack:10,defense:10,control:10,support:10,ghost:10,gold:10});
+}
+setNameDone(true);}}}
+placeholder=“輸入名稱…”
+maxLength={8}
+autoFocus
+style={{background:”#111128”,border:“2px solid #5533dd”,borderRadius:14,color:”#fff”,fontSize:18,padding:“14px 20px”,fontFamily:”‘Courier New’,monospace”,width:“100%”,maxWidth:280,outline:“none”,textAlign:“center”,display:“block”}}/>
+<button
+className=“btn bp”
+onClick={()=>{
+const n=nameInput.trim()||“玩家”;
+setPlayerName(n);
+if(nameInput.trim()===“林宥辰”){
+// 🎉 隱藏彩蛋：解鎖全部
+setCoins(99999);setMB(9999);setShards({attack:99,defense:99,control:99,support:99,ghost:99,gold:99});
+setOwned([“attack”,“defense”,“control”,“support”,“ghost”,“gold”]);
+setEquip(“gold”);setTickets(99);setRank(6);setStars(54);setWins(999);
+setOwnedPets([“attack”,“defense”,“control”,“support”,“ghost”,“gold”]);
+setEquipPet(“gold”);
+setBL2({attack:10,defense:10,control:10,support:10,ghost:10,gold:10});
+}
+setNameDone(true);}}
+style={{padding:“14px 32px”,fontSize:15,width:“100%”,maxWidth:280}}>
+✨ 進入遊戲
+</button>
+</div>);
+}
+
+return(<>
+{rankPopup&&<RankPopup rank={rankPopup.rank} boxId={rankPopup.boxId} onClaim={claimRankBox}/>}
+{winRankUp>0&&!rankPopup&&<WinRankUp key={winRankUp} stars={stars} rank={rank} onClose={()=>setWinRankUp(0)}/>}
+{showGacha&&<GachaScreen coins={coins} tickets={tickets} rank={rank} onClose={()=>setGacha(false)} onSpend={handleGachaSpend}/>}
+{showShard&&<ShardScreen shards={shards} owned={owned} onRedeem={handleRedeem} onClose={()=>setShard(false)}/>}
+{showUpgrade&&<UpgradeScreen shards={shards} marblebills={marblebills} ballLevels={ballLevels} onUpgrade={handleUpgrade} onClose={()=>setUpgrade(false)}/>}
+{showReward&&<RewardMarble onOpen={()=>{setShowReward(false);setCanReward(false);applyDrops(buildRandomDrops(0));}} onClose={()=>setShowReward(false)}/>}
+{showPicker&&<BallPicker owned={owned} equip={equip} ballLevels={ballLevels} ownedPets={ownedPets} equipPet={equipPet} onPick={setEquip} onPickPet={setEquipPet} onClose={()=>setPicker(false)}/>}
+{showPetGacha&&<PetGachaScreen tickets={tickets} ownedPets={ownedPets} onClose={()=>setPetGacha(false)} onSpend={bid=>{setTickets(t=>t-1);setOwnedPets(p=>p.includes(bid)?p:[…p,bid]);}}/>}
+
+```
+{screen==="menu"&&!showModes&&(
+  <MainMenu onPlay={()=>setShowModes(true)} coins={coins} shards={shards} owned={owned} equip={equip} equipPet={equipPet} ownedPets={ownedPets} onEquip={()=>setPicker(true)} rank={rank} stars={stars} wins={wins} canReward={canReward} onGacha={()=>setGacha(true)} onShard={()=>setShard(true)} onReward={()=>setShowReward(true)} onUpgrade={()=>setUpgrade(true)} marblebills={marblebills} ballLevels={ballLevels} tickets={tickets} onPetGacha={()=>setPetGacha(true)} playerName={playerName}/>)}
+{screen==="menu"&&showModes&&(
+  <ModeSelect onSelect={m=>{setScreen(m);setShowModes(false);}} onBack={()=>setShowModes(false)} equipBt={equipBt}/>)}
+
+{screen==="score"&&<ScoreGame ballId={equip} ballLevels={ballLevels} onBack={back} onFinish={sc=>{markPlayedScoreToday();setCoins(c=>c+Math.floor(sc/10));if(sc>=50)handleWin(true);back();}}/>}
+{screen==="battle"&&<BattleGame ballId={equip} ballLevels={ballLevels} onBack={back} onFinish={w=>{handleWin(w);back();}}/>}
+{screen==="brawl"&&<BrawlGame ballId={equip} ballLevels={ballLevels} equipPet={equipPet} playerName={playerName} onBack={back} onFinish={(w,sc)=>{handleWin(w);back();}}/>}
+{screen==="soccer"&&<SoccerGame ballId={equip} ballLevels={ballLevels} equipPet={equipPet} playerName={playerName} onBack={back} onFinish={w=>{handleWin(w);back();}}/>}
+{screen==="basket"&&<BasketGame ballId={equip} ballLevels={ballLevels} equipPet={equipPet} playerName={playerName} onBack={back} onFinish={w=>{handleWin(w);back();}}/>}
+{screen==="snake"&&<SnakeGame ballId={equip} equipPet={equipPet} playerName={playerName} onBack={back} onEnd={(sc,st,cb)=>{handleWin(st>0,cb);back();}}/>}
+```
+
+</>);}
