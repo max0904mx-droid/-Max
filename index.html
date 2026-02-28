@@ -1,1944 +1,1562 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Casino Lobby</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>彈珠競技場 PRO</title>
 <style>
-/* ========================================
-   RESET & BASE — No scroll, full viewport
-   ======================================== */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  background: #050510;
-  font-family: 'DM Sans', sans-serif;
-  color: #f0e6c8;
-  cursor: default;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;}
+:root{
+  --blue:#00f5ff;--pink:#ff0066;--gold:#ffd700;--green:#00ff88;
+  --dark:#040408;--card:#08081a;--font-d:'Orbitron',monospace;--font-b:'Noto Sans TC',sans-serif;
 }
-canvas { display: block; }
+html,body{background:var(--dark);color:#fff;font-family:var(--font-b);overflow-x:hidden;min-height:100dvh;touch-action:pan-y;}
+canvas{display:block;touch-action:none;}
+button{cursor:pointer;font-family:var(--font-b);border:none;outline:none;transition:transform .1s;}
+button:active{transform:scale(.92);}
 
-/* ========================================
-   LOADING SCREEN
-   ======================================== */
-#loading {
-  position: fixed; inset: 0; z-index: 9999;
-  background: #050510;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  transition: opacity 0.8s ease;
-}
-#loading.fade-out { opacity: 0; pointer-events: none; }
-#loading h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 28px; font-weight: 900;
-  letter-spacing: 6px;
-  background: linear-gradient(135deg, #ffd700, #f0a030, #ffd700);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 30px;
-}
-.loader-bar {
-  width: 200px; height: 3px;
-  background: rgba(255,215,0,0.15);
-  border-radius: 2px; overflow: hidden;
-}
-.loader-bar-inner {
-  width: 0%; height: 100%;
-  background: linear-gradient(90deg, #ffd700, #ff8c00);
-  border-radius: 2px;
-  animation: loadProgress 1.5s ease-out forwards;
-}
-@keyframes loadProgress { to { width: 100%; } }
+/* ── SCREENS ── */
+.scr{display:none;min-height:100dvh;flex-direction:column;align-items:center;}
+.scr.on{display:flex;}
 
-/* ========================================
-   HUD — Top Bar
-   ======================================== */
-#hud-top {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 20px;
-  background: rgba(5, 5, 16, 0.7);
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-  transform: translateY(-100%);
-}
-#hud-top.visible { transform: translateY(0); }
+/* ── MENU ── */
+.menu-bg{position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,#0d0d2a,var(–dark) 70%);z-index:-1;}
+.title-glow{font-family:var(–font-d);font-size:clamp(16px,5vw,24px);font-weight:900;letter-spacing:5px;
+background:linear-gradient(90deg,var(–blue),var(–pink),var(–gold),var(–green));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 12px #00f5ff44);}
+.stat-chip{background:#0a0a22;border:1px solid #1a2244;border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.btn{border-radius:12px;font-weight:700;font-family:var(–font-b);padding:10px 16px;font-size:12px;border:none;}
+.bp{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;border:1.5px solid #3366ff66;}
+.bg{background:linear-gradient(135deg,#553300,#996600);color:var(–gold);border:1.5px solid #ffd70033;}
+.bn{background:linear-gradient(135deg,#0a2a14,#145a28);color:#44ff88;border:1.5px solid #44ff8833;}
+.bd{background:#080818;color:#8899bb;border:1.5px solid #22334455;padding:8px 14px;font-size:11px;}
+.br{background:linear-gradient(135deg,#330011,#660022);color:#ff6688;border:1.5px solid #ff224433;}
 
-.hud-logo {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 15px; font-weight: 900;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, #ffd700, #f0a030);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* ── CHARACTER CARD ── */
+.char-card{background:var(–card);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:14px;border:2px solid;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;}
+.char-card::after{content:’’;position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent);pointer-events:none;}
+.char-card:active{transform:scale(.97);}
+.char-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;position:relative;}
+.chat-bubble{position:fixed;background:#0d1a2a;border:2px solid;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:11px;max-width:220px;z-index:200;pointer-events:none;line-height:1.6;
+box-shadow:0 4px 20px #00000088;animation:popIn .25s ease-out;}
+.chat-bubble::before{content:’’;position:absolute;left:-8px;bottom:10px;border:6px solid transparent;border-right-color:inherit;}
+@keyframes popIn{from{transform:scale(.8) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 
-.hud-center { display: flex; align-items: center; gap: 20px; }
-.hud-right { display: flex; align-items: center; gap: 12px; }
+/* ── MODE GRID ── */
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:100%;max-width:430px;padding:4px 14px;}
+.mode-card{background:var(–card);border-radius:13px;padding:13px 6px;text-align:center;border:2px solid #1a2244;cursor:pointer;transition:all .2s;position:relative;}
+.mode-card:active{transform:scale(.93);}
+.mode-icon{font-size:24px;margin-bottom:3px;}
+.mode-lbl{font-size:9px;font-weight:700;color:#7788aa;}
+.mode-badge{position:absolute;top:-4px;right:-4px;background:#ff4466;border-radius:6px;font-size:7px;padding:2px 4px;font-weight:900;}
 
-.balance-pill {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 14px;
-  background: rgba(255, 215, 0, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 50px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px; font-weight: 700;
-  color: #ffd700;
-}
-.balance-pill .coin {
-  width: 18px; height: 18px;
-  background: linear-gradient(135deg, #ffd700, #b8860b);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; color: #1a0a00; font-weight: 900;
-}
+/* ── JOYSTICK ── */
+.joy{border-radius:50%;background:#0a0a1e;display:flex;align-items:center;justify-content:center;touch-action:none;position:relative;flex-shrink:0;}
+.joy-inner{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;pointer-events:none;}
+.joy-arr{position:absolute;font-size:14px;pointer-events:none;}
+.ctrl-bar{position:fixed;bottom:0;left:0;right:0;z-index:60;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(12px);}
 
-.jackpot-mini {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 14px;
-  background: rgba(255, 45, 120, 0.08);
-  border: 1px solid rgba(255, 45, 120, 0.2);
-  border-radius: 50px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px; font-weight: 700;
-  color: #ff6b9d;
-}
-.jackpot-mini .diamond { font-size: 12px; }
+/* ── GACHA ── */
+.gacha-risk{padding:12px;border-radius:12px;text-align:center;margin-bottom:10px;border:2px solid;}
+.risk-low{background:#0a1a0a;border-color:#44ff8833;color:#44ff88;}
+.risk-med{background:#1a1a0a;border-color:#ffd70033;color:#ffd700;}
+.risk-high{background:#1a0a0a;border-color:#ff446633;color:#ff4466;}
+.gacha-slot{display:flex;gap:8px;margin-bottom:12px;justify-content:center;}
+.slot-reel{width:60px;height:60px;background:#111128;border:2px solid #2233aa55;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
 
-.avatar-hud {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 2px solid #ffd700;
-  background: linear-gradient(135deg, #1a1a3e, #0a0a2e);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  position: relative;
-}
-.avatar-hud .status-dot {
-  position: absolute; bottom: -1px; right: -1px;
-  width: 10px; height: 10px;
-  background: #00ff88;
-  border-radius: 50%;
-  border: 2px solid #050510;
-}
+/* ── PINBALL ── */
+#s-pinball{background:#020408;}
+.pb-hud{display:flex;gap:8px;width:100%;max-width:430px;align-items:center;padding:6px 4px;}
+.pb-balls{display:flex;gap:4px;}
+.pb-ball-dot{width:14px;height:14px;border-radius:50%;border:2px solid;}
 
-.mission-btn {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  background: rgba(255, 215, 0, 0.05);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  cursor: pointer;
-  position: relative;
-}
-.mission-btn .badge {
-  position: absolute; top: -4px; right: -4px;
-  width: 16px; height: 16px;
-  background: #ff2d78;
-  border-radius: 50%;
-  font-size: 9px; font-weight: 700; color: white;
-  display: flex; align-items: center; justify-content: center;
-}
+/* ── BATTLE ── */
+#s-battle{background:#060412;}
+.battle-hud{display:flex;gap:6px;width:100%;max-width:430px;padding:5px 4px;align-items:center;}
+.hp-bar-wrap{flex:1;background:#111128;border-radius:8px;padding:4px 8px;border:1px solid #22334455;}
+.hp-track{height:8px;background:#0a0a22;border-radius:4px;overflow:hidden;margin-top:2px;}
+.hp-fill{height:100%;border-radius:4px;transition:width .2s;}
+.skill-btn{border-radius:12px;padding:8px 12px;font-size:10px;font-weight:900;font-family:var(–font-b);border:2px solid;position:relative;overflow:hidden;cursor:pointer;}
+.skill-cd-fill{position:absolute;left:0;top:0;height:100%;pointer-events:none;transition:width .1s;}
 
-/* ========================================
-   HUD — Bottom Navigation
-   ======================================== */
-#hud-bottom {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(5, 5, 16, 0.7);
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255, 215, 0, 0.1);
-  transform: translateY(100%);
-}
-#hud-bottom.visible { transform: translateY(0); }
+/* ── BRAWL ── */
+#s-brawl{background:#050a05;}
 
-.nav-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 6px 16px;
-  border-radius: 12px;
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: rgba(240, 230, 200, 0.5);
-}
-.nav-btn:hover, .nav-btn.active {
-  background: rgba(255, 215, 0, 0.08);
-  border-color: rgba(255, 215, 0, 0.2);
-  color: #ffd700;
-}
-.nav-btn .nav-icon { font-size: 20px; }
-.nav-btn .nav-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+/* ── BASKETBALL ── */
+#s-basket{background:#0f0600;}
+.rhy-bar{height:26px;background:#1a0d06;border-radius:8px;position:relative;overflow:hidden;cursor:pointer;width:100%;max-width:430px;}
+.rhy-zone{position:absolute;top:0;bottom:0;left:38%;width:24%;background:#44ff8822;pointer-events:none;}
+.rhy-cur{position:absolute;top:3px;bottom:3px;width:18px;background:var(–gold);border-radius:5px;}
+.rhy-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff3;pointer-events:none;}
 
-/* ========================================
-   BUILDING LABELS (3D projected)
-   ======================================== */
-.building-label {
-  position: fixed;
-  pointer-events: none;
-  text-align: center;
-  transform: translate(-50%, -50%);
-  z-index: 50;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-.building-label.visible { opacity: 1; }
-.building-label .label-name {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 14px; font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: white;
-  text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-}
-.building-label .label-sub {
-  font-size: 11px;
-  color: rgba(240, 230, 200, 0.6);
-  margin-top: 4px;
-}
+/* ── RANK POPUP ── */
+.rank-popup{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:150;padding:20px;}
+.rank-card{background:linear-gradient(135deg,#0a0a22,#161638);border:2px solid;border-radius:24px;padding:28px 32px;text-align:center;animation:popIn .4s;}
 
-/* ========================================
-   ZONE PANEL (slide-in on enter)
-   ======================================== */
-#zone-panel {
-  position: fixed;
-  top: 60px; right: -420px;
-  width: 400px;
-  bottom: 70px;
-  z-index: 90;
-  background: rgba(10, 10, 30, 0.85);
-  backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-  border-left: 1px solid rgba(255, 215, 0, 0.12);
-  border-radius: 20px 0 0 20px;
-  padding: 24px;
-  overflow-y: auto;
-  transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-#zone-panel.open { right: 0; }
-#zone-panel::-webkit-scrollbar { width: 4px; }
-#zone-panel::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 2px; }
+/* ── CHEST REVEAL ── */
+.chest-overlay{position:fixed;inset:0;z-index:140;display:flex;align-items:center;justify-content:center;background:#000c;animation:fadeIn .3s;}
+.chest-box{background:var(–card);border:2px solid;border-radius:24px;padding:24px;max-width:360px;width:100%;text-align:center;}
+.chest-item{background:#111128;border:1.5px solid #2233aa44;border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 
-.zone-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-}
-.zone-header .zone-icon { font-size: 32px; }
-.zone-header .zone-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 18px; font-weight: 700;
-  letter-spacing: 2px;
-}
-.zone-header .zone-subtitle {
-  font-size: 12px;
-  color: rgba(240, 230, 200, 0.5);
-  margin-top: 2px;
-}
+/* ── OVERLAYS ── */
+.ovl{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.modal{background:#09091e;border:2px solid #1a2a5544;border-radius:22px;padding:20px;width:100%;max-width:400px;max-height:88dvh;overflow-y:auto;}
+.modal-title{font-family:var(–font-d);font-size:13px;font-weight:900;margin-bottom:14px;text-align:center;}
 
-.zone-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 215, 0, 0.08);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-.zone-card:hover {
-  background: rgba(255, 215, 0, 0.06);
-  border-color: rgba(255, 215, 0, 0.2);
-  transform: translateX(-4px);
-}
-.zone-card .card-top {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 8px;
-}
-.zone-card .card-name {
-  font-weight: 700; font-size: 14px;
-}
-.zone-card .card-badge {
-  font-size: 10px; font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 50px;
-  background: rgba(0, 255, 136, 0.1);
-  color: #00ff88;
-  border: 1px solid rgba(0, 255, 136, 0.2);
-}
-.zone-card .card-badge.hot {
-  background: rgba(255, 45, 120, 0.1);
-  color: #ff6b9d;
-  border-color: rgba(255, 45, 120, 0.2);
-}
-.zone-card .card-desc {
-  font-size: 12px;
-  color: rgba(240, 230, 200, 0.5);
-  line-height: 1.5;
-}
+/* ── ANIMS ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(0) rotate(-10deg)}70%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1)}}
+@keyframes floatUp{from{transform:translateY(0);opacity:1}to{transform:translateY(-60px);opacity:0}}
+@keyframes petBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes petWalk{0%,100%{transform:translateX(-3px) rotate(-5deg)}50%{transform:translateX(3px) rotate(5deg)}}
+@keyframes rankShine{0%{filter:brightness(1)}50%{filter:brightness(1.5) drop-shadow(0 0 12px currentColor)}100%{filter:brightness(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes reelSpin{0%{transform:translateY(0)}100%{transform:translateY(-200px)}}
 
-/* ========================================
-   BACK BUTTON
-   ======================================== */
-#back-btn {
-  position: fixed;
-  top: 70px; left: 20px;
-  z-index: 95;
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 18px;
-  background: rgba(5, 5, 16, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 215, 0, 0.15);
-  border-radius: 50px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px; font-weight: 600;
-  color: rgba(240, 230, 200, 0.7);
-  cursor: pointer;
-  opacity: 0; pointer-events: none;
-  transition: all 0.3s ease;
-}
-#back-btn.visible { opacity: 1; pointer-events: all; }
-#back-btn:hover {
-  border-color: rgba(255, 215, 0, 0.4);
-  color: #ffd700;
-}
-
-/* ========================================
-   JACKPOT BROADCAST
-   ======================================== */
-#jackpot-broadcast {
-  position: fixed;
-  top: 60px; left: 50%;
-  transform: translateX(-50%) translateY(-80px);
-  z-index: 110;
-  padding: 10px 30px;
-  background: rgba(255, 215, 0, 0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 50px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 13px; font-weight: 700;
-  color: #ffd700;
-  white-space: nowrap;
-  pointer-events: none;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-/* --- Tablet (≤768px) --- */
-@media (max-width: 768px) {
-  #zone-panel { width: calc(100% - 20px); right: -100%; top: 55px; bottom: 65px; border-radius: 16px 0 0 16px; }
-  #zone-panel.open { right: 0; }
-  .hud-logo { font-size: 12px; letter-spacing: 2px; }
-  .balance-pill, .jackpot-mini { font-size: 11px; padding: 4px 10px; }
-  .building-label .label-name { font-size: 11px; }
-  .nav-btn { padding: 5px 10px; }
-  #back-btn { top: 60px; left: 12px; padding: 6px 14px; font-size: 12px; }
-  .zone-header .zone-title { font-size: 16px; }
-  .zone-card .card-name { font-size: 13px; }
-}
-
-/* --- iPhone 14 Pro Max baseline (≤480px) --- */
-@media (max-width: 480px) {
-  /* Top HUD: compact single row */
-  #hud-top {
-    padding: 6px 12px;
-    padding-top: env(safe-area-inset-top, 6px);
-  }
-  .hud-logo { font-size: 11px; letter-spacing: 1px; }
-  .hud-center { gap: 6px; }
-  .balance-pill { font-size: 10px; padding: 3px 8px; }
-  .balance-pill .coin { width: 14px; height: 14px; font-size: 7px; }
-  .jackpot-mini { font-size: 10px; padding: 3px 8px; }
-  .jackpot-mini .diamond { font-size: 10px; }
-  .avatar-hud { width: 28px; height: 28px; font-size: 13px; }
-  .mission-btn { width: 28px; height: 28px; font-size: 12px; }
-  .hud-right { gap: 6px; }
-
-  /* Bottom nav: larger touch targets */
-  #hud-bottom {
-    padding: 8px 8px;
-    padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
-    gap: 2px;
-  }
-  .nav-btn { padding: 5px 6px; min-width: 46px; }
-  .nav-btn .nav-icon { font-size: 17px; }
-  .nav-btn .nav-label { font-size: 7px; letter-spacing: 0.3px; }
-
-  /* Zone panel: slide up from bottom, half screen */
-  #zone-panel {
-    top: auto;
-    right: 0;
-    left: 0;
-    bottom: -100%;
-    width: 100%;
-    height: 55%;
-    border-radius: 20px 20px 0 0;
-    border-left: none;
-    border-top: 1px solid rgba(255, 215, 0, 0.12);
-    padding: 20px 16px;
-    padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
-    transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #zone-panel.open { right: 0; bottom: 0; }
-
-  .zone-header { margin-bottom: 16px; padding-bottom: 12px; }
-  .zone-header .zone-icon { font-size: 26px; }
-  .zone-header .zone-title { font-size: 15px; letter-spacing: 1px; }
-  .zone-header .zone-subtitle { font-size: 11px; }
-  .zone-card { padding: 12px; margin-bottom: 8px; border-radius: 10px; }
-  .zone-card .card-name { font-size: 13px; }
-  .zone-card .card-desc { font-size: 11px; }
-
-  /* Building labels */
-  .building-label .label-name { font-size: 10px; letter-spacing: 2px; }
-  .building-label .label-sub { font-size: 9px; }
-
-  /* Back button */
-  #back-btn { top: auto; bottom: 58%; left: 50%; transform: translateX(-50%); padding: 6px 18px; font-size: 12px; border-radius: 50px; }
-  #back-btn.visible { opacity: 1; pointer-events: all; }
-
-  /* Broadcast */
-  #jackpot-broadcast { font-size: 10px; padding: 7px 16px; max-width: 90vw; }
-}
-
-/* ========================================
-   TRANSITIONS
-   ======================================== */
-#hud-top, #hud-bottom {
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
 </style>
 </head>
 <body>
+<div class="menu-bg"></div>
 
-<!-- Loading Screen -->
-<div id="loading">
-  <h1>CASINO</h1>
-  <div class="loader-bar"><div class="loader-bar-inner"></div></div>
-</div>
+<!-- ══════════ MENU ══════════ -->
 
-<!-- HUD Top -->
-<div id="hud-top">
-  <div class="hud-logo">CASINO</div>
-  <div class="hud-center">
-    <div class="balance-pill">
-      <div class="coin">$</div>
-      <span id="balance-val">12,580.00</span>
-    </div>
-    <div class="jackpot-mini">
-      <span class="diamond">💎</span>
-      <span id="jackpot-val">$2,847,392</span>
-    </div>
+<div id="s-menu" class="scr on">
+  <div style="width:100%;max-width:430px;padding:22px 16px 10px;text-align:center">
+    <div class="title-glow">彈珠競技場</div>
+    <div style="font-size:9px;color:#334455;letter-spacing:3px;margin-top:4px">MARBLE ARENA PRO</div>
   </div>
-  <div class="hud-right">
-    <div class="mission-btn" id="mission-toggle">📋<div class="badge">3</div></div>
-    <div class="avatar-hud">🎭<div class="status-dot"></div></div>
+  <!-- Stats -->
+  <div style="display:flex;gap:7px;width:100%;max-width:430px;padding:0 14px;flex-wrap:wrap">
+    <div class="stat-chip" style="color:var(--gold)">💰<span id="m-coins">1500</span></div>
+    <div class="stat-chip" style="color:#cc88ff">🎟️<span id="m-tickets">0</span></div>
+    <div class="stat-chip" style="color:#44ddff" id="m-rank-chip">🥉 銅牌</div>
+    <div class="stat-chip" style="color:var(--green)">⭐<span id="m-stars">0</span>/9</div>
+    <div class="stat-chip" style="color:#ff8844">💎<span id="m-mb">0</span>MB</div>
   </div>
-</div>
-
-<!-- HUD Bottom -->
-<div id="hud-bottom">
-  <div class="nav-btn active" data-zone="overview"><span class="nav-icon">🏠</span><span class="nav-label">Lobby</span></div>
-  <div class="nav-btn" data-zone="slots"><span class="nav-icon">🎰</span><span class="nav-label">Slots</span></div>
-  <div class="nav-btn" data-zone="live"><span class="nav-icon">🎭</span><span class="nav-label">Live</span></div>
-  <div class="nav-btn" data-zone="fishing"><span class="nav-icon">🐟</span><span class="nav-label">Fish</span></div>
-  <div class="nav-btn" data-zone="sports"><span class="nav-icon">⚽</span><span class="nav-label">Sports</span></div>
-  <div class="nav-btn" data-zone="jackpot"><span class="nav-icon">💎</span><span class="nav-label">Jackpot</span></div>
-</div>
-
-<!-- Back Button -->
-<div id="back-btn">← Lobby</div>
-
-<!-- Zone Panel -->
-<div id="zone-panel"></div>
-
-<!-- Jackpot Broadcast -->
-<div id="jackpot-broadcast"></div>
-
-<!-- Building Labels Container -->
-<div id="labels-container"></div>
-
-<!-- Three.js -->
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
-  }
-}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-
-// ============================================================
-// CONFIG
-// ============================================================
-const COLORS = {
-  slots:   { primary: 0xa855f7, secondary: 0xffd700, ambient: 0x5a2a8a },
-  live:    { primary: 0xff2d55, secondary: 0xffd700, ambient: 0x7a2a3a },
-  fishing: { primary: 0x00d4ff, secondary: 0x00ff88, ambient: 0x1a5a7a },
-  sports:  { primary: 0x22cc55, secondary: 0xff8800, ambient: 0x1a5a2a },
-  jackpot: { primary: 0xffd700, secondary: 0xffffff, ambient: 0x7a5a1a },
-};
-
-const BUILDING_POS = {
-  slots:   { x: -18, y: 0, z: -5 },
-  live:    { x: 18, y: 0, z: -5 },
-  fishing: { x: -16, y: 0, z: -35 },
-  sports:  { x: 16, y: 0, z: -35 },
-  jackpot: { x: 0, y: 0, z: -45 },
-};
-
-const CAM_STATES = {
-  overview: { pos: [0, 18, 32], target: [0, 4, -18] },
-  slots:   { pos: [-6, 10, 10], target: [-18, 4, -5] },
-  live:    { pos: [6, 10, 10], target: [18, 4, -5] },
-  fishing: { pos: [-4, 9, -18], target: [-16, 3, -35] },
-  sports:  { pos: [4, 9, -18], target: [16, 3, -35] },
-  jackpot: { pos: [0, 12, -26], target: [0, 5, -45] },
-};
-
-const ZONE_CONTENT = {
-  slots: {
-    icon: '🎰', title: 'SLOT HALL', subtitle: 'Spin to Win',
-    cards: [
-      { name: 'Wolf Gold', badge: 'HOT', hot: true, desc: 'Wild wolf adventure with mega jackpots' },
-      { name: 'Book of Dead', badge: 'NEW', hot: false, desc: 'Ancient Egypt treasure hunt' },
-      { name: 'Sweet Bonanza', badge: 'TOP', hot: true, desc: 'Candy cascade with multipliers' },
-      { name: 'Starburst', badge: 'CLASSIC', hot: false, desc: 'Cosmic jewels expanding wilds' },
-      { name: 'Gates of Olympus', badge: 'HOT', hot: true, desc: 'Zeus thunderbolt multipliers' },
-    ]
-  },
-  live: {
-    icon: '🎭', title: 'LIVE STAGE', subtitle: 'Real Dealers Await',
-    cards: [
-      { name: 'Lightning Roulette', badge: 'LIVE', hot: true, desc: '500x lightning multipliers' },
-      { name: 'Blackjack VIP', badge: 'VIP', hot: false, desc: 'High stakes private table' },
-      { name: 'Baccarat Squeeze', badge: 'LIVE', hot: true, desc: 'Dramatic card reveal experience' },
-      { name: 'Crazy Time', badge: 'HOT', hot: true, desc: 'Game show mega wheel' },
-    ]
-  },
-  fishing: {
-    icon: '🐟', title: 'FISHING HARBOR', subtitle: 'Cast Your Fortune',
-    cards: [
-      { name: 'Ocean King', badge: 'HOT', hot: true, desc: 'Underwater boss battles' },
-      { name: 'Golden Toad', badge: 'NEW', hot: false, desc: 'Legendary treasure fishing' },
-      { name: 'Dragon Hunter', badge: 'TOP', hot: true, desc: 'Sea dragon epic battles' },
-    ]
-  },
-  sports: {
-    icon: '⚽', title: 'SPORTS ARENA', subtitle: 'Bet on Champions',
-    cards: [
-      { name: 'Premier League', badge: 'LIVE', hot: true, desc: 'In-play football betting with live odds' },
-      { name: 'NBA Finals', badge: 'HOT', hot: true, desc: 'Basketball point spreads & totals' },
-      { name: 'Horse Racing', badge: 'CLASSIC', hot: false, desc: 'Daily races with each-way bets' },
-      { name: 'UFC Fight Night', badge: 'NEW', hot: false, desc: 'MMA prop bets & round betting' },
-    ]
-  },
-  jackpot: {
-    icon: '💎', title: 'JACKPOT TEMPLE', subtitle: 'Fortune Awaits',
-    cards: [
-      { name: 'Mega Vault', badge: '$4.2M', hot: true, desc: 'Progressive mega jackpot pool' },
-      { name: 'Daily Fortune', badge: 'DAILY', hot: false, desc: 'Guaranteed daily winner' },
-      { name: 'Golden Wheel', badge: '$890K', hot: true, desc: 'Spin the golden wheel of fortune' },
-    ]
-  },
-};
-
-// ============================================================
-// STATE
-// ============================================================
-let currentZone = 'overview';
-let hoveredBuilding = null;
-const buildings = {};
-const buildingMeshes = [];
-const labelElements = {};
-const clock = new THREE.Clock();
-
-// ============================================================
-// SCENE SETUP
-// ============================================================
-const W = window.innerWidth, H = window.innerHeight;
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x0a0a20, 0.008);
-
-const camera = new THREE.PerspectiveCamera((W < H) ? 70 : 55, W / H, 0.1, 500);
-camera.position.set(...CAM_STATES.overview.pos);
-const camTarget = new THREE.Vector3(...CAM_STATES.overview.target);
-camera.lookAt(camTarget);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-renderer.setSize(W, H);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 2.0;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
-
-// Post-processing: Bloom
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(W, H), 0.5, 0.5, 0.5
-);
-composer.addPass(bloomPass);
-
-// ============================================================
-// LIGHTING
-// ============================================================
-const ambientLight = new THREE.AmbientLight(0x334466, 3.0);
-scene.add(ambientLight);
-
-// Hemisphere light for natural fill (sky blue + ground warm)
-const hemiLight = new THREE.HemisphereLight(0x6688cc, 0x443355, 1.2);
-scene.add(hemiLight);
-
-const moonLight = new THREE.DirectionalLight(0x8899cc, 1.5);
-moonLight.position.set(10, 30, 20);
-moonLight.castShadow = true;
-moonLight.shadow.mapSize.set(1024, 1024);
-moonLight.shadow.camera.near = 1;
-moonLight.shadow.camera.far = 120;
-moonLight.shadow.camera.left = -50;
-moonLight.shadow.camera.right = 50;
-moonLight.shadow.camera.top = 50;
-moonLight.shadow.camera.bottom = -60;
-scene.add(moonLight);
-
-// ============================================================
-// ENVIRONMENT — Ground
-// ============================================================
-const groundGeo = new THREE.CircleGeometry(100, 64);
-const groundMat = new THREE.MeshStandardMaterial({
-  color: 0x22223a,
-  emissive: 0x0e0e22,
-  emissiveIntensity: 0.5,
-  metalness: 0.6,
-  roughness: 0.4,
-});
-const ground = new THREE.Mesh(groundGeo, groundMat);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// Ground rings (decorative)
-for (let i = 1; i <= 4; i++) {
-  const ring = new THREE.Mesh(
-    new THREE.RingGeometry(i * 15 - 0.05, i * 15 + 0.05, 64),
-    new THREE.MeshStandardMaterial({
-      color: 0xffd700, emissive: 0xffd700,
-      emissiveIntensity: 0.6, toneMapped: false,
-      transparent: true, opacity: 0.25,
-    })
-  );
-  ring.rotation.x = -Math.PI / 2;
-  ring.position.y = 0.02;
-  scene.add(ring);
-}
-
-// Center emblem
-const emblemGeo = new THREE.RingGeometry(2, 2.8, 6);
-const emblemMat = new THREE.MeshStandardMaterial({
-  color: 0xffd700, emissive: 0xffd700,
-  emissiveIntensity: 1.5, toneMapped: false,
-  transparent: true, opacity: 0.5,
-});
-const emblem = new THREE.Mesh(emblemGeo, emblemMat);
-emblem.rotation.x = -Math.PI / 2;
-emblem.position.set(0, 0.03, -15);
-scene.add(emblem);
-
-// ============================================================
-// ENVIRONMENT — Glowing Ground Paths (connect buildings)
-// ============================================================
-const pathMat = new THREE.MeshStandardMaterial({
-  color: 0xffd700, emissive: 0xffd700,
-  emissiveIntensity: 0.6, toneMapped: false,
-  transparent: true, opacity: 0.12,
-});
-
-function createPath(from, to) {
-  const dx = to.x - from.x, dz = to.z - from.z;
-  const len = Math.sqrt(dx * dx + dz * dz);
-  const angle = Math.atan2(dx, dz);
-  const pathGeo = new THREE.PlaneGeometry(0.4, len);
-  const path = new THREE.Mesh(pathGeo, pathMat);
-  path.rotation.x = -Math.PI / 2;
-  path.rotation.z = -angle;
-  path.position.set((from.x + to.x) / 2, 0.04, (from.z + to.z) / 2);
-  scene.add(path);
-}
-
-// Center hub point
-const hub = { x: 0, z: -18 };
-createPath(hub, BUILDING_POS.slots);
-createPath(hub, BUILDING_POS.live);
-createPath(hub, BUILDING_POS.fishing);
-createPath(hub, BUILDING_POS.sports);
-createPath(hub, BUILDING_POS.jackpot);
-
-// Ground uplights along paths
-const uplightPositions = [
-  { x: -6, z: -9 }, { x: -12, z: -7 },     // towards slots
-  { x: 6, z: -9 }, { x: 12, z: -7 },       // towards live
-  { x: -6, z: -22 }, { x: -10, z: -27 },   // towards fishing
-  { x: 6, z: -22 }, { x: 10, z: -27 },     // towards sports
-  { x: 0, z: -26 }, { x: 0, z: -35 },      // towards jackpot
-];
-for (const p of uplightPositions) {
-  const uplight = new THREE.PointLight(0xffd700, 2, 12);
-  uplight.position.set(p.x, 0.5, p.z);
-  scene.add(uplight);
-  // Small glowing dot on ground
-  const dot = new THREE.Mesh(
-    new THREE.CircleGeometry(0.3, 16),
-    new THREE.MeshStandardMaterial({
-      color: 0xffd700, emissive: 0xffd700,
-      emissiveIntensity: 1.5, toneMapped: false,
-      transparent: true, opacity: 0.4,
-    })
-  );
-  dot.rotation.x = -Math.PI / 2;
-  dot.position.set(p.x, 0.03, p.z);
-  scene.add(dot);
-}
-
-// ============================================================
-// ENVIRONMENT — Starfield
-// ============================================================
-const starCount = 1500;
-const starPositions = new Float32Array(starCount * 3);
-const starSizes = new Float32Array(starCount);
-for (let i = 0; i < starCount; i++) {
-  const theta = Math.random() * Math.PI * 2;
-  const phi = Math.acos(Math.random() * 0.6 + 0.4);
-  const r = 80 + Math.random() * 120;
-  starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-  starPositions[i * 3 + 1] = r * Math.cos(phi);
-  starPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
-  starSizes[i] = Math.random() * 2 + 0.5;
-}
-const starGeo = new THREE.BufferGeometry();
-starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
-const starMat = new THREE.PointsMaterial({
-  color: 0xffffff, size: 0.5,
-  transparent: true, opacity: 0.8,
-  sizeAttenuation: true,
-});
-scene.add(new THREE.Points(starGeo, starMat));
-
-// ============================================================
-// ENVIRONMENT — Floating Particles (Gold dust)
-// ============================================================
-const particleCount = 120;
-const particleGeo = new THREE.BufferGeometry();
-const particlePos = new Float32Array(particleCount * 3);
-const particleVel = [];
-for (let i = 0; i < particleCount; i++) {
-  particlePos[i * 3] = (Math.random() - 0.5) * 90;
-  particlePos[i * 3 + 1] = Math.random() * 25;
-  particlePos[i * 3 + 2] = (Math.random() - 0.5) * 100 - 10;
-  particleVel.push({
-    x: (Math.random() - 0.5) * 0.01,
-    y: Math.random() * 0.01 + 0.005,
-    z: (Math.random() - 0.5) * 0.01,
-  });
-}
-particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-const particleMat = new THREE.PointsMaterial({
-  color: 0xffd700, size: 0.15,
-  transparent: true, opacity: 0.6,
-  sizeAttenuation: true,
-});
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
-
-function updateParticles() {
-  const pos = particles.geometry.attributes.position.array;
-  for (let i = 0; i < particleCount; i++) {
-    pos[i * 3] += particleVel[i].x;
-    pos[i * 3 + 1] += particleVel[i].y;
-    pos[i * 3 + 2] += particleVel[i].z;
-    if (pos[i * 3 + 1] > 26) {
-      pos[i * 3] = (Math.random() - 0.5) * 90;
-      pos[i * 3 + 1] = 0;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 100 - 10;
-    }
-  }
-  particles.geometry.attributes.position.needsUpdate = true;
-}
-
-// ============================================================
-// BUILDING HELPERS
-// ============================================================
-function makeEmissiveMat(color, intensity = 2.5) {
-  return new THREE.MeshStandardMaterial({
-    color, emissive: color,
-    emissiveIntensity: intensity,
-    toneMapped: false,
-  });
-}
-
-function makeWallMat(color) {
-  return new THREE.MeshStandardMaterial({
-    color, emissive: color,
-    emissiveIntensity: 0.6,
-    metalness: 0.3, roughness: 0.5,
-  });
-}
-
-function addNeonEdge(group, geo, color, pos, rot) {
-  const mesh = new THREE.Mesh(geo, makeEmissiveMat(color, 3));
-  if (pos) mesh.position.set(pos.x || 0, pos.y || 0, pos.z || 0);
-  if (rot) {
-    if (rot.x) mesh.rotation.x = rot.x;
-    if (rot.y) mesh.rotation.y = rot.y;
-    if (rot.z) mesh.rotation.z = rot.z;
-  }
-  group.add(mesh);
-  return mesh;
-}
-
-// ============================================================
-// BUILDING: SLOT HALL (Purple/Gold Neon Arcade)
-// ============================================================
-function createSlotHall() {
-  const group = new THREE.Group();
-  const C = COLORS.slots;
-
-  // Main body
-  const body = new THREE.Mesh(
-    new THREE.BoxGeometry(9, 7, 6),
-    makeWallMat(C.ambient)
-  );
-  body.position.y = 3.5;
-  body.castShadow = true;
-  group.add(body);
-
-  // Entrance arch
-  const arch = new THREE.Mesh(
-    new THREE.TorusGeometry(2.5, 0.12, 8, 32, Math.PI),
-    makeEmissiveMat(C.primary, 4)
-  );
-  arch.position.set(0, 0.3, 3.05);
-  group.add(arch);
-
-  // Top decorative bar
-  addNeonEdge(group,
-    new THREE.BoxGeometry(9.2, 0.15, 0.15),
-    C.primary, { y: 7.1, z: 3 }
-  );
-  addNeonEdge(group,
-    new THREE.BoxGeometry(9.2, 0.15, 0.15),
-    C.secondary, { y: 7.4, z: 3 }
-  );
-
-  // Side neon strips
-  for (const x of [-4.55, 4.55]) {
-    addNeonEdge(group,
-      new THREE.BoxGeometry(0.12, 7, 0.12),
-      C.primary, { x, y: 3.5, z: 3 }
-    );
-  }
-
-  // Roof crown gem
-  const gem = new THREE.Mesh(
-    new THREE.OctahedronGeometry(0.6),
-    makeEmissiveMat(C.secondary, 3)
-  );
-  gem.position.set(0, 8.2, 0);
-  gem.userData.animate = 'rotate';
-  group.add(gem);
-
-  // Entrance pillars
-  for (const x of [-3, 3]) {
-    const pillar = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.25, 0.3, 5.5, 8),
-      new THREE.MeshStandardMaterial({ color: 0x4a2a7a, metalness: 0.7, roughness: 0.3, emissive: 0x2a1a5a, emissiveIntensity: 0.2 })
-    );
-    pillar.position.set(x, 2.75, 3.05);
-    pillar.castShadow = true;
-    group.add(pillar);
-  }
-
-  // Slot symbols (3 small cylinders representing reels)
-  for (let i = -1; i <= 1; i++) {
-    const reel = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16),
-      makeEmissiveMat(i === 0 ? C.secondary : C.primary, 2)
-    );
-    reel.rotation.x = Math.PI / 2;
-    reel.position.set(i * 1.2, 5.5, 3.06);
-    group.add(reel);
-  }
-
-  // Point lights
-  const light1 = new THREE.PointLight(C.primary, 8, 25);
-  light1.position.set(0, 4, 6);
-  group.add(light1);
-
-  const light2 = new THREE.PointLight(C.secondary, 4, 15);
-  light2.position.set(0, 8.5, 0);
-  group.add(light2);
-
-  // Ground glow disc
-  const glowDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(10, 32),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 1.0, toneMapped: false,
-      transparent: true, opacity: 0.3,
-    })
-  );
-  glowDisc.rotation.x = -Math.PI / 2;
-  glowDisc.position.y = 0.02;
-  group.add(glowDisc);
-
-  const bp = BUILDING_POS.slots;
-  group.position.set(bp.x, bp.y, bp.z);
-  group.userData = { id: 'slots', labelY: 9.5 };
-  return group;
-}
-
-// ============================================================
-// BUILDING: LIVE STAGE (Red/Gold Spotlight Theater)
-// ============================================================
-function createLiveStage() {
-  const group = new THREE.Group();
-  const C = COLORS.live;
-
-  // Main stage platform
-  const platform = new THREE.Mesh(
-    new THREE.CylinderGeometry(5, 5.5, 1.2, 32),
-    new THREE.MeshStandardMaterial({ color: 0x4a1a2a, metalness: 0.6, roughness: 0.3, emissive: 0x3a0a1a, emissiveIntensity: 0.25 })
-  );
-  platform.position.y = 0.6;
-  platform.castShadow = true;
-  platform.receiveShadow = true;
-  group.add(platform);
-
-  // Stage rim light
-  const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(5.1, 0.08, 8, 64),
-    makeEmissiveMat(C.primary, 3)
-  );
-  rim.rotation.x = -Math.PI / 2;
-  rim.position.y = 1.22;
-  group.add(rim);
-
-  // Backdrop curve
-  const backdropGeo = new THREE.CylinderGeometry(5.5, 5.5, 8, 32, 1, true, Math.PI * 0.7, Math.PI * 1.6);
-  const backdrop = new THREE.Mesh(
-    backdropGeo,
-    new THREE.MeshStandardMaterial({
-      color: 0x5a2a35, emissive: 0x3a1a25, emissiveIntensity: 0.2,
-      metalness: 0.3, roughness: 0.7,
-      side: THREE.DoubleSide,
-    })
-  );
-  backdrop.position.y = 5.2;
-  group.add(backdrop);
-
-  // Backdrop top neon trim
-  const trimRing = new THREE.Mesh(
-    new THREE.TorusGeometry(5.55, 0.1, 8, 64, Math.PI * 1.6),
-    makeEmissiveMat(C.primary, 3)
-  );
-  trimRing.rotation.x = -Math.PI / 2;
-  trimRing.rotation.z = Math.PI * 0.7;
-  trimRing.position.y = 9.2;
-  group.add(trimRing);
-
-  // Dealer table (center)
-  const table = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.5, 1.5, 0.15, 32, 1, false, 0, Math.PI),
-    new THREE.MeshStandardMaterial({ color: 0x1a7a4a, metalness: 0.2, roughness: 0.8, emissive: 0x0a3a1a, emissiveIntensity: 0.2 })
-  );
-  table.position.set(0, 1.35, 0.5);
-  group.add(table);
-
-  // Spotlight cone (visual)
-  const spotGeo = new THREE.ConeGeometry(3, 10, 32, 1, true);
-  const spotMat = new THREE.MeshStandardMaterial({
-    color: C.secondary, emissive: C.secondary,
-    emissiveIntensity: 0.3, toneMapped: false,
-    transparent: true, opacity: 0.06,
-    side: THREE.DoubleSide,
-  });
-  const spotCone = new THREE.Mesh(spotGeo, spotMat);
-  spotCone.position.set(0, 7, 0);
-  group.add(spotCone);
-
-  // Spot light (actual)
-  const spotLight = new THREE.SpotLight(C.secondary, 12, 25, Math.PI / 6, 0.5, 1);
-  spotLight.position.set(0, 14, 0);
-  spotLight.target.position.set(0, 0, 0);
-  group.add(spotLight);
-  group.add(spotLight.target);
-
-  // Point lights
-  const light1 = new THREE.PointLight(C.primary, 6, 22);
-  light1.position.set(0, 3, 5);
-  group.add(light1);
-
-  // Ground glow
-  const glowDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(10, 32),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 0.8, toneMapped: false,
-      transparent: true, opacity: 0.3,
-    })
-  );
-  glowDisc.rotation.x = -Math.PI / 2;
-  glowDisc.position.y = 0.02;
-  group.add(glowDisc);
-
-  const bp = BUILDING_POS.live;
-  group.position.set(bp.x, bp.y, bp.z);
-  group.userData = { id: 'live', labelY: 10.5 };
-  return group;
-}
-
-// ============================================================
-// BUILDING: FISHING HARBOR (Cyan/Blue Waterfront)
-// ============================================================
-function createFishingHarbor() {
-  const group = new THREE.Group();
-  const C = COLORS.fishing;
-
-  // Pier deck
-  const pier = new THREE.Mesh(
-    new THREE.BoxGeometry(8, 0.4, 12),
-    new THREE.MeshStandardMaterial({ color: 0x6a4a2a, roughness: 0.9, emissive: 0x3a2a1a, emissiveIntensity: 0.15 })
-  );
-  pier.position.set(0, 1.5, 0);
-  pier.castShadow = true;
-  group.add(pier);
-
-  // Pier supports
-  for (const x of [-3.5, 0, 3.5]) {
-    for (const z of [-4, 0, 4]) {
-      const support = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.15, 0.2, 1.8, 6),
-        new THREE.MeshStandardMaterial({ color: 0x5a3a1a, roughness: 0.9 })
-      );
-      support.position.set(x, 0.6, z);
-      group.add(support);
-    }
-  }
-
-  // Lighthouse tower
-  const tower = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.8, 1.2, 7, 8),
-    new THREE.MeshStandardMaterial({ color: 0x3a5a7a, metalness: 0.3, roughness: 0.6, emissive: 0x1a3a5a, emissiveIntensity: 0.2 })
-  );
-  tower.position.set(-2.5, 5.2, -4);
-  tower.castShadow = true;
-  group.add(tower);
-
-  // Lighthouse top (lantern)
-  const lantern = new THREE.Mesh(
-    new THREE.CylinderGeometry(1, 0.8, 1.5, 8),
-    makeEmissiveMat(C.primary, 2)
-  );
-  lantern.position.set(-2.5, 9.2, -4);
-  group.add(lantern);
-
-  // Lighthouse roof
-  const roof = new THREE.Mesh(
-    new THREE.ConeGeometry(1.1, 1.5, 8),
-    new THREE.MeshStandardMaterial({ color: 0x4a6a8a })
-  );
-  roof.position.set(-2.5, 10.5, -4);
-  group.add(roof);
-
-  // Water plane
-  const water = new THREE.Mesh(
-    new THREE.PlaneGeometry(16, 18),
-    new THREE.MeshStandardMaterial({
-      color: 0x0066aa, emissive: 0x003366,
-      emissiveIntensity: 0.5,
-      transparent: true, opacity: 0.6,
-      metalness: 0.9, roughness: 0.1,
-    })
-  );
-  water.rotation.x = -Math.PI / 2;
-  water.position.set(0, -0.1, 0);
-  group.add(water);
-
-  // Boat
-  const boatHull = new THREE.Mesh(
-    new THREE.BoxGeometry(1.5, 0.6, 3),
-    new THREE.MeshStandardMaterial({ color: 0x7a4a2a, emissive: 0x3a2a1a, emissiveIntensity: 0.15 })
-  );
-  boatHull.position.set(3, 0.5, 3);
-  boatHull.rotation.y = 0.3;
-  group.add(boatHull);
-
-  // Neon railing
-  for (const x of [-4, 4]) {
-    const rail = new THREE.Mesh(
-      new THREE.BoxGeometry(0.08, 0.8, 12),
-      makeEmissiveMat(C.primary, 1.5)
-    );
-    rail.position.set(x, 2.1, 0);
-    group.add(rail);
-  }
-
-  // Lights
-  const cyanLight = new THREE.PointLight(C.primary, 8, 28);
-  cyanLight.position.set(-2.5, 10, -4);
-  group.add(cyanLight);
-
-  const greenLight = new THREE.PointLight(C.secondary, 4, 18);
-  greenLight.position.set(0, 3, 0);
-  group.add(greenLight);
-
-  // Ground glow
-  const glowDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(12, 32),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 0.8, toneMapped: false,
-      transparent: true, opacity: 0.25,
-    })
-  );
-  glowDisc.rotation.x = -Math.PI / 2;
-  glowDisc.position.y = 0.01;
-  group.add(glowDisc);
-
-  const bp = BUILDING_POS.fishing;
-  group.position.set(bp.x, bp.y, bp.z);
-  group.userData = { id: 'fishing', labelY: 12 };
-  return group;
-}
-
-// ============================================================
-// BUILDING: SPORTS ARENA (Green/Orange Stadium)
-// ============================================================
-function createSportsArena() {
-  const group = new THREE.Group();
-  const C = COLORS.sports;
-
-  // Stadium base (oval platform)
-  const base = new THREE.Mesh(
-    new THREE.CylinderGeometry(6, 6.5, 1.0, 32),
-    new THREE.MeshStandardMaterial({
-      color: 0x1a3a2a, metalness: 0.5, roughness: 0.4,
-      emissive: 0x0a2a1a, emissiveIntensity: 0.25,
-    })
-  );
-  base.position.y = 0.5;
-  base.castShadow = true;
-  group.add(base);
-
-  // Stadium walls (curved stands)
-  const wallGeo = new THREE.CylinderGeometry(6, 6, 5, 32, 1, true);
-  const wall = new THREE.Mesh(wallGeo, makeWallMat(C.ambient));
-  wall.position.y = 3.5;
-  group.add(wall);
-
-  // Top rim neon
-  const topRim = new THREE.Mesh(
-    new THREE.TorusGeometry(6.05, 0.1, 8, 64),
-    makeEmissiveMat(C.primary, 3)
-  );
-  topRim.rotation.x = -Math.PI / 2;
-  topRim.position.y = 6;
-  group.add(topRim);
-
-  // Mid rim neon
-  const midRim = new THREE.Mesh(
-    new THREE.TorusGeometry(6.05, 0.08, 8, 64),
-    makeEmissiveMat(C.secondary, 2.5)
-  );
-  midRim.rotation.x = -Math.PI / 2;
-  midRim.position.y = 3.5;
-  group.add(midRim);
-
-  // Green pitch field inside
-  const pitch = new THREE.Mesh(
-    new THREE.CircleGeometry(5, 32),
-    new THREE.MeshStandardMaterial({
-      color: 0x2a8a3a, emissive: 0x1a5a2a,
-      emissiveIntensity: 0.4, metalness: 0.1, roughness: 0.9,
-    })
-  );
-  pitch.rotation.x = -Math.PI / 2;
-  pitch.position.y = 1.05;
-  group.add(pitch);
-
-  // Center circle on pitch
-  const centerCircle = new THREE.Mesh(
-    new THREE.RingGeometry(1.2, 1.35, 32),
-    new THREE.MeshStandardMaterial({
-      color: 0xffffff, emissive: 0xffffff,
-      emissiveIntensity: 0.8, toneMapped: false,
-      transparent: true, opacity: 0.5,
-    })
-  );
-  centerCircle.rotation.x = -Math.PI / 2;
-  centerCircle.position.y = 1.06;
-  group.add(centerCircle);
-
-  // Floodlight towers (4 corners)
-  const towerAngles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5];
-  for (const angle of towerAngles) {
-    const tx = Math.cos(angle) * 5.5;
-    const tz = Math.sin(angle) * 5.5;
-
-    const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.12, 0.15, 4, 6),
-      new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 0.7, roughness: 0.3 })
-    );
-    pole.position.set(tx, 8, tz);
-    group.add(pole);
-
-    const floodlight = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.4, 0.4),
-      makeEmissiveMat(0xffffff, 3)
-    );
-    floodlight.position.set(tx, 10.1, tz);
-    floodlight.lookAt(0, 1, 0);
-    group.add(floodlight);
-  }
-
-  // Scoreboard
-  const scoreboard = new THREE.Mesh(
-    new THREE.BoxGeometry(3, 1.5, 0.2),
-    new THREE.MeshStandardMaterial({
-      color: 0x111111, emissive: C.secondary,
-      emissiveIntensity: 0.8, metalness: 0.3, roughness: 0.5,
-    })
-  );
-  scoreboard.position.set(0, 7.5, 6.2);
-  group.add(scoreboard);
-
-  // Scoreboard frame
-  addNeonEdge(group,
-    new THREE.BoxGeometry(3.2, 0.08, 0.08),
-    C.primary, { y: 8.3, z: 6.2 }
-  );
-  addNeonEdge(group,
-    new THREE.BoxGeometry(3.2, 0.08, 0.08),
-    C.primary, { y: 6.7, z: 6.2 }
-  );
-
-  // Point lights
-  const greenLight = new THREE.PointLight(C.primary, 8, 28);
-  greenLight.position.set(0, 10, 0);
-  group.add(greenLight);
-
-  const orangeLight = new THREE.PointLight(C.secondary, 4, 18);
-  orangeLight.position.set(0, 4, 6);
-  group.add(orangeLight);
-
-  // Ground glow
-  const glowDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(12, 32),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 0.8, toneMapped: false,
-      transparent: true, opacity: 0.25,
-    })
-  );
-  glowDisc.rotation.x = -Math.PI / 2;
-  glowDisc.position.y = 0.01;
-  group.add(glowDisc);
-
-  const bp = BUILDING_POS.sports;
-  group.position.set(bp.x, bp.y, bp.z);
-  group.userData = { id: 'sports', labelY: 12 };
-  return group;
-}
-
-// ============================================================
-// BUILDING: JACKPOT TEMPLE (Gold/White Grand Temple)
-// ============================================================
-function createJackpotTemple() {
-  const group = new THREE.Group();
-  const C = COLORS.jackpot;
-
-  // Steps
-  for (let i = 0; i < 4; i++) {
-    const step = new THREE.Mesh(
-      new THREE.BoxGeometry(14 - i * 2, 0.5, 8 - i * 0.8),
-      new THREE.MeshStandardMaterial({
-        color: 0x4a4a1a, metalness: 0.6, roughness: 0.3,
-        emissive: 0x2a2a0a, emissiveIntensity: 0.2,
-      })
-    );
-    step.position.y = i * 0.5 + 0.25;
-    step.castShadow = true;
-    step.receiveShadow = true;
-    group.add(step);
-  }
-
-  // Main temple floor
-  const floor = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 0.3, 6),
-    new THREE.MeshStandardMaterial({ color: 0x5a5a2a, metalness: 0.7, roughness: 0.3, emissive: 0x2a2a0a, emissiveIntensity: 0.15 })
-  );
-  floor.position.y = 2.15;
-  group.add(floor);
-
-  // Columns
-  const colPositions = [[-4, -2], [-4, 2], [4, -2], [4, 2], [-1.5, -2], [-1.5, 2], [1.5, -2], [1.5, 2]];
-  for (const [x, z] of colPositions) {
-    const col = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.3, 0.35, 6, 12),
-      new THREE.MeshStandardMaterial({ color: 0xd4b030, metalness: 0.7, roughness: 0.3, emissive: 0x806010, emissiveIntensity: 0.2 })
-    );
-    col.position.set(x, 5.3, z);
-    col.castShadow = true;
-    group.add(col);
-
-    // Column cap
-    const cap = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.3, 0.8),
-      new THREE.MeshStandardMaterial({ color: 0xe8c050, metalness: 0.8, roughness: 0.2, emissive: 0x806010, emissiveIntensity: 0.15 })
-    );
-    cap.position.set(x, 8.4, z);
-    group.add(cap);
-  }
-
-  // Roof beam
-  const beam = new THREE.Mesh(
-    new THREE.BoxGeometry(10.5, 0.6, 5.5),
-    new THREE.MeshStandardMaterial({ color: 0x5a4a20, metalness: 0.5, roughness: 0.4, emissive: 0x2a2010, emissiveIntensity: 0.15 })
-  );
-  beam.position.y = 8.8;
-  group.add(beam);
-
-  // Triangular pediment
-  const pedimentGeo = new THREE.BufferGeometry();
-  const pedimentVerts = new Float32Array([
-    -5.25, 9.1, 2.8,   5.25, 9.1, 2.8,   0, 12, 2.8,
-    -5.25, 9.1, -2.8,  5.25, 9.1, -2.8,   0, 12, -2.8,
-  ]);
-  const pedimentIdx = [0, 1, 2, 3, 5, 4];
-  pedimentGeo.setAttribute('position', new THREE.BufferAttribute(pedimentVerts, 3));
-  pedimentGeo.setIndex(pedimentIdx);
-  pedimentGeo.computeVertexNormals();
-  const pediment = new THREE.Mesh(
-    pedimentGeo,
-    new THREE.MeshStandardMaterial({ color: 0x5a4a20, metalness: 0.5, roughness: 0.5, emissive: 0x2a2010, emissiveIntensity: 0.15, side: THREE.DoubleSide })
-  );
-  group.add(pediment);
-
-  // Floating mega diamond
-  const diamond = new THREE.Mesh(
-    new THREE.OctahedronGeometry(1.2),
-    makeEmissiveMat(C.primary, 4)
-  );
-  diamond.position.set(0, 13.5, 0);
-  diamond.userData.animate = 'floatRotate';
-  group.add(diamond);
-
-  // Diamond glow sphere
-  const diamondGlow = new THREE.Mesh(
-    new THREE.SphereGeometry(2, 16, 16),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 0.5, toneMapped: false,
-      transparent: true, opacity: 0.08,
-    })
-  );
-  diamondGlow.position.set(0, 13.5, 0);
-  group.add(diamondGlow);
-
-  // Neon edge on pediment
-  addNeonEdge(group,
-    new THREE.BoxGeometry(10.5, 0.1, 0.1),
-    C.primary, { y: 9.15, z: 2.85 }
-  );
-
-  // Lights
-  const goldLight1 = new THREE.PointLight(C.primary, 10, 30);
-  goldLight1.position.set(0, 14, 0);
-  group.add(goldLight1);
-
-  const goldLight2 = new THREE.PointLight(C.primary, 5, 20);
-  goldLight2.position.set(0, 5, 5);
-  group.add(goldLight2);
-
-  const whiteLight = new THREE.PointLight(C.secondary, 4, 18);
-  whiteLight.position.set(0, 10, 0);
-  group.add(whiteLight);
-
-  // Ground glow
-  const glowDisc = new THREE.Mesh(
-    new THREE.CircleGeometry(12, 32),
-    new THREE.MeshStandardMaterial({
-      color: C.primary, emissive: C.primary,
-      emissiveIntensity: 1.0, toneMapped: false,
-      transparent: true, opacity: 0.3,
-    })
-  );
-  glowDisc.rotation.x = -Math.PI / 2;
-  glowDisc.position.y = 0.02;
-  group.add(glowDisc);
-
-  const bp = BUILDING_POS.jackpot;
-  group.position.set(bp.x, bp.y, bp.z);
-  group.userData = { id: 'jackpot', labelY: 16 };
-  return group;
-}
-
-// ============================================================
-// CREATE ALL BUILDINGS
-// ============================================================
-function initBuildings() {
-  const factories = {
-    slots: createSlotHall,
-    live: createLiveStage,
-    fishing: createFishingHarbor,
-    sports: createSportsArena,
-    jackpot: createJackpotTemple,
-  };
-  for (const [id, factory] of Object.entries(factories)) {
-    const building = factory();
-    buildings[id] = building;
-    scene.add(building);
-    // Collect all meshes for raycasting
-    building.traverse((child) => {
-      if (child.isMesh) {
-        child.userData.buildingId = id;
-        buildingMeshes.push(child);
-      }
-    });
-    // Create label
-    createLabel(id, building);
-  }
-}
-
-// ============================================================
-// BUILDING LABELS (HTML positioned via 3D projection)
-// ============================================================
-const labelsContainer = document.getElementById('labels-container');
-
-function createLabel(id, building) {
-  const info = {
-    slots: { name: 'SLOT HALL', sub: '14,392 Playing', color: '#a855f7' },
-    live: { name: 'LIVE STAGE', sub: '5,218 At Tables', color: '#ff2d55' },
-    fishing: { name: 'FISHING HARBOR', sub: '3,847 Fishing', color: '#00d4ff' },
-    sports: { name: 'SPORTS ARENA', sub: '8,531 Betting', color: '#22cc55' },
-    jackpot: { name: 'JACKPOT TEMPLE', sub: '$4.2M Prize Pool', color: '#ffd700' },
-  };
-  const data = info[id];
-  const el = document.createElement('div');
-  el.className = 'building-label';
-  el.innerHTML = `
-    <div class="label-name" style="color:${data.color}">${data.name}</div>
-    <div class="label-sub">${data.sub}</div>
-  `;
-  labelsContainer.appendChild(el);
-  labelElements[id] = { el, building };
-}
-
-function updateLabels() {
-  if (currentZone !== 'overview') {
-    Object.values(labelElements).forEach(({ el }) => el.classList.remove('visible'));
-    return;
-  }
-  for (const [id, { el, building }] of Object.entries(labelElements)) {
-    const labelY = building.userData.labelY || 8;
-    const pos3D = new THREE.Vector3(
-      building.position.x,
-      labelY,
-      building.position.z
-    );
-    pos3D.project(camera);
-    const x = (pos3D.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (-pos3D.y * 0.5 + 0.5) * window.innerHeight;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    el.classList.toggle('visible', pos3D.z < 1);
-  }
-}
-
-// ============================================================
-// INTERACTION — Raycaster
-// ============================================================
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-let mouseNDC = new THREE.Vector2();
-
-renderer.domElement.addEventListener('mousemove', (e) => {
-  mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-  mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-});
-
-renderer.domElement.addEventListener('click', (e) => {
-  if (currentZone !== 'overview') return;
-  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(buildingMeshes);
-  if (hits.length > 0) {
-    const id = hits[0].object.userData.buildingId;
-    if (id) {
-      spawnClickBurst(id, hits[0].point);
-      enterZone(id);
-    }
-  }
-});
-
-// Touch support
-renderer.domElement.addEventListener('touchend', (e) => {
-  if (currentZone !== 'overview') return;
-  const touch = e.changedTouches[0];
-  mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(buildingMeshes);
-  if (hits.length > 0) {
-    const id = hits[0].object.userData.buildingId;
-    if (id) {
-      spawnClickBurst(id, hits[0].point);
-      enterZone(id);
-    }
-  }
-});
-
-// Hover check
-function updateHover() {
-  if (currentZone !== 'overview') {
-    document.body.style.cursor = 'default';
-    return;
-  }
-  raycaster.setFromCamera(mouseNDC, camera);
-  const hits = raycaster.intersectObjects(buildingMeshes);
-  const newHover = hits.length > 0 ? hits[0].object.userData.buildingId : null;
-
-  if (newHover !== hoveredBuilding) {
-    // Unhover previous
-    if (hoveredBuilding && buildings[hoveredBuilding]) {
-      gsap.to(buildings[hoveredBuilding].scale, { x: 1, y: 1, z: 1, duration: 0.3 });
-    }
-    // Hover new
-    if (newHover && buildings[newHover]) {
-      gsap.to(buildings[newHover].scale, { x: 1.05, y: 1.05, z: 1.05, duration: 0.3 });
-    }
-    hoveredBuilding = newHover;
-    document.body.style.cursor = newHover ? 'pointer' : 'default';
-  }
-}
-
-// ============================================================
-// CAMERA TRANSITIONS
-// ============================================================
-const camPosObj = { x: CAM_STATES.overview.pos[0], y: CAM_STATES.overview.pos[1], z: CAM_STATES.overview.pos[2] };
-const camTargetObj = { x: CAM_STATES.overview.target[0], y: CAM_STATES.overview.target[1], z: CAM_STATES.overview.target[2] };
-
-function transitionCamera(zone) {
-  const state = CAM_STATES[zone];
-  gsap.to(camPosObj, {
-    x: state.pos[0], y: state.pos[1], z: state.pos[2],
-    duration: 1.6, ease: 'power2.inOut',
-  });
-  gsap.to(camTargetObj, {
-    x: state.target[0], y: state.target[1], z: state.target[2],
-    duration: 1.6, ease: 'power2.inOut',
-  });
-}
-
-// ============================================================
-// ZONE PANEL
-// ============================================================
-const zonePanel = document.getElementById('zone-panel');
-const backBtn = document.getElementById('back-btn');
-const navBtns = document.querySelectorAll('.nav-btn');
-
-function enterZone(zone) {
-  if (zone === currentZone) return;
-  currentZone = zone;
-  transitionCamera(zone);
-
-  // Update nav
-  navBtns.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.zone === zone);
-  });
-
-  // Show zone panel
-  const content = ZONE_CONTENT[zone];
-  if (content) {
-    zonePanel.innerHTML = `
-      <div class="zone-header">
-        <div class="zone-icon">${content.icon}</div>
-        <div>
-          <div class="zone-title">${content.title}</div>
-          <div class="zone-subtitle">${content.subtitle}</div>
+  <!-- Character card (clickable) -->
+  <div style="width:100%;max-width:430px;padding:8px 14px">
+    <div class="char-card" id="char-card" onclick="clickCharacter()" style="border-color:#ff445555">
+      <div class="char-avatar" id="char-avatar" style="background:#1a0008;font-size:32px">🔴</div>
+      <div style="flex:1">
+        <div style="font-size:9px;color:#8899bb" id="char-type">攻擊型彈珠</div>
+        <div style="font-size:16px;font-weight:900;color:#ff4455" id="char-name">烈焰劍士</div>
+        <div style="font-size:9px;color:#556677;margin-top:2px" id="char-desc">凌厲攻勢，速攻破防</div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <div style="font-size:9px;color:#ff4455" id="char-atk">⚔️攻 ★★★★★</div>
+          <div style="font-size:9px;color:#4488ff" id="char-def">🛡防 ★★</div>
         </div>
       </div>
-      ${content.cards.map(c => `
-        <div class="zone-card">
-          <div class="card-top">
-            <div class="card-name">${c.name}</div>
-            <div class="card-badge ${c.hot ? 'hot' : ''}">${c.badge}</div>
-          </div>
-          <div class="card-desc">${c.desc}</div>
-        </div>
-      `).join('')}
-    `;
-    setTimeout(() => zonePanel.classList.add('open'), 100);
-  }
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <!-- Pet (clickable separately) -->
+        <div id="pet-icon" onclick="clickPet(event)" style="font-size:28px;cursor:pointer;animation:petBounce .8s ease-in-out infinite;filter:drop-shadow(0 0 6px #ff663388)" title="點擊與寵物互動">🦊</div>
+        <div style="font-size:7px;color:#886655" id="pet-name">小火狐</div>
+      </div>
+    </div>
+  </div>
+  <!-- Action buttons -->
+  <div style="display:flex;gap:8px;width:100%;max-width:430px;padding:4px 14px">
+    <button class="btn bp" onclick="openBallPicker()" style="flex:1">🎯 更換彈珠</button>
+    <button class="btn bg" onclick="openGacha()" style="flex:1">🎰 扭蛋</button>
+    <button class="btn bd" onclick="openChest()" style="flex:1">📦 寶箱</button>
+  </div>
+  <!-- Modes -->
+  <div style="font-family:var(--font-d);font-size:8px;letter-spacing:3px;color:#334455;padding:8px 14px 3px;width:100%;max-width:430px">選擇模式</div>
+  <div class="mode-grid">
+    <div class="mode-card" onclick="startGame('pinball')" style="border-color:#44aaff44">
+      <div id="pb-badge" class="mode-badge">5</div>
+      <div class="mode-icon">🎳</div><div class="mode-lbl">彈珠台</div></div>
+    <div class="mode-card" onclick="startGame('battle')" style="border-color:#4488ff44">
+      <div class="mode-icon">⚔️</div><div class="mode-lbl">金庫攻防</div></div>
+    <div class="mode-card" onclick="startGame('brawl')" style="border-color:#44ee8844">
+      <div class="mode-icon">🔫</div><div class="mode-lbl">3v3大亂鬥</div></div>
+    <div class="mode-card" onclick="startGame('soccer')" style="border-color:#44ff4444">
+      <div class="mode-icon">⚽</div><div class="mode-lbl">一球足球</div></div>
+    <div class="mode-card" onclick="startGame('basket')" style="border-color:#ff884444">
+      <div class="mode-icon">🏀</div><div class="mode-lbl">籃球熱區</div></div>
+    <div class="mode-card" onclick="startGame('petarena')" style="border-color:#ffcc0044">
+      <div class="mode-icon">🐾</div><div class="mode-lbl">寵物競技</div></div>
+  </div>
+  <div style="height:24px"></div>
+</div>
 
-  // Show back button
-  setTimeout(() => backBtn.classList.add('visible'), 300);
-}
+<!-- ══════════ PINBALL ══════════ -->
 
-function exitZone() {
-  currentZone = 'overview';
-  transitionCamera('overview');
-  zonePanel.classList.remove('open');
-  backBtn.classList.remove('visible');
-  navBtns.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.zone === 'overview');
-  });
-}
+<div id="s-pinball" class="scr">
+  <div class="pb-hud">
+    <div id="pb-balls-ui" class="pb-balls"></div>
+    <div style="flex:1;text-align:center">
+      <div style="font-family:var(--font-d);font-size:20px;font-weight:900;color:var(--gold)" id="pb-score">0</div>
+      <div style="font-size:8px;color:#334455">分數</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:9px;color:#8877aa">金幣獲得</div>
+      <div style="font-size:14px;font-weight:900;color:var(--gold)">+<span id="pb-coins-earn">0</span></div>
+    </div>
+  </div>
+  <div style="width:100%;max-width:430px;border-radius:14px;overflow:hidden;border:2px solid #44aaff33">
+    <canvas id="pb-canvas" width="430" height="560"></canvas>
+  </div>
+  <!-- Launch btn (right corner) -->
+  <div style="position:fixed;bottom:20px;right:16px;z-index:60;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+    <button class="btn" id="pb-launch-btn" onclick="launchPinball()"
+      style="background:linear-gradient(135deg,#1a3a6a,#2266cc);color:#fff;border:2px solid #4488ff88;border-radius:50%;width:70px;height:70px;font-size:24px;box-shadow:0 0 20px #2266cc88">
+      🎳
+    </button>
+    <button class="btn bd" onclick="showMenu()" style="font-size:11px;padding:6px 12px">🏠</button>
+  </div>
+</div>
 
-backBtn.addEventListener('click', exitZone);
+<!-- ══════════ BATTLE (金庫攻防) ══════════ -->
 
-// Nav button clicks
-navBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const zone = btn.dataset.zone;
-    if (zone === 'overview') exitZone();
-    else enterZone(zone);
-  });
-});
+<div id="s-battle" class="scr">
+  <div class="battle-hud">
+    <div style="font-size:26px" id="bt-emoji">🔴</div>
+    <div class="hp-bar-wrap" style="flex:1">
+      <div style="display:flex;justify-content:space-between;font-size:8px;color:#8899bb"><span id="bt-name">你</span><span id="bt-hp-txt">100/100</span></div>
+      <div class="hp-track"><div class="hp-fill" id="bt-hp-bar" style="width:100%;background:#44ff88"></div></div>
+    </div>
+    <div style="text-align:center;font-size:9px;color:#ffd700">VS</div>
+    <div class="hp-bar-wrap" style="flex:1">
+      <div style="display:flex;justify-content:space-between;font-size:8px;color:#8899bb"><span>金庫</span><span id="bt-vault-txt">200/200</span></div>
+      <div class="hp-track"><div class="hp-fill" id="bt-vault-bar" style="width:100%;background:#ff4466"></div></div>
+    </div>
+    <div style="font-size:26px">🏦</div>
+  </div>
+  <div style="width:100%;max-width:430px;border-radius:14px;overflow:hidden;border:2px solid #4488ff33">
+    <canvas id="bt-canvas" width="430" height="480"></canvas>
+  </div>
+  <!-- Skill buttons -->
+  <div style="display:flex;gap:8px;width:100%;max-width:430px;padding:6px 4px" id="bt-skills"></div>
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#060412f0;border-top:1px solid #1a1a3a;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;z-index:60">
+    <div class="joy" id="bt-joy" style="width:115px;height:115px;border:3px solid #4488ff66">
+      <span class="joy-arr" style="top:8px;left:50%;transform:translateX(-50%);color:#4488ff77">▲</span>
+      <span class="joy-arr" style="bottom:8px;left:50%;transform:translateX(-50%);color:#4488ff77">▼</span>
+      <span class="joy-arr" style="left:8px;top:50%;transform:translateY(-50%);color:#4488ff77">◄</span>
+      <span class="joy-arr" style="right:8px;top:50%;transform:translateY(-50%);color:#4488ff77">►</span>
+      <div class="joy-inner" style="width:44px;height:44px;background:#1a2244;border:2px solid #4488ff66">🕹️</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+      <button class="btn bp" id="bt-shoot-btn" onpointerdown="btStartCharge()" onpointerup="btRelease()" ontouchstart="btStartCharge()" ontouchend="btRelease()" style="padding:10px 16px;font-size:12px">⚡ 蓄力</button>
+      <div style="width:80px;height:8px;background:#111128;border-radius:4px;overflow:hidden"><div id="bt-power" style="height:100%;background:linear-gradient(90deg,#44ff88,#ffd700,#ff4466);width:0%;transition:width .05s"></div></div>
+      <button class="btn bd" onclick="showMenu()">🏠</button>
+    </div>
+  </div>
+</div>
 
-// ============================================================
-// HUD — Jackpot Counter
-// ============================================================
-let jackpotVal = 2847392;
-function updateJackpot() {
-  jackpotVal += Math.floor(Math.random() * 30) + 5;
-  document.getElementById('jackpot-val').textContent =
-    '$' + jackpotVal.toLocaleString();
-}
-setInterval(updateJackpot, 1800);
+<!-- ══════════ BRAWL (3v3大亂鬥) ══════════ -->
 
-// ============================================================
-// HUD — Balance Animation
-// ============================================================
-let balanceVal = 12580.00;
-function updateBalance() {
-  balanceVal += (Math.random() - 0.45) * 2;
-  document.getElementById('balance-val').textContent =
-    balanceVal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-setInterval(updateBalance, 3000);
+<div id="s-brawl" class="scr">
+  <div style="display:flex;gap:6px;width:100%;max-width:430px;padding:5px 4px;align-items:center">
+    <div style="background:#0d1a2a;border:2px solid #4488ff33;border-radius:9px;padding:4px 10px;text-align:center;min-width:48px">
+      <div style="font-size:7px;color:#4488ff">🔵我隊</div>
+      <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:#4488ff" id="bw-my">0</div>
+    </div>
+    <div style="flex:1;background:#111128;border-radius:8px;padding:4px 8px">
+      <div style="height:5px;border-radius:3px;background:#1a1a33;overflow:hidden;margin-bottom:2px">
+        <div style="height:100%;background:var(--gold);transition:width .15s" id="bw-res-bar" style="width:0%"></div>
+      </div>
+      <div style="font-size:7px;color:#ffd70077;text-align:center">⚡資源點</div>
+      <div style="font-size:7px;color:#44ff88;text-align:center;font-weight:700" id="bw-bush-txt"></div>
+    </div>
+    <div style="background:#2a0d10;border:2px solid #ff445533;border-radius:9px;padding:4px 10px;text-align:center;min-width:48px">
+      <div style="font-size:7px;color:#ff4455">🔴AI隊</div>
+      <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:#ff4455" id="bw-ai">0</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:4px;width:100%;max-width:430px;padding:0 4px;align-items:center">
+    <div style="flex:1;background:#1a1a33;border-radius:4px;height:9px;overflow:hidden">
+      <div id="bw-hp-bar" style="height:100%;background:#44ff88;width:100%;transition:width .1s"></div>
+    </div>
+    <span style="font-size:9px;color:#8899bb;min-width:22px" id="bw-hp-txt">100</span>
+    <div id="bw-ammo" style="display:flex;gap:3px"></div>
+  </div>
+  <div style="width:100%;max-width:430px;border-radius:12px;overflow:hidden;border:2px solid #44aa4433">
+    <canvas id="bw-canvas" width="430" height="430"></canvas>
+  </div>
+  <div class="ctrl-bar" style="background:#050a05f0;border-top:1px solid #1a2a1a">
+    <div class="joy" id="bw-jL" style="width:118px;height:118px;border:3px solid #4488ff66">
+      <span class="joy-arr" style="top:8px;left:50%;transform:translateX(-50%);color:#4488ff77">▲</span>
+      <span class="joy-arr" style="bottom:8px;left:50%;transform:translateX(-50%);color:#4488ff77">▼</span>
+      <span class="joy-arr" style="left:8px;top:50%;transform:translateY(-50%);color:#4488ff77">◄</span>
+      <span class="joy-arr" style="right:8px;top:50%;transform:translateY(-50%);color:#4488ff77">►</span>
+      <div class="joy-inner" style="width:46px;height:46px;background:#1a2244;border:2px solid #4488ff66">🕹️</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+      <button class="skill-btn" id="bw-dash-btn" onclick="bwDash()" style="color:#66aaff;border-color:#4488ff44;background:#0d0d22;min-width:62px;font-size:9px">⚡衝刺</button>
+      <button class="skill-btn" id="bw-skill-btn" onclick="bwSkill()" style="min-width:62px;font-size:9px">技能</button>
+      <button class="btn bd" onclick="showMenu()" style="font-size:9px;padding:5px 10px">🏠</button>
+    </div>
+    <div class="joy" id="bw-jR" style="width:118px;height:118px;border:3px solid #ff445566">
+      <span class="joy-arr" style="top:8px;left:50%;transform:translateX(-50%);color:#ff445577">▲</span>
+      <span class="joy-arr" style="bottom:8px;left:50%;transform:translateX(-50%);color:#ff445577">▼</span>
+      <span class="joy-arr" style="left:8px;top:50%;transform:translateY(-50%);color:#ff445577">◄</span>
+      <span class="joy-arr" style="right:8px;top:50%;transform:translateY(-50%);color:#ff445577">►</span>
+      <div class="joy-inner" style="width:46px;height:46px;background:#2a1a1a;border:2px solid #ff445566">🎯</div>
+    </div>
+  </div>
+</div>
 
-// ============================================================
-// JACKPOT BROADCAST
-// ============================================================
-const broadcastEl = document.getElementById('jackpot-broadcast');
-const broadcastMessages = [
-  '🎉 Player_X92 won $12,847 on Wolf Gold!',
-  '💎 MEGA JACKPOT hit! $847,291 by LuckyStar!',
-  '🔥 Player_K17 won $5,432 on Lightning Roulette!',
-  '🎰 BIG WIN! $23,100 on Gates of Olympus!',
-  '💰 Player_M55 hit Major Jackpot: $156,800!',
+<!-- ══════════ BASKETBALL ══════════ -->
+
+<div id="s-basket" class="scr" style="background:#0f0600">
+  <div id="bk-sel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:14px;padding:24px">
+    <div style="font-size:40px">🏀</div>
+    <div style="font-family:var(--font-d);font-size:18px;font-weight:900;color:var(--gold)">彈珠籃球</div>
+    <div style="background:#160a03;border:1px solid #ff880033;border-radius:14px;padding:12px 18px;text-align:center;font-size:10px;color:#8877aa;line-height:2.2">
+      先10分獲勝・搖桿自由移動<br>🔥 熱區系統：站對位置命中率更高<br>🏀 真實拋物線彈道・寵物助攻
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn bp" onclick="initBasket('1v1')">1v1</button>
+      <button class="btn bg" onclick="initBasket('3v3')">3v3</button>
+      <button class="btn bn" onclick="initBasket('5v5')">5v5</button>
+    </div>
+    <button class="btn bd" onclick="showMenu()">返回</button>
+  </div>
+  <div id="bk-game" style="display:none;flex-direction:column;align-items:center;padding:6px 6px 155px;gap:4px">
+    <div style="display:flex;gap:8px;width:100%;max-width:430px;align-items:center">
+      <div style="background:#1a0a04;border:2px solid #ff880033;border-radius:10px;padding:4px 12px;text-align:center;min-width:56px">
+        <div style="font-size:7px;color:#886644" id="bk-lbl">🏀你</div>
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--gold)" id="bk-my">0</div>
+      </div>
+      <div style="flex:1;background:#161006;border-radius:10px;padding:4px 8px;text-align:center">
+        <div style="font-size:8px;color:#886644">🔥熱區</div>
+        <div style="font-size:10px;font-weight:700" id="bk-zone">—</div>
+        <div style="font-size:8px;color:#886644" id="bk-acc"></div>
+      </div>
+      <div style="background:#1a0a0a;border:2px solid #ff444433;border-radius:10px;padding:4px 12px;text-align:center;min-width:56px">
+        <div style="font-size:7px;color:#886644">🔴AI</div>
+        <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:#ff6644" id="bk-ai">0</div>
+      </div>
+    </div>
+    <div id="bk-rhy-wrap" style="display:none;width:100%;max-width:430px">
+      <div style="font-size:9px;color:var(--gold);text-align:center;margin-bottom:3px;font-weight:700">🎯點擊投籃！</div>
+      <div class="rhy-bar" onclick="hitRhythm()">
+        <div class="rhy-zone"></div>
+        <div class="rhy-cur" id="bk-cur" style="left:48%"></div>
+        <div class="rhy-lbl">點此投籃</div>
+      </div>
+    </div>
+    <div id="bk-pw-wrap" style="display:none;width:100%;max-width:430px;background:#1a1a33;border-radius:6px;height:10px;overflow:hidden">
+      <div id="bk-pw" style="height:100%;background:linear-gradient(90deg,#44ff88,#ffd700,#ff4466);width:0%;transition:width .04s"></div>
+    </div>
+    <div style="font-size:12px;font-weight:900;color:var(--gold);min-height:18px;text-align:center" id="bk-fb"></div>
+    <div style="width:100%;max-width:430px;border-radius:12px;overflow:hidden;border:2px solid #ff880033">
+      <canvas id="bk-canvas" width="430" height="230"></canvas>
+    </div>
+    <div id="bk-pbtns" style="display:flex;gap:5px;width:100%;max-width:430px"></div>
+    <div class="ctrl-bar" style="background:#0f0600f0;border-top:1px solid #2a1005">
+      <div class="joy" id="bk-joy" style="width:116px;height:116px;border:3px solid #ff884466">
+        <span class="joy-arr" style="top:8px;left:50%;transform:translateX(-50%);color:#ff884477">▲</span>
+        <span class="joy-arr" style="bottom:8px;left:50%;transform:translateX(-50%);color:#ff884477">▼</span>
+        <span class="joy-arr" style="left:8px;top:50%;transform:translateY(-50%);color:#ff884477">◄</span>
+        <span class="joy-arr" style="right:8px;top:50%;transform:translateY(-50%);color:#ff884477">►</span>
+        <div class="joy-inner" style="width:44px;height:44px;background:#2a2044;border:2px solid #ff884466">🕹️</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <button style="background:linear-gradient(135deg,#331500,#773300);color:var(--gold);border:2px solid #ff880055;border-radius:12px;padding:9px 14px;font-size:12px;font-weight:900;font-family:var(--font-b)"
+          onpointerdown="startShot(event)" onpointerup="releaseShot(event)" ontouchstart="startShot(event);event.preventDefault()" ontouchend="releaseShot(event);event.preventDefault()">🏀投籃<br><span style="font-size:7px;color:#aa6633">按住蓄力</span></button>
+        <button class="btn" style="background:#1a0a04;color:#886644;border:1px solid #33221155;border-radius:8px;padding:5px 10px;font-size:10px" onclick="passBasket()">↗️傳球</button>
+        <button class="btn bd" onclick="showMenu()">🏠</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PET ARENA ══════════ -->
+
+<div id="s-petarena" class="scr" style="background:#030a16">
+  <div id="pa-sel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;gap:14px;padding:24px">
+    <div style="font-size:48px" id="pa-sel-icon">🦊</div>
+    <div style="font-family:var(--font-d);font-size:16px;font-weight:900;color:#ffcc00">寵物競技場</div>
+    <div style="background:#0a1a0a;border:1px solid #44ff8833;border-radius:14px;padding:12px 18px;text-align:center;font-size:10px;color:#8877aa;line-height:2.2">
+      🐾 5寵物大混戰・實體碰撞<br>6種技能・毒液・護盾・怒吼<br>搖桿八方向・混沌縮圈模式
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn bp" onclick="initPetArena('normal')">普通</button>
+      <button class="btn bg" onclick="initPetArena('chaos')">混沌模式</button>
+    </div>
+    <button class="btn bd" onclick="showMenu()">返回</button>
+  </div>
+  <div id="pa-game" style="display:none;flex-direction:column;align-items:center;padding:5px 5px 150px;gap:4px">
+    <div id="pa-hud" style="display:flex;gap:6px;width:100%;max-width:430px;align-items:center"></div>
+    <div style="width:100%;max-width:430px;border-radius:12px;overflow:hidden;border:2px solid #44ff8833">
+      <canvas id="pa-canvas" width="430" height="360"></canvas>
+    </div>
+    <div class="ctrl-bar" style="background:#030a10f0;border-top:1px solid #0d2a1a">
+      <div class="joy" id="pa-joy" style="width:116px;height:116px;border:3px solid #44ff8866">
+        <span class="joy-arr" style="top:8px;left:50%;transform:translateX(-50%);color:#44ff8877">▲</span>
+        <span class="joy-arr" style="bottom:8px;left:50%;transform:translateX(-50%);color:#44ff8877">▼</span>
+        <span class="joy-arr" style="left:8px;top:50%;transform:translateY(-50%);color:#44ff8877">◄</span>
+        <span class="joy-arr" style="right:8px;top:50%;transform:translateY(-50%);color:#44ff8877">►</span>
+        <div class="joy-inner" style="width:44px;height:44px;background:#1a2a1a;border:2px solid #44ff8866">🕹️</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+        <button class="skill-btn" id="pa-skill-btn" onclick="doPetSkill()"
+          style="color:#44ff88;border-color:#44ff8844;background:#1a2a0a;min-width:68px;padding:10px 12px;font-size:11px">
+          ⚡技能<br><span style="font-size:7px" id="pa-sk-cd">就緒！</span>
+        </button>
+        <button class="btn bd" onclick="showMenu()">🏠</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OVERLAYS ══════════ -->
+
+<!-- Ball Picker -->
+
+<div id="ovl-picker" class="ovl" style="display:none">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--blue)">🎯 選擇彈珠</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="picker-grid"></div>
+    <br>
+    <button class="btn bd" onclick="closePicker()" style="width:100%;padding:10px">關閉</button>
+  </div>
+</div>
+
+<!-- Gacha -->
+
+<div id="ovl-gacha" class="ovl" style="display:none">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--gold)">🎰 風險扭蛋</div>
+    <div style="text-align:center;font-family:var(--font-d);font-size:11px;color:var(--gold);margin-bottom:8px">💰 <span id="gc-coins">0</span> | 保底: <span id="gc-pity">0</span>/10</div>
+    <!-- Risk display -->
+    <div id="gc-risk-display" class="gacha-risk risk-low">
+      <div style="font-size:11px;font-weight:700" id="gc-risk-name">穩定模式</div>
+      <div style="font-size:9px;opacity:.8" id="gc-risk-desc">普通機率抽取</div>
+    </div>
+    <!-- Slot reel -->
+    <div class="gacha-slot" id="gc-slots">
+      <div class="slot-reel" id="gc-r1">🎰</div>
+      <div class="slot-reel" id="gc-r2">🎰</div>
+      <div class="slot-reel" id="gc-r3">🎰</div>
+    </div>
+    <div id="gc-result" style="min-height:52px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;font-weight:700;text-align:center;line-height:1.8"></div>
+    <div style="display:flex;gap:7px;margin-bottom:7px">
+      <button class="btn bg" onclick="doGacha(1)" style="flex:1;padding:11px 0;font-size:12px">🎰 一次 (200💰)</button>
+      <button class="btn br" onclick="doGacha(10)" style="flex:1;padding:11px 0;font-size:12px">🎲 十連 (1800💰)</button>
+    </div>
+    <button class="btn bd" onclick="closeGacha()" style="width:100%;padding:9px">關閉</button>
+  </div>
+</div>
+
+<!-- Chest -->
+
+<div id="ovl-chest" class="ovl" style="display:none">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--gold)">📦 寶箱商店</div>
+    <div id="chest-list"></div>
+    <button class="btn bd" onclick="closeChest()" style="width:100%;padding:9px;margin-top:8px">關閉</button>
+  </div>
+</div>
+
+<!-- Chat bubble container -->
+
+<div id="chat-bubble" class="chat-bubble" style="display:none"></div>
+
+<!-- Rank popup -->
+
+<div id="rank-popup" class="rank-popup" style="display:none">
+  <div class="rank-card" id="rank-card">
+    <div style="font-size:52px;animation:rankShine 1s infinite" id="rp-icon">🥉</div>
+    <div style="font-family:var(--font-d);font-size:20px;font-weight:900;margin:8px 0" id="rp-title">段位提升！</div>
+    <div style="font-size:14px;color:#8877aa" id="rp-name">銅牌</div>
+    <button class="btn bg" onclick="closeRankPopup()" style="margin-top:16px;padding:10px 24px">確認</button>
+  </div>
+</div>
+
+<!-- Result -->
+
+<div id="ovl-result" class="ovl" style="display:none">
+  <div style="text-align:center;animation:popIn .4s">
+    <div style="font-size:64px" id="res-icon">🏆</div>
+    <div style="font-family:var(--font-d);font-size:20px;font-weight:900;margin:10px 0" id="res-title">勝利！</div>
+    <div style="background:#09091e;border:2px solid #22335544;border-radius:16px;padding:16px 28px;display:flex;gap:22px;margin-bottom:16px">
+      <div style="text-align:center"><div style="font-size:8px;color:#8877aa" id="res-l1">分數</div><div style="font-family:var(--font-d);font-size:32px;font-weight:900;color:var(--gold)" id="res-v1">0</div></div>
+      <div style="text-align:center"><div style="font-size:8px;color:#8877aa" id="res-l2">獲得</div><div style="font-family:var(--font-d);font-size:32px;font-weight:900;color:var(--green)" id="res-v2">0</div></div>
+    </div>
+    <button class="btn bp" onclick="closeResult()" style="padding:13px 28px;font-size:14px">🏠 返回</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CORE DATA
+// ══════════════════════════════════════════════════════════
+const BALLS = {
+  attack: {id:"attack",name:"攻擊型",emoji:"🔴",color:"#ff4455",atk:1.8,def:.7,hp:80,
+    avatar:"⚔️",heroName:"烈焰劍士",heroBg:"#2a0010",desc:"凌厲攻勢，速攻破防",atkS:"★★★★★",defS:"★★",
+    pet:{emoji:"🦊",name:"小火狐",color:"#ff6633"},skillName:"⚡衝刺斬",skillCol:"#ff4455",
+    dialogs:["嗨！今天也要全力以赴！","等等，讓我活活筋骨！","你叫我出場，我就衝啊！","哈！弱者靠邊，王者登場！"],
+    petDialogs:["汪！我很厲害的！","讓我助你一臂之力！","一起燃燒吧！","嗷嗷嗷！"],
+    battleEntry:"⚔️ 烈焰劍士出擊！火力全開！"},
+  defense:{id:"defense",name:"防禦型",emoji:"🔵",color:"#4488ff",atk:.7,def:2.2,hp:150,
+    avatar:"🛡️",heroName:"鐵壁衛士",heroBg:"#001a3a",desc:"鐵壁防禦，無懈可擊",atkS:"★★",defS:"★★★★★",
+    pet:{emoji:"🐢",name:"小鋼龜",color:"#4488ff"},skillName:"🛡磁力盾",skillCol:"#4488ff",
+    dialogs:["穩！我是不可動搖的防線。","放心，我會保護所有人的。","慢慢來，防守才是關鍵。","鐵壁無懈可擊！"],
+    petDialogs:["慢慢來沒關係。","嗯……小心！","我幫你擋！","龜龜！"],
+    battleEntry:"🛡 鐵壁衛士登場！無堅不摧！"},
+  control:{id:"control",name:"控制型",emoji:"🟢",color:"#44ee88",atk:1.0,def:1.0,hp:100,
+    avatar:"🌀",heroName:"自然術師",heroBg:"#003318",desc:"掌控場地，無所遁形",atkS:"★★★",defS:"★★★",
+    pet:{emoji:"🐸",name:"小雨蛙",color:"#44ee88"},skillName:"🌀旋風踢",skillCol:"#44ee88",
+    dialogs:["呱呱！場地歸我管！","感受大自然的力量！","旋風來啦！","嘿嘿，全都在我的掌控中。"],
+    petDialogs:["呱！呱！","跳！跳！","一起玩嘛！","呱呱呱！"],
+    battleEntry:"🌀 自然術師現身！旋風席捲！"},
+  support:{id:"support",name:"支援型",emoji:"🟡",color:"#ffcc00",atk:.9,def:1.1,hp:110,
+    avatar:"✨",heroName:"星光仙子",heroBg:"#2a1a00",desc:"輔助全隊，光芒閃耀",atkS:"★★★",defS:"★★★",
+    pet:{emoji:"🐥",name:"小金雞",color:"#ffcc00"},skillName:"✨閃現",skillCol:"#ffcc00",
+    dialogs:["我的光芒可以治癒一切！","閃現！我來了！","大家加油，我支持你們！","叮！閃光治癒！"],
+    petDialogs:["嗶嗶！加油！","我也要幫忙！","叮叮叮！","金光閃閃！"],
+    battleEntry:"✨ 星光仙子降臨！閃耀登場！"},
+  ghost:{id:"ghost",name:"幽靈型",emoji:"👻",color:"#cc88ff",atk:1.1,def:.9,hp:90,
+    avatar:"👻",heroName:"暗夜幽靈",heroBg:"#1a0033",desc:"虛實之間，神出鬼沒",atkS:"★★★",defS:"★★",
+    pet:{emoji:"🦇",name:"小蝙蝠",color:"#cc88ff"},skillName:"👻隱形衝",skillCol:"#cc88ff",
+    dialogs:["嘿嘿……你以為你找得到我？","虛實之間，我已不在原地。","消失……又出現……怕不怕？","嗚嗚嗚……"],
+    petDialogs:["嘎！嘎！","黑夜是我的主場！","嗯……探索！","嘎嘎嘎！"],
+    battleEntry:"👻 暗夜幽靈現形！神出鬼沒！"},
+  gold:{id:"gold",name:"黃金型",emoji:"🟠",color:"#ffd700",atk:1.3,def:1.3,hp:120,
+    avatar:"👑",heroName:"黃金帝王",heroBg:"#2a1a00",desc:"王者風範，所向披靡",atkS:"★★★★",defS:"★★★★",
+    pet:{emoji:"🦁",name:"小金獅",color:"#ffd700"},skillName:"💰金幣爆",skillCol:"#ffd700",
+    dialogs:["王者，永遠是王者！","閃閃發光，那就是我！","黃金的力量，無人能敵！","哈哈哈！王者降臨！"],
+    petDialogs:["吼！我是小獅王！","跟我走，我帶你稱霸！","吼吼！","王者寵物，天下無敵！"],
+    battleEntry:"👑 黃金帝王降臨！王者無敵！"},
+};
+const BL = Object.values(BALLS);
+const cl = (v,a,b) => Math.max(a,Math.min(b,v));
+const vd = (a,b) => Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);
+const AI_N = ["鐵甲機器","量子核心","暗影刺客","冰霜法師","暴風戰士","閃電忍者","烈焰騎士","鋼鐵巨人","毒霧術師","暗金弓手"];
+const RANKS = ["銅牌","銀牌","金牌","白金","鑽石","大師","傳奇"];
+const RANK_IC = ["🥉","🥈","🥇","💠","💎","👑","🌟"];
+const RANK_COL = ["#cd7f32","#c0c0c0","#ffd700","#88ccff","#44ddff","#ff88cc","#ffaa00"];
+const BOXES = [
+  {id:"wood",  name:"木製寶箱",emoji:"🪵",col:"#8B6914",cost:80,  tier:0,rk:0},
+  {id:"stone", name:"石製寶箱",emoji:"🪨",col:"#888899",cost:180, tier:1,rk:0},
+  {id:"bronze",name:"銅製寶箱",emoji:"🥉",col:"#cd7f32",cost:350, tier:2,rk:1},
+  {id:"silver",name:"銀製寶箱",emoji:"🥈",col:"#c0c0c0",cost:550, tier:3,rk:2},
+  {id:"gold",  name:"金製寶箱",emoji:"🥇",col:"#ffd700",cost:900, tier:4,rk:3},
+  {id:"plat",  name:"白金寶箱",emoji:"💠",col:"#88ccff",cost:1400,tier:5,rk:4},
+  {id:"diamond",name:"鑽石寶箱",emoji:"💎",col:"#44ddff",cost:2200,tier:6,rk:5},
+  {id:"crown", name:"王冠寶箱",emoji:"👑",col:"#ff88cc",cost:3800,tier:7,rk:6},
+  {id:"myth",  name:"神話寶箱",emoji:"🌟",col:"#ff44ff",cost:6500,tier:8,rk:6},
+  {id:"genesis",name:"創世寶箱",emoji:"🌌",col:"#ffaa00",cost:13000,tier:9,rk:6},
 ];
-let broadcastIdx = 0;
-function showBroadcast() {
-  broadcastEl.textContent = broadcastMessages[broadcastIdx % broadcastMessages.length];
-  broadcastIdx++;
-  gsap.fromTo(broadcastEl,
-    { y: -80, opacity: 0 },
-    { y: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.5)',
-      onComplete: () => {
-        gsap.to(broadcastEl, { y: -80, opacity: 0, duration: 0.4, delay: 3 });
-      }
-    }
-  );
+
+// ── STATE ──
+let G = {
+  equip:"attack", coins:1500, tickets:0, rank:0, stars:0, wins:0, mb:0,
+  owned:["attack"], equippedPet:"attack",
+  ballLevels:{attack:1,defense:1,control:1,support:1,ghost:1,gold:1},
+  shards:{attack:0,defense:0,control:0,support:0,ghost:0,gold:0},
+  gachaPity:0, gachaDoubleBlock:0,
+  // Pinball daily
+  pbBalls:5, pbLastReset:'',
+};
+// Load save
+try{ const s=JSON.parse(localStorage.getItem('ma_save_v5')||'{}'); Object.assign(G,s); }catch(e){}
+function save(){ try{ localStorage.setItem('ma_save_v5',JSON.stringify(G)); }catch(e){} }
+
+// Pinball daily reset check
+function checkPbReset(){
+  const today = new Date().toLocaleDateString('zh-TW');
+  if(G.pbLastReset !== today){ G.pbBalls=5; G.pbLastReset=today; save(); }
 }
-setInterval(showBroadcast, 8000);
-setTimeout(showBroadcast, 3000);
 
-// ============================================================
-// FIREWORKS SYSTEM
-// ============================================================
-const fireworks = [];
-const FIREWORK_COLORS = [0xff2d55, 0xa855f7, 0x00d4ff, 0xffd700, 0x22cc55, 0xff8800, 0xff66aa, 0x44ffcc];
+// ══════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════
+let activeGame = null;
+function stopActiveGame(){ if(activeGame){ activeGame.active=false; activeGame=null; } }
+function showScreen(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function showMenu(){
+  stopActiveGame();
+  showScreen('s-menu');
+  updateMenuUI();
+}
+function startGame(mode){
+  stopActiveGame();
+  if(mode==='pinball'){ checkPbReset(); if(G.pbBalls<=0){showToast('今天的彈珠已用完！凌晨重置');return;} initPinball(); return; }
+  if(mode==='battle'){ initBattle(); return; }
+  if(mode==='brawl'){ initBrawl(); return; }
+  if(mode==='basket'){ showScreen('s-basket'); document.getElementById('bk-sel').style.display='flex'; document.getElementById('bk-game').style.display='none'; return; }
+  if(mode==='petarena'){ showScreen('s-petarena'); document.getElementById('pa-sel').style.display='flex'; document.getElementById('pa-game').style.display='none'; document.getElementById('pa-sel-icon').textContent=BALLS[G.equip].pet.emoji; return; }
+  if(mode==='soccer'){ showToast('⚽ 足球模式開發中！'); return; }
+}
 
-function spawnFirework() {
-  // Pick a random position behind/above buildings
-  const x = (Math.random() - 0.5) * 50;
-  const z = -20 - Math.random() * 40;
-  const burstY = 18 + Math.random() * 15;
-  const color = FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)];
-  const sparkCount = 30 + Math.floor(Math.random() * 20);
+// ══════════════════════════════════════════════════════════
+// MENU UI
+// ══════════════════════════════════════════════════════════
+function updateMenuUI(){
+  const bt = BALLS[G.equip];
+  document.getElementById('m-coins').textContent = G.coins;
+  document.getElementById('m-tickets').textContent = G.tickets;
+  document.getElementById('m-stars').textContent = G.stars;
+  document.getElementById('m-mb').textContent = G.mb;
+  document.getElementById('m-rank-chip').textContent = RANK_IC[G.rank]+' '+RANKS[G.rank];
+  document.getElementById('char-avatar').textContent = bt.emoji;
+  document.getElementById('char-avatar').style.background = bt.heroBg;
+  document.getElementById('char-card').style.borderColor = bt.color+'66';
+  document.getElementById('char-type').textContent = bt.name+'彈珠';
+  document.getElementById('char-name').textContent = bt.heroName;
+  document.getElementById('char-name').style.color = bt.color;
+  document.getElementById('char-desc').textContent = bt.desc;
+  document.getElementById('char-atk').textContent = '⚔️攻 '+bt.atkS;
+  document.getElementById('char-atk').style.color = bt.color;
+  document.getElementById('char-def').textContent = '🛡防 '+bt.defS;
+  const pet = bt.pet;
+  document.getElementById('pet-icon').textContent = pet.emoji;
+  document.getElementById('pet-icon').style.filter = `drop-shadow(0 0 6px ${pet.color}88)`;
+  document.getElementById('pet-name').textContent = pet.name;
+  checkPbReset();
+  const badge = document.getElementById('pb-badge');
+  badge.textContent = G.pbBalls;
+  badge.style.background = G.pbBalls>0?'#ff4466':'#334466';
+}
 
-  const positions = new Float32Array(sparkCount * 3);
-  const velocities = [];
-  for (let i = 0; i < sparkCount; i++) {
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = burstY;
-    positions[i * 3 + 2] = z;
-    // Sphere burst pattern
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(Math.random() * 2 - 1);
-    const speed = 0.08 + Math.random() * 0.12;
-    velocities.push({
-      x: Math.sin(phi) * Math.cos(theta) * speed,
-      y: Math.sin(phi) * Math.sin(theta) * speed * 0.7 + 0.02,
-      z: Math.cos(phi) * speed,
-    });
-  }
+// ── Character & Pet Click Interaction ──
+let chatTimeout = null;
+function showChat(text, anchorEl, col='#00f5ff'){
+  const bubble = document.getElementById('chat-bubble');
+  const r = anchorEl.getBoundingClientRect();
+  bubble.textContent = text;
+  bubble.style.borderColor = col;
+  bubble.style.color = '#fff';
+  bubble.style.display = 'block';
+  bubble.style.left = (r.right+10)+'px';
+  bubble.style.top = (r.top-10)+'px';
+  bubble.style.maxWidth = '200px';
+  // Clamp to screen
+  setTimeout(()=>{
+    const br = bubble.getBoundingClientRect();
+    if(br.right > window.innerWidth-10) bubble.style.left = (r.left - br.width - 10)+'px';
+    if(br.bottom > window.innerHeight-10) bubble.style.top = (r.top - br.height + 20)+'px';
+  },5);
+  if(chatTimeout) clearTimeout(chatTimeout);
+  chatTimeout = setTimeout(()=>{ bubble.style.display='none'; }, 2800);
+}
+let charDialogIdx = {};
+function clickCharacter(){
+  const bt = BALLS[G.equip];
+  const dlgs = bt.dialogs;
+  const key = bt.id;
+  if(!charDialogIdx[key]) charDialogIdx[key]=0;
+  const txt = dlgs[charDialogIdx[key] % dlgs.length];
+  charDialogIdx[key]++;
+  showChat(txt, document.getElementById('char-avatar'), bt.color);
+  // Small animation
+  const card = document.getElementById('char-card');
+  card.style.animation='shake .3s';
+  setTimeout(()=>card.style.animation='',400);
+}
+function clickPet(e){
+  e.stopPropagation();
+  const bt = BALLS[G.equip];
+  const dlgs = bt.petDialogs;
+  const key = 'pet_'+bt.id;
+  if(!charDialogIdx[key]) charDialogIdx[key]=0;
+  const txt = dlgs[charDialogIdx[key] % dlgs.length];
+  charDialogIdx[key]++;
+  showChat(bt.pet.name+'：'+txt, document.getElementById('pet-icon'), bt.pet.color);
+  document.getElementById('pet-icon').style.animation='pop .3s';
+  setTimeout(()=>document.getElementById('pet-icon').style.animation='petBounce .8s ease-in-out infinite',400);
+}
 
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const mat = new THREE.PointsMaterial({
-    color, size: 0.4,
-    transparent: true, opacity: 1.0,
-    sizeAttenuation: true,
+// ── Toast ──
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#111128;border:1.5px solid #2233aa55;border-radius:10px;padding:8px 16px;font-size:11px;z-index:300;white-space:nowrap;pointer-events:none;transition:opacity .3s;'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.opacity='0',2000);
+}
+
+// ══════════════════════════════════════════════════════════
+// BALL PICKER
+// ══════════════════════════════════════════════════════════
+function openBallPicker(){
+  const grid = document.getElementById('picker-grid');
+  grid.innerHTML='';
+  Object.values(BALLS).forEach(bt=>{
+    const owned=G.owned.includes(bt.id);
+    const eq=G.equip===bt.id;
+    const d=document.createElement('div');
+    d.style.cssText=`background:#111128;border:2px solid ${owned?bt.color+'66':'#22334455'};border-radius:13px;padding:10px 6px;text-align:center;cursor:${owned?'pointer':'default'};opacity:${owned?1:.4};transition:all .2s;`;
+    d.innerHTML=`<div style="font-size:30px">${bt.emoji}</div><div style="font-size:8px;color:${bt.color};margin-top:3px">${bt.name}</div><div style="font-size:7px;color:#445566">${bt.atkS}</div>${eq?'<div style="font-size:7px;color:'+bt.color+';margin-top:2px;font-weight:700">裝備中</div>':''}`;
+    if(owned) d.onclick=()=>{ G.equip=bt.id; G.equippedPet=bt.id; save(); closePicker(); updateMenuUI(); showChat(bt.dialogs[0],document.getElementById('char-avatar'),bt.color); };
+    grid.appendChild(d);
   });
-  const points = new THREE.Points(geo, mat);
-  scene.add(points);
-
-  fireworks.push({
-    points, velocities, life: 1.0,
-    decay: 0.008 + Math.random() * 0.006,
-  });
+  document.getElementById('ovl-picker').style.display='flex';
 }
+function closePicker(){ document.getElementById('ovl-picker').style.display='none'; }
 
-function updateFireworks() {
-  for (let i = fireworks.length - 1; i >= 0; i--) {
-    const fw = fireworks[i];
-    const pos = fw.points.geometry.attributes.position.array;
-    for (let j = 0; j < fw.velocities.length; j++) {
-      pos[j * 3] += fw.velocities[j].x;
-      pos[j * 3 + 1] += fw.velocities[j].y;
-      pos[j * 3 + 2] += fw.velocities[j].z;
-      fw.velocities[j].y -= 0.002; // gravity
+// ══════════════════════════════════════════════════════════
+// GACHA — RISK SYSTEM
+// ══════════════════════════════════════════════════════════
+// Risk tiers: 0=穩定, 1=冒險, 2=瘋狂 (changes dynamically)
+const GACHA_RISKS = [
+  {name:"穩定模式", desc:"普通機率，穩健收益", cls:"risk-low", multiplier:[0.8,1.0,1.2,1.5], weights:[40,35,20,5]},
+  {name:"冒險模式", desc:"高風險高回報！", cls:"risk-med", multiplier:[0.3,0.6,1.8,3.0], weights:[25,30,30,15]},
+  {name:"瘋狂模式", desc:"⚠️ 一夜暴富或傾家蕩產！", cls:"risk-high", multiplier:[0.1,0.4,2.5,5.0], weights:[20,25,30,25]},
+];
+let gachaRiskLevel = 0;
+let gachaRiskTimer = null;
+
+function openGacha(){
+  document.getElementById('gc-coins').textContent = G.coins;
+  document.getElementById('gc-pity').textContent = G.gachaPity;
+  updateGachaRisk();
+  document.getElementById('gc-result').innerHTML='';
+  document.getElementById('gc-r1').textContent='🎰';
+  document.getElementById('gc-r2').textContent='🎰';
+  document.getElementById('gc-r3').textContent='🎰';
+  document.getElementById('ovl-gacha').style.display='flex';
+  // Risk level randomly shifts every 6s (creates pressure)
+  gachaRiskTimer=setInterval(()=>{
+    gachaRiskLevel=Math.floor(Math.random()*3);
+    updateGachaRisk();
+  },6000);
+}
+function updateGachaRisk(){
+  const r=GACHA_RISKS[gachaRiskLevel];
+  const el=document.getElementById('gc-risk-display');
+  el.className='gacha-risk '+r.cls;
+  document.getElementById('gc-risk-name').textContent=r.name;
+  document.getElementById('gc-risk-desc').textContent=r.desc;
+}
+function closeGacha(){ clearInterval(gachaRiskTimer); document.getElementById('ovl-gacha').style.display='none'; }
+
+function doGacha(times){
+  const cost = times===1?200:1800;
+  if(G.coins<cost){ showToast('金幣不足！'); return; }
+  G.coins-=cost; G.gachaPity+=times;
+  const results=[];
+  const risk=GACHA_RISKS[gachaRiskLevel];
+  for(let i=0;i<times;i++){
+    // 保底：連續10次必得稀有
+    const isPity=G.gachaPity>=10&&i===times-1;
+    // 選multiplier
+    let mult;
+    if(isPity){ mult=risk.multiplier[risk.multiplier.length-1]; G.gachaPity=0; }
+    else{
+      const total=risk.weights.reduce((a,b)=>a+b,0);
+      let rnd=Math.random()*total,idx=0;
+      for(;idx<risk.weights.length-1&&(rnd-=risk.weights[idx])>0;idx++);
+      mult=risk.multiplier[idx];
+      // 防止無限倍增：最多連續2次高倍
+      if(mult>=2.5&&G.gachaDoubleBlock>=2){ mult=risk.multiplier[1]; }
+      if(mult>=2.5) G.gachaDoubleBlock++; else G.gachaDoubleBlock=0;
     }
-    fw.points.geometry.attributes.position.needsUpdate = true;
-    fw.life -= fw.decay;
-    fw.points.material.opacity = Math.max(0, fw.life);
-    fw.points.material.size = 0.4 * fw.life;
-
-    if (fw.life <= 0) {
-      scene.remove(fw.points);
-      fw.points.geometry.dispose();
-      fw.points.material.dispose();
-      fireworks.splice(i, 1);
-    }
+    // Coin result
+    const base=180;
+    const gain=Math.round(base*mult);
+    const delta=gain-base;
+    G.coins+=gain;
+    // Bonus: marble shard or pet ticket
+    let bonus='';
+    if(Math.random()<.12){ const bId=Object.keys(BALLS)[Math.floor(Math.random()*6)]; G.shards[bId]=(G.shards[bId]||0)+1; bonus=` + ${BALLS[bId].emoji}碎片`; }
+    if(isPity||Math.random()<.04){ G.tickets++; bonus+=' + 🎟️'; }
+    results.push({gain,delta,mult,bonus,isPity});
   }
+  // Animate slots
+  const icons=['💰','💎','🌟','🎰','🎁','⚡','🔥','💫'];
+  let spinCount=0;
+  const spinInterval=setInterval(()=>{
+    ['gc-r1','gc-r2','gc-r3'].forEach(id=>{ document.getElementById(id).textContent=icons[Math.floor(Math.random()*icons.length)]; });
+    if(++spinCount>=12){ clearInterval(spinInterval); showGachaResults(results); }
+  },80);
 }
 
-// Random firework launcher
-function scheduleFirework() {
-  spawnFirework();
-  // Next firework in 2-6 seconds
-  setTimeout(scheduleFirework, 2000 + Math.random() * 4000);
+function showGachaResults(results){
+  let totalDelta=results.reduce((s,r)=>s+r.delta,0);
+  const totalGain=results.reduce((s,r)=>s+r.gain,0);
+  const best=results.reduce((a,b)=>b.mult>a.mult?b:a);
+  // Final reel icons
+  const icons=['gc-r1','gc-r2','gc-r3'];
+  if(best.mult>=2.5){ icons.forEach(id=>document.getElementById(id).textContent='🌟'); }
+  else if(best.mult>=1.5){ icons.forEach(id=>document.getElementById(id).textContent='💰'); }
+  else if(best.mult<0.5){ icons.forEach(id=>document.getElementById(id).textContent='💸'); }
+  else{ icons.forEach(id=>document.getElementById(id).textContent='🎰'); }
+  const pity=results.some(r=>r.isPity);
+  const col=totalDelta>0?'#44ff88':totalDelta<-100?'#ff4466':'#ffd700';
+  let html=`<div style="color:${col};font-size:14px;font-weight:900">${totalDelta>=0?'+':''}${totalDelta} 💰</div>`;
+  html+=`<div style="color:#8877aa;font-size:9px">最高倍率 ×${best.mult.toFixed(1)}</div>`;
+  if(pity) html+='<div style="color:#ffd700;font-size:10px">🎯 保底觸發！</div>';
+  results.forEach(r=>{ html+=`<div style="font-size:9px;color:${r.delta>=0?'#44ff88':'#ff8866'}">${r.delta>=0?'+':''}${r.delta}💰 ×${r.mult.toFixed(1)}${r.bonus}</div>`; });
+  document.getElementById('gc-result').innerHTML=html;
+  document.getElementById('gc-coins').textContent=G.coins;
+  document.getElementById('gc-pity').textContent=G.gachaPity;
+  updateMenuUI();
+  save();
 }
-setTimeout(scheduleFirework, 2000);
 
-// ============================================================
-// CLICK BURST EFFECT
-// ============================================================
-const clickBursts = [];
-
-function spawnClickBurst(buildingId, hitPoint) {
-  const building = buildings[buildingId];
-  if (!building) return;
-  const color = COLORS[buildingId]?.primary || 0xffd700;
-
-  // 1) Particle spray upward from hit point
-  const sparkCount = 24;
-  const positions = new Float32Array(sparkCount * 3);
-  const velocities = [];
-  for (let i = 0; i < sparkCount; i++) {
-    positions[i * 3] = hitPoint.x;
-    positions[i * 3 + 1] = hitPoint.y;
-    positions[i * 3 + 2] = hitPoint.z;
-    const angle = Math.random() * Math.PI * 2;
-    const upSpeed = 0.05 + Math.random() * 0.1;
-    const outSpeed = 0.02 + Math.random() * 0.04;
-    velocities.push({
-      x: Math.cos(angle) * outSpeed,
-      y: upSpeed,
-      z: Math.sin(angle) * outSpeed,
-    });
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const mat = new THREE.PointsMaterial({
-    color, size: 0.3,
-    transparent: true, opacity: 1.0,
-    sizeAttenuation: true,
+// ══════════════════════════════════════════════════════════
+// CHEST SYSTEM
+// ══════════════════════════════════════════════════════════
+function buildDrops(tier){
+  const res=[];
+  const coinBase=[15,35,80,150,250,420,650,1000,1600,2500][Math.min(tier,9)];
+  res.push({type:"coins",amt:coinBase+Math.floor(Math.random()*coinBase*.6),label:"💰 金幣"});
+  const shardAmt=Math.max(1,Math.floor(1+tier*1.5+Math.random()*tier));
+  const sid=Object.keys(BALLS)[Math.floor(Math.random()*6)];
+  res.push({type:"shard",ballId:sid,amt:shardAmt,label:`${BALLS[sid].emoji}${BALLS[sid].name}碎片`});
+  if(tier>=3){ const mb=Math.floor((tier-2)*18+Math.random()*tier*22); res.push({type:"mb",amt:mb,label:"💎 彈珠幣"}); }
+  if(tier>=5&&Math.random()<[0,0,0,0,0,.07,.14,.25,.42,.65][tier]){ res.push({type:"ticket",amt:1,label:"🎟️ 禮券"}); }
+  if(tier>=7&&Math.random()<.3){ const fid=Object.keys(BALLS)[Math.floor(Math.random()*6)]; if(!G.owned.includes(fid)){ res.push({type:"full",ballId:fid,amt:1,label:`🎯 完整彈珠 ${BALLS[fid].emoji}`}); } }
+  return res;
+}
+function openChest(){
+  const list=document.getElementById('chest-list');
+  list.innerHTML='';
+  BOXES.forEach(box=>{
+    const locked=G.rank<box.rk;
+    const d=document.createElement('div');
+    d.style.cssText=`background:${locked?'#0a0a0a':'#111128'};border:1.5px solid ${locked?'#222':''+box.col+'44'};border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;opacity:${locked?.4:1};`;
+    d.innerHTML=`<span style="font-size:26px">${box.emoji}</span><div style="flex:1"><div style="font-size:11px;font-weight:700;color:${box.col}">${box.name}</div><div style="font-size:8px;color:#4455aa">${locked?'🔒 需要'+RANKS[box.rk]+'段位':'花費 '+box.cost+'💰'}</div></div>${locked?'':'<button class="btn bg" style="padding:6px 10px;font-size:10px" onclick="buyChest(\''+box.id+'\')">開啟</button>'}`;
+    list.appendChild(d);
   });
-  const points = new THREE.Points(geo, mat);
-  scene.add(points);
-
-  // 2) Flash sphere at hit point
-  const flashGeo = new THREE.SphereGeometry(1.5, 16, 16);
-  const flashMat = new THREE.MeshStandardMaterial({
-    color, emissive: color,
-    emissiveIntensity: 5, toneMapped: false,
-    transparent: true, opacity: 0.6,
+  document.getElementById('ovl-chest').style.display='flex';
+}
+function closeChest(){ document.getElementById('ovl-chest').style.display='none'; }
+function buyChest(id){
+  const box=BOXES.find(b=>b.id===id); if(!box)return;
+  if(G.coins<box.cost){ showToast('金幣不足！需要'+box.cost+'💰'); return; }
+  G.coins-=box.cost;
+  const drops=buildDrops(box.tier);
+  drops.forEach(d=>{
+    if(d.type==='coins') G.coins+=d.amt;
+    if(d.type==='mb') G.mb+=d.amt;
+    if(d.type==='ticket') G.tickets+=d.amt;
+    if(d.type==='shard') G.shards[d.ballId]=(G.shards[d.ballId]||0)+d.amt;
+    if(d.type==='full'&&!G.owned.includes(d.ballId)) G.owned.push(d.ballId);
   });
-  const flash = new THREE.Mesh(flashGeo, flashMat);
-  flash.position.copy(hitPoint);
-  scene.add(flash);
-
-  // 3) Brief point light burst
-  const burstLight = new THREE.PointLight(color, 15, 20);
-  burstLight.position.copy(hitPoint);
-  scene.add(burstLight);
-
-  clickBursts.push({
-    points, velocities, flash, burstLight,
-    life: 1.0, decay: 0.025,
-  });
+  save(); updateMenuUI();
+  // Show result
+  closeChest();
+  const ov=document.createElement('div');
+  ov.className='chest-overlay';
+  ov.innerHTML=`<div class="chest-box" style="border-color:${box.col}55">
+    <div style="font-size:48px;animation:pop .4s">${box.emoji}</div>
+    <div style="font-family:var(--font-d);font-size:14px;font-weight:900;color:${box.col};margin:8px 0">${box.name} 開啟！</div>
+    ${drops.map(d=>`<div class="chest-item"><span style="font-size:20px">${d.label.split(' ')[0]}</span><div><div style="font-size:11px;font-weight:700">${d.label}</div><div style="font-size:10px;color:#44ff88;font-weight:700">+${d.amt}</div></div></div>`).join('')}
+    <button class="btn bp" onclick="this.parentElement.parentElement.remove();openChest()" style="width:100%;margin-top:10px;padding:10px">繼續</button>
+  </div>`;
+  document.body.appendChild(ov);
 }
 
-function updateClickBursts() {
-  for (let i = clickBursts.length - 1; i >= 0; i--) {
-    const b = clickBursts[i];
-    const pos = b.points.geometry.attributes.position.array;
-    for (let j = 0; j < b.velocities.length; j++) {
-      pos[j * 3] += b.velocities[j].x;
-      pos[j * 3 + 1] += b.velocities[j].y;
-      pos[j * 3 + 2] += b.velocities[j].z;
-      b.velocities[j].y -= 0.003;
-    }
-    b.points.geometry.attributes.position.needsUpdate = true;
-    b.life -= b.decay;
-    b.points.material.opacity = Math.max(0, b.life);
-    b.flash.material.opacity = Math.max(0, b.life * 0.6);
-    b.flash.scale.setScalar(1 + (1 - b.life) * 2);
-    b.burstLight.intensity = 15 * b.life;
-
-    if (b.life <= 0) {
-      scene.remove(b.points);
-      b.points.geometry.dispose();
-      b.points.material.dispose();
-      scene.remove(b.flash);
-      b.flash.geometry.dispose();
-      b.flash.material.dispose();
-      scene.remove(b.burstLight);
-      clickBursts.splice(i, 1);
-    }
+// ══════════════════════════════════════════════════════════
+// RESULT + RANK SYSTEM
+// ══════════════════════════════════════════════════════════
+function showResult(win, l1, v1, l2, v2){
+  document.getElementById('res-icon').textContent=win?'🏆':'💔';
+  document.getElementById('res-title').textContent=win?'勝利！':'落敗...';
+  document.getElementById('res-title').style.color=win?'#ffd700':'#ff6688';
+  document.getElementById('res-l1').textContent=l1;
+  document.getElementById('res-v1').textContent=v1;
+  document.getElementById('res-l2').textContent=l2;
+  document.getElementById('res-v2').textContent=v2;
+  document.getElementById('ovl-result').style.display='flex';
+  if(win){
+    G.wins++;
+    if(G.wins%3===0&&G.rank<6){ G.rank++; G.stars=0; save(); setTimeout(()=>showRankPopup(G.rank),600); }
+    else{ G.stars=Math.min(9,G.stars+(win?1:0)); save(); }
   }
 }
-
-// ============================================================
-// ANIMATED ELEMENTS
-// ============================================================
-function updateAnimatedElements(time) {
-  for (const building of Object.values(buildings)) {
-    building.traverse((child) => {
-      if (child.userData.animate === 'rotate') {
-        child.rotation.y += 0.01;
-      }
-      if (child.userData.animate === 'floatRotate') {
-        child.rotation.y += 0.008;
-        child.rotation.x = Math.sin(time * 0.5) * 0.15;
-        child.position.y = 13.5 + Math.sin(time * 0.8) * 0.5;
-      }
-    });
-  }
-  // Water wobble for fishing
-  if (buildings.fishing) {
-    buildings.fishing.traverse((child) => {
-      if (child.isMesh && child.material.opacity === 0.6 && child.geometry.type === 'PlaneGeometry') {
-        child.position.y = -0.1 + Math.sin(time * 1.2) * 0.08;
-      }
-    });
-  }
-  // Emblem rotation
-  emblem.rotation.z += 0.002;
+function closeResult(){ document.getElementById('ovl-result').style.display='none'; showMenu(); }
+function showRankPopup(rank){
+  document.getElementById('rp-icon').textContent=RANK_IC[rank];
+  document.getElementById('rp-icon').style.color=RANK_COL[rank];
+  document.getElementById('rank-card').style.borderColor=RANK_COL[rank]+'66';
+  document.getElementById('rp-title').textContent='段位提升！';
+  document.getElementById('rp-name').textContent=RANKS[rank];
+  document.getElementById('rank-popup').style.display='flex';
 }
+function closeRankPopup(){ document.getElementById('rank-popup').style.display='none'; }
 
-// ============================================================
-// RESIZE HANDLER
-// ============================================================
-window.addEventListener('resize', () => {
-  const w = window.innerWidth, h = window.innerHeight;
-  camera.aspect = w / h;
-  // Widen FOV on portrait screens so buildings stay visible
-  camera.fov = (w < h) ? 70 : 55;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-  composer.setSize(w, h);
-});
-
-// ============================================================
-// ANIMATION LOOP
-// ============================================================
-function animate() {
-  requestAnimationFrame(animate);
-  const time = clock.getElapsedTime();
-
-  // Update camera
-  camera.position.set(camPosObj.x, camPosObj.y, camPosObj.z);
-  camTarget.set(camTargetObj.x, camTargetObj.y, camTargetObj.z);
-  camera.lookAt(camTarget);
-
-  // Update systems
-  updateParticles();
-  updateFireworks();
-  updateClickBursts();
-  updateAnimatedElements(time);
-  updateLabels();
-  updateHover();
-
-  // Subtle breathing light on buildings
-  for (const building of Object.values(buildings)) {
-    building.traverse((child) => {
-      if (child.isPointLight) {
-        child.intensity = child.intensity * 0.99 +
-          (child.intensity + Math.sin(time * 2 + child.position.x) * 0.3) * 0.01;
-      }
-    });
-  }
-
-  composer.render();
+// ══════════════════════════════════════════════════════════
+// UNIVERSAL JOYSTICK FACTORY  ←  修正八方向
+// ══════════════════════════════════════════════════════════
+function makeJoy(el){
+  const j={active:false,cx:0,cy:0,dx:0,dy:0,ax:0,ay:0};
+  if(!el)return j;
+  const update=(x,y)=>{
+    const dx=x-j.cx, dy=y-j.cy;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    const maxR=el.offsetWidth/2-8;
+    const scale=d>maxR?maxR/d:1;
+    j.dx=dx*scale; j.dy=dy*scale;
+    // Normalised axis (-1 to 1), dead zone 12px
+    j.ax=Math.abs(dx)>12?cl(dx/maxR,-1,1):0;
+    j.ay=Math.abs(dy)>12?cl(dy/maxR,-1,1):0;
+  };
+  const start=e=>{
+    e.preventDefault(); e.stopPropagation();
+    const r=el.getBoundingClientRect();
+    j.cx=r.left+r.width/2; j.cy=r.top+r.height/2;
+    j.active=true;
+    const pt=e.touches?e.touches[0]:e;
+    update(pt.clientX,pt.clientY);
+  };
+  const move=e=>{
+    e.preventDefault(); e.stopPropagation();
+    if(!j.active)return;
+    const pt=e.touches?e.touches[0]:e;
+    update(pt.clientX,pt.clientY);
+  };
+  const end=e=>{ e.preventDefault(); j.active=false; j.dx=0; j.dy=0; j.ax=0; j.ay=0; };
+  el.addEventListener('pointerdown',start,{passive:false});
+  el.addEventListener('pointermove',move,{passive:false});
+  el.addEventListener('pointerup',end,{passive:false});
+  el.addEventListener('pointerleave',end,{passive:false});
+  el.addEventListener('touchstart',start,{passive:false});
+  el.addEventListener('touchmove',move,{passive:false});
+  el.addEventListener('touchend',end,{passive:false});
+  return j;
 }
-
-// ============================================================
-// INIT
-// ============================================================
-initBuildings();
-
-// Remove loading screen
-setTimeout(() => {
-  document.getElementById('loading').classList.add('fade-out');
-  setTimeout(() => {
-    document.getElementById('loading').remove();
-    // Show HUD
-    document.getElementById('hud-top').classList.add('visible');
-    document.getElementById('hud-bottom').classList.add('visible');
-  }, 800);
-}, 1800);
-
-animate();
 </script>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// PINBALL MACHINE  —  每日5顆・右下角發射・6分數孔
+// ══════════════════════════════════════════════════════════
+const PB_W=430,PB_H=560;
+const PB_PEGS=(()=>{const p=[];for(let r=0;r<9;r++)for(let c=0;c<(r%2===0?8:7);c++)p.push({x:28+(r%2===0?0:26)+c*52,y:110+r*46,r:8,lit:0});return p;})();
+const PB_HOLES=[
+  {x:38, pts:100,col:"#ff4466",label:"100"},
+  {x:108,pts:500,col:"#ffd700",label:"500"},
+  {x:178,pts:200,col:"#44aaff",label:"200"},
+  {x:248,pts:1000,col:"#ff44ff",label:"1000"},
+  {x:318,pts:200,col:"#44aaff",label:"200"},
+  {x:390,pts:500,col:"#ffd700",label:"500"},
+];
+let pbG=null;
+let pbAimAngle=Math.PI*0.5; // default: straight down
+let pbAiming=false;
+
+function initPinball(){
+  checkPbReset();
+  showScreen('s-pinball');
+  updatePbUI();
+  const cv=document.getElementById('pb-canvas');
+  const ctx=cv.getContext('2d');
+  pbG={balls:[],score:0,coinsEarned:0,active:true,af:null,pegs:PB_PEGS.map(p=>({...p,lit:0})),popups:[]};
+  activeGame=pbG;
+  // Aim touch on canvas
+  cv.onpointerdown=e=>{ pbAiming=true; updateAim(e,cv); };
+  cv.onpointermove=e=>{ if(pbAiming)updateAim(e,cv); };
+  cv.onpointerup=e=>{ pbAiming=false; };
+  cv.ontouchstart=e=>{ e.preventDefault(); pbAiming=true; updateAim(e.touches[0],cv); };
+  cv.ontouchmove=e=>{ e.preventDefault(); if(pbAiming)updateAim(e.touches[0],cv); };
+  cv.ontouchend=e=>{ e.preventDefault(); pbAiming=false; };
+  pbDrawLoop(ctx);
+}
+
+function updateAim(e,cv){
+  const r=cv.getBoundingClientRect();
+  const scaleX=PB_W/r.width,scaleY=PB_H/r.height;
+  const mx=(e.clientX-r.left)*scaleX;
+  const my=(e.clientY-r.top)*scaleY;
+  const launchX=PB_W/2;const launchY=75;
+  pbAimAngle=Math.atan2(my-launchY,mx-launchX);
+  pbAimAngle=cl(pbAimAngle,0.3,Math.PI-0.3); // limit angle
+}
+
+function launchPinball(){
+  checkPbReset();
+  if(G.pbBalls<=0){ showToast('今日彈珠已用完！'); return; }
+  if(!pbG||!pbG.active){ initPinball(); return; }
+  const bt=BALLS[G.equip];
+  G.pbBalls--;
+  save(); updatePbUI();
+  // Show character launch dialog
+  showToast(bt.battleEntry);
+  const spd=12;
+  pbG.balls.push({
+    x:PB_W/2,y:75,vx:Math.cos(pbAimAngle)*spd,vy:Math.sin(pbAimAngle)*spd,
+    r:11,active:true,trail:[],emoji:bt.emoji,color:bt.color,
+  });
+  if(G.pbBalls<=0) document.getElementById('pb-launch-btn').style.opacity='.3';
+}
+
+function updatePbUI(){
+  const ui=document.getElementById('pb-balls-ui');
+  const bt=BALLS[G.equip];
+  ui.innerHTML='';
+  for(let i=0;i<5;i++){
+    const d=document.createElement('div');
+    d.className='pb-ball-dot';
+    d.style.cssText=`width:16px;height:16px;border-radius:50%;border:2px solid ${bt.color};background:${i<G.pbBalls?bt.color+'88':'#111128'};`;
+    ui.appendChild(d);
+  }
+  if(pbG){ document.getElementById('pb-score').textContent=pbG.score; document.getElementById('pb-coins-earn').textContent=pbG.coinsEarned; }
+}
+
+function pbDrawLoop(ctx){
+  if(!pbG||!pbG.active)return;
+  const g=pbG;
+  const step=()=>{
+    if(!g.active)return;
+    // Update balls
+    g.balls=g.balls.filter(b=>{
+      if(!b.active)return false;
+      b.trail.unshift({x:b.x,y:b.y});
+      if(b.trail.length>8)b.trail.pop();
+      b.vy+=0.38; // gravity
+      b.x+=b.vx; b.y+=b.vy;
+      b.vx*=0.992;
+      // Walls
+      if(b.x<b.r){b.x=b.r;b.vx=Math.abs(b.vx)*.75;}
+      if(b.x>PB_W-b.r){b.x=PB_W-b.r;b.vx=-Math.abs(b.vx)*.75;}
+      if(b.y<b.r){b.y=b.r;b.vy=Math.abs(b.vy)*.5;}
+      // Pegs
+      g.pegs.forEach(p=>{const dx=b.x-p.x,dy=b.y-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<b.r+p.r){const nx=dx/d,ny=dy/d;const spd=Math.sqrt(b.vx**2+b.vy**2);b.vx=nx*spd*.85+(Math.random()-.5)*.5;b.vy=ny*spd*.85;b.x=p.x+nx*(b.r+p.r+1);b.y=p.y+ny*(b.r+p.r+1);p.lit=20;}});
+      // Holes (bottom band)
+      if(b.y>PB_H-55){
+        PB_HOLES.forEach(h=>{if(Math.abs(b.x-h.x)<30){
+          const pts=h.pts; g.score+=pts;
+          const coins=Math.floor(pts/10); g.coinsEarned+=coins; G.coins+=coins;
+          g.popups.push({x:h.x,y:PB_H-70,txt:'+'+pts+'分 +'+coins+'💰',t:70,col:h.col});
+          updatePbUI(); save(); b.active=false;
+        }});
+        if(b.y>PB_H+20)b.active=false;
+      }
+      return b.active;
+    });
+    g.pegs.forEach(p=>{if(p.lit>0)p.lit--;});
+    g.popups=g.popups.filter(p=>{p.t--;p.y-=.5;return p.t>0;});
+
+    // Draw
+    ctx.clearRect(0,0,PB_W,PB_H);
+    // BG
+    const bgG=ctx.createLinearGradient(0,0,0,PB_H);bgG.addColorStop(0,'#020610');bgG.addColorStop(1,'#040820');
+    ctx.fillStyle=bgG;ctx.fillRect(0,0,PB_W,PB_H);
+    // Border glow
+    ctx.strokeStyle='#00f5ff33';ctx.lineWidth=2;ctx.strokeRect(1,1,PB_W-2,PB_H-2);
+    // Launch guide line
+    const lx=PB_W/2,ly=75;
+    ctx.save();ctx.strokeStyle='#ffffff22';ctx.lineWidth=1;ctx.setLineDash([6,8]);
+    ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(lx+Math.cos(pbAimAngle)*120,ly+Math.sin(pbAimAngle)*120);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    // Launch area
+    ctx.beginPath();ctx.arc(lx,ly,18,0,Math.PI*2);ctx.fillStyle='#0a1a2a';ctx.fill();ctx.strokeStyle='#00f5ff44';ctx.lineWidth=2;ctx.stroke();
+    ctx.font='14px monospace';ctx.textAlign='center';ctx.fillText(BALLS[G.equip].emoji,lx,ly+5);
+    // Pegs
+    g.pegs.forEach(p=>{
+      const lit=p.lit>0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=lit?'#ffd700':'#1a2244';ctx.fill();
+      ctx.strokeStyle=lit?'#fff':'#3344aa';ctx.lineWidth=lit?2:1;ctx.stroke();
+      if(lit){ctx.shadowColor='#ffd700';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}
+    });
+    // Score holes
+    const holeW=58,holeH=44;
+    PB_HOLES.forEach((h,i)=>{
+      const hx=h.x-holeW/2,hy=PB_H-holeH;
+      const gr=ctx.createLinearGradient(hx,hy,hx,hy+holeH);
+      gr.addColorStop(0,h.col+'33');gr.addColorStop(1,h.col+'88');
+      ctx.fillStyle=gr;ctx.fillRect(hx,hy,holeW,holeH);
+      ctx.strokeStyle=h.col+'88';ctx.lineWidth=2;ctx.strokeRect(hx,hy,holeW,holeH);
+      ctx.fillStyle=h.col;ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText(h.label,h.x,hy+28);
+    });
+    // Balls
+    g.balls.forEach(b=>{
+      // Trail
+      b.trail.forEach((t,i)=>{ctx.beginPath();ctx.arc(t.x,t.y,b.r*(1-i/8),0,Math.PI*2);ctx.fillStyle=b.color+Math.floor((1-i/8)*80).toString(16).padStart(2,'0');ctx.fill();});
+      // Ball
+      ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      const gr=ctx.createRadialGradient(b.x-3,b.y-3,1,b.x,b.y,b.r);gr.addColorStop(0,'#fff');gr.addColorStop(.4,b.color);gr.addColorStop(1,b.color+'66');
+      ctx.fillStyle=gr;ctx.shadowColor=b.color;ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+      ctx.font=`bold ${b.r}px monospace`;ctx.textAlign='center';ctx.fillText(b.emoji,b.x,b.y+4);
+    });
+    // Popups
+    g.popups.forEach(p=>{ctx.globalAlpha=p.t/70;ctx.fillStyle=p.col;ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.shadowColor=p.col;ctx.shadowBlur=6;ctx.fillText(p.txt,p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    if(g.active)g.af=requestAnimationFrame(step);
+  };
+  g.af=requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════════════════
+// BATTLE GAME  —  金庫攻防
+// ══════════════════════════════════════════════════════════
+const VB_W=430,VB_H=480;
+const VAULT_COVERS=[{x:100,y:200,w:80,h:18},{x:250,y:150,w:80,h:18},{x:155,y:320,w:80,h:18},{x:310,y:280,w:60,h:18}];
+let btG=null,btJoy=null;
+let btCharge=0,btChargeTimer=null;
+
+function initBattle(){
+  const bt=BALLS[G.equip];
+  const lv=G.ballLevels[bt.id]||1;
+  const atkMult=bt.atk*(1+0.15*(lv-1));
+  const maxHp=Math.round(120+bt.def*30);
+  showScreen('s-battle');
+  document.getElementById('bt-emoji').textContent=bt.emoji;
+  document.getElementById('bt-name').textContent=bt.heroName;
+  // Show battle entry dialog
+  setTimeout(()=>showToast(bt.battleEntry),300);
+  // Skills
+  const skillDefs={
+    attack: [{name:"⚡衝刺斬",cd:240,col:"#ff4455",fn:(g)=>{const ang=Math.atan2(btJoy.ay,btJoy.ax)||0;g.me.vx=Math.cos(ang)*22;g.me.vy=Math.sin(ang)*22;g.vaultParticles.push({x:g.me.x,y:g.me.y,col:"#ff4455",t:30,type:"burst"});}},{name:"🔥烈焰",cd:480,col:"#ff8844",fn:(g)=>{for(let i=0;i<8;i++)g.bullets.push({x:g.me.x,y:g.me.y,vx:Math.cos(i*Math.PI/4)*9,vy:Math.sin(i*Math.PI/4)*9,dmg:Math.floor(40*atkMult),t:40,col:"#ff8844",r:6});}}],
+    defense:[{name:"🛡磁力盾",cd:300,col:"#4488ff",fn:(g)=>{g.me.shield=180;}},{name:"💎護甲",cd:500,col:"#88ccff",fn:(g)=>{g.me.hp=Math.min(maxHp,g.me.hp+40);}}],
+    control:[{name:"🌀旋風",cd:280,col:"#44ee88",fn:(g)=>{for(let i=0;i<6;i++)g.bullets.push({x:g.me.x,y:g.me.y,vx:Math.cos(i*Math.PI/3)*11,vy:Math.sin(i*Math.PI/3)*11,dmg:Math.floor(28*atkMult),t:50,col:"#44ee88",r:5});}},{name:"🌊海嘯",cd:480,col:"#44ddff",fn:(g)=>{g.vault.hp=Math.max(0,g.vault.hp-Math.floor(120*atkMult));g.vaultParticles.push({x:g.vault.x,y:g.vault.y,col:"#44ddff",t:45,type:"wave"});}}],
+    support:[{name:"✨閃現",cd:240,col:"#ffcc00",fn:(g)=>{if(btJoy.active){g.me.x=cl(g.me.x+btJoy.ax*150,g.me.r,VB_W-g.me.r);g.me.y=cl(g.me.y+btJoy.ay*150,g.me.r,VB_H-g.me.r);}}},{name:"🌟星爆",cd:480,col:"#ffff44",fn:(g)=>{g.bullets.push({x:g.me.x,y:g.me.y,vx:Math.cos(g.me.aimAng)*14,vy:Math.sin(g.me.aimAng)*14,dmg:Math.floor(80*atkMult),t:60,col:"#ffff44",r:10,explodes:true});}}],
+    ghost: [{name:"👻隱形",cd:280,col:"#cc88ff",fn:(g)=>{g.me.invisible=180;}},{name:"☠️死亡",cd:500,col:"#8844ff",fn:(g)=>{g.vault.hp=Math.max(0,g.vault.hp-Math.floor(g.vault.maxHp*.3));}}],
+    gold:  [{name:"💰金幣爆",cd:280,col:"#ffd700",fn:(g)=>{for(let i=0;i<12;i++)g.bullets.push({x:g.me.x,y:g.me.y,vx:(Math.random()-.5)*16,vy:(Math.random()-.5)*16,dmg:Math.floor(25*atkMult),t:35,col:"#ffd700",r:5});}},{name:"👑帝王",cd:500,col:"#ff8800",fn:(g)=>{g.vault.hp=Math.max(0,g.vault.hp-Math.floor(200*atkMult));g.vaultParticles.push({x:g.vault.x,y:g.vault.y,col:"#ffd700",t:60,type:"crown"});}}],
+  };
+  const mySkills=skillDefs[bt.id]||skillDefs.attack;
+  btG={
+    me:{x:70,y:VB_H/2,vx:0,vy:0,r:16,hp:maxHp,maxHp,shield:0,invisible:0,aimAng:0,shootCd:0,id:"player"},
+    vault:{x:VB_W-80,y:VB_H/2,r:45,hp:200,maxHp:200,w:80,h:90,shakeT:0},
+    guards:[{x:VB_W-170,y:VB_H/2-70,vx:0,vy:0,r:14,hp:60,maxHp:60,ai:0},{x:VB_W-170,y:VB_H/2+70,vx:0,vy:0,r:14,hp:60,maxHp:60,ai:0},{x:VB_W-260,y:VB_H/2,vx:0,vy:0,r:14,hp:80,maxHp:80,ai:0}],
+    bullets:[],guardBullets:[],vaultParticles:[],
+    skills:mySkills,skillCds:[0,0],
+    bt,atkMult,active:true,af:null,tick:0,popups:[],
+  };
+  activeGame=btG;
+  // Skill buttons
+  const row=document.getElementById('bt-skills');
+  row.innerHTML='';
+  mySkills.forEach((sk,i)=>{
+    const btn=document.createElement('button');
+    btn.className='skill-btn';
+    btn.id='bt-sk-'+i;
+    btn.style.cssText=`color:${sk.col};border-color:${sk.col}44;background:#0d0d22;flex:1;padding:8px 4px;font-size:9px;font-weight:900;font-family:var(--font-b)`;
+    btn.textContent=sk.name;
+    btn.onclick=()=>doBattleSkill(i);
+    row.appendChild(btn);
+  });
+  btJoy=makeJoy(document.getElementById('bt-joy'));
+  btBattleLoop();
+}
+
+function doBattleSkill(i){
+  if(!btG)return;
+  if(btG.skillCds[i]>0){showToast('技能冷卻中！');return;}
+  btG.skills[i].fn(btG);
+  btG.skillCds[i]=btG.skills[i].cd;
+  // VFX
+  btG.vaultParticles.push({x:btG.me.x,y:btG.me.y,col:btG.skills[i].col,t:40,type:"skill"});
+}
+
+function btStartCharge(){
+  if(btChargeTimer)clearInterval(btChargeTimer);
+  btCharge=0;
+  document.getElementById('bt-power').style.width='0%';
+  btChargeTimer=setInterval(()=>{ btCharge=Math.min(100,btCharge+4); document.getElementById('bt-power').style.width=btCharge+'%'; if(btCharge>=100)clearInterval(btChargeTimer); },30);
+}
+function btRelease(){
+  clearInterval(btChargeTimer);
+  if(!btG)return;
+  const g=btG;
+  const ang=btJoy.active?Math.atan2(btJoy.ay,btJoy.ax):g.me.aimAng;
+  const spd=9+btCharge*.08;
+  const dmg=Math.floor((15+btCharge*.6)*g.atkMult);
+  g.bullets.push({x:g.me.x+Math.cos(ang)*(g.me.r+6),y:g.me.y+Math.sin(ang)*(g.me.r+6),vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,dmg,t:80,col:g.bt.color,r:6+Math.floor(btCharge*.04)});
+  document.getElementById('bt-power').style.width='0%';
+  btCharge=0;
+}
+
+function btBattleLoop(){
+  const g=btG;
+  const cv=document.getElementById('bt-canvas');
+  const ctx=cv.getContext('2d');
+  const inCov=(x,y,r)=>VAULT_COVERS.some(c=>x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);
+  const step=()=>{
+    if(!g.active)return;
+    g.tick++;
+    // Player movement
+    const sp=1.8;
+    if(btJoy.active){ g.me.vx+=btJoy.ax*sp; g.me.vy+=btJoy.ay*sp; }
+    g.me.vx*=.8;g.me.vy*=.8;
+    const nx=cl(g.me.x+g.me.vx,g.me.r,VB_W-g.me.r);
+    const ny=cl(g.me.y+g.me.vy,g.me.r,VB_H-g.me.r);
+    if(!inCov(nx,g.me.y,g.me.r-2))g.me.x=nx;else g.me.vx*=-.3;
+    if(!inCov(g.me.x,ny,g.me.r-2))g.me.y=ny;else g.me.vy*=-.3;
+    if(btJoy.active&&(Math.abs(btJoy.ax)>.05||Math.abs(btJoy.ay)>.05))g.me.aimAng=Math.atan2(btJoy.ay,btJoy.ax);
+    if(g.me.shield>0)g.me.shield--;if(g.me.invisible>0)g.me.invisible--;
+    // Skill CDs
+    g.skillCds=g.skillCds.map(cd=>Math.max(0,cd-1));
+    g.skillCds.forEach((cd,i)=>{
+      const btn=document.getElementById('bt-sk-'+i); if(!btn)return;
+      const sk=g.skills[i];
+      btn.style.opacity=cd>0?.5:1;
+      btn.textContent=cd>0?sk.name.split(' ')[0]+' '+(Math.ceil(cd/60))+'s':sk.name;
+      const fill=btn.querySelector('.skill-cd-fill');
+      if(fill)fill.style.width=(cd>0?(1-cd/sk.cd)*100:100)+'%';
+    });
+    // Guards AI
+    g.guards.forEach(gr=>{
+      if(gr.hp<=0)return;
+      const dx=g.me.x-gr.x,dy=g.me.y-gr.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+      const pref=120;
+      if(d>pref+15){gr.vx+=(dx/d)*.6;gr.vy+=(dy/d)*.6;}
+      else if(d<pref-20){gr.vx-=(dx/d)*.4;gr.vy-=(dy/d)*.4;}
+      else{gr.vx+=(Math.random()-.5)*.4;gr.vy+=(Math.random()-.5)*.4;}
+      gr.vx*=.85;gr.vy*=.85;
+      const gnx=cl(gr.x+gr.vx,gr.r,VB_W-gr.r);const gny=cl(gr.y+gr.vy,gr.r,VB_H-gr.r);
+      if(!inCov(gnx,gr.y,gr.r-2))gr.x=gnx;else gr.vx*=-.3;
+      if(!inCov(gr.x,gny,gr.r-2))gr.y=gny;else gr.vy*=-.3;
+      gr.ai=(gr.ai||0)+1;
+      if(gr.ai%90===0&&d<250&&!g.me.invisible){const ang=Math.atan2(dy,dx)+.2+(Math.random()-.5)*.4;g.guardBullets.push({x:gr.x,y:gr.y,vx:Math.cos(ang)*7,vy:Math.sin(ang)*7,dmg:12,t:65,r:5});}
+    });
+    // Player bullets → vault + guards
+    g.bullets=g.bullets.filter(b=>{b.x+=b.vx;b.y+=b.vy;b.t--;if(b.t<=0||b.x<0||b.x>VB_W||b.y<0||b.y>VB_H)return false;
+      if(VAULT_COVERS.some(c=>b.x>c.x&&b.x<c.x+c.w&&b.y>c.y&&b.y<c.y+c.h)){b.vx*=-.7;b.vy*=-.5;b.t=Math.min(b.t,8);return true;}
+      // Guards
+      for(const gr of g.guards){if(gr.hp<=0)continue;if(vd(b,gr)<gr.r+b.r){gr.hp=Math.max(0,gr.hp-b.dmg);g.popups.push({x:gr.x,y:gr.y-14,txt:'-'+b.dmg,t:45,col:b.col||'#ff4466'});if(b.explodes){for(let a=0;a<6;a++)g.bullets.push({x:b.x,y:b.y,vx:Math.cos(a*Math.PI/3)*6,vy:Math.sin(a*Math.PI/3)*6,dmg:Math.floor(b.dmg*.4),t:25,col:b.col,r:4});}return false;}}
+      // Vault
+      const vd2=Math.sqrt((b.x-g.vault.x)**2+(b.y-g.vault.y)**2);if(vd2<g.vault.r+b.r){g.vault.hp=Math.max(0,g.vault.hp-b.dmg);g.vault.shakeT=12;g.popups.push({x:g.vault.x,y:g.vault.y-20,txt:'-'+b.dmg+'💥',t:55,col:b.col||'#ff4466'});if(b.explodes){for(let a=0;a<6;a++)g.bullets.push({x:b.x,y:b.y,vx:Math.cos(a*Math.PI/3)*7,vy:Math.sin(a*Math.PI/3)*7,dmg:Math.floor(b.dmg*.4),t:30,col:b.col,r:4});}return false;}
+      return true;});
+    // Guard bullets → player
+    g.guardBullets=g.guardBullets.filter(b=>{b.x+=b.vx;b.y+=b.vy;b.t--;if(b.t<=0||b.x<0||b.x>VB_W||b.y<0||b.y>VB_H)return false;
+      if(vd(b,g.me)<g.me.r+b.r&&!g.me.invisible){if(g.me.shield>0){g.me.shield=0;g.popups.push({x:g.me.x,y:g.me.y-14,txt:'🛡彈',t:40,col:'#4488ff'});}else{g.me.hp=Math.max(0,g.me.hp-b.dmg);g.popups.push({x:g.me.x,y:g.me.y-14,txt:'-'+b.dmg,t:40,col:'#ff4466'});}return false;}
+      return true;});
+    g.vaultParticles=g.vaultParticles.filter(p=>{p.t--;p.y-=.5;return p.t>0;});
+    g.popups=g.popups.filter(p=>{p.t--;p.y-=.45;return p.t>0;});
+    if(g.vault.shakeT>0)g.vault.shakeT--;
+    // Win/lose
+    if(g.vault.hp<=0){g.active=false;const coins=Math.floor(g.atkMult*150);G.coins+=coins;save();showResult(true,'金庫損壞','💥100%','獲得💰',coins);return;}
+    if(g.me.hp<=0){g.active=false;showResult(false,'HP耗盡','💔','失敗','');return;}
+    // HUD
+    if(g.tick%3===0){
+      document.getElementById('bt-hp-txt').textContent=Math.round(g.me.hp)+'/'+g.me.maxHp;
+      document.getElementById('bt-hp-bar').style.width=(g.me.hp/g.me.maxHp*100)+'%';
+      document.getElementById('bt-hp-bar').style.background=g.me.hp/g.me.maxHp>.6?'#44ff88':g.me.hp/g.me.maxHp>.3?'#ffd700':'#ff4466';
+      document.getElementById('bt-vault-txt').textContent=Math.round(g.vault.hp)+'/'+g.vault.maxHp;
+      document.getElementById('bt-vault-bar').style.width=(g.vault.hp/g.vault.maxHp*100)+'%';
+    }
+    // DRAW
+    ctx.clearRect(0,0,VB_W,VB_H);
+    const bgG=ctx.createLinearGradient(0,0,VB_W,VB_H);bgG.addColorStop(0,'#060412');bgG.addColorStop(1,'#0a0820');ctx.fillStyle=bgG;ctx.fillRect(0,0,VB_W,VB_H);
+    // Grid
+    ctx.strokeStyle='#ffffff05';ctx.lineWidth=1;for(let x=0;x<VB_W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,VB_H);ctx.stroke();}for(let y=0;y<VB_H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(VB_W,y);ctx.stroke();}
+    // Covers
+    VAULT_COVERS.forEach(c=>{ctx.fillStyle='#1a2244';ctx.fillRect(c.x,c.y,c.w,c.h);ctx.strokeStyle='#3344aa';ctx.lineWidth=2;ctx.strokeRect(c.x,c.y,c.w,c.h);});
+    // Vault
+    const vx=g.vault.x+(g.vault.shakeT>0?(Math.random()-0.5)*6:0);
+    const vy=g.vault.y;
+    const vHp=g.vault.hp/g.vault.maxHp;
+    const vCol=vHp>.5?'#ffd700':vHp>.25?'#ff8844':'#ff4444';
+    ctx.fillStyle='#1a1400';ctx.fillRect(vx-40,vy-45,80,90);
+    ctx.strokeStyle=vCol;ctx.lineWidth=3;ctx.shadowColor=vCol;ctx.shadowBlur=10;ctx.strokeRect(vx-40,vy-45,80,90);ctx.shadowBlur=0;
+    ctx.font='36px monospace';ctx.textAlign='center';ctx.fillText('🏦',vx,vy+14);
+    const vbw=72;ctx.fillStyle='#0a0a1a';ctx.fillRect(vx-36,vy-55,vbw,6);ctx.fillStyle=vCol;ctx.fillRect(vx-36,vy-55,vbw*vHp,6);
+    // Guards
+    g.guards.forEach(gr=>{if(gr.hp<=0){ctx.globalAlpha=.2;ctx.font='18px monospace';ctx.textAlign='center';ctx.fillText('💀',gr.x,gr.y+6);ctx.globalAlpha=1;return;}
+      ctx.beginPath();ctx.arc(gr.x,gr.y,gr.r,0,Math.PI*2);ctx.fillStyle='#331122';ctx.fill();ctx.strokeStyle='#ff4466';ctx.lineWidth=1.5;ctx.stroke();ctx.font=`bold ${gr.r+2}px monospace`;ctx.textAlign='center';ctx.fillText('🤖',gr.x,gr.y+5);
+      const bw=gr.r*2.2;ctx.fillStyle='#0a0a1a';ctx.fillRect(gr.x-bw/2,gr.y-gr.r-8,bw,5);ctx.fillStyle='#ff4466';ctx.fillRect(gr.x-bw/2,gr.y-gr.r-8,bw*(gr.hp/gr.maxHp),5);});
+    // Player
+    const me=g.me;
+    if(me.shield>0){ctx.beginPath();ctx.arc(me.x,me.y,me.r+6,0,Math.PI*2);ctx.strokeStyle='#4488ff';ctx.lineWidth=2.5;ctx.shadowColor='#4488ff';ctx.shadowBlur=12;ctx.stroke();ctx.shadowBlur=0;}
+    ctx.globalAlpha=me.invisible>0?.3:1;
+    ctx.beginPath();ctx.arc(me.x,me.y,me.r,0,Math.PI*2);
+    const pgr=ctx.createRadialGradient(me.x-3,me.y-3,1,me.x,me.y,me.r);pgr.addColorStop(0,g.bt.color);pgr.addColorStop(1,g.bt.color+'44');ctx.fillStyle=pgr;ctx.fill();ctx.strokeStyle='#fff4';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.font=`bold ${me.r+2}px monospace`;ctx.textAlign='center';ctx.fillText(g.bt.emoji,me.x,me.y+5);ctx.globalAlpha=1;
+    // Aim line
+    ctx.save();ctx.globalAlpha=.35;ctx.strokeStyle=g.bt.color;ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(me.x+Math.cos(me.aimAng)*(me.r+2),me.y+Math.sin(me.aimAng)*(me.r+2));ctx.lineTo(me.x+Math.cos(me.aimAng)*(me.r+22),me.y+Math.sin(me.aimAng)*(me.r+22));ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    // Bullets
+    g.bullets.forEach(b=>{ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=b.col||g.bt.color;ctx.shadowColor=b.col||g.bt.color;ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;});
+    g.guardBullets.forEach(b=>{ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle='#ff4466';ctx.shadowColor='#ff4466';ctx.shadowBlur=5;ctx.fill();ctx.shadowBlur=0;});
+    // Particles
+    g.vaultParticles.forEach(p=>{ctx.globalAlpha=p.t/50;ctx.font='16px monospace';ctx.textAlign='center';ctx.shadowColor=p.col;ctx.shadowBlur=8;if(p.type==='burst')ctx.fillText('💥',p.x,p.y);else if(p.type==='wave')ctx.fillText('🌊',p.x,p.y);else if(p.type==='crown')ctx.fillText('👑',p.x,p.y);else ctx.fillText('⚡',p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    g.popups.forEach(p=>{ctx.globalAlpha=p.t/55;ctx.fillStyle=p.col||'#ff4466';ctx.font='bold 11px monospace';ctx.textAlign='center';ctx.shadowColor=p.col||'#ff4466';ctx.shadowBlur=4;ctx.fillText(p.txt,p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    if(g.active)g.af=requestAnimationFrame(step);
+  };
+  g.af=requestAnimationFrame(step);
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// BRAWL 3v3  —  自由移動・位移技能・修正搖桿
+// ══════════════════════════════════════════════════════════
+const BW_W=430,BW_H=430;
+const BW_COVERS=[{x:65,y:65,w:70,h:18},{x:295,y:65,w:70,h:18},{x:65,y:347,w:70,h:18},{x:295,y:347,w:70,h:18},{x:185,y:120,w:18,h:80},{x:185,y:230,w:18,h:80},{x:105,y:210,w:75,h:18},{x:250,y:210,w:75,h:18}];
+const BW_BUSHES=[{x:60,y:60,r:32},{x:370,y:60,r:32},{x:60,y:370,r:32},{x:370,y:370,r:32},{x:215,y:75,r:22},{x:215,y:355,r:22}];
+const BW_RES={x:215,y:215,r:28};
+const BRAWL_SKILL_CD=480,BRAWL_DASH_CD=240;
+const BRAWL_SKILL={
+  attack: (me,g)=>{const a=me.aimAng;me.vx=Math.cos(a)*22;me.vy=Math.sin(a)*22;setTimeout(()=>{g.players.filter(p=>p.alive&&p.team!==0).forEach(p=>{if(vd(p,me)<88){const d=Math.floor(48*g.atkMult);p.hp=Math.max(0,p.hp-d);p.combatT=120;if(!p.hp){p.alive=false;p.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:p.x,y:p.y-14,txt:'-'+d+'💥',t:55,col:'#ff4455'});}});},110);},
+  defense:(me,g)=>{g.players.filter(p=>p.alive&&p.team!==0).forEach(p=>{const dx=p.x-me.x,dy=p.y-me.y,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<140){p.vx+=(dx/d)*16;p.vy+=(dy/d)*16;}});g.popups.push({x:me.x,y:me.y-20,txt:'🛡推開！',t:60,col:'#4488ff'});},
+  control:(me,g)=>{g.players.filter(p=>p.alive&&p.team!==0).forEach(p=>{const dx=p.x-me.x,dy=p.y-me.y,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<165){const dm=22;p.hp=Math.max(0,p.hp-dm);p.vx+=(dx/d)*11;p.vy+=(dy/d)*11;p.combatT=110;if(!p.hp){p.alive=false;p.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:p.x,y:p.y-12,txt:'-'+dm+'🌀',t:50,col:'#44ee88'});}});},
+  support:(me,g)=>{const a=me.aimAng;me.x=cl(me.x+Math.cos(a)*140,me.r,BW_W-me.r);me.y=cl(me.y+Math.sin(a)*140,me.r,BW_H-me.r);g.popups.push({x:me.x,y:me.y-18,txt:'✨閃現！',t:55,col:'#ffcc00'});},
+  ghost: (me,g)=>{me.invisible=130;const a=me.aimAng;me.vx=Math.cos(a)*14;me.vy=Math.sin(a)*14;g.popups.push({x:me.x,y:me.y-18,txt:'👻隱身！',t:55,col:'#cc88ff'});},
+  gold:  (me,g)=>{g.players.filter(p=>p.alive&&p.team!==0).forEach(p=>{const dm=Math.floor(36*g.atkMult);p.hp=Math.max(0,p.hp-dm);p.combatT=110;p.vx+=(Math.random()-.5)*10;p.vy+=(Math.random()-.5)*10;if(!p.hp){p.alive=false;p.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}g.popups.push({x:p.x,y:p.y-14,txt:'-'+dm+'💰',t:52,col:'#ffd700'});});},
+};
+
+let bwG=null,bwJL=null,bwJR=null;
+
+function initBrawl(){
+  const bt=BALLS[G.equip];const lv=G.ballLevels[bt.id]||1;
+  const atkMult=bt.atk*(1+.15*(lv-1));
+  const baseHp=Math.round(80+bt.def*22);
+  const mk=(team,idx)=>({x:team===0?80+idx*38:350-idx*38,y:180+idx*80,vx:0,vy:0,r:14,hp:baseHp,maxHp:baseHp,ammo:3,ammoT:0,combatT:0,dashCd:0,skillCd:0,shootCd:0,alive:true,team,idx,isPlayer:team===0&&idx===0,aimAng:team===0?0:Math.PI,inBush:false,invisible:0,regenT:0,id:team*3+idx});
+  showScreen('s-brawl');
+  setTimeout(()=>showToast(bt.battleEntry),300);
+  bwG={players:[0,1,2].map(i=>mk(0,i)).concat([0,1,2].map(i=>mk(1,i))),bullets:[],scores:[0,0],resT:0,popups:[],bt,atkMult,active:true,af:null,tick:0,petT:0};
+  activeGame=bwG;
+  // Skill button label
+  const skBtn=document.getElementById('bw-skill-btn');
+  const sk=BALLS[bt.id]||BALLS.attack;
+  skBtn.textContent=sk.skillName||'技能';
+  skBtn.style.color=sk.skillCol||'#44ff88';
+  skBtn.style.borderColor=(sk.skillCol||'#44ff88')+'44';
+  // HP bar + ammo
+  document.getElementById('bw-hp-bar').style.background=bt.color;
+  const ammoDiv=document.getElementById('bw-ammo');ammoDiv.innerHTML='';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.style.cssText=`width:10px;height:10px;border-radius:50%;background:#44ffdd;border:1.5px solid #223344;`;d.id='bw-a'+i;ammoDiv.appendChild(d);}
+  bwJL=makeJoy(document.getElementById('bw-jL'));
+  bwJR=makeJoy(document.getElementById('bw-jR'));
+  bwLoop();
+}
+
+function bwDash(){if(!bwG)return;const me=bwG.players[0];if(!me.alive||me.dashCd>0)return;me.dashCd=BRAWL_DASH_CD;const a=bwJL.active?Math.atan2(bwJL.ay,bwJL.ax):me.aimAng;me.vx=Math.cos(a)*22;me.vy=Math.sin(a)*22;bwG.popups.push({x:me.x,y:me.y-14,txt:'⚡衝！',t:35,col:'#fff'});}
+function bwSkill(){if(!bwG)return;const me=bwG.players[0];if(!me.alive||me.skillCd>0)return;me.skillCd=BRAWL_SKILL_CD;const fn=BRAWL_SKILL[bwG.bt.id]||BRAWL_SKILL.attack;fn(me,bwG);}
+
+function bwLoop(){
+  const g=bwG;const cv=document.getElementById('bw-canvas');const ctx=cv.getContext('2d');
+  const inCov=(x,y,r)=>BW_COVERS.some(c=>x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);
+  const inBsh=(x,y)=>BW_BUSHES.some(b=>(x-b.x)**2+(y-b.y)**2<b.r**2);
+  const step=()=>{
+    if(!g.active)return;g.tick++;g.petT++;
+    // Resource
+    g.resT=Math.min(180,g.resT+1);
+    if(g.resT>=180){const cnt=[0,0];g.players.forEach(p=>{if(p.alive&&vd(p,BW_RES)<BW_RES.r+p.r+10)cnt[p.team]++;});if(cnt[0]>cnt[1]){g.scores[0]+=2;g.popups.push({x:BW_RES.x,y:BW_RES.y-24,txt:'🔵+2',t:70,col:'#4488ff'});}else if(cnt[1]>cnt[0]){g.scores[1]+=2;g.popups.push({x:BW_RES.x,y:BW_RES.y-24,txt:'🔴+2',t:70,col:'#ff4455'});}g.resT=0;}
+    // Pet orbit & hurt AI
+    if(G.equippedPet){const ang=g.petT*.09;const me=g.players[0];if(me.alive){const px=me.x+Math.cos(ang)*30,py=me.y+Math.sin(ang)*30;g.players.filter(p=>p.alive&&p.team===1).forEach(p=>{if(vd(p,{x:px,y:py})<p.r+12){p.hp=Math.max(0,p.hp-2);p.combatT=50;if(!p.hp){p.alive=false;p.regenT=0;g.scores[0]++;g.scores[1]=Math.max(0,g.scores[1]-1);}}});}}
+    g.players.forEach((p,pi)=>{
+      if(!p.alive){p.regenT++;if(p.regenT>195){p.alive=true;p.hp=p.maxHp;p.ammo=3;p.regenT=0;p.x=p.team===0?85+p.idx*38:345-p.idx*38;p.y=180+p.idx*80;}return;}
+      if(p.isPlayer){
+        // 左搖桿 = 移動
+        if(bwJL.active){p.vx+=bwJL.ax*1.8;p.vy+=bwJL.ay*1.8;}
+        // 右搖桿 = 瞄準+射擊
+        if(bwJR.active&&(Math.abs(bwJR.ax)>.05||Math.abs(bwJR.ay)>.05)){
+          p.aimAng=Math.atan2(bwJR.ay,bwJR.ax);
+          if(p.ammo>0&&p.shootCd<=0){p.ammo--;p.shootCd=16;p.combatT=130;g.bullets.push({x:p.x+Math.cos(p.aimAng)*(p.r+6),y:p.y+Math.sin(p.aimAng)*(p.r+6),vx:Math.cos(p.aimAng)*11,vy:Math.sin(p.aimAng)*11,team:0,r:5,t:80,dmg:Math.floor(22*g.atkMult)});}
+        }
+        if(p.invisible>0)p.invisible--;
+      } else {
+        const enems=g.players.filter(e=>e.alive&&e.team!==p.team);
+        const near=enems.sort((a,b2)=>vd(a,p)-vd(b2,p))[0];
+        if(near){const dx=near.x-p.x,dy=near.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;const pref=108+Math.sin(g.tick*.04+p.id*1.3)*26;if(d>pref+18){p.vx+=(dx/d)*(.72+Math.random()*.18);p.vy+=(dy/d)*(.72+Math.random()*.18);}else if(d<pref-25){p.vx-=(dx/d)*.5;p.vy-=(dy/d)*.5;}else{const perp=Math.atan2(dy,dx)+Math.PI/2+(p.id%2?0:Math.PI);p.vx+=Math.cos(perp)*.65;p.vy+=Math.sin(perp)*.65;}p.aimAng=Math.atan2(dy,dx);if(!near.invisible&&p.ammo>0&&p.shootCd<=0&&d<200&&Math.random()<.032){p.ammo--;p.shootCd=28;p.combatT=130;g.bullets.push({x:p.x,y:p.y,vx:Math.cos(p.aimAng+(Math.random()-.5)*.22)*8.5,vy:Math.sin(p.aimAng+(Math.random()-.5)*.22)*8.5,team:p.team,r:5,t:78,dmg:14});}if(p.dashCd<=0&&Math.random()<.003){p.dashCd=BRAWL_DASH_CD;p.vx+=(dx/d)*16;p.vy+=(dy/d)*16;}}
+      }
+      if(p.ammo<3){p.ammoT++;if(p.ammoT>105){p.ammoT=0;p.ammo++;}}
+      if(p.combatT>0)p.combatT--;else if(p.hp<p.maxHp)p.hp=Math.min(p.maxHp,p.hp+.12);
+      if(p.dashCd>0)p.dashCd--;if(p.skillCd>0)p.skillCd--;if(p.shootCd>0)p.shootCd--;
+      p.vx*=.77;p.vy*=.77;
+      const nx2=cl(p.x+p.vx,p.r,BW_W-p.r),ny2=cl(p.y+p.vy,p.r,BW_H-p.r);
+      if(!inCov(nx2,p.y,p.r-2))p.x=nx2;else p.vx*=-.28;if(!inCov(p.x,ny2,p.r-2))p.y=ny2;else p.vy*=-.28;
+      p.x=cl(p.x,p.r,BW_W-p.r);p.y=cl(p.y,p.r,BW_H-p.r);p.inBush=inBsh(p.x,p.y);
+      for(let pi2=pi+1;pi2<g.players.length;pi2++){const p2=g.players[pi2];if(!p2.alive)continue;const dd=vd(p,p2);if(dd<p.r+p2.r){const ov=(p.r+p2.r-dd)*.5,nx3=(p2.x-p.x)/dd,ny3=(p2.y-p.y)/dd;p.x-=nx3*ov;p.y-=ny3*ov;p2.x+=nx3*ov;p2.y+=ny3*ov;const imp=((p.vx-p2.vx)*nx3+(p.vy-p2.vy)*ny3)*.38;p.vx-=nx3*imp;p.vy-=ny3*imp;p2.vx+=nx3*imp;p2.vy+=ny3*imp;}}
+    });
+    g.bullets=g.bullets.filter(b=>{b.x+=b.vx;b.y+=b.vy;b.t--;if(b.t<=0||b.x<0||b.x>BW_W||b.y<0||b.y>BW_H)return false;if(BW_COVERS.some(c=>b.x>c.x&&b.x<c.x+c.w&&b.y>c.y&&b.y<c.y+c.h)){b.vx*=-.65;b.vy*=-.65;b.t=Math.min(b.t,10);return true;}for(const p of g.players){if(!p.alive||p.team===b.team||p.invisible>0||p.inBush)continue;if(vd(b,p)<p.r+b.r){p.hp=Math.max(0,p.hp-b.dmg);p.combatT=130;g.popups.push({x:p.x,y:p.y-13,txt:'-'+b.dmg,t:45,col:p.team===0?'#ff4466':'#4488ff'});if(p.hp<=0){p.alive=false;p.regenT=0;const kt=b.team;g.scores[kt]++;g.scores[1-kt]=Math.max(0,g.scores[1-kt]-1);}return false;}}return true;});
+    g.popups=g.popups.filter(p=>{p.t--;p.y-=.45;return p.t>0;});
+    if(g.scores[0]>=10||g.scores[1]>=10){g.active=false;const win=g.scores[0]>=10;const coins=win?150:30;G.coins+=coins;save();showResult(win,'比分',g.scores[0]+':'+g.scores[1],'獲得💰',coins);return;}
+    // HUD
+    if(g.tick%3===0){const me=g.players[0];document.getElementById('bw-my').textContent=g.scores[0];document.getElementById('bw-ai').textContent=g.scores[1];document.getElementById('bw-res-bar').style.width=(g.resT/180*100)+'%';document.getElementById('bw-hp-bar').style.width=(me.hp/me.maxHp*100)+'%';document.getElementById('bw-hp-txt').textContent=Math.round(me.hp);document.getElementById('bw-bush-txt').textContent=me.alive&&me.inBush?'🌿隱身':'';for(let i=0;i<3;i++){const d=document.getElementById('bw-a'+i);if(d)d.style.background=i<me.ammo?'#44ffdd':'#1a1a33';}const db=document.getElementById('bw-dash-btn');if(db){db.style.opacity=me.dashCd>0?.5:1;db.textContent=me.dashCd>0?'⚡ '+(Math.ceil(me.dashCd/60*4))+'s':'⚡衝刺';}const sb=document.getElementById('bw-skill-btn');if(sb){sb.style.opacity=me.skillCd>0?.5:1;const sk2=BALLS[g.bt.id];sb.textContent=me.skillCd>0?(sk2.skillName||'技能').split(' ')[0]+' '+(Math.ceil(me.skillCd/60*8))+'s':(sk2.skillName||'技能');}}
+    // DRAW
+    ctx.clearRect(0,0,BW_W,BW_H);
+    const bgG=ctx.createLinearGradient(0,0,BW_W,BW_H);bgG.addColorStop(0,'#0a180a');bgG.addColorStop(1,'#0d0d1e');ctx.fillStyle=bgG;ctx.fillRect(0,0,BW_W,BW_H);
+    ctx.strokeStyle='#ffffff04';ctx.lineWidth=1;for(let x=0;x<BW_W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,BW_H);ctx.stroke();}for(let y=0;y<BW_H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(BW_W,y);ctx.stroke();}
+    // Resource
+    const rp=g.resT/180;ctx.beginPath();ctx.arc(BW_RES.x,BW_RES.y,BW_RES.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,215,0,${.04+rp*.1})`;ctx.fill();ctx.strokeStyle=`rgba(255,215,0,${.35+rp*.65})`;ctx.lineWidth=3;ctx.stroke();ctx.beginPath();ctx.arc(BW_RES.x,BW_RES.y,BW_RES.r+5,-Math.PI/2,-Math.PI/2+rp*Math.PI*2);ctx.strokeStyle='#ffd700';ctx.lineWidth=5;ctx.stroke();ctx.fillStyle='#ffd700';ctx.font='bold 16px monospace';ctx.textAlign='center';ctx.fillText('⚡',BW_RES.x,BW_RES.y+6);
+    BW_BUSHES.forEach(b=>{ctx.save();ctx.globalAlpha=.68;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle='#1a4a1a';ctx.fill();ctx.strokeStyle='#2a8a2a';ctx.lineWidth=2;ctx.stroke();for(let i=0;i<5;i++){ctx.font='11px serif';ctx.textAlign='center';ctx.fillText('🌿',b.x+Math.cos(i*1.26)*b.r*.6,b.y+Math.sin(i*1.26)*b.r*.6+4);}ctx.restore();});
+    BW_COVERS.forEach(c=>{ctx.fillStyle='#00000044';ctx.fillRect(c.x+3,c.y+3,c.w,c.h);ctx.fillStyle='#2a3a55';ctx.fillRect(c.x,c.y,c.w,c.h);ctx.strokeStyle='#4466aa';ctx.lineWidth=2;ctx.strokeRect(c.x,c.y,c.w,c.h);});
+    g.players.forEach((p,pi)=>{if(!p.alive)return;const col=p.team===0?g.bt.color:'#ff4455';if(p.invisible>0&&!p.isPlayer)return;ctx.save();ctx.globalAlpha=p.invisible>0?.28:p.inBush&&!p.isPlayer?.36:p.inBush?.52:1;if(p.isPlayer){ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.strokeStyle='#ffffff33';ctx.lineWidth=2;ctx.stroke();}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);const gr=ctx.createRadialGradient(p.x-3,p.y-3,1,p.x,p.y,p.r);gr.addColorStop(0,col);gr.addColorStop(1,col+'44');ctx.fillStyle=gr;ctx.fill();ctx.strokeStyle='#fff3';ctx.lineWidth=1.5;ctx.stroke();ctx.font=`bold ${p.r+2}px monospace`;ctx.textAlign='center';ctx.fillText(p.isPlayer?g.bt.emoji:(BL[p.id%6]||BL[0]).emoji,p.x,p.y+5);ctx.restore();ctx.globalAlpha=1;
+      const bw2=p.r*2.8;ctx.fillStyle='#0a0a1a';ctx.fillRect(p.x-bw2/2,p.y-p.r-10,bw2,5);ctx.fillStyle=p.hp/p.maxHp>.6?'#44ff88':p.hp/p.maxHp>.3?'#ffd700':'#ff4466';ctx.fillRect(p.x-bw2/2,p.y-p.r-10,bw2*(p.hp/p.maxHp),5);for(let a=0;a<3;a++){ctx.beginPath();ctx.arc(p.x-8+a*8,p.y+p.r+6,3,0,Math.PI*2);ctx.fillStyle=a<p.ammo?'#44ffdd':'#1a1a33';ctx.fill();}ctx.save();ctx.globalAlpha=.38;ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(p.x+Math.cos(p.aimAng)*(p.r+2),p.y+Math.sin(p.aimAng)*(p.r+2));ctx.lineTo(p.x+Math.cos(p.aimAng)*(p.r+20),p.y+Math.sin(p.aimAng)*(p.r+20));ctx.stroke();ctx.setLineDash([]);ctx.restore();ctx.fillStyle=p.isPlayer?'#fff':'#bbb';ctx.font=`${p.isPlayer?8:7}px monospace`;ctx.textAlign='center';ctx.fillText(p.isPlayer?'你':AI_N[(p.id-1)%10]||'Bot',p.x,p.y-p.r-13);if(p.isPlayer&&p.skillCd>0){ctx.strokeStyle=g.bt.skillCol||'#44ff88';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,p.r+8,-Math.PI/2,-Math.PI/2+((BRAWL_SKILL_CD-p.skillCd)/BRAWL_SKILL_CD)*Math.PI*2);ctx.stroke();}
+    });
+    if(G.equippedPet&&BALLS[G.equippedPet]){const ang=g.petT*.09;const me=g.players[0];if(me.alive){ctx.font='16px monospace';ctx.textAlign='center';ctx.shadowColor=BALLS[G.equippedPet].pet.color;ctx.shadowBlur=8;ctx.fillText(BALLS[G.equippedPet].pet.emoji,me.x+Math.cos(ang)*30,me.y+Math.sin(ang)*30+5);ctx.shadowBlur=0;}}
+    g.bullets.forEach(b=>{const bc=b.team===0?(g.bt.color):'#ff8866';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=bc;ctx.shadowColor=bc;ctx.shadowBlur=7;ctx.fill();ctx.shadowBlur=0;});
+    g.popups.forEach(p=>{ctx.globalAlpha=p.t/55;ctx.fillStyle=p.col||'#fff';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.shadowColor=p.col||'#fff';ctx.shadowBlur=4;ctx.fillText(p.txt,p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    if(g.active)g.af=requestAnimationFrame(step);
+  };
+  g.af=requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════════════════
+// BASKETBALL  —  修正移動+拋物線+熱區+寵物
+// ══════════════════════════════════════════════════════════
+const BK_W=720,BK_H=340,BK_WIN=10;
+const HOT_ZONES=[
+  {x:BK_W-60,  y:BK_H/2,   r:55,bonus:1.0,name:"禁區",   col:"#ff4455"},
+  {x:BK_W-135, y:BK_H/2,   r:62,bonus:.8, name:"中距",   col:"#ff8844"},
+  {x:BK_W-212, y:BK_H*.25, r:54,bonus:.65,name:"左翼3分",col:"#ffd700"},
+  {x:BK_W-212, y:BK_H*.75, r:54,bonus:.65,name:"右翼3分",col:"#ffd700"},
+  {x:BK_W-290, y:BK_H/2,   r:52,bonus:.55,name:"頂弧3分",col:"#44aaff"},
+  {x:BK_W-330, y:BK_H*.2,  r:46,bonus:.45,name:"底角3分",col:"#8844ff"},
+];
+let bkG=null,bkJoy=null,bkRhy={active:false,pos:50,dir:1.6,af:null},bkPw=0,bkPwT=null;
+
+function initBasket(tm){
+  const bt=BALLS[G.equip];const lv=G.ballLevels[bt.id]||1;const atkMult=bt.atk*(1+.15*(lv-1));
+  const n=tm==='1v1'?1:tm==='3v3'?3:5;const sp=BK_H/(n+1);
+  document.getElementById('bk-sel').style.display='none';
+  document.getElementById('bk-game').style.display='flex';
+  document.getElementById('bk-lbl').textContent=bt.emoji+' '+bt.heroName;
+  document.getElementById('bk-my').textContent='0';
+  document.getElementById('bk-ai').textContent='0';
+  document.getElementById('bk-fb').textContent='';
+  setTimeout(()=>showToast(bt.battleEntry),300);
+  // Player buttons
+  const pb=document.getElementById('bk-pbtns');pb.innerHTML='';
+  for(let i=0;i<n;i++){const b=document.createElement('button');b.id='bkp'+i;b.className='btn';b.style.cssText=`flex:1;padding:6px;font-size:10px;background:#111130;color:#8899bb;border:2px solid #334466;border-radius:8px;font-family:var(--font-b);font-weight:900;`;b.textContent='P'+(i+1);b.onclick=()=>{if(bkG){bkG.sel=i;updBkBtns();}};pb.appendChild(b);}
+  const pass=document.createElement('button');pass.className='btn bn';pass.style.cssText='flex:2;padding:6px;font-size:10px;border-radius:8px;font-family:var(--font-b);font-weight:900;';pass.textContent='↗️傳球';pass.onclick=passBasket;pb.appendChild(pass);
+  bkG={bt,n,tm,atkMult,
+    myTeam:Array.from({length:n},(_,i)=>({x:105+i*38,y:sp*(i+1),vx:0,vy:0,r:15,hasB:i===0,id:i,momentum:0})),
+    aiTeam:Array.from({length:n},(_,i)=>({x:BK_W-105-i*38,y:sp*(i+1),vx:0,vy:0,r:15,hasB:false,id:i+10,momentum:0})),
+    ball:{x:105,y:sp,vx:0,vy:0,arcVy:0,arcOff:0,r:12,inAir:false,holder:0},
+    hoop:{x:BK_W-28,y:BK_H*.62,r:22},myHoop:{x:28,y:BK_H*.62,r:22},
+    myS:0,aiS:0,scored:null,scoredT:0,sel:0,active:true,af:null,tick:0,
+    petT:0,petX:105,petY:sp,petVx:0,petVy:0,popups:[],
+  };
+  activeGame=bkG;
+  updBkBtns();
+  // Joystick — clone to clear old listeners
+  const oldJoy=document.getElementById('bk-joy');
+  const newJoy=oldJoy.cloneNode(true);
+  oldJoy.parentNode.replaceChild(newJoy,oldJoy);
+  bkJoy=makeJoy(newJoy);
+  bkBkLoop();
+}
+function updBkBtns(){if(!bkG)return;for(let i=0;i<bkG.n;i++){const b=document.getElementById('bkp'+i);if(!b)return;b.style.background=i===bkG.sel?bkG.bt.color:'#111130';b.style.color=i===bkG.sel?'#fff':'#8899bb';b.style.borderColor=i===bkG.sel?bkG.bt.color:'#334466';}}
+function calcBkAcc(x,y,bt){const base=.5+(bt.atk-.8)*.2;let best={bonus:0,name:'空檔',col:'#888'};HOT_ZONES.forEach(z=>{if((x-z.x)**2+(y-z.y)**2<z.r**2&&z.bonus>best.bonus)best=z;});return{acc:Math.min(.95,base+best.bonus*.3),zone:best};}
+function startShot(e){e.preventDefault();if(bkPwT)clearInterval(bkPwT);bkPw=0;document.getElementById('bk-pw-wrap').style.display='block';document.getElementById('bk-pw').style.width='0%';bkPwT=setInterval(()=>{bkPw=Math.min(1,bkPw+.04);document.getElementById('bk-pw').style.width=Math.round(bkPw*100)+'%';if(bkPw>=1){clearInterval(bkPwT);bkPwT=null;trigRhythm();}},30);}
+function releaseShot(e){e.preventDefault();if(bkPwT){clearInterval(bkPwT);bkPwT=null;}document.getElementById('bk-pw-wrap').style.display='none';if(!bkG?.myTeam[bkG.sel]?.hasB)return;trigRhythm();}
+function trigRhythm(){if(bkRhy.af)cancelAnimationFrame(bkRhy.af);bkRhy={active:true,pos:50,dir:1.6,af:null};document.getElementById('bk-rhy-wrap').style.display='block';const go=()=>{bkRhy.pos+=bkRhy.dir;if(bkRhy.pos>=100||bkRhy.pos<=0){bkRhy.dir*=-1;if(Math.abs(bkRhy.dir)<3.5)bkRhy.dir*=1.08;}document.getElementById('bk-cur').style.left=(bkRhy.pos-2)+'%';if(bkRhy.active)bkRhy.af=requestAnimationFrame(go);};bkRhy.af=requestAnimationFrame(go);}
+function hitRhythm(){if(!bkRhy.active)return;bkRhy.active=false;if(bkRhy.af)cancelAnimationFrame(bkRhy.af);document.getElementById('bk-rhy-wrap').style.display='none';if(!bkG)return;const g=bkG;const me=g.myTeam[g.sel];if(!me?.hasB)return;const rAcc=1-Math.abs(bkRhy.pos-50)/50;const{acc,zone}=calcBkAcc(me.x,me.y,g.bt);const fAcc=acc*.55+rAcc*.45;const fb=document.getElementById('bk-fb');if(Math.random()<fAcc){const is3=vd(me,g.hoop)>220;const pts=is3?3:2;const dx=g.hoop.x-me.x,dy=g.hoop.y-me.y,d=Math.sqrt(dx*dx+dy*dy)||1;g.ball.vx=(dx/d)*(9.5+bkPw*5);g.ball.vy=(dy/d)*(9.5+bkPw*5);g.ball.arcVy=-Math.min(d*.026,9);g.ball.arcOff=0;g.ball.inAir=true;g.ball.holder=null;me.hasB=false;g.myTeam.forEach(p=>p.hasB=false);fb.textContent=(rAcc>.72?'🏀 PERFECT!':rAcc>.42?'👌 GOOD!':'😅 OK')+' '+zone.name+' '+pts+'分';fb.style.color='#ffd700';}else{fb.textContent='❌ 失誤 '+zone.name+' '+Math.round(fAcc*100)+'%';fb.style.color='#ff6644';}setTimeout(()=>{if(fb)fb.textContent='';},1400);}
+function passBasket(){if(!bkG)return;const g=bkG;const me=g.myTeam[g.sel];if(!me?.hasB)return;const t=g.myTeam.filter((_,i)=>i!==g.sel).sort((a,b2)=>vd(a,g.hoop)-vd(b2,g.hoop))[0];if(!t)return;const dx=t.x-g.ball.x,dy=t.y-g.ball.y,d=Math.sqrt(dx*dx+dy*dy)||1;g.ball.vx=(dx/d)*11;g.ball.vy=(dy/d)*11;g.ball.arcVy=0;g.ball.arcOff=0;g.ball.inAir=true;g.ball.holder=null;me.hasB=false;g.myTeam.forEach(p=>p.hasB=false);const ti=g.myTeam.indexOf(t);if(ti>=0){g.sel=ti;updBkBtns();}}
+function resetBkBall(){if(!bkG)return;const g=bkG;g.ball={x:BK_W/2,y:BK_H/2,vx:0,vy:0,arcVy:0,arcOff:0,r:12,inAir:false,holder:g.myTeam[0].id};g.myTeam.forEach((p,i)=>p.hasB=i===0);g.aiTeam.forEach(p=>p.hasB=false);g.scored=null;}
+
+function bkBkLoop(){
+  const g=bkG;const cv=document.getElementById('bk-canvas');const ctx=cv.getContext('2d');
+  const step=()=>{
+    if(!g.active)return;g.tick++;
+    const b=g.ball;g.petT++;
+    // Pet AI
+    const selP=g.myTeam[g.sel];
+    if(selP?.hasB){const a=g.petT*.08;const tx=selP.x+Math.cos(a)*34,ty=selP.y+Math.sin(a)*34;g.petVx+=(tx-g.petX)*.18;g.petVy+=(ty-g.petY)*.18;}
+    else if(b.inAir){const dx=b.x-g.petX,dy=b.y-g.petY,d=Math.sqrt(dx*dx+dy*dy)||1;g.petVx+=(dx/d)*1.9;g.petVy+=(dy/d)*1.9;}
+    else{const a=g.petT*.04;g.petVx+=(BK_W*.45+Math.cos(a)*80-g.petX)*.055;g.petVy+=(BK_H*.5+Math.sin(a)*70-g.petY)*.055;}
+    g.petVx*=.82;g.petVy*=.82;g.petX=cl(g.petX+g.petVx,18,BK_W-18);g.petY=cl(g.petY+g.petVy,18,BK_H-18);
+    if(b.inAir){const pd=Math.sqrt((b.x-g.petX)**2+(b.y-g.petY)**2);if(pd<b.r+16){const nx=((b.x-g.petX)/pd),ny=((b.y-g.petY)/pd);b.vx+=nx*2.5;b.vy+=ny*2.5;g.popups.push({x:g.petX,y:g.petY-14,txt:'🐾偏轉',t:45,col:g.bt.pet.color});}}
+    g.aiTeam.forEach(p=>{const dd=Math.sqrt((p.x-g.petX)**2+(p.y-g.petY)**2);if(dd<p.r+14){p.vx+=(p.x-g.petX)/dd*4;p.vy+=(p.y-g.petY)/dd*4;}});
+    // Ball physics
+    if(b.inAir){b.arcVy+=.32;b.arcOff+=b.arcVy;b.x+=b.vx;b.y+=b.vy;b.vx*=.988;b.vy*=.988;
+      if(vd(b,g.hoop)<g.hoop.r+3&&b.vy>0&&b.arcOff>0&&Math.abs(b.x-g.hoop.x)<16){const pts=vd(selP||{x:0,y:0},g.hoop)>220?3:2;g.myS+=pts;g.scored='my';g.scoredT=90;document.getElementById('bk-my').textContent=g.myS;g.popups.push({x:g.hoop.x,y:g.hoop.y-20,txt:'+'+pts+'分！',t:75,col:'#ffd700'});b.inAir=false;b.arcOff=0;if(g.myS>=BK_WIN){g.active=false;const coins=g.myS*18;G.coins+=coins;save();showResult(true,'🏀 得分',g.myS,'獲得💰',coins);return;}setTimeout(resetBkBall,1700);}
+      if(vd(b,g.myHoop)<g.myHoop.r+3&&b.vy>0&&b.arcOff>0&&Math.abs(b.x-g.myHoop.x)<16){g.aiS+=2;g.scored='ai';g.scoredT=90;document.getElementById('bk-ai').textContent=g.aiS;b.inAir=false;b.arcOff=0;if(g.aiS>=BK_WIN){g.active=false;showResult(false,'AI得分',g.aiS,'你的得分',g.myS);return;}setTimeout(resetBkBall,1700);}
+      if(b.x<4||b.x>BK_W-4)b.vx*=-.8;if(b.y>BK_H){b.y=BK_H;b.inAir=false;b.arcOff=0;b.holder=null;}
+      if(!b.inAir&&b.holder===null)[...g.myTeam,...g.aiTeam].forEach(p=>{if(vd(p,b)<p.r+b.r){b.holder=p.id;b.vx=0;b.vy=0;const pt=g.myTeam.find(m=>m.id===p.id);const at=g.aiTeam.find(a=>a.id===p.id);if(pt){g.myTeam.forEach((m,i)=>m.hasB=m.id===p.id);const pi=g.myTeam.indexOf(pt);if(pi>=0){g.sel=pi;updBkBtns();}}if(at)g.aiTeam.forEach(a=>a.hasB=a.id===p.id);}});}
+    if(!b.inAir&&b.holder!=null){const h=[...g.myTeam,...g.aiTeam].find(p=>p.id===b.holder);if(h){b.x=h.id<10?h.x+h.r+b.r+1:h.x-h.r-b.r-1;b.y=h.y;}}
+    // My player — joystick movement (fixed!)
+    const me=g.myTeam[g.sel];
+    if(me&&bkJoy.active){me.vx+=bkJoy.ax*1.55;me.vy+=bkJoy.ay*1.55;me.momentum=Math.min(10,me.momentum+.4);}
+    else if(me)me.momentum=Math.max(0,me.momentum-.3);
+    if(me){me.vx*=.84;me.vy*=.84;me.x=cl(me.x+me.vx,me.r,BK_W-me.r);me.y=cl(me.y+me.vy,me.r,BK_H-me.r);if(me.hasB){b.x=me.x+me.r+b.r+1;b.y=me.y;}if(g.tick%18===0&&me.hasB){const{zone}=calcBkAcc(me.x,me.y,g.bt);document.getElementById('bk-zone').textContent=zone.name;document.getElementById('bk-zone').style.color=zone.col;document.getElementById('bk-acc').textContent=Math.round(Math.min(.95,(.5+(g.bt.atk-.8)*.2)+zone.bonus*.3)*100)+'%';}}
+    g.myTeam.forEach((p,i)=>{if(i===g.sel)return;const tX=p.hasB?g.hoop.x:b.x<BK_W/2?b.x:BK_W*.6;p.vx+=(tX-p.x)*.04;p.vy+=(b.y-p.y)*.04;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,BK_W-p.r);p.y=cl(p.y+p.vy,p.r,BK_H-p.r);if(!b.inAir&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.myTeam.forEach((m,j)=>m.hasB=j===i);}if(p.hasB&&vd(p,g.hoop)<182&&Math.random()<.019){const dx=g.hoop.x-p.x,dy=g.hoop.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*(9.5+Math.random()*3.5);b.vy=(dy/d)*(9.5+Math.random()*3.5);b.arcVy=-5.5;b.arcOff=0;b.inAir=true;p.hasB=false;g.myTeam.forEach(m=>m.hasB=false);b.holder=null;}});
+    g.aiTeam.forEach((p,i)=>{const tX=p.hasB?g.myHoop.x:b.x>BK_W/2?b.x:BK_W*.42;p.vx+=(tX-p.x)*.042+(Math.random()-.5)*.1;p.vy+=(b.y-p.y)*.042+(Math.random()-.5)*.1;p.vx*=.87;p.vy*=.87;p.x=cl(p.x+p.vx,p.r,BK_W-p.r);p.y=cl(p.y+p.vy,p.r,BK_H-p.r);if(!b.inAir&&b.holder===null&&vd(p,b)<p.r+b.r){b.holder=p.id;p.hasB=true;g.aiTeam.forEach((a,j)=>a.hasB=j===i);}if(p.hasB&&vd(p,g.myHoop)<182&&Math.random()<.017){const dx=g.myHoop.x-p.x,dy=g.myHoop.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;b.vx=(dx/d)*9;b.vy=(dy/d)*9;b.arcVy=-4.5;b.arcOff=0;b.inAir=true;p.hasB=false;g.aiTeam.forEach(a=>a.hasB=false);b.holder=null;}});
+    g.popups=g.popups.filter(p=>{p.t--;p.y-=.4;return p.t>0;});if(g.scoredT>0)g.scoredT--;
+    // DRAW
+    const CVW=430,CVH=230;ctx.clearRect(0,0,CVW,CVH);ctx.save();
+    const cx=cl((me?.x||0)-215,0,BK_W-430),cy=cl((me?.y||0)-115,0,BK_H-230);ctx.translate(-cx,-cy);
+    ctx.fillStyle='#2a1005';ctx.fillRect(0,0,BK_W,BK_H);for(let x=0;x<BK_W;x+=50){ctx.fillStyle='rgba(255,255,255,.017)';ctx.fillRect(x,0,25,BK_H);}ctx.strokeStyle='#ffffff20';ctx.lineWidth=2;ctx.strokeRect(2,2,BK_W-4,BK_H-4);ctx.beginPath();ctx.moveTo(BK_W/2,0);ctx.lineTo(BK_W/2,BK_H);ctx.stroke();ctx.beginPath();ctx.arc(BK_W/2,BK_H/2,44,0,Math.PI*2);ctx.stroke();
+    HOT_ZONES.forEach(z=>{const isHot=selP?.hasB&&(selP.x-z.x)**2+(selP.y-z.y)**2<z.r**2;ctx.beginPath();ctx.arc(z.x,z.y,z.r,0,Math.PI*2);ctx.fillStyle=z.col+(isHot?'28':'0d');ctx.fill();ctx.strokeStyle=z.col+(isHot?'99':'28');ctx.lineWidth=isHot?2.5:1;ctx.stroke();if(isHot&&selP){const{acc}=calcBkAcc(selP.x,selP.y,g.bt);ctx.fillStyle=z.col;ctx.font='bold 8px monospace';ctx.textAlign='center';ctx.fillText(z.name+' '+Math.round(acc*100)+'%',z.x,z.y+4);}});
+    [[g.hoop,'#ff8844'],[g.myHoop,'#4488ff']].forEach(([h,col])=>{ctx.beginPath();ctx.arc(h.x,h.y,h.r,0,Math.PI*2);ctx.strokeStyle=col;ctx.lineWidth=5;ctx.shadowColor=col;ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(h.x+(i-2.5)*5,h.y);ctx.lineTo(h.x+(i-2.5)*4,h.y+20);ctx.strokeStyle=col+'88';ctx.lineWidth=2;ctx.stroke();}});
+    g.aiTeam.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='#ff4444cc';ctx.fill();ctx.strokeStyle=p.hasB?'#ffd700':'#ff6644';ctx.lineWidth=p.hasB?3:1.5;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign='center';ctx.fillText('🔴',p.x,p.y+5);});
+    g.myTeam.forEach((p,i)=>{const sel=i===g.sel;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);const pgr=ctx.createRadialGradient(p.x-3,p.y-3,1,p.x,p.y,p.r);pgr.addColorStop(0,sel?g.bt.color:'#4488ff');pgr.addColorStop(1,(sel?g.bt.color:'#4488ff')+'44');ctx.fillStyle=pgr;ctx.fill();ctx.strokeStyle=sel?'#fff':g.bt.color;ctx.lineWidth=sel?3:1.5;ctx.stroke();ctx.font=`bold ${p.r}px monospace`;ctx.textAlign='center';ctx.fillText(g.bt.emoji,p.x,p.y+5);if(sel){ctx.font='bold 8px monospace';ctx.fillStyle='#fff';ctx.fillText('你',p.x,p.y-p.r-5);}if(sel&&p.momentum>0){ctx.fillStyle='#ffd70044';ctx.fillRect(p.x-12,p.y+p.r+6,p.momentum*2.4,4);}if(p.hasB){ctx.beginPath();ctx.arc(p.x,p.y,p.r+5,0,Math.PI*2);ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();}});
+    // Pet
+    ctx.shadowColor=g.bt.pet.color;ctx.shadowBlur=14;ctx.font='18px monospace';ctx.textAlign='center';ctx.fillText(g.bt.pet.emoji,g.petX,g.petY+6);ctx.shadowBlur=0;if(Math.abs(g.petVx)>1||Math.abs(g.petVy)>1){ctx.strokeStyle=g.bt.pet.color+'55';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(g.petX,g.petY);ctx.lineTo(g.petX-g.petVx*4,g.petY-g.petVy*4);ctx.stroke();}
+    // Ball
+    const aoff=b.inAir?-(b.arcOff||0):0;if(b.inAir&&aoff<-5){ctx.beginPath();ctx.ellipse(b.x,b.y-aoff+b.r+4,b.r*.6,.25*b.r,0,0,Math.PI*2);ctx.fillStyle='#00000044';ctx.fill();}ctx.beginPath();ctx.arc(b.x,b.y+aoff,b.r,0,Math.PI*2);const bbg=ctx.createRadialGradient(b.x-3,b.y+aoff-3,1,b.x,b.y+aoff,b.r);bbg.addColorStop(0,'#ffaa44');bbg.addColorStop(1,'#cc5500');ctx.fillStyle=bbg;ctx.shadowColor='#ff8800';ctx.shadowBlur=b.inAir?12:4;ctx.fill();ctx.shadowBlur=0;
+    if(g.scored&&g.scoredT>0){ctx.fillStyle=g.scored==='my'?'rgba(255,215,0,.12)':'rgba(255,40,40,.1)';ctx.fillRect(cx,cy,CVW,CVH);ctx.font='bold 28px monospace';ctx.textAlign='center';ctx.fillStyle=g.scored==='my'?'#ffd700':'#ff6644';ctx.fillText(g.scored==='my'?'🏀 得分！':'🚫 AI得分',cx+BK_W/2,cy+BK_H/2);}
+    g.popups.forEach(p=>{ctx.globalAlpha=p.t/60;ctx.fillStyle=p.col||'#fff';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.shadowColor=p.col||'#fff';ctx.shadowBlur=4;ctx.fillText(p.txt,p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    ctx.restore();if(g.active)g.af=requestAnimationFrame(step);
+  };g.af=requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════════════════
+// PET ARENA  —  修正搖桿八方向
+// ══════════════════════════════════════════════════════════
+const PA_W=430,PA_H=360,PA_SKILL_CD=360;
+const PET_SKILLS={
+  "🦊":{name:"火焰衝",col:"#ff6633",fn:(me,g)=>{const a=me.aimAng||0;me.vx+=Math.cos(a)*18;me.vy+=Math.sin(a)*18;g.pets.filter(p=>p.alive&&p.id!==me.id&&vd(p,me)<65).forEach(p=>{const d=Math.max(1,vd(p,me));const dm=28;p.hp=Math.max(0,p.hp-dm);p.vx+=(p.x-me.x)/d*8;p.vy+=(p.y-me.y)/d*8;g.popups.push({x:p.x,y:p.y-14,txt:'-'+dm+'🔥',t:50,col:'#ff6633'});});}},
+  "🐢":{name:"護盾",col:"#4488ff",fn:(me,g)=>{me.shield=(me.shield||0)+130;g.popups.push({x:me.x,y:me.y-16,txt:'🛡護盾！',t:55,col:'#4488ff'});}},
+  "🐸":{name:"毒液",col:"#44ee88",fn:(me,g)=>{g.pets.filter(p=>p.alive&&p.id!==me.id&&vd(p,me)<85).forEach(p=>{p.poison=(p.poison||0)+185;g.popups.push({x:p.x,y:p.y-14,txt:'☠️中毒！',t:55,col:'#44ee88'});});}},
+  "🐥":{name:"治癒",col:"#ffcc00",fn:(me,g)=>{me.hp=Math.min(me.maxHp,me.hp+38);g.popups.push({x:me.x,y:me.y-16,txt:'+38💛',t:55,col:'#ffcc00'});}},
+  "🦇":{name:"震波",col:"#cc88ff",fn:(me,g)=>{g.pets.filter(p=>p.alive&&p.id!==me.id&&vd(p,me)<105).forEach(p=>{p.stun=(p.stun||0)+95;g.popups.push({x:p.x,y:p.y-14,txt:'💫暈！',t:50,col:'#cc88ff'});});}},
+  "🦁":{name:"怒吼",col:"#ffd700",fn:(me,g)=>{me.atk=(me.atk||1)*1.5;setTimeout(()=>{if(me)me.atk=(me.atk||1.5)/1.5;},3000);g.pets.filter(p=>p.alive&&p.id!==me.id&&vd(p,me)<125).forEach(p=>{const d=Math.max(1,vd(p,me));p.vx+=(p.x-me.x)/d*13;p.vy+=(p.y-me.y)/d*13;});g.popups.push({x:me.x,y:me.y-18,txt:'👑怒吼！',t:60,col:'#ffd700'});}},
+};
+let paG=null,paJoy=null;
+function initPetArena(mode){
+  const bt=BALLS[G.equip];const myEmoji=bt.pet.emoji;
+  const allE=['🦊','🐢','🐸','🐥','🦇','🦁'];
+  const others=allE.filter(e=>e!==myEmoji);
+  const mk=(id,emoji,x,y,isMe)=>({id,emoji,x,y,vx:0,vy:0,r:18,hp:isMe?130:100,maxHp:isMe?130:100,alive:true,isMe,shield:0,poison:0,stun:0,skillCd:0,aimAng:0,atk:1,score:0,foodsEaten:0});
+  const pets=[mk(0,myEmoji,PA_W/2,PA_H/2,true)];
+  for(let i=0;i<4;i++)pets.push(mk(i+1,others[i%others.length],80+Math.random()*(PA_W-160),80+Math.random()*(PA_H-160),false));
+  const foods=Array.from({length:12},()=>({x:30+Math.random()*(PA_W-60),y:30+Math.random()*(PA_H-60),v:10+Math.floor(Math.random()*15)}));
+  const isC=mode==='chaos';
+  paG={pets,foods,popups:[],active:true,af:null,tick:0,chaos:isC,arenaShrink:0,chaosT:isC?540:999999};
+  activeGame=paG;
+  document.getElementById('pa-sel').style.display='none';
+  document.getElementById('pa-game').style.display='flex';
+  const skEl=document.getElementById('pa-skill-btn');const sk=PET_SKILLS[myEmoji]||PET_SKILLS['🦊'];skEl.style.color=sk.col;skEl.style.borderColor=sk.col+'44';
+  setTimeout(()=>showToast(bt.battleEntry),300);
+  const oldJoy=document.getElementById('pa-joy');const newJoy=oldJoy.cloneNode(true);oldJoy.parentNode.replaceChild(newJoy,oldJoy);
+  paJoy=makeJoy(newJoy);
+  paLoop();
+}
+function doPetSkill(){if(!paG)return;const me=paG.pets[0];if(!me.alive||me.skillCd>0)return;me.skillCd=PA_SKILL_CD;const sk=PET_SKILLS[me.emoji]||PET_SKILLS['🦊'];sk.fn(me,paG);}
+
+function paLoop(){
+  const g=paG;const cv=document.getElementById('pa-canvas');const ctx=cv.getContext('2d');
+  const step=()=>{
+    if(!g.active)return;g.tick++;
+    const arena=PA_W-g.arenaShrink*2;const ax=g.arenaShrink,ay=g.arenaShrink;
+    if(g.chaos&&g.tick%g.chaosT===0)g.arenaShrink=Math.min(PA_W/2-30,g.arenaShrink+12);
+    g.pets.forEach((p,pi)=>{
+      if(!p.alive)return;
+      if(p.stun>0){p.stun--;p.vx*=.9;p.vy*=.9;}
+      else if(p.isMe){
+        // Fixed 8-dir joystick
+        if(paJoy.active){p.vx+=paJoy.ax*1.85;p.vy+=paJoy.ay*1.85;p.aimAng=Math.atan2(paJoy.ay,paJoy.ax);}
+        p.vx*=.80;p.vy*=.80;
+      } else {
+        const nearFood=g.foods.length?g.foods.reduce((a,b2)=>vd(a,p)<vd(b2,p)?a:b2):null;const myP=g.pets[0];
+        if(nearFood&&vd(nearFood,p)<125){const dx=nearFood.x-p.x,dy=nearFood.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx+=(dx/d)*.92;p.vy+=(dy/d)*.92;}
+        else if(myP.alive&&Math.random()<.012){const dx=myP.x-p.x,dy=myP.y-p.y,d=Math.sqrt(dx*dx+dy*dy)||1;p.vx+=(dx/d)*.5;p.vy+=(dy/d)*.5;}else{p.vx+=(Math.random()-.5)*.55;p.vy+=(Math.random()-.5)*.55;}
+        p.vx*=.83;p.vy*=.83;
+        if(p.skillCd<=0&&Math.random()<.003){p.skillCd=PA_SKILL_CD;const sk=PET_SKILLS[p.emoji]||PET_SKILLS['🦊'];sk.fn(p,g);}
+      }
+      if(p.skillCd>0)p.skillCd--;
+      p.x=cl(p.x+p.vx,ax+p.r,ax+arena-p.r);p.y=cl(p.y+p.vy,ay+p.r,ay+arena-p.r);
+      if(g.arenaShrink>0&&(p.x<ax+p.r+2||p.x>ax+arena-p.r-2||p.y<ay+p.r+2||p.y>ay+arena-p.r-2))p.hp-=.35;
+      if(p.poison>0){p.poison--;if(g.tick%10===0){p.hp-=1;g.popups.push({x:p.x,y:p.y-12,txt:'☠️',t:22,col:'#44ee88'});}}
+      if(p.shield>0)p.shield--;
+      if(p.hp<=0){p.alive=false;if(p.isMe){g.active=false;showResult(false,'寵物對戰','💔','吃食物',g.pets[0].foodsEaten);return;}}
+      for(let pi2=pi+1;pi2<g.pets.length;pi2++){const p2=g.pets[pi2];if(!p2.alive)continue;const dd=vd(p,p2);if(dd<p.r+p2.r){const ov=(p.r+p2.r-dd)*.5+.5,nx=(p2.x-p.x)/dd,ny=(p2.y-p.y)/dd;p.x-=nx*ov;p.y-=ny*ov;p2.x+=nx*ov;p2.y+=ny*ov;const rs=Math.abs((p.vx-p2.vx)*nx+(p.vy-p2.vy)*ny);if(rs>2){const dm=Math.floor(rs*3*(p.atk||1));const tg=p.isMe?p2:p;if(tg.shield<=0){tg.hp=Math.max(0,tg.hp-dm);g.popups.push({x:tg.x,y:tg.y-14,txt:'-'+dm,t:42,col:'#ff4466'});}}const imp=((p.vx-p2.vx)*nx+(p.vy-p2.vy)*ny)*.5;p.vx-=nx*imp;p.vy-=ny*imp;p2.vx+=nx*imp;p2.vy+=ny*imp;}}
+      g.foods.forEach((f,fi)=>{if(vd(p,f)<p.r+10){p.hp=Math.min(p.maxHp,p.hp+f.v*.5);p.foodsEaten++;p.score+=f.v;g.popups.push({x:f.x,y:f.y-12,txt:'+'+f.v+'🍖',t:48,col:'#44ff88'});g.foods.splice(fi,1);g.foods.push({x:ax+30+Math.random()*(arena-60),y:ay+30+Math.random()*(arena-60),v:10+Math.floor(Math.random()*15)});}});
+    });
+    const alive=g.pets.filter(p=>p.alive);if(alive.length<=1&&g.active){g.active=false;const win=alive[0]?.isMe;G.coins+=win?100:20;save();showResult(win,win?'🏆最後存活':'💔落敗','','吃食物',g.pets[0].foodsEaten);return;}
+    g.popups=g.popups.filter(p=>{p.t--;p.y-=.42;return p.t>0;});
+    // HUD
+    if(g.tick%6===0){const me=g.pets[0];const hud=document.getElementById('pa-hud');if(hud)hud.innerHTML=`<div style="background:#0a1228;border:1px solid #1a3355;border-radius:8px;padding:4px 8px;font-size:18px">${me.emoji}</div><div style="flex:1;background:#0a1228;border:1px solid #1a3355;border-radius:8px;padding:4px 8px"><div style="display:flex;justify-content:space-between;font-size:8px;color:#44ff88"><span>HP</span><span>${Math.round(me.hp)}/${me.maxHp}</span></div><div style="height:7px;background:#0d0d22;border-radius:4px;overflow:hidden;margin-top:2px"><div style="height:100%;border-radius:4px;width:${me.hp/me.maxHp*100}%;background:${me.hp/me.maxHp>.6?'#44ff88':me.hp/me.maxHp>.3?'#ffd700':'#ff4466'}"></div></div></div><div style="background:#0a1228;border:1px solid #1a3355;border-radius:8px;padding:4px 7px;font-size:9px;font-weight:700;color:#ffd700">🍖${me.foodsEaten}</div><div style="background:#0a1228;border:1px solid #1a3355;border-radius:8px;padding:4px 7px;font-size:9px;font-weight:700;color:#ff8844">存活:${alive.length}/5</div>`;const sb=document.getElementById('pa-skill-btn');const sk=PET_SKILLS[me.emoji]||PET_SKILLS['🦊'];if(sb){sb.style.opacity=me.skillCd>0?.5:1;document.getElementById('pa-sk-cd').textContent=me.skillCd>0?Math.ceil(me.skillCd/60*6)+'s':'就緒！';}}
+    // DRAW
+    ctx.clearRect(0,0,PA_W,PA_H);ctx.fillStyle='#050a15';ctx.fillRect(0,0,PA_W,PA_H);
+    ctx.strokeStyle='#ffffff04';ctx.lineWidth=1;for(let x=0;x<=PA_W;x+=38){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,PA_H);ctx.stroke();}for(let y=0;y<=PA_H;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(PA_W,y);ctx.stroke();}
+    if(g.arenaShrink>0){ctx.fillStyle='rgba(255,40,40,.07)';ctx.fillRect(0,0,PA_W,ay);ctx.fillRect(0,PA_H-ay,PA_W,ay);ctx.fillRect(0,ay,ax,PA_H-ay*2);ctx.fillRect(PA_W-ax,ay,ax,PA_H-ay*2);}
+    ctx.strokeStyle='#44ff8855';ctx.lineWidth=2.5;ctx.strokeRect(ax,ay,arena,arena);
+    g.foods.forEach(f=>{ctx.beginPath();ctx.arc(f.x,f.y,8,0,Math.PI*2);ctx.fillStyle='#ff444420';ctx.fill();ctx.font='14px monospace';ctx.textAlign='center';ctx.fillText('🍖',f.x,f.y+5);});
+    g.pets.forEach(p=>{if(!p.alive){ctx.globalAlpha=.2;ctx.font='16px monospace';ctx.textAlign='center';ctx.fillText('💀',p.x,p.y+5);ctx.globalAlpha=1;return;}const col=PET_SKILLS[p.emoji]?.col||'#888';ctx.beginPath();ctx.ellipse(p.x,p.y+p.r-2,p.r*.7,p.r*.25,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.35)';ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);const pgr=ctx.createRadialGradient(p.x-3,p.y-3,1,p.x,p.y,p.r);pgr.addColorStop(0,col+'88');pgr.addColorStop(1,col+'22');ctx.fillStyle=pgr;ctx.fill();ctx.strokeStyle=p.isMe?'#fff':col;ctx.lineWidth=p.isMe?2.5:1.5;if(p.shield>0){ctx.strokeStyle='#88aaff';ctx.lineWidth=3;ctx.shadowColor='#4488ff';ctx.shadowBlur=10;}ctx.stroke();ctx.shadowBlur=0;ctx.font=`${p.r+4}px monospace`;ctx.textAlign='center';ctx.fillText(p.emoji,p.x,p.y+6);const bw=p.r*2.6;ctx.fillStyle='#0a0a1a';ctx.fillRect(p.x-bw/2,p.y-p.r-10,bw,5);ctx.fillStyle=p.hp/p.maxHp>.6?'#44ff88':p.hp/p.maxHp>.3?'#ffd700':'#ff4466';ctx.fillRect(p.x-bw/2,p.y-p.r-10,bw*(p.hp/p.maxHp),5);ctx.fillStyle=p.isMe?'#fff':'#aabbcc';ctx.font=`${p.isMe?8:7}px monospace`;ctx.textAlign='center';ctx.fillText(p.isMe?'你':AI_N[p.id-1]||'Bot',p.x,p.y-p.r-14);if(p.skillCd>0){ctx.strokeStyle=PET_SKILLS[p.emoji]?.col||'#888';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,p.r+7,-Math.PI/2,-Math.PI/2+((PA_SKILL_CD-p.skillCd)/PA_SKILL_CD)*Math.PI*2);ctx.stroke();}if(p.poison>0){ctx.strokeStyle='#44ee8844';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,p.r+4+Math.sin(g.tick*.15)*3,0,Math.PI*2);ctx.stroke();}if(p.stun>0){ctx.font='10px monospace';ctx.fillText('💫',p.x+p.r,p.y-p.r);}});
+    g.popups.forEach(p=>{ctx.globalAlpha=p.t/55;ctx.fillStyle=p.col||'#fff';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.shadowColor=p.col||'#fff';ctx.shadowBlur=4;ctx.fillText(p.txt,p.x,p.y);ctx.shadowBlur=0;ctx.globalAlpha=1;});
+    if(g.chaos&&g.arenaShrink===0&&g.tick%g.chaosT>g.chaosT-300){const s=Math.ceil((g.chaosT-g.tick%g.chaosT)/60);ctx.fillStyle='#ff444488';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('⚠️ 縮圈倒數: '+s+'s',PA_W/2,16);}
+    if(g.active)g.af=requestAnimationFrame(step);
+  };g.af=requestAnimationFrame(step);
+}
+
+// INIT
+updateMenuUI();
+</script>
+
 </body>
 </html>
