@@ -3,136 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 商業產品發展指令 v2.0</title>
+    <title>Academic Vision AI | 拍照解題專家</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
-        .gradient-border {
-            border-image: linear-gradient(to right, #3b82f6, #8b5cf6) 1;
-        }
+        .chat-scroll::-webkit-scrollbar { width: 5px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .preview-img { max-height: 150px; object-fit: contain; }
     </style>
 </head>
-<body class="py-10 px-4 md:px-10">
+<body class="bg-slate-50 h-screen flex flex-col">
 
-    <header class="max-w-5xl mx-auto text-center mb-12">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-4">🚀 AI 商業產品發展指令 <span class="text-blue-600">v2.0</span></h1>
-        <p class="text-gray-500 text-lg">文字更少 • 指令完整 • 可直接開發</p>
-        <div class="h-1 w-20 bg-blue-600 mx-auto mt-6"></div>
+    <header class="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white"><i class="fas fa-camera"></i></div>
+            <h1 class="font-bold text-gray-800">學業拍照解題 <span class="text-blue-600 text-xs">v2.5</span></h1>
+        </div>
+        <div class="text-xs font-bold text-gray-400">僅限學術用途</div>
     </header>
 
-    <main class="max-w-5xl mx-auto space-y-8">
-        
-        <section class="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-blue-600">
-            <h2 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-bullseye mr-3 text-blue-600"></i>一、定位</h2>
-            <p class="text-xl font-medium text-gray-800 mb-4">做 <span class="text-blue-600">垂直專家 AI</span>，不做通用問答。</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-blue-50 p-4 rounded-lg">✅ 解決明確痛點</div>
-                <div class="bg-blue-50 p-4 rounded-lg">✅ 產出可用結果</div>
-                <div class="bg-blue-50 p-4 rounded-lg">✅ 可持續收費</div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-2xl font-bold mb-6 flex items-center"><i class="fas fa-layer-group mr-3 text-indigo-600"></i>二、產品類型（擇一主軸）</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <h3 class="font-bold text-lg mb-3">1️⃣ 分析型</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">輸入資料 → 評分 → 風險 → 建議 → <b>行動方案</b></p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <h3 class="font-bold text-lg mb-3">2️⃣ 生產型</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">輸入需求 → 生成成果 → 可修改版本 → <b>可直接使用</b></p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <h3 class="font-bold text-lg mb-3">3️⃣ 優化型</h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">輸入作品 → 評分 → 問題點 → 強化建議 → <b>進步追蹤</b></p>
+    <main id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 chat-scroll">
+        <div class="max-w-3xl mx-auto space-y-4" id="messages">
+            <div class="flex justify-start">
+                <div class="bg-white border p-4 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-600 max-w-[85%]">
+                    你好！我是學業 AI 專家。你可以直接輸入問題，或是**拍照、上傳題目圖片**，我會幫你分析並解題。
                 </div>
             </div>
-        </section>
-
-        <section class="bg-slate-900 text-white p-8 rounded-2xl">
-            <h2 class="text-2xl font-bold mb-8 flex items-center"><i class="fas fa-sitemap mr-3 text-blue-400"></i>三、系統架構</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h4 class="text-blue-400 font-bold mb-3 border-b border-gray-700 pb-2">輸入層</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>• 結構化表單</li>
-                        <li>• 必填欄位</li>
-                        <li>• 問卷邏輯</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-blue-400 font-bold mb-3 border-b border-gray-700 pb-2">AI 處理層</h4>
-                    <p class="text-gray-300 leading-relaxed">分析、打分、排序、生成、改進</p>
-                </div>
-                <div>
-                    <h4 class="text-green-400 font-bold mb-3 border-b border-gray-700 pb-2">輸出層（必備）</h4>
-                    <ul class="space-y-2 text-gray-300">
-                        <li>• 總結、分數、問題</li>
-                        <li>• 建議、<b>下一步</b></li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <section class="bg-white p-8 rounded-2xl shadow-sm">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-dollar-sign mr-3 text-green-600"></i>四、商業模式</h2>
-                <div class="space-y-4">
-                    <div class="border-l-2 border-gray-200 pl-4">
-                        <p class="font-bold text-gray-500">免費版</p>
-                        <p class="text-gray-600">次數限制、功能限制</p>
-                    </div>
-                    <div class="border-l-2 border-green-500 pl-4">
-                        <p class="font-bold text-green-600">付費版</p>
-                        <p class="text-gray-600">無限次、進階分析、匯出、歷史紀錄</p>
-                    </div>
-                    <div class="bg-green-50 p-3 rounded text-green-800 font-bold text-center italic">優先使用：訂閱制</div>
-                </div>
-            </section>
-
-            <section class="bg-white p-8 rounded-2xl shadow-sm">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-lightbulb mr-3 text-yellow-500"></i>五、核心原則</h2>
-                <ul class="space-y-3">
-                    <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i> 解決痛點 > 功能多</li>
-                    <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i> 結果 > 答案</li>
-                    <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i> 小市場起步 / 專業感優先</li>
-                    <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i> 穩定收入優先</li>
-                </ul>
-            </section>
         </div>
-
-        <section class="bg-white p-8 rounded-2xl shadow-sm">
-            <h2 class="text-2xl font-bold mb-6 flex items-center"><i class="fas fa-rocket mr-3 text-red-500"></i>六、開發流程</h2>
-            <div class="flex flex-wrap gap-4">
-                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700">1. 核心功能</span>
-                <i class="fas fa-chevron-right self-center text-gray-300"></i>
-                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700">2. 上線測試</span>
-                <i class="fas fa-chevron-right self-center text-gray-300"></i>
-                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700">3. 收集回饋</span>
-                <i class="fas fa-chevron-right self-center text-gray-300"></i>
-                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700">4. 優化品質</span>
-                <i class="fas fa-chevron-right self-center text-gray-300"></i>
-                <span class="px-4 py-2 bg-blue-600 text-white rounded-full">5. 收費機制</span>
-                <i class="fas fa-chevron-right self-center text-gray-300"></i>
-                <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700">6. 數據追蹤</span>
-            </div>
-        </section>
-
-        <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-10 rounded-2xl text-center">
-            <h2 class="text-xl opacity-80 mb-4 uppercase tracking-widest font-bold">七、核心公式</h2>
-            <div class="text-3xl md:text-4xl font-extrabold">
-                痛點強度 <span class="text-blue-300">×</span> 解決效果 <span class="text-blue-300">×</span> 信任度 <span class="text-yellow-400">=</span> 收費能力
-            </div>
-        </section>
-
     </main>
 
-    <footer class="text-center mt-16 text-gray-400 text-sm pb-10">
-        AI Business Development Framework v2.0 • 2026 Ready
+    <footer class="bg-white border-t p-4">
+        <div class="max-w-3xl mx-auto">
+            <div id="image-preview-container" class="hidden mb-3 relative inline-block">
+                <img id="image-preview" src="" class="rounded-lg border shadow-sm preview-img">
+                <button onclick="clearImage()" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="flex items-end space-x-2">
+                <div class="flex-shrink-0">
+                    <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 w-12 h-12 rounded-xl flex items-center justify-center transition">
+                        <i class="fas fa-image text-xl"></i>
+                        <input type="file" id="file-input" accept="image/*" class="hidden" onchange="previewImage(this)">
+                    </label>
+                </div>
+
+                <div class="flex-1 relative">
+                    <textarea id="user-text" rows="1" placeholder="詢問關於學業的問題..." class="w-full bg-slate-100 p-3 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"></textarea>
+                </div>
+
+                <button onclick="handleSend()" id="send-btn" class="bg-blue-600 text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-blue-700 transition">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
     </footer>
 
+    <script>
+        const API_KEY = "YOUR_GEMINI_API_KEY"; // 貼上你的 Gemini API Key
+        let selectedImageData = null;
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImageData = e.target.result.split(',')[1]; // 取出 Base64
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearImage() {
+            selectedImageData = null;
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('file-input').value = "";
+        }
+
+        async function handleSend() {
+            const textEl = document.getElementById('user-text');
+            const text = textEl.value.trim();
+            if (!text && !selectedImageData) return;
+
+            // 1. 介面更新
+            appendMessage('user', text, selectedImageData);
+            const loadingId = appendMessage('ai', 'AI 正在分析您的題目...');
+            
+            // 清空輸入
+            textEl.value = "";
+            clearImage();
+
+            try {
+                // 2. 準備多模態 payload (同時傳送文字與圖片)
+                const contents = [{
+                    parts: [{ text: `你是一位學術專家。你的任務是回答學業問題。如果是圖片中的題目，請提供詳細的步驟、解答與相關觀念說明。問題如下：${text}` }]
+                }];
+
+                if (selectedImageData) {
+                    contents[0].parts.push({
+                        inline_data: { mime_type: "image/jpeg", data: selectedImageData }
+                    });
+                }
+
+                // 3. 呼叫 Gemini 1.5 Flash (速度快且支援視覺)
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents })
+                });
+
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                updateMessage(loadingId, aiResponse);
+
+            } catch (error) {
+                updateMessage(loadingId, "⚠️ 連線錯誤，請確認 API Key 是否有效。");
+            }
+        }
+
+        function appendMessage(role, text, imageData) {
+            const id = 'msg-' + Date.now();
+            const container = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            let contentHtml = role === 'user' 
+                ? `<div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm">
+                    ${imageData ? `<img src="data:image/jpeg;base64,${imageData}" class="rounded-lg mb-2 max-w-full">` : ''}
+                    <p class="text-sm">${text}</p>
+                   </div>`
+                : `<div class="bg-white border p-4 rounded-2xl rounded-tl-none max-w-[90%] shadow-sm">
+                    <p id="${id}" class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">${text}</p>
+                   </div>`;
+            
+            div.innerHTML = contentHtml;
+            container.appendChild(div);
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            return id;
+        }
+
+        function updateMessage(id, text) {
+            document.getElementById(id).innerText = text;
+        }
+    </script>
 </body>
 </html>
