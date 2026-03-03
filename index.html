@@ -3,1006 +3,681 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PawSense AI｜寵物行為智能分析</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Yu chen Al</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0f0e0d;
-    --paper: #f5f0e8;
-    --warm: #e8dcc8;
-    --accent: #d4541a;
-    --accent2: #2a6b4f;
-    --gold: #c9a84c;
-    --muted: #7a7060;
-    --card: #faf7f2;
-    --danger: #c0392b;
-    --warn: #d68910;
-    --safe: #1e8449;
-  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-font-family: ‘Noto Sans TC’, sans-serif;
-background: var(–paper);
-color: var(–ink);
-min-height: 100vh;
-overflow-x: hidden;
+:root {
+–bg: #0a0a0a;
+–surface: #141414;
+–surface2: #1c1c1c;
+–border: rgba(255,255,255,0.08);
+–text: #f0f0f0;
+–muted: #666;
+–muted2: #444;
+–accent: #7c6af0;
+–accent-soft: rgba(124,106,240,0.15);
+–green: #34d399;
+–yellow: #fbbf24;
+–red: #f87171;
+–bubble-user: #1e1e2e;
+–bubble-ai: #161616;
+–input-bg: #1a1a1a;
 }
 
-/* ── NAV ── */
-nav {
-position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-display: flex; align-items: center; justify-content: space-between;
-padding: 18px 48px;
-background: rgba(245,240,232,0.92);
-backdrop-filter: blur(12px);
-border-bottom: 1.5px solid rgba(0,0,0,0.08);
-}
-.logo {
-font-family: ‘Syne’, sans-serif;
-font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
-color: var(–ink);
-}
-.logo span { color: var(–accent); }
-nav ul { list-style: none; display: flex; gap: 36px; }
-nav ul a { text-decoration: none; color: var(–muted); font-size: 14px; font-weight: 500; transition: color 0.2s; }
-nav ul a:hover { color: var(–ink); }
-.nav-cta {
-background: var(–ink); color: var(–paper);
-padding: 10px 22px; border-radius: 6px;
-font-size: 13px; font-weight: 600; text-decoration: none;
-transition: background 0.2s;
-}
-.nav-cta:hover { background: var(–accent); }
-
-/* ── HERO ── */
-.hero {
-min-height: 100vh;
-display: grid; grid-template-columns: 1fr 1fr;
-align-items: center;
-padding: 120px 48px 60px;
-gap: 60px;
-position: relative;
+html, body {
+height: 100%; width: 100%;
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
 overflow: hidden;
 }
-.hero::before {
-content: ‘’;
-position: absolute; top: -100px; right: -100px;
-width: 600px; height: 600px;
-background: radial-gradient(circle, rgba(212,84,26,0.08) 0%, transparent 70%);
-border-radius: 50%;
-animation: breathe 6s ease-in-out infinite;
-}
-@keyframes breathe {
-0%,100% { transform: scale(1); }
-50% { transform: scale(1.1); }
-}
-.hero-label {
-display: inline-flex; align-items: center; gap: 8px;
-background: var(–warm); border: 1px solid rgba(0,0,0,0.1);
-padding: 6px 14px; border-radius: 100px;
-font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
-color: var(–muted); margin-bottom: 24px;
-text-transform: uppercase;
-}
-.hero-label::before { content: ‘●’; color: var(–accent); font-size: 8px; }
-h1 {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(42px, 5vw, 68px);
-font-weight: 800; line-height: 1.05;
-letter-spacing: -2px;
-margin-bottom: 20px;
-}
-h1 em { font-style: normal; color: var(–accent); }
-.hero-sub {
-font-size: 16px; line-height: 1.7;
-color: var(–muted); max-width: 440px;
-margin-bottom: 40px;
-}
-.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
-.btn-primary {
-background: var(–ink); color: var(–paper);
-padding: 14px 32px; border-radius: 8px;
-font-size: 15px; font-weight: 600;
-border: none; cursor: pointer;
-transition: all 0.2s; letter-spacing: 0.2px;
-}
-.btn-primary:hover { background: var(–accent); transform: translateY(-1px); }
-.btn-secondary {
-background: transparent; color: var(–ink);
-padding: 14px 28px; border-radius: 8px;
-font-size: 15px; font-weight: 600;
-border: 2px solid var(–ink); cursor: pointer;
-transition: all 0.2s;
-}
-.btn-secondary:hover { background: var(–warm); }
-.hero-stats {
-display: flex; gap: 40px; margin-top: 52px;
-padding-top: 32px;
-border-top: 1px solid rgba(0,0,0,0.1);
-}
-.stat-num {
-font-family: ‘Syne’, sans-serif;
-font-size: 32px; font-weight: 800; color: var(–ink);
-line-height: 1;
-}
-.stat-label { font-size: 12px; color: var(–muted); margin-top: 4px; font-weight: 500; }
 
-/* ── HERO VISUAL ── */
-.hero-visual {
-display: flex; flex-direction: column; gap: 16px;
-animation: slideUp 0.8s ease 0.2s both;
+/* ── PHONE SHELL ── */
+.phone {
+width: 100%; max-width: 420px;
+height: 100vh; max-height: 900px;
+margin: 0 auto;
+display: flex; flex-direction: column;
+position: relative;
+background: var(–bg);
+border-left: 1px solid var(–border);
+border-right: 1px solid var(–border);
 }
-@keyframes slideUp {
-from { opacity: 0; transform: translateY(30px); }
-to { opacity: 1; transform: translateY(0); }
-}
-.analysis-card {
-background: var(–card);
-border: 1.5px solid rgba(0,0,0,0.08);
-border-radius: 16px; padding: 24px;
-box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-}
-.card-header {
-display: flex; align-items: center; justify-content: space-between;
-margin-bottom: 20px;
-}
-.card-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-text-transform: uppercase; color: var(–muted);
-}
-.status-badge {
-font-size: 11px; font-weight: 600; padding: 4px 10px;
-border-radius: 100px; letter-spacing: 0.3px;
-}
-.status-good { background: rgba(30,132,73,0.1); color: var(–safe); }
-.status-warn { background: rgba(214,137,16,0.1); color: var(–warn); }
-.status-danger { background: rgba(192,57,43,0.1); color: var(–danger); }
 
-.emotion-bars { display: flex; flex-direction: column; gap: 10px; }
-.emotion-row { display: flex; align-items: center; gap: 12px; }
-.emotion-label { font-size: 13px; font-weight: 500; width: 60px; color: var(–ink); }
-.bar-track { flex: 1; height: 8px; background: var(–warm); border-radius: 100px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 100px; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
-.bar-pct { font-size: 12px; font-weight: 700; width: 36px; text-align: right; color: var(–muted); }
-
-.stress-ring-wrap {
-display: flex; align-items: center; gap: 20px;
-}
-.stress-ring {
-position: relative; width: 80px; height: 80px;
+/* ── HEADER ── */
+.header {
+display: flex; align-items: center; gap: 12px;
+padding: 52px 20px 16px;
+background: linear-gradient(to bottom, var(–bg) 80%, transparent);
+position: relative; z-index: 10;
 flex-shrink: 0;
 }
-.stress-ring svg { transform: rotate(-90deg); }
-.stress-ring circle { fill: none; stroke-width: 6; }
-.ring-bg { stroke: var(–warm); }
-.ring-fill { stroke: var(–accent); stroke-dasharray: 220; stroke-dashoffset: 88; stroke-linecap: round; }
-.ring-num {
-position: absolute; top: 50%; left: 50%;
-transform: translate(-50%,-50%);
-font-family: ‘Syne’, sans-serif;
-font-size: 20px; font-weight: 800; color: var(–ink);
+.header-avatar {
+width: 36px; height: 36px; border-radius: 50%;
+background: linear-gradient(135deg, var(–accent), #a78bfa);
+display: flex; align-items: center; justify-content: center;
+font-size: 16px; flex-shrink: 0;
 }
-.stress-info h3 {
-font-family: ‘Syne’, sans-serif;
-font-size: 28px; font-weight: 800; color: var(–ink);
+.header-info { flex: 1; }
+.header-name {
+font-family: ‘DM Serif Display’, serif;
+font-size: 17px; font-weight: 400; letter-spacing: 0.2px;
+color: var(–text); line-height: 1.2;
+}
+.header-name span { font-style: italic; color: var(–accent); }
+.header-sub { font-size: 11px; color: var(–muted); margin-top: 1px; }
+.header-dot {
+width: 7px; height: 7px; border-radius: 50%;
+background: var(–green);
+box-shadow: 0 0 6px var(–green);
+animation: pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── CHAT AREA ── */
+.chat {
+flex: 1; overflow-y: auto; overflow-x: hidden;
+padding: 8px 16px 8px;
+scroll-behavior: smooth;
+-webkit-overflow-scrolling: touch;
+}
+.chat::-webkit-scrollbar { width: 0; }
+
+/* ── MESSAGES ── */
+.msg-group { margin-bottom: 20px; }
+.msg-group.user { display: flex; flex-direction: column; align-items: flex-end; }
+.msg-group.ai { display: flex; flex-direction: column; align-items: flex-start; }
+
+.bubble {
+max-width: 88%; padding: 12px 16px;
+border-radius: 18px; font-size: 14px; line-height: 1.6;
+animation: fadeUp 0.3s ease both;
+}
+@keyframes fadeUp {
+from { opacity:0; transform: translateY(8px); }
+to { opacity:1; transform: translateY(0); }
+}
+.bubble.user {
+background: var(–bubble-user);
+border-radius: 18px 18px 4px 18px;
+color: var(–text);
+border: 1px solid rgba(124,106,240,0.2);
+}
+.bubble.ai {
+background: var(–bubble-ai);
+border-radius: 18px 18px 18px 4px;
+color: var(–text);
+border: 1px solid var(–border);
+}
+.bubble + .bubble { margin-top: 4px; }
+
+/* Rich content inside ai bubbles */
+.bubble h2 {
+font-family: ‘DM Serif Display’, serif;
+font-size: 22px; font-weight: 400; font-style: italic;
+color: var(–text); line-height: 1.3; margin-bottom: 6px;
+}
+.bubble .tagline {
+font-size: 13px; color: var(–muted); margin-bottom: 0;
+}
+.bubble .divider {
+height: 1px; background: var(–border);
+margin: 14px 0;
+}
+.bubble .section-title {
+font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+text-transform: uppercase; color: var(–accent);
+margin-bottom: 10px;
+}
+.bullet-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.bullet-list li {
+display: flex; align-items: flex-start; gap: 8px;
+font-size: 13px; line-height: 1.5;
+}
+.bullet-list li::before {
+content: ‘–’; color: var(–accent);
+flex-shrink: 0; margin-top: 1px;
+}
+.metric-grid {
+display: grid; grid-template-columns: 1fr 1fr;
+gap: 8px; margin-top: 4px;
+}
+.metric-item {
+background: rgba(255,255,255,0.04);
+border: 1px solid var(–border);
+border-radius: 10px; padding: 10px 12px;
+}
+.metric-val {
+font-family: ‘DM Serif Display’, serif;
+font-size: 20px; font-weight: 400;
 line-height: 1;
 }
-.stress-info p { font-size: 13px; color: var(–muted); margin-top: 4px; }
+.metric-val.green { color: var(–green); }
+.metric-val.yellow { color: var(–yellow); }
+.metric-val.red { color: var(–red); }
+.metric-val.purple { color: var(–accent); }
+.metric-label { font-size: 11px; color: var(–muted); margin-top: 3px; }
 
-.risk-row {
-display: flex; align-items: center; gap: 12px;
-padding: 14px 0;
-border-bottom: 1px solid var(–warm);
+/* risk badge */
+.risk-badge {
+display: inline-flex; align-items: center; gap: 5px;
+padding: 4px 10px; border-radius: 100px;
+font-size: 12px; font-weight: 600;
 }
-.risk-row:last-child { border-bottom: none; }
-.risk-icon { font-size: 20px; width: 36px; text-align: center; }
-.risk-text { flex: 1; }
-.risk-text strong { font-size: 14px; font-weight: 600; display: block; }
-.risk-text span { font-size: 12px; color: var(–muted); }
-.risk-level {
-font-size: 11px; font-weight: 700; padding: 3px 10px;
-border-radius: 100px; letter-spacing: 0.5px;
+.risk-badge.green { background: rgba(52,211,153,0.12); color: var(–green); }
+.risk-badge.yellow { background: rgba(251,191,36,0.12); color: var(–yellow); }
+.risk-badge.red { background: rgba(248,113,113,0.12); color: var(–red); }
+
+/* trend chart */
+.trend-chart { margin-top: 8px; }
+.trend-label { font-size: 11px; color: var(–muted); margin-bottom: 6px; }
+.trend-bars {
+display: flex; align-items: flex-end; gap: 3px;
+height: 40px;
+}
+.trend-bar {
+flex: 1; border-radius: 3px 3px 0 0;
+background: var(–accent-soft);
+border-top: 2px solid var(–accent);
+min-height: 4px; transition: height 0.3s ease;
+}
+.trend-days {
+display: flex; justify-content: space-between;
+margin-top: 4px;
+}
+.trend-days span { font-size: 9px; color: var(–muted2); }
+
+/* plan cards */
+.plan-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.plan-item {
+background: rgba(255,255,255,0.03);
+border: 1px solid var(–border);
+border-radius: 12px; padding: 12px 14px;
+display: flex; align-items: center; gap: 10px;
+}
+.plan-item.highlight { border-color: rgba(124,106,240,0.4); background: var(–accent-soft); }
+.plan-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.plan-content { flex: 1; }
+.plan-name { font-size: 13px; font-weight: 600; }
+.plan-desc { font-size: 11px; color: var(–muted); margin-top: 2px; }
+.plan-price {
+font-family: ‘DM Serif Display’, serif;
+font-size: 15px; color: var(–accent);
 }
 
-/* ── SECTIONS ── */
-section { padding: 100px 48px; }
-.section-label {
-font-size: 11px; font-weight: 700; letter-spacing: 2px;
-text-transform: uppercase; color: var(–accent);
-margin-bottom: 16px;
+/* why list */
+.why-list { display: flex; flex-direction: column; gap: 6px; }
+.why-item {
+display: flex; align-items: center; gap: 8px;
+font-size: 13px;
 }
-.section-title {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(32px, 4vw, 48px);
-font-weight: 800; line-height: 1.1;
-letter-spacing: -1px;
-margin-bottom: 20px;
-}
-.section-sub {
-font-size: 16px; color: var(–muted); line-height: 1.7;
-max-width: 520px;
-}
+.why-item::before { content: ‘✔’; color: var(–green); font-size: 11px; }
 
-/* ── HOW IT WORKS ── */
-.how-grid {
-display: grid; grid-template-columns: repeat(4, 1fr);
-gap: 2px; margin-top: 64px;
-border: 1.5px solid rgba(0,0,0,0.1);
-border-radius: 16px; overflow: hidden;
-}
-.how-step {
-padding: 36px 28px;
-background: var(–card);
-border-right: 1.5px solid rgba(0,0,0,0.08);
-transition: background 0.2s;
-position: relative;
-}
-.how-step:last-child { border-right: none; }
-.how-step:hover { background: var(–warm); }
-.step-num {
-font-family: ‘Syne’, sans-serif;
-font-size: 48px; font-weight: 800;
-color: rgba(0,0,0,0.06); line-height: 1;
-margin-bottom: 16px;
-}
-.step-icon { font-size: 28px; margin-bottom: 12px; }
-.step-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 16px; font-weight: 700; margin-bottom: 8px;
-}
-.step-desc { font-size: 13px; color: var(–muted); line-height: 1.6; }
-
-/* ── UPLOAD DEMO ── */
-.upload-section { background: var(–warm); }
-.upload-demo {
-display: grid; grid-template-columns: 1fr 1fr;
-gap: 32px; margin-top: 48px; align-items: start;
-}
-.upload-box {
-background: var(–card);
-border: 2px dashed rgba(0,0,0,0.15);
-border-radius: 16px; padding: 48px 32px;
+/* CTA bubble */
+.cta-bubble {
+background: linear-gradient(135deg, rgba(124,106,240,0.2), rgba(167,139,250,0.1));
+border: 1px solid rgba(124,106,240,0.3);
+border-radius: 14px; padding: 14px 16px;
 text-align: center; cursor: pointer;
 transition: all 0.2s;
 }
-.upload-box:hover {
-border-color: var(–accent);
-background: rgba(212,84,26,0.04);
-}
-.upload-icon { font-size: 40px; margin-bottom: 12px; }
-.upload-box h3 {
-font-family: ‘Syne’, sans-serif;
-font-size: 18px; font-weight: 700; margin-bottom: 8px;
-}
-.upload-box p { font-size: 13px; color: var(–muted); line-height: 1.5; }
-.upload-hint {
-margin-top: 12px;
-font-size: 11px; font-weight: 600; color: var(–accent);
-letter-spacing: 0.5px;
-}
-.form-panel {
-background: var(–card);
-border: 1.5px solid rgba(0,0,0,0.08);
-border-radius: 16px; padding: 32px;
-}
-.form-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 18px; font-weight: 700; margin-bottom: 24px;
-}
-.form-group { margin-bottom: 18px; }
-.form-label {
-display: block; font-size: 12px; font-weight: 600;
-letter-spacing: 0.5px; text-transform: uppercase;
-color: var(–muted); margin-bottom: 8px;
-}
-.form-input, .form-select, .form-textarea {
-width: 100%; padding: 12px 16px;
-background: var(–paper);
-border: 1.5px solid rgba(0,0,0,0.1);
-border-radius: 8px; font-size: 14px;
-font-family: ‘Noto Sans TC’, sans-serif;
-color: var(–ink); outline: none;
-transition: border-color 0.2s;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-border-color: var(–accent);
-}
-.form-textarea { resize: vertical; min-height: 80px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.btn-analyze {
-width: 100%; padding: 16px;
-background: var(–ink); color: var(–paper);
-border: none; border-radius: 10px;
-font-size: 15px; font-weight: 700;
-font-family: ‘Syne’, sans-serif;
-cursor: pointer; letter-spacing: 0.5px;
-transition: all 0.2s; margin-top: 8px;
-}
-.btn-analyze:hover { background: var(–accent); }
-
-/* ── REPORT PREVIEW ── */
-.report-section { background: var(–ink); color: var(–paper); }
-.report-section .section-label { color: var(–gold); }
-.report-section .section-title { color: var(–paper); }
-.report-section .section-sub { color: rgba(245,240,232,0.6); }
-.report-grid {
-display: grid; grid-template-columns: 1fr 1.2fr;
-gap: 32px; margin-top: 56px; align-items: start;
-}
-.report-card {
-background: rgba(255,255,255,0.05);
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 16px; padding: 28px;
-}
-.report-card-title {
-font-size: 11px; font-weight: 700; letter-spacing: 2px;
-text-transform: uppercase; color: var(–gold);
-margin-bottom: 20px;
-}
-.gauge-grid {
-display: grid; grid-template-columns: repeat(2, 1fr);
-gap: 16px;
-}
-.gauge-item { text-align: center; }
-.gauge-circle {
-width: 72px; height: 72px; margin: 0 auto 10px;
-background: rgba(255,255,255,0.06);
-border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-font-family: ‘Syne’, sans-serif;
-font-size: 20px; font-weight: 800;
-border: 3px solid rgba(255,255,255,0.12);
-}
-.gauge-label { font-size: 12px; color: rgba(245,240,232,0.5); }
-.action-list { list-style: none; }
-.action-list li {
-display: flex; align-items: flex-start; gap: 12px;
-padding: 12px 0;
-border-bottom: 1px solid rgba(255,255,255,0.06);
-font-size: 14px; line-height: 1.5;
-}
-.action-list li:last-child { border-bottom: none; }
-.action-num {
-font-family: ‘Syne’, sans-serif;
-font-size: 11px; font-weight: 800;
-color: var(–gold); width: 20px; flex-shrink: 0;
-padding-top: 2px;
-}
-.pdf-btn {
-width: 100%; padding: 14px;
-background: var(–gold); color: var(–ink);
-border: none; border-radius: 10px;
-font-size: 14px; font-weight: 700;
-font-family: ‘Syne’, sans-serif;
-cursor: pointer; letter-spacing: 0.5px;
-margin-top: 20px; transition: opacity 0.2s;
-}
-.pdf-btn:hover { opacity: 0.85; }
-.pdf-note { font-size: 11px; color: rgba(245,240,232,0.4); text-align: center; margin-top: 8px; }
-
-/* ── PRICING ── */
-.pricing-grid {
-display: grid; grid-template-columns: repeat(3, 1fr);
-gap: 24px; margin-top: 56px;
-}
-.plan-card {
-background: var(–card);
-border: 1.5px solid rgba(0,0,0,0.08);
-border-radius: 20px; padding: 36px 28px;
-transition: transform 0.2s, box-shadow 0.2s;
-}
-.plan-card:hover {
-transform: translateY(-4px);
-box-shadow: 0 16px 48px rgba(0,0,0,0.1);
-}
-.plan-card.featured {
-background: var(–ink); color: var(–paper);
-border-color: var(–ink);
-position: relative;
-}
-.plan-badge {
-position: absolute; top: -12px; left: 50%;
-transform: translateX(-50%);
-background: var(–accent); color: white;
-font-size: 11px; font-weight: 700;
-padding: 4px 16px; border-radius: 100px;
-letter-spacing: 0.5px;
-}
-.plan-name {
-font-family: ‘Syne’, sans-serif;
-font-size: 14px; font-weight: 700; letter-spacing: 1px;
-text-transform: uppercase; color: var(–muted);
-margin-bottom: 12px;
-}
-.plan-card.featured .plan-name { color: rgba(245,240,232,0.5); }
-.plan-price {
-font-family: ‘Syne’, sans-serif;
-font-size: 48px; font-weight: 800; line-height: 1;
+.cta-bubble:hover { background: linear-gradient(135deg, rgba(124,106,240,0.3), rgba(167,139,250,0.2)); }
+.cta-bubble h3 {
+font-family: ‘DM Serif Display’, serif;
+font-size: 16px; font-style: italic; color: var(–text);
 margin-bottom: 4px;
 }
-.plan-price span { font-size: 18px; font-weight: 400; }
-.plan-period { font-size: 13px; color: var(–muted); margin-bottom: 28px; }
-.plan-card.featured .plan-period { color: rgba(245,240,232,0.5); }
-.plan-features { list-style: none; margin-bottom: 32px; }
-.plan-features li {
-display: flex; align-items: center; gap: 10px;
-font-size: 14px; padding: 8px 0;
-border-bottom: 1px solid rgba(0,0,0,0.06);
+.cta-bubble p { font-size: 12px; color: var(–muted); }
+.cta-btn {
+display: inline-block; margin-top: 10px;
+background: var(–accent); color: white;
+padding: 8px 20px; border-radius: 100px;
+font-size: 13px; font-weight: 600; cursor: pointer;
+transition: opacity 0.2s;
 }
-.plan-card.featured .plan-features li { border-bottom-color: rgba(255,255,255,0.08); }
-.plan-features li:last-child { border-bottom: none; }
-.check { color: var(–safe); font-weight: 700; }
-.cross { color: var(–muted); }
-.plan-cta {
-width: 100%; padding: 14px;
-border-radius: 10px;
-font-size: 14px; font-weight: 700;
-font-family: ‘Syne’, sans-serif;
-cursor: pointer; letter-spacing: 0.5px;
-transition: all 0.2s; border: 2px solid;
-}
-.plan-cta-outline {
-background: transparent; color: var(–ink);
-border-color: rgba(0,0,0,0.2);
-}
-.plan-cta-outline:hover { background: var(–warm); border-color: var(–ink); }
-.plan-cta-filled {
-background: var(–paper); color: var(–ink);
-border-color: var(–paper);
-}
-.plan-cta-filled:hover { background: var(–gold); border-color: var(–gold); }
+.cta-btn:hover { opacity: 0.85; }
 
-/* ── FOOTER ── */
-footer {
-padding: 48px;
-border-top: 1.5px solid rgba(0,0,0,0.08);
-display: flex; align-items: center; justify-content: space-between;
+/* timestamp */
+.ts {
+font-size: 10px; color: var(–muted2);
+text-align: center; margin: 12px 0 4px;
 }
-.footer-note { font-size: 13px; color: var(–muted); }
 
-/* ── MODAL ── */
-.modal-overlay {
-display: none; position: fixed; inset: 0; z-index: 200;
-background: rgba(15,14,13,0.7); backdrop-filter: blur(4px);
-align-items: center; justify-content: center;
+/* typing indicator */
+.typing { display: flex; align-items: center; gap: 4px; padding: 12px 16px; }
+.typing-dot {
+width: 6px; height: 6px; border-radius: 50%;
+background: var(–muted);
+animation: typingBounce 1.2s ease infinite;
 }
-.modal-overlay.active { display: flex; }
-.modal {
-background: var(–card);
-border-radius: 20px; padding: 48px;
-width: 100%; max-width: 440px;
-position: relative; animation: popIn 0.3s cubic-bezier(0.16,1,0.3,1);
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce {
+0%,60%,100% { transform: translateY(0); }
+30% { transform: translateY(-6px); }
 }
-@keyframes popIn {
-from { opacity: 0; transform: scale(0.95); }
-to { opacity: 1; transform: scale(1); }
-}
-.modal-close {
-position: absolute; top: 20px; right: 20px;
-background: var(–warm); border: none; border-radius: 50%;
-width: 32px; height: 32px; cursor: pointer; font-size: 16px;
-display: flex; align-items: center; justify-content: center;
-}
-.modal-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 28px; font-weight: 800; margin-bottom: 8px;
-}
-.modal-sub { font-size: 14px; color: var(–muted); margin-bottom: 32px; }
-.tab-row {
-display: flex; gap: 0; margin-bottom: 28px;
-background: var(–warm); border-radius: 8px; padding: 4px;
-}
-.tab-btn {
-flex: 1; padding: 10px;
-background: transparent; border: none;
-border-radius: 6px; cursor: pointer;
-font-size: 14px; font-weight: 600;
-font-family: ‘Noto Sans TC’, sans-serif;
-color: var(–muted); transition: all 0.2s;
-}
-.tab-btn.active { background: var(–card); color: var(–ink); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
-/* ── LOADING ── */
-.loading-screen {
-display: none; position: fixed; inset: 0; z-index: 300;
-background: var(–paper);
-align-items: center; justify-content: center;
-flex-direction: column; gap: 24px;
+/* ── INPUT AREA ── */
+.input-area {
+flex-shrink: 0;
+padding: 10px 14px 28px;
+background: linear-gradient(to top, var(–bg) 70%, transparent);
+position: relative; z-index: 10;
 }
-.loading-screen.active { display: flex; }
-.loading-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 24px; font-weight: 800; color: var(–ink);
-}
-.loading-sub { font-size: 14px; color: var(–muted); }
-.progress-bar {
-width: 280px; height: 4px;
-background: var(–warm); border-radius: 100px; overflow: hidden;
-}
-.progress-fill {
-height: 100%; width: 0;
-background: var(–accent); border-radius: 100px;
-transition: width 0.3s ease;
-}
-.loading-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-.loading-step {
-font-size: 13px; color: var(–muted);
+.input-row {
 display: flex; align-items: center; gap: 8px;
 }
-.loading-step.done { color: var(–safe); }
-.loading-step .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-
-@media(max-width: 900px) {
-.hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
-.how-grid { grid-template-columns: 1fr 1fr; }
-.upload-demo { grid-template-columns: 1fr; }
-.report-grid { grid-template-columns: 1fr; }
-.pricing-grid { grid-template-columns: 1fr; }
-nav { padding: 16px 24px; }
-nav ul { display: none; }
-section { padding: 72px 24px; }
-footer { flex-direction: column; gap: 16px; text-align: center; }
+.btn-plus {
+width: 40px; height: 40px; border-radius: 50%;
+background: var(–surface2);
+border: 1px solid var(–border);
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; flex-shrink: 0;
+font-size: 18px; color: var(–muted);
+transition: all 0.2s;
 }
+.btn-plus:hover { background: var(–surface); color: var(–text); }
+.input-pill {
+flex: 1;
+display: flex; align-items: center;
+background: var(–input-bg);
+border: 1px solid var(–border);
+border-radius: 22px; padding: 0 14px;
+gap: 8px; height: 44px;
+transition: border-color 0.2s;
+}
+.input-pill:focus-within { border-color: rgba(124,106,240,0.5); }
+.chat-input {
+flex: 1; background: transparent; border: none; outline: none;
+color: var(–text); font-family: ‘DM Sans’, sans-serif;
+font-size: 15px; caret-color: var(–accent);
+}
+.chat-input::placeholder { color: var(–muted); }
+.btn-mic {
+background: none; border: none; cursor: pointer;
+color: var(–muted); font-size: 16px; padding: 2px;
+}
+.btn-send {
+width: 40px; height: 40px; border-radius: 50%;
+background: var(–accent);
+border: none; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; font-size: 16px;
+transition: all 0.2s; opacity: 0;
+pointer-events: none;
+}
+.btn-send.visible { opacity: 1; pointer-events: all; }
+.btn-send:hover { background: #6b5ce7; transform: scale(1.05); }
+
+/* upload preview */
+.upload-preview {
+display: none;
+padding: 8px 0;
+gap: 8px;
+}
+.upload-preview.show { display: flex; }
+.preview-chip {
+display: flex; align-items: center; gap: 6px;
+background: var(–surface2); border: 1px solid var(–border);
+border-radius: 8px; padding: 6px 10px;
+font-size: 12px; color: var(–muted);
+cursor: pointer;
+}
+.preview-chip:hover .remove-chip { opacity: 1; }
+.remove-chip { opacity: 0.5; transition: opacity 0.15s; }
+
+/* hidden file input */
+#fileInput { display: none; }
+
+/* media in chat */
+.media-thumb {
+width: 100%; max-width: 200px;
+border-radius: 12px; overflow: hidden;
+margin-bottom: 4px;
+}
+.media-thumb img { width: 100%; display: block; }
+.media-thumb video { width: 100%; display: block; }
 </style>
 
 </head>
 <body>
+<div class="phone">
 
-<!-- NAV -->
+  <!-- HEADER -->
 
-<nav>
-  <div class="logo">Paw<span>Sense</span> AI</div>
-  <ul>
-    <li><a href="#how">運作原理</a></li>
-    <li><a href="#analyze">立即分析</a></li>
-    <li><a href="#pricing">方案</a></li>
-  </ul>
-  <a href="#" class="nav-cta" onclick="openModal()">免費開始</a>
-</nav>
-
-<!-- HERO -->
-
-<section class="hero">
-  <div style="animation: slideUp 0.6s ease both">
-    <div class="hero-label">AI 寵物行為分析平台</div>
-    <h1>讀懂你的<br><em>毛孩心事</em></h1>
-    <p class="hero-sub">上傳 10–30 秒影片，AI 立即分析行為模式、情緒狀態、壓力指數，生成專業報告，幫助你真正理解寵物。</p>
-    <div class="hero-actions">
-      <button class="btn-primary" onclick="startAnalysis()">🎬 上傳影片分析</button>
-      <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">了解運作方式</button>
+  <div class="header">
+    <div class="header-avatar">🐾</div>
+    <div class="header-info">
+      <div class="header-name">Yu chen <span>Al</span></div>
+      <div class="header-sub">寵物行為 AI 分析師</div>
     </div>
-    <div class="hero-stats">
-      <div><div class="stat-num">97%</div><div class="stat-label">辨識準確率</div></div>
-      <div><div class="stat-num">12+</div><div class="stat-label">分析維度</div></div>
-      <div><div class="stat-num">30秒</div><div class="stat-label">生成報告</div></div>
-    </div>
+    <div class="header-dot"></div>
   </div>
 
-  <div class="hero-visual">
-    <div class="analysis-card">
-      <div class="card-header">
-        <div class="card-title">情緒分析</div>
-        <div class="status-badge status-good">✓ 整體良好</div>
-      </div>
-      <div class="emotion-bars">
-        <div class="emotion-row">
-          <div class="emotion-label">快樂</div>
-          <div class="bar-track"><div class="bar-fill" style="width:72%;background:#1e8449"></div></div>
-          <div class="bar-pct">72%</div>
-        </div>
-        <div class="emotion-row">
-          <div class="emotion-label">焦慮</div>
-          <div class="bar-track"><div class="bar-fill" style="width:18%;background:#d68910"></div></div>
-          <div class="bar-pct">18%</div>
-        </div>
-        <div class="emotion-row">
-          <div class="emotion-label">好奇</div>
-          <div class="bar-track"><div class="bar-fill" style="width:56%;background:#2a6b4f"></div></div>
-          <div class="bar-pct">56%</div>
-        </div>
-        <div class="emotion-row">
-          <div class="emotion-label">壓力</div>
-          <div class="bar-track"><div class="bar-fill" style="width:12%;background:#c0392b"></div></div>
-          <div class="bar-pct">12%</div>
-        </div>
-      </div>
-    </div>
+  <!-- CHAT -->
+
+  <div class="chat" id="chat">
 
 ```
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-  <div class="analysis-card">
-    <div class="card-title" style="font-size:11px;margin-bottom:16px">壓力指數</div>
-    <div class="stress-ring-wrap">
-      <div class="stress-ring">
-        <svg width="80" height="80" viewBox="0 0 80 80">
-          <circle class="ring-bg" cx="40" cy="40" r="35"/>
-          <circle class="ring-fill" cx="40" cy="40" r="35" stroke-dashoffset="154"/>
-        </svg>
-        <div class="ring-num">30</div>
+<div class="ts">今天</div>
+
+<!-- AI intro bubble 1 -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.1s">
+    <h2>讀懂牠的行為，<br>不只是聽牠叫。</h2>
+    <p class="tagline">用 AI 分析影片與聲音，轉換成專業行為與情緒報告。</p>
+  </div>
+</div>
+
+<!-- AI instant analysis -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.25s">
+    <div class="section-title">🔍 即時分析</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">上傳 10–30 秒影片或錄音，立即獲得：</p>
+    <div class="metric-grid">
+      <div class="metric-item">
+        <div class="metric-val green">72%</div>
+        <div class="metric-label">情緒快樂指數</div>
       </div>
-      <div>
-        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800">低風險</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px">活躍度 85%</div>
+      <div class="metric-item">
+        <div class="metric-val yellow">30</div>
+        <div class="metric-label">壓力指數 (0–100)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val purple">85%</div>
+        <div class="metric-label">活躍度</div>
+      </div>
+      <div class="metric-item">
+        <div class="risk-badge green">● 低風險</div>
+        <div class="metric-label" style="margin-top:5px">風險等級</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <ul class="bullet-list">
+      <li>行為異常偵測</li>
+      <li>改善優先順序建議</li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI trends -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.4s">
+    <div class="section-title">📊 不只是一次分析</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">追蹤 7 天趨勢，把情緒變成數據。</p>
+    <div class="trend-chart">
+      <div class="trend-label">壓力指數 · 過去 7 天</div>
+      <div class="trend-bars">
+        <div class="trend-bar" style="height:30%"></div>
+        <div class="trend-bar" style="height:55%"></div>
+        <div class="trend-bar" style="height:40%"></div>
+        <div class="trend-bar" style="height:70%"></div>
+        <div class="trend-bar" style="height:35%"></div>
+        <div class="trend-bar" style="height:50%"></div>
+        <div class="trend-bar" style="height:30%;border-color:var(--green)"></div>
+      </div>
+      <div class="trend-days">
+        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>今</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <ul class="bullet-list">
+      <li>情緒趨勢圖</li>
+      <li>行為異常比較</li>
+      <li>今日 vs 昨日差異</li>
+    </ul>
+  </div>
+</div>
+
+<!-- AI alerts -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.5s">
+    <div class="section-title">🛎 智能提醒</div>
+    <ul class="bullet-list">
+      <li>分離焦慮警示</li>
+      <li>異常行為提醒</li>
+      <li>每週狀態報告</li>
+    </ul>
+    <div class="divider"></div>
+    <p style="font-size:12px;color:var(--muted)">提前發現問題，降低風險。</p>
+  </div>
+</div>
+
+<!-- AI plans -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.6s">
+    <div class="section-title">💳 方案選擇</div>
+    <div class="plan-list">
+      <div class="plan-item">
+        <div class="plan-dot" style="background:var(--green)"></div>
+        <div class="plan-content">
+          <div class="plan-name">免費版</div>
+          <div class="plan-desc">每日 1 次分析 · 基本報告</div>
+        </div>
+        <div class="plan-price">$0</div>
+      </div>
+      <div class="plan-item highlight">
+        <div class="plan-dot" style="background:var(--accent)"></div>
+        <div class="plan-content">
+          <div class="plan-name">專業版</div>
+          <div class="plan-desc">無限分析 · 趨勢圖 · PDF · 優先處理</div>
+        </div>
+        <div class="plan-price">$299</div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-dot" style="background:#c084fc"></div>
+        <div class="plan-content">
+          <div class="plan-name">家庭版</div>
+          <div class="plan-desc">多寵物 · 年度摘要 · 長期分析 · 客服</div>
+        </div>
+        <div class="plan-price">$499</div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="analysis-card">
-    <div class="card-title" style="font-size:11px;margin-bottom:12px">風險評估</div>
-    <div>
-      <div class="risk-row">
-        <div class="risk-icon">🦷</div>
-        <div class="risk-text">
-          <strong>口腔健康</strong>
-          <span>磨牙行為 +3次</span>
-        </div>
-        <div class="risk-level status-warn">中</div>
-      </div>
-      <div class="risk-row">
-        <div class="risk-icon">🏃</div>
-        <div class="risk-text">
-          <strong>運動量</strong>
-          <span>今日達標</span>
-        </div>
-        <div class="risk-level status-good">低</div>
-      </div>
+<!-- AI why -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="animation-delay:0.7s">
+    <div class="section-title">🎯 為什麼選 Yu chen Al？</div>
+    <div class="why-list">
+      <div class="why-item">不娛樂化，專業報告格式</div>
+      <div class="why-item">可持續追蹤趨勢</div>
+      <div class="why-item">專為認真飼主設計</div>
+    </div>
+  </div>
+</div>
+
+<!-- AI CTA -->
+<div class="msg-group ai">
+  <div class="bubble ai" style="padding:0;background:transparent;border:none;animation-delay:0.8s">
+    <div class="cta-bubble" onclick="triggerUpload()">
+      <h3>立即開始分析</h3>
+      <p>上傳影片，30 秒後看見牠真正的狀態。</p>
+      <div class="cta-btn">🎬 上傳影片</div>
     </div>
   </div>
 </div>
 ```
 
   </div>
-</section>
 
-<!-- HOW IT WORKS -->
+  <!-- INPUT AREA -->
 
-<section id="how">
-  <div class="section-label">運作流程</div>
-  <div class="section-title">四步驟，得出<br>專業級分析</div>
-  <p class="section-sub">從影片到洞察，全程自動化。30 秒內生成結構化報告。</p>
-  <div class="how-grid">
-    <div class="how-step">
-      <div class="step-num">01</div>
-      <div class="step-icon">🎬</div>
-      <div class="step-title">上傳影片 / 聲音</div>
-      <div class="step-desc">支援 10–30 秒短片，系統自動抽取關鍵影格與音頻特徵，無需剪輯。</div>
-    </div>
-    <div class="how-step">
-      <div class="step-num">02</div>
-      <div class="step-icon">🧠</div>
-      <div class="step-title">AI 行為辨識</div>
-      <div class="step-desc">動作分類、吠叫分類、異常偵測同步進行，輸出行為標籤與頻率統計。</div>
-    </div>
-    <div class="how-step">
-      <div class="step-num">03</div>
-      <div class="step-icon">📊</div>
-      <div class="step-title">情緒 & 風險評估</div>
-      <div class="step-desc">比對行為資料庫，量化情緒百分比、壓力指數（0–100）、風險等級。</div>
-    </div>
-    <div class="how-step">
-      <div class="step-num">04</div>
-      <div class="step-icon">📋</div>
-      <div class="step-title">生成專業報告</div>
-      <div class="step-desc">包含總結、原因排序、改善建議、行動清單，付費用戶可匯出 PDF。</div>
-    </div>
-  </div>
-</section>
-
-<!-- UPLOAD & ANALYZE -->
-
-<section id="analyze" class="upload-section">
-  <div class="section-label">立即體驗</div>
-  <div class="section-title">開始分析你的寵物</div>
-  <p class="section-sub">免費用戶每日 1 次分析，升級解鎖無限次 + 趨勢追蹤 + PDF 匯出。</p>
-  <div class="upload-demo">
-    <div>
-      <div class="upload-box" onclick="startAnalysis()" style="margin-bottom:16px">
-        <div class="upload-icon">🎬</div>
-        <h3>上傳行為影片</h3>
-        <p>MP4 / MOV / AVI<br>建議 10–30 秒，清晰拍攝寵物行為</p>
-        <div class="upload-hint">點擊上傳或拖曳至此</div>
+  <div class="input-area">
+    <div class="upload-preview" id="uploadPreview"></div>
+    <div class="input-row">
+      <button class="btn-plus" onclick="triggerUpload()" title="上傳照片或影片">＋</button>
+      <div class="input-pill">
+        <input class="chat-input" id="chatInput" type="text" placeholder="想問就問"
+          oninput="toggleSend()" onkeydown="handleKey(event)">
+        <button class="btn-mic" onclick="handleMic()">🎙</button>
       </div>
-      <div class="upload-box" onclick="startAnalysis()">
-        <div class="upload-icon">🔊</div>
-        <h3>上傳聲音檔案</h3>
-        <p>MP3 / WAV / M4A<br>吠叫、嗚咽、磨牙等聲音特徵分析</p>
-        <div class="upload-hint">點擊上傳或拖曳至此</div>
-      </div>
+      <button class="btn-send" id="sendBtn" onclick="sendMessage()">↑</button>
     </div>
-    <div class="form-panel">
-      <div class="form-title">寵物基本資料</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">寵物名稱</label>
-          <input class="form-input" type="text" placeholder="例：小白">
-        </div>
-        <div class="form-group">
-          <label class="form-label">品種</label>
-          <input class="form-input" type="text" placeholder="例：柴犬">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">年齡</label>
-          <select class="form-select">
-            <option>0–1 歲（幼齡）</option>
-            <option selected>1–3 歲（青年）</option>
-            <option>3–7 歲（成年）</option>
-            <option>7 歲以上（高齡）</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">性別</label>
-          <select class="form-select">
-            <option>公（已結紮）</option>
-            <option>公（未結紮）</option>
-            <option selected>母（已結紮）</option>
-            <option>母（未結紮）</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">觀察到的行為描述</label>
-        <textarea class="form-textarea" placeholder="例：最近常常繞圈跑、對陌生人吠叫增加、食慾有點下降..."></textarea>
-      </div>
-      <button class="btn-analyze" onclick="runAnalysis()">🔍 開始 AI 分析</button>
-    </div>
-  </div>
-</section>
-
-<!-- REPORT PREVIEW -->
-
-<section class="report-section">
-  <div class="section-label">報告範例</div>
-  <div class="section-title" style="color:var(--paper)">完整分析報告<br>一目了然</div>
-  <p class="section-sub">每份報告包含 7 大模組，幫助你從數據到行動。</p>
-  <div class="report-grid">
-    <div>
-      <div class="report-card" style="margin-bottom:16px">
-        <div class="report-card-title">情緒分布總覽</div>
-        <div class="gauge-grid">
-          <div class="gauge-item">
-            <div class="gauge-circle" style="color:#1e8449;border-color:rgba(30,132,73,0.4)">72%</div>
-            <div class="gauge-label">快樂指數</div>
-          </div>
-          <div class="gauge-item">
-            <div class="gauge-circle" style="color:#d68910;border-color:rgba(214,137,16,0.4)">18%</div>
-            <div class="gauge-label">焦慮程度</div>
-          </div>
-          <div class="gauge-item">
-            <div class="gauge-circle" style="color:var(--gold);border-color:rgba(201,168,76,0.4)">85%</div>
-            <div class="gauge-label">活躍度</div>
-          </div>
-          <div class="gauge-item">
-            <div class="gauge-circle" style="color:#c0392b;border-color:rgba(192,57,43,0.3)">3%</div>
-            <div class="gauge-label">異常機率</div>
-          </div>
-        </div>
-      </div>
-      <div class="report-card">
-        <div class="report-card-title">風險等級｜整體：低風險</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:12px;font-size:13px">
-            <span style="color:var(--safe)">●</span> 社交行為正常，對人友善
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:13px">
-            <span style="color:var(--gold)">●</span> 輕微分離焦慮跡象，建議觀察
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:13px">
-            <span style="color:var(--safe)">●</span> 無需立即就醫
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="report-card">
-      <div class="report-card-title">行動清單 · 本週建議</div>
-      <ul class="action-list">
-        <li>
-          <div class="action-num">01</div>
-          <div>每日增加 15 分鐘互動遊戲，降低輕微焦慮情緒，加強社會化刺激。</div>
-        </li>
-        <li>
-          <div class="action-num">02</div>
-          <div>睡前提供安撫玩具或舒緩音樂，協助建立穩定的睡眠儀式。</div>
-        </li>
-        <li>
-          <div class="action-num">03</div>
-          <div>觀察磨牙行為是否持續增加，若 7 日內未改善建議安排牙科檢查。</div>
-        </li>
-        <li>
-          <div class="action-num">04</div>
-          <div>維持目前運動量，保持體重與心肺健康的良好狀態。</div>
-        </li>
-        <li>
-          <div class="action-num">05</div>
-          <div>下次分析建議 2 週後進行，持續追蹤情緒趨勢變化。</div>
-        </li>
-      </ul>
-      <button class="pdf-btn">📄 匯出完整 PDF 報告</button>
-      <div class="pdf-note">付費用戶專屬功能 · 包含完整診斷與歷史趨勢</div>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-
-<section id="pricing">
-  <div class="section-label">訂閱方案</div>
-  <div class="section-title">選擇適合你的<br>分析頻率</div>
-  <p class="section-sub">免費開始，隨時升級。所有付費方案享 7 日退款保證。</p>
-  <div class="pricing-grid">
-    <div class="plan-card">
-      <div class="plan-name">免費</div>
-      <div class="plan-price">$0<span>/月</span></div>
-      <div class="plan-period">適合偶爾觀察</div>
-      <ul class="plan-features">
-        <li><span class="check">✓</span> 每日 1 次分析</li>
-        <li><span class="check">✓</span> 基礎情緒報告</li>
-        <li><span class="check">✓</span> 風險等級提示</li>
-        <li><span class="cross">–</span> 趨勢追蹤圖表</li>
-        <li><span class="cross">–</span> PDF 匯出</li>
-        <li><span class="cross">–</span> 優先處理佇列</li>
-      </ul>
-      <button class="plan-cta plan-cta-outline" onclick="openModal()">免費開始</button>
-    </div>
-    <div class="plan-card featured">
-      <div class="plan-badge">最受歡迎</div>
-      <div class="plan-name">專業版</div>
-      <div class="plan-price" style="color:var(--paper)">$299<span>/月</span></div>
-      <div class="plan-period">適合認真關心寵物健康的主人</div>
-      <ul class="plan-features" style="color:var(--paper)">
-        <li><span class="check">✓</span> 無限次分析</li>
-        <li><span class="check">✓</span> 完整情緒 + 行為報告</li>
-        <li><span class="check">✓</span> 壓力趨勢追蹤圖</li>
-        <li><span class="check">✓</span> PDF 匯出</li>
-        <li><span class="check">✓</span> 優先處理（30 秒內）</li>
-        <li><span class="check">✓</span> 多寵物管理（3 隻）</li>
-      </ul>
-      <button class="plan-cta plan-cta-filled" onclick="openModal()">立即升級</button>
-    </div>
-    <div class="plan-card">
-      <div class="plan-name">家庭版</div>
-      <div class="plan-price">$499<span>/月</span></div>
-      <div class="plan-period">適合多寵物家庭 / 寵物業者</div>
-      <ul class="plan-features">
-        <li><span class="check">✓</span> 無限次分析</li>
-        <li><span class="check">✓</span> 所有專業版功能</li>
-        <li><span class="check">✓</span> 無限寵物檔案</li>
-        <li><span class="check">✓</span> 年度健康摘要報告</li>
-        <li><span class="check">✓</span> 獸醫師建議整合</li>
-        <li><span class="check">✓</span> 專屬客服支援</li>
-      </ul>
-      <button class="plan-cta plan-cta-outline" onclick="openModal()">聯絡洽詢</button>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-
-<footer>
-  <div class="logo">Paw<span>Sense</span> AI</div>
-  <div class="footer-note">© 2025 PawSense AI｜把行為數據化，把情緒指數化，把報告訂閱化。</div>
-  <div style="font-size:13px;color:var(--muted)">本平台分析結果僅供參考，不代替專業獸醫診斷。</div>
-</footer>
-
-<!-- AUTH MODAL -->
-
-<div class="modal-overlay" id="authModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title">開始使用</div>
-    <div class="modal-sub">免費帳號，每日 1 次分析</div>
-    <div class="tab-row">
-      <button class="tab-btn active" id="tab-register" onclick="switchTab('register')">註冊</button>
-      <button class="tab-btn" id="tab-login" onclick="switchTab('login')">登入</button>
-    </div>
-    <div id="register-form">
-      <div class="form-group">
-        <label class="form-label">電子郵件</label>
-        <input class="form-input" type="email" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">密碼</label>
-        <input class="form-input" type="password" placeholder="至少 8 個字元">
-      </div>
-      <div class="form-group">
-        <label class="form-label">確認密碼</label>
-        <input class="form-input" type="password" placeholder="再次輸入密碼">
-      </div>
-      <button class="btn-analyze" style="margin-top:0" onclick="closeModal();startAnalysis()">建立帳號並開始</button>
-    </div>
-    <div id="login-form" style="display:none">
-      <div class="form-group">
-        <label class="form-label">電子郵件</label>
-        <input class="form-input" type="email" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">密碼</label>
-        <input class="form-input" type="password" placeholder="輸入密碼">
-      </div>
-      <button class="btn-analyze" style="margin-top:0" onclick="closeModal();startAnalysis()">登入</button>
-    </div>
-  </div>
-</div>
-
-<!-- LOADING SCREEN -->
-
-<div class="loading-screen" id="loadingScreen">
-  <div style="text-align:center">
-    <div style="font-size:48px;margin-bottom:16px">🐾</div>
-    <div class="loading-title">AI 分析進行中...</div>
-    <div class="loading-sub" id="loadingMsg">正在處理影片...</div>
-  </div>
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  <div class="loading-steps" id="loadingSteps">
-    <div class="loading-step" id="step1"><div class="dot"></div>抽取關鍵影格</div>
-    <div class="loading-step" id="step2"><div class="dot"></div>聲音特徵分析</div>
-    <div class="loading-step" id="step3"><div class="dot"></div>行為模式辨識</div>
-    <div class="loading-step" id="step4"><div class="dot"></div>情緒量化計算</div>
-    <div class="loading-step" id="step5"><div class="dot"></div>生成分析報告</div>
+    <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple onchange="handleFiles(event)">
   </div>
 </div>
 
 <script>
-  function openModal() {
-    document.getElementById('authModal').classList.add('active');
-  }
-  function closeModal() {
-    document.getElementById('authModal').classList.remove('active');
-  }
-  function switchTab(tab) {
-    document.getElementById('tab-register').classList.toggle('active', tab==='register');
-    document.getElementById('tab-login').classList.toggle('active', tab==='login');
-    document.getElementById('register-form').style.display = tab==='register' ? 'block' : 'none';
-    document.getElementById('login-form').style.display = tab==='login' ? 'block' : 'none';
-  }
+const chat = document.getElementById('chat');
+const input = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const uploadPreview = document.getElementById('uploadPreview');
+const fileInput = document.getElementById('fileInput');
 
-  function startAnalysis() {
-    document.getElementById('analyze').scrollIntoView({behavior:'smooth'});
-  }
+let pendingFiles = [];
 
-  function runAnalysis() {
-    const screen = document.getElementById('loadingScreen');
-    const fill = document.getElementById('progressFill');
-    const msg = document.getElementById('loadingMsg');
-    screen.classList.add('active');
+function toggleSend() {
+  sendBtn.classList.toggle('visible', input.value.trim().length > 0 || pendingFiles.length > 0);
+}
 
-    const steps = [
-      {id:'step1', pct:20, msg:'正在抽取關鍵影格...'},
-      {id:'step2', pct:40, msg:'分析聲音特徵...'},
-      {id:'step3', pct:62, msg:'辨識行為模式...'},
-      {id:'step4', pct:82, msg:'量化情緒指數...'},
-      {id:'step5', pct:100, msg:'生成完整報告...'},
-    ];
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
 
-    let i = 0;
-    function next() {
-      if (i >= steps.length) {
-        setTimeout(() => {
-          screen.classList.remove('active');
-          document.querySelector('.report-section').scrollIntoView({behavior:'smooth'});
-        }, 600);
-        return;
-      }
-      const s = steps[i];
-      fill.style.width = s.pct + '%';
-      msg.textContent = s.msg;
-      const el = document.getElementById(s.id);
-      el.classList.add('done');
-      el.querySelector('.dot').textContent = '✓';
-      i++;
-      setTimeout(next, 900);
-    }
-    setTimeout(next, 300);
-  }
+function triggerUpload() { fileInput.click(); }
 
-  document.getElementById('authModal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+function handleFiles(e) {
+  const files = Array.from(e.target.files);
+  files.forEach(f => {
+    pendingFiles.push(f);
+    const chip = document.createElement('div');
+    chip.className = 'preview-chip';
+    const icon = f.type.startsWith('video') ? '🎬' : f.type.startsWith('audio') ? '🔊' : '🖼';
+    chip.innerHTML = `${icon} ${f.name.length > 18 ? f.name.slice(0,18)+'…' : f.name} <span class="remove-chip">✕</span>`;
+    chip.onclick = () => {
+      pendingFiles = pendingFiles.filter(x => x !== f);
+      chip.remove();
+      if (!uploadPreview.children.length) uploadPreview.classList.remove('show');
+      toggleSend();
+    };
+    uploadPreview.appendChild(chip);
   });
+  uploadPreview.classList.add('show');
+  toggleSend();
+  fileInput.value = '';
+}
+
+function addMsg(html, side, delay=0) {
+  const group = document.createElement('div');
+  group.className = `msg-group ${side}`;
+  const b = document.createElement('div');
+  b.className = `bubble ${side}`;
+  b.style.animationDelay = delay + 's';
+  if (typeof html === 'string') b.innerHTML = html;
+  else b.appendChild(html);
+  group.appendChild(b);
+  chat.appendChild(group);
+  chat.scrollTop = chat.scrollHeight;
+  return b;
+}
+
+function showTyping() {
+  const group = document.createElement('div');
+  group.className = 'msg-group ai';
+  group.id = 'typingIndicator';
+  const b = document.createElement('div');
+  b.className = 'bubble ai typing';
+  b.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  group.appendChild(b); chat.appendChild(group);
+  chat.scrollTop = chat.scrollHeight;
+}
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text && pendingFiles.length === 0) return;
+
+  // user bubble
+  const group = document.createElement('div');
+  group.className = 'msg-group user';
+
+  if (pendingFiles.length > 0) {
+    for (const f of pendingFiles) {
+      const mediaGroup = document.createElement('div');
+      mediaGroup.className = 'msg-group user';
+      const thumb = document.createElement('div');
+      thumb.className = 'media-thumb';
+      if (f.type.startsWith('image')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        thumb.appendChild(img);
+      } else {
+        const vid = document.createElement('div');
+        vid.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;font-size:13px;color:var(--muted)';
+        vid.textContent = (f.type.startsWith('video') ? '🎬 ' : '🔊 ') + f.name;
+        thumb.appendChild(vid);
+      }
+      mediaGroup.appendChild(thumb);
+      chat.appendChild(mediaGroup);
+    }
+    pendingFiles = [];
+    uploadPreview.innerHTML = '';
+    uploadPreview.classList.remove('show');
+  }
+
+  if (text) {
+    const b = document.createElement('div');
+    b.className = 'bubble user';
+    b.textContent = text;
+    group.appendChild(b);
+    chat.appendChild(group);
+  }
+
+  input.value = '';
+  toggleSend();
+  chat.scrollTop = chat.scrollHeight;
+
+  // AI response
+  showTyping();
+  await new Promise(r => setTimeout(r, 1200));
+  removeTyping();
+  aiReply(text);
+}
+
+function aiReply(text) {
+  const t = (text || '').toLowerCase();
+
+  if (t.includes('方案') || t.includes('價格') || t.includes('訂閱') || t.includes('多少錢')) {
+    addMsg(`<div class="section-title">💳 方案說明</div>
+      <div class="plan-list">
+        <div class="plan-item"><div class="plan-dot" style="background:var(--green)"></div><div class="plan-content"><div class="plan-name">免費版</div><div class="plan-desc">每日 1 次 · 基本報告</div></div><div class="plan-price">$0</div></div>
+        <div class="plan-item highlight"><div class="plan-dot" style="background:var(--accent)"></div><div class="plan-content"><div class="plan-name">專業版</div><div class="plan-desc">無限次 · 趨勢圖 · PDF 匯出</div></div><div class="plan-price">$299</div></div>
+        <div class="plan-item"><div class="plan-dot" style="background:#c084fc"></div><div class="plan-content"><div class="plan-name">家庭版</div><div class="plan-desc">多寵物管理 · 年度摘要</div></div><div class="plan-price">$499</div></div>
+      </div>`, 'ai');
+  } else if (t.includes('壓力') || t.includes('焦慮') || t.includes('情緒')) {
+    addMsg(`<div class="section-title">📊 情緒分析說明</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">我們從影片中提取以下指標：</p>
+      <div class="metric-grid">
+        <div class="metric-item"><div class="metric-val green">快樂</div><div class="metric-label">正面情緒比例</div></div>
+        <div class="metric-item"><div class="metric-val yellow">焦慮</div><div class="metric-label">緊張行為偵測</div></div>
+        <div class="metric-item"><div class="metric-val purple">活躍</div><div class="metric-label">動作頻率分析</div></div>
+        <div class="metric-item"><div class="metric-val red">壓力</div><div class="metric-label">0–100 指數化</div></div>
+      </div>`, 'ai');
+  } else if (t.includes('上傳') || t.includes('影片') || t.includes('怎麼')) {
+    addMsg(`點擊左下角的 <strong>＋</strong> 按鈕，就可以上傳照片或影片 🎬<br><br>建議錄製 <strong>10–30 秒</strong>的清晰短片，涵蓋你觀察到的行為。上傳後我會立即開始分析！`, 'ai');
+  } else if (t === '' || t.includes('你好') || t.includes('hi') || t.includes('hello')) {
+    addMsg(`你好！我是 <strong>Yu chen Al</strong>，你的寵物行為分析師 🐾<br><br>你可以上傳寵物影片，我來幫你分析情緒、壓力指數和行為模式。`, 'ai');
+  } else {
+    addMsg(`收到你的問題了！如果你想開始分析，可以點 <strong>＋</strong> 上傳影片，或者告訴我你觀察到的具體行為，我來幫你解讀 🐾`, 'ai');
+  }
+}
+
+function handleMic() {
+  addMsg('🎙 語音輸入功能即將上線...', 'ai');
+}
+
+// Auto-scroll on load
+window.addEventListener('load', () => {
+  setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 100);
+});
 </script>
 
 </body>
