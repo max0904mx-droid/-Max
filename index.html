@@ -3,681 +3,701 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Yu chen Al</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#252525;--bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.04);--t:#f0f0f0;--t2:#888;--mu:#444;--ac:#7c6af0;--acs:rgba(124,106,240,.15);--gr:#34d399;--ye:#fbbf24;--re:#f87171;--bl:#60a5fa}
+html,body{height:100%;background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;overflow:hidden}
+.app{width:100%;max-width:420px;height:100vh;max-height:900px;margin:0 auto;background:var(--bg);border-left:1px solid var(--bd);border-right:1px solid var(--bd);position:relative;overflow:hidden;display:flex;flex-direction:column}
 
-:root {
-–bg: #0a0a0a;
-–surface: #141414;
-–surface2: #1c1c1c;
-–border: rgba(255,255,255,0.08);
-–text: #f0f0f0;
-–muted: #666;
-–muted2: #444;
-–accent: #7c6af0;
-–accent-soft: rgba(124,106,240,0.15);
-–green: #34d399;
-–yellow: #fbbf24;
-–red: #f87171;
-–bubble-user: #1e1e2e;
-–bubble-ai: #161616;
-–input-bg: #1a1a1a;
-}
+/* ── SCREENS ── */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.32,.72,0,1),opacity .25s}
+.hid{transform:translateX(100%)!important;opacity:0!important;pointer-events:none!important}
+.sld-left{transform:translateX(-30%)!important;opacity:0!important;pointer-events:none!important}
 
-html, body {
-height: 100%; width: 100%;
-background: var(–bg);
-color: var(–text);
-font-family: ‘DM Sans’, sans-serif;
-overflow: hidden;
-}
+/* ══ AUTH ══ */
+#sa{background:radial-gradient(ellipse at 55% 0%,rgba(124,106,240,.16),transparent 60%),var(–bg);justify-content:flex-end}
+.a-top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 32px 32px}
+.a-paw{font-size:54px;filter:drop-shadow(0 0 24px rgba(124,106,240,.5))}
+.a-logo{font-family:‘DM Serif Display’,serif;font-size:36px;font-style:italic;line-height:1;text-align:center}
+.a-logo em{color:var(–ac);font-style:normal}
+.a-tag{font-size:14px;color:var(–t2);text-align:center;line-height:1.65;max-width:240px}
+.a-pan{background:var(–s1);border-top:1px solid var(–bd);border-radius:24px 24px 0 0;padding:28px 24px 44px}
+.a-tabs{display:flex;background:var(–s2);border-radius:10px;padding:3px;margin-bottom:22px}
+.a-tab{flex:1;padding:9px;border:none;border-radius:8px;background:transparent;color:var(–t2);font-family:‘DM Sans’,sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.a-tab.on{background:var(–s3);color:var(–t)}
+.fg{margin-bottom:14px}
+.fl{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(–mu);margin-bottom:6px;display:block}
+.fi{width:100%;padding:12px 14px;background:#161616;border:1px solid var(–bd);border-radius:10px;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.fi:focus{border-color:rgba(124,106,240,.5)}
+.btn-main{width:100%;padding:14px;background:var(–ac);color:#fff;border:none;border-radius:12px;font-family:‘DM Sans’,sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;transition:all .2s}
+.btn-main:active{transform:scale(.98)}
 
-/* ── PHONE SHELL ── */
-.phone {
-width: 100%; max-width: 420px;
-height: 100vh; max-height: 900px;
-margin: 0 auto;
-display: flex; flex-direction: column;
-position: relative;
-background: var(–bg);
-border-left: 1px solid var(–border);
-border-right: 1px solid var(–border);
-}
+/* ══ ONBOARD ══ */
+#sob{background:var(–bg)}
+.ob-hd{display:flex;align-items:center;justify-content:space-between;padding:52px 22px 0;flex-shrink:0}
+.ob-skip{font-size:14px;color:var(–mu);background:none;border:none;cursor:pointer}
+.ob-dots{display:flex;gap:6px}
+.ob-dot{width:6px;height:6px;border-radius:3px;background:var(–s3);transition:all .3s}
+.ob-dot.on{width:20px;background:var(–ac)}
+.ob-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:18px}
+.ob-icon{font-size:60px}
+.ob-title{font-family:‘DM Serif Display’,serif;font-size:26px;font-style:italic;line-height:1.2}
+.ob-desc{font-size:14px;color:var(–t2);line-height:1.7;max-width:280px}
+.ob-foot{padding:20px 24px 44px;flex-shrink:0}
+.ob-btn{width:100%;padding:15px;background:var(–ac);color:#fff;border:none;border-radius:14px;font-family:‘DM Sans’,sans-serif;font-size:16px;font-weight:600;cursor:pointer}
 
-/* ── HEADER ── */
-.header {
-display: flex; align-items: center; gap: 12px;
-padding: 52px 20px 16px;
-background: linear-gradient(to bottom, var(–bg) 80%, transparent);
-position: relative; z-index: 10;
-flex-shrink: 0;
-}
-.header-avatar {
-width: 36px; height: 36px; border-radius: 50%;
-background: linear-gradient(135deg, var(–accent), #a78bfa);
-display: flex; align-items: center; justify-content: center;
-font-size: 16px; flex-shrink: 0;
-}
-.header-info { flex: 1; }
-.header-name {
-font-family: ‘DM Serif Display’, serif;
-font-size: 17px; font-weight: 400; letter-spacing: 0.2px;
-color: var(–text); line-height: 1.2;
-}
-.header-name span { font-style: italic; color: var(–accent); }
-.header-sub { font-size: 11px; color: var(–muted); margin-top: 1px; }
-.header-dot {
-width: 7px; height: 7px; border-radius: 50%;
-background: var(–green);
-box-shadow: 0 0 6px var(–green);
-animation: pulse 2s ease infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-/* ── CHAT AREA ── */
-.chat {
-flex: 1; overflow-y: auto; overflow-x: hidden;
-padding: 8px 16px 8px;
-scroll-behavior: smooth;
--webkit-overflow-scrolling: touch;
-}
-.chat::-webkit-scrollbar { width: 0; }
-
-/* ── MESSAGES ── */
-.msg-group { margin-bottom: 20px; }
-.msg-group.user { display: flex; flex-direction: column; align-items: flex-end; }
-.msg-group.ai { display: flex; flex-direction: column; align-items: flex-start; }
-
-.bubble {
-max-width: 88%; padding: 12px 16px;
-border-radius: 18px; font-size: 14px; line-height: 1.6;
-animation: fadeUp 0.3s ease both;
-}
-@keyframes fadeUp {
-from { opacity:0; transform: translateY(8px); }
-to { opacity:1; transform: translateY(0); }
-}
-.bubble.user {
-background: var(–bubble-user);
-border-radius: 18px 18px 4px 18px;
-color: var(–text);
-border: 1px solid rgba(124,106,240,0.2);
-}
-.bubble.ai {
-background: var(–bubble-ai);
-border-radius: 18px 18px 18px 4px;
-color: var(–text);
-border: 1px solid var(–border);
-}
-.bubble + .bubble { margin-top: 4px; }
-
-/* Rich content inside ai bubbles */
-.bubble h2 {
-font-family: ‘DM Serif Display’, serif;
-font-size: 22px; font-weight: 400; font-style: italic;
-color: var(–text); line-height: 1.3; margin-bottom: 6px;
-}
-.bubble .tagline {
-font-size: 13px; color: var(–muted); margin-bottom: 0;
-}
-.bubble .divider {
-height: 1px; background: var(–border);
-margin: 14px 0;
-}
-.bubble .section-title {
-font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
-text-transform: uppercase; color: var(–accent);
-margin-bottom: 10px;
-}
-.bullet-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.bullet-list li {
-display: flex; align-items: flex-start; gap: 8px;
-font-size: 13px; line-height: 1.5;
-}
-.bullet-list li::before {
-content: ‘–’; color: var(–accent);
-flex-shrink: 0; margin-top: 1px;
-}
-.metric-grid {
-display: grid; grid-template-columns: 1fr 1fr;
-gap: 8px; margin-top: 4px;
-}
-.metric-item {
-background: rgba(255,255,255,0.04);
-border: 1px solid var(–border);
-border-radius: 10px; padding: 10px 12px;
-}
-.metric-val {
-font-family: ‘DM Serif Display’, serif;
-font-size: 20px; font-weight: 400;
-line-height: 1;
-}
-.metric-val.green { color: var(–green); }
-.metric-val.yellow { color: var(–yellow); }
-.metric-val.red { color: var(–red); }
-.metric-val.purple { color: var(–accent); }
-.metric-label { font-size: 11px; color: var(–muted); margin-top: 3px; }
-
-/* risk badge */
-.risk-badge {
-display: inline-flex; align-items: center; gap: 5px;
-padding: 4px 10px; border-radius: 100px;
-font-size: 12px; font-weight: 600;
-}
-.risk-badge.green { background: rgba(52,211,153,0.12); color: var(–green); }
-.risk-badge.yellow { background: rgba(251,191,36,0.12); color: var(–yellow); }
-.risk-badge.red { background: rgba(248,113,113,0.12); color: var(–red); }
-
-/* trend chart */
-.trend-chart { margin-top: 8px; }
-.trend-label { font-size: 11px; color: var(–muted); margin-bottom: 6px; }
-.trend-bars {
-display: flex; align-items: flex-end; gap: 3px;
-height: 40px;
-}
-.trend-bar {
-flex: 1; border-radius: 3px 3px 0 0;
-background: var(–accent-soft);
-border-top: 2px solid var(–accent);
-min-height: 4px; transition: height 0.3s ease;
-}
-.trend-days {
-display: flex; justify-content: space-between;
-margin-top: 4px;
-}
-.trend-days span { font-size: 9px; color: var(–muted2); }
-
-/* plan cards */
-.plan-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.plan-item {
-background: rgba(255,255,255,0.03);
-border: 1px solid var(–border);
-border-radius: 12px; padding: 12px 14px;
-display: flex; align-items: center; gap: 10px;
-}
-.plan-item.highlight { border-color: rgba(124,106,240,0.4); background: var(–accent-soft); }
-.plan-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.plan-content { flex: 1; }
-.plan-name { font-size: 13px; font-weight: 600; }
-.plan-desc { font-size: 11px; color: var(–muted); margin-top: 2px; }
-.plan-price {
-font-family: ‘DM Serif Display’, serif;
-font-size: 15px; color: var(–accent);
-}
-
-/* why list */
-.why-list { display: flex; flex-direction: column; gap: 6px; }
-.why-item {
-display: flex; align-items: center; gap: 8px;
-font-size: 13px;
-}
-.why-item::before { content: ‘✔’; color: var(–green); font-size: 11px; }
-
-/* CTA bubble */
-.cta-bubble {
-background: linear-gradient(135deg, rgba(124,106,240,0.2), rgba(167,139,250,0.1));
-border: 1px solid rgba(124,106,240,0.3);
-border-radius: 14px; padding: 14px 16px;
-text-align: center; cursor: pointer;
-transition: all 0.2s;
-}
-.cta-bubble:hover { background: linear-gradient(135deg, rgba(124,106,240,0.3), rgba(167,139,250,0.2)); }
-.cta-bubble h3 {
-font-family: ‘DM Serif Display’, serif;
-font-size: 16px; font-style: italic; color: var(–text);
-margin-bottom: 4px;
-}
-.cta-bubble p { font-size: 12px; color: var(–muted); }
-.cta-btn {
-display: inline-block; margin-top: 10px;
-background: var(–accent); color: white;
-padding: 8px 20px; border-radius: 100px;
-font-size: 13px; font-weight: 600; cursor: pointer;
-transition: opacity 0.2s;
-}
-.cta-btn:hover { opacity: 0.85; }
-
-/* timestamp */
-.ts {
-font-size: 10px; color: var(–muted2);
-text-align: center; margin: 12px 0 4px;
-}
-
-/* typing indicator */
-.typing { display: flex; align-items: center; gap: 4px; padding: 12px 16px; }
-.typing-dot {
-width: 6px; height: 6px; border-radius: 50%;
-background: var(–muted);
-animation: typingBounce 1.2s ease infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: 0.15s; }
-.typing-dot:nth-child(3) { animation-delay: 0.3s; }
-@keyframes typingBounce {
-0%,60%,100% { transform: translateY(0); }
-30% { transform: translateY(-6px); }
-}
-
-/* ── INPUT AREA ── */
-.input-area {
-flex-shrink: 0;
-padding: 10px 14px 28px;
-background: linear-gradient(to top, var(–bg) 70%, transparent);
-position: relative; z-index: 10;
-}
-.input-row {
-display: flex; align-items: center; gap: 8px;
-}
-.btn-plus {
-width: 40px; height: 40px; border-radius: 50%;
-background: var(–surface2);
-border: 1px solid var(–border);
-display: flex; align-items: center; justify-content: center;
-cursor: pointer; flex-shrink: 0;
-font-size: 18px; color: var(–muted);
-transition: all 0.2s;
-}
-.btn-plus:hover { background: var(–surface); color: var(–text); }
-.input-pill {
-flex: 1;
-display: flex; align-items: center;
-background: var(–input-bg);
-border: 1px solid var(–border);
-border-radius: 22px; padding: 0 14px;
-gap: 8px; height: 44px;
-transition: border-color 0.2s;
-}
-.input-pill:focus-within { border-color: rgba(124,106,240,0.5); }
-.chat-input {
-flex: 1; background: transparent; border: none; outline: none;
-color: var(–text); font-family: ‘DM Sans’, sans-serif;
-font-size: 15px; caret-color: var(–accent);
-}
-.chat-input::placeholder { color: var(–muted); }
-.btn-mic {
-background: none; border: none; cursor: pointer;
-color: var(–muted); font-size: 16px; padding: 2px;
-}
-.btn-send {
-width: 40px; height: 40px; border-radius: 50%;
-background: var(–accent);
-border: none; cursor: pointer;
-display: flex; align-items: center; justify-content: center;
-flex-shrink: 0; font-size: 16px;
-transition: all 0.2s; opacity: 0;
-pointer-events: none;
-}
-.btn-send.visible { opacity: 1; pointer-events: all; }
-.btn-send:hover { background: #6b5ce7; transform: scale(1.05); }
-
-/* upload preview */
-.upload-preview {
-display: none;
-padding: 8px 0;
-gap: 8px;
-}
-.upload-preview.show { display: flex; }
-.preview-chip {
-display: flex; align-items: center; gap: 6px;
-background: var(–surface2); border: 1px solid var(–border);
-border-radius: 8px; padding: 6px 10px;
-font-size: 12px; color: var(–muted);
-cursor: pointer;
-}
-.preview-chip:hover .remove-chip { opacity: 1; }
-.remove-chip { opacity: 0.5; transition: opacity 0.15s; }
-
-/* hidden file input */
-#fileInput { display: none; }
-
+/* ══ CHAT (main) ══ */
+#sch{background:var(–bg)}
+.ch-hd{display:flex;align-items:center;gap:12px;padding:52px 20px 14px;flex-shrink:0;border-bottom:1px solid var(–bd2)}
+.ch-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(–ac),#a78bfa);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ch-name{font-family:‘DM Serif Display’,serif;font-size:17px;font-style:italic}
+.ch-name em{color:var(–ac);font-style:normal}
+.ch-online{font-size:11px;color:var(–gr)}
+.h-dot{width:7px;height:7px;border-radius:50%;background:var(–gr);box-shadow:0 0 6px var(–gr);animation:pu 2s ease infinite;margin-left:auto}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
+.ch-nav-row{display:flex;gap:8px;padding:10px 16px 8px;overflow-x:auto;flex-shrink:0}
+.ch-nav-row::-webkit-scrollbar{display:none}
+.nav-chip{display:flex;align-items:center;gap:6px;flex-shrink:0;background:var(–s1);border:1px solid var(–bd);border-radius:100px;padding:7px 14px;cursor:pointer;transition:all .2s;font-size:12px;font-weight:500;color:var(–t2)}
+.nav-chip:hover{border-color:var(–ac);color:var(–t)}
+.nav-chip.on{border-color:var(–ac);background:var(–acs);color:var(–ac)}
+.ch-msgs{flex:1;overflow-y:auto;padding:12px 16px 8px}
+.ch-msgs::-webkit-scrollbar{display:none}
+.ts{font-size:10px;color:var(–mu);text-align:center;margin:10px 0 6px}
+.mg{margin-bottom:14px;display:flex;flex-direction:column}
+.mg.u{align-items:flex-end}
+.mg.ai{align-items:flex-start}
+.bb{max-width:86%;padding:12px 16px;font-size:14px;line-height:1.65;animation:fu .3s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.bb.u{background:#1c1c2e;border:1px solid rgba(124,106,240,.18);border-radius:18px 18px 4px 18px;color:var(–t)}
+.bb.ai{background:var(–s1);border:1px solid var(–bd);border-radius:18px 18px 18px 4px;color:var(–t)}
+.bb.ai h2{font-family:‘DM Serif Display’,serif;font-size:19px;font-style:italic;margin-bottom:6px;line-height:1.3}
+.bb-div{height:1px;background:var(–bd);margin:12px 0}
+.bb-sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(–ac);margin-bottom:8px}
+.bb-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bb-list li{display:flex;gap:8px;font-size:13px;line-height:1.5}
+.bb-list li::before{content:’–’;color:var(–ac);flex-shrink:0}
+/* quick replies */
+.qr-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.qr{background:transparent;border:1px solid var(–bd);border-radius:100px;padding:7px 14px;font-size:13px;color:var(–t2);cursor:pointer;transition:all .2s;font-family:‘DM Sans’,sans-serif}
+.qr:hover{border-color:var(–ac);color:var(–ac);background:var(–acs)}
 /* media in chat */
-.media-thumb {
-width: 100%; max-width: 200px;
-border-radius: 12px; overflow: hidden;
-margin-bottom: 4px;
-}
-.media-thumb img { width: 100%; display: block; }
-.media-thumb video { width: 100%; display: block; }
+.media-thumb{border-radius:14px;overflow:hidden;max-width:220px;margin-bottom:4px;border:1px solid var(–bd)}
+.media-thumb img,.media-thumb video{width:100%;display:block}
+.media-file{background:var(–s2);border:1px solid var(–bd);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:13px;max-width:220px}
+/* metrics inside bubble */
+.bb-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.bb-m{background:rgba(255,255,255,.04);border:1px solid var(–bd);border-radius:10px;padding:10px 12px}
+.bb-mv{font-family:‘DM Serif Display’,serif;font-size:20px;line-height:1}
+.bb-ml{font-size:11px;color:var(–t2);margin-top:3px}
+.bb-bars{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.bb-br{display:flex;align-items:center;gap:10px}
+.bb-bl{font-size:12px;width:50px;color:var(–t2)}
+.bb-bt{flex:1;height:6px;background:var(–s2);border-radius:100px;overflow:hidden}
+.bb-bf{height:100%;border-radius:100px}
+.bb-bp{font-size:11px;color:var(–mu);width:28px;text-align:right}
+.rp{padding:5px 12px;border-radius:100px;font-size:12px;font-weight:600;display:inline-block}
+.rl{background:rgba(52,211,153,.12);color:var(–gr)}
+.rm{background:rgba(251,191,36,.12);color:var(–ye)}
+.rh{background:rgba(248,113,113,.12);color:var(–re)}
+.bb-action{display:flex;gap:8px;margin-top:10px}
+.bb-btn-acc{flex:1;padding:10px;background:var(–ac);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif}
+.bb-btn-sec{flex:1;padding:10px;background:var(–s2);border:1px solid var(–bd);color:var(–t);border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:‘DM Sans’,sans-serif}
+/* typing */
+.ty-wrap{background:var(–s1);border:1px solid var(–bd);border-radius:18px 18px 18px 4px;padding:12px 16px;display:inline-flex;gap:4px}
+.ty-d{width:6px;height:6px;border-radius:50%;background:var(–mu);animation:tb 1.2s ease infinite}
+.ty-d:nth-child(2){animation-delay:.15s}.ty-d:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* input area */
+.ch-in{flex-shrink:0;padding:8px 14px 28px;border-top:1px solid var(–bd2)}
+.up-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 8px}
+.uc{display:flex;align-items:center;gap:5px;background:var(–s2);border:1px solid var(–bd);border-radius:8px;padding:5px 10px;font-size:12px;color:var(–t2);cursor:pointer}
+.in-row{display:flex;align-items:center;gap:8px}
+.plus-btn{width:40px;height:40px;border-radius:50%;background:var(–s2);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(–t2);flex-shrink:0;transition:all .2s;line-height:1}
+.plus-btn:hover{background:var(–s3);color:var(–t)}
+.in-pill{flex:1;display:flex;align-items:center;background:#161616;border:1px solid var(–bd);border-radius:22px;padding:0 14px;gap:8px;height:44px;transition:border-color .2s}
+.in-pill:focus-within{border-color:rgba(124,106,240,.5)}
+.in-text{flex:1;background:transparent;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;caret-color:var(–ac)}
+.in-text::placeholder{color:var(–mu)}
+.mic-btn{background:none;border:none;cursor:pointer;color:var(–mu);font-size:16px;padding:2px;transition:color .2s}
+.mic-btn:hover{color:var(–t2)}
+.send-btn{width:40px;height:40px;border-radius:50%;background:var(–ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;opacity:0;pointer-events:none;transition:all .2s}
+.send-btn.show{opacity:1;pointer-events:all}
+.send-btn:hover{background:#6b5ce7;transform:scale(1.05)}
+#fi{display:none}
+
+/* ══ RECORDS ══ */
+#srec{background:var(–bg)}
+.pg-hd{display:flex;align-items:center;gap:12px;padding:52px 20px 16px;flex-shrink:0}
+.bk-btn{width:36px;height:36px;border-radius:50%;background:var(–s1);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+.pg-title{font-family:‘DM Serif Display’,serif;font-size:22px;font-style:italic}
+.pg-scroll{flex:1;overflow-y:auto;padding:8px 20px 40px}
+.pg-scroll::-webkit-scrollbar{display:none}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;text-align:center;gap:12px;flex:1}
+.empty-icon{font-size:48px;opacity:.4}
+.empty-title{font-family:‘DM Serif Display’,serif;font-size:20px;font-style:italic;color:var(–t2)}
+.empty-desc{font-size:13px;color:var(–mu);line-height:1.6;max-width:240px}
+.rec-item{background:var(–s1);border:1px solid var(–bd);border-radius:16px;padding:16px;margin-bottom:10px;cursor:pointer;transition:background .15s}
+.rec-item:hover{background:var(–s2)}
+.rec-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rec-cat-av{width:32px;height:32px;border-radius:50%;background:var(–s2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.rec-cat-name{font-size:14px;font-weight:600}
+.rec-date{font-size:11px;color:var(–mu);margin-top:1px}
+.rec-stress{font-family:‘DM Serif Display’,serif;font-size:22px;margin-left:auto}
+.rec-summary{font-size:13px;color:var(–t2);line-height:1.5;margin-bottom:10px}
+.rec-tags{display:flex;gap:6px;flex-wrap:wrap}
+.rec-tag{font-size:11px;padding:3px 10px;border-radius:100px;background:var(–s2);border:1px solid var(–bd)}
+
+/* ══ CATS ══ */
+#scats{background:var(–bg)}
+.cat-list{flex:1;overflow-y:auto;padding:8px 20px 40px}
+.cat-list::-webkit-scrollbar{display:none}
+.cat-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:18px;margin-bottom:12px;cursor:pointer;transition:background .15s}
+.cat-card:hover{background:var(–s2)}
+.cat-card-top{display:flex;align-items:center;gap:14px}
+.cat-av-lg{width:52px;height:52px;border-radius:50%;background:var(–s2);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.cat-card-info{flex:1}
+.cat-card-name{font-family:‘DM Serif Display’,serif;font-size:18px;font-style:italic}
+.cat-card-meta{font-size:12px;color:var(–t2);margin-top:2px}
+.cat-card-metrics{display:flex;gap:8px;margin-top:12px}
+.cat-mini-m{flex:1;background:var(–s2);border-radius:10px;padding:8px;text-align:center}
+.cat-mini-v{font-family:‘DM Serif Display’,serif;font-size:16px;line-height:1}
+.cat-mini-l{font-size:10px;color:var(–t2);margin-top:2px}
+
+/* ══ BOTTOM NAV ══ */
+.b-nav{position:absolute;bottom:0;left:0;right:0;height:72px;background:rgba(10,10,10,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-around;padding:0 8px 12px}
+.b-ni{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 16px;border-radius:10px;transition:background .15s}
+.b-ni:hover{background:var(–s2)}
+.b-nic{font-size:20px}
+.b-nlb{font-size:10px;font-weight:500;color:var(–mu);margin-top:1px}
+.b-ni.on .b-nlb{color:var(–ac)}
 </style>
 
 </head>
 <body>
-<div class="phone">
+<div class="app">
 
-  <!-- HEADER -->
+<!-- ══ AUTH ══ -->
 
-  <div class="header">
-    <div class="header-avatar">🐾</div>
-    <div class="header-info">
-      <div class="header-name">Yu chen <span>Al</span></div>
-      <div class="header-sub">寵物行為 AI 分析師</div>
+<div class="scr" id="sa">
+  <div class="a-top">
+    <div class="a-paw">🐾</div>
+    <div class="a-logo">Yu chen <em>Al</em></div>
+    <div class="a-tag">讀懂牠的行為，<br>不只是聽牠叫。</div>
+  </div>
+  <div class="a-pan">
+    <div class="a-tabs">
+      <button class="a-tab on" id="tab-r" onclick="swTab('r')">註冊</button>
+      <button class="a-tab" id="tab-l" onclick="swTab('l')">登入</button>
     </div>
-    <div class="header-dot"></div>
-  </div>
-
-  <!-- CHAT -->
-
-  <div class="chat" id="chat">
-
-```
-<div class="ts">今天</div>
-
-<!-- AI intro bubble 1 -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.1s">
-    <h2>讀懂牠的行為，<br>不只是聽牠叫。</h2>
-    <p class="tagline">用 AI 分析影片與聲音，轉換成專業行為與情緒報告。</p>
-  </div>
-</div>
-
-<!-- AI instant analysis -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.25s">
-    <div class="section-title">🔍 即時分析</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">上傳 10–30 秒影片或錄音，立即獲得：</p>
-    <div class="metric-grid">
-      <div class="metric-item">
-        <div class="metric-val green">72%</div>
-        <div class="metric-label">情緒快樂指數</div>
-      </div>
-      <div class="metric-item">
-        <div class="metric-val yellow">30</div>
-        <div class="metric-label">壓力指數 (0–100)</div>
-      </div>
-      <div class="metric-item">
-        <div class="metric-val purple">85%</div>
-        <div class="metric-label">活躍度</div>
-      </div>
-      <div class="metric-item">
-        <div class="risk-badge green">● 低風險</div>
-        <div class="metric-label" style="margin-top:5px">風險等級</div>
-      </div>
+    <div id="form-r">
+      <div class="fg"><label class="fl">電子郵件</label><input class="fi" type="email" placeholder="you@example.com"></div>
+      <div class="fg"><label class="fl">密碼</label><input class="fi" type="password" placeholder="至少 8 個字元"></div>
+      <button class="btn-main" onclick="goTo('sob')">建立帳號 →</button>
     </div>
-    <div class="divider"></div>
-    <ul class="bullet-list">
-      <li>行為異常偵測</li>
-      <li>改善優先順序建議</li>
-    </ul>
-  </div>
-</div>
-
-<!-- AI trends -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.4s">
-    <div class="section-title">📊 不只是一次分析</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">追蹤 7 天趨勢，把情緒變成數據。</p>
-    <div class="trend-chart">
-      <div class="trend-label">壓力指數 · 過去 7 天</div>
-      <div class="trend-bars">
-        <div class="trend-bar" style="height:30%"></div>
-        <div class="trend-bar" style="height:55%"></div>
-        <div class="trend-bar" style="height:40%"></div>
-        <div class="trend-bar" style="height:70%"></div>
-        <div class="trend-bar" style="height:35%"></div>
-        <div class="trend-bar" style="height:50%"></div>
-        <div class="trend-bar" style="height:30%;border-color:var(--green)"></div>
-      </div>
-      <div class="trend-days">
-        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>今</span>
-      </div>
-    </div>
-    <div class="divider"></div>
-    <ul class="bullet-list">
-      <li>情緒趨勢圖</li>
-      <li>行為異常比較</li>
-      <li>今日 vs 昨日差異</li>
-    </ul>
-  </div>
-</div>
-
-<!-- AI alerts -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.5s">
-    <div class="section-title">🛎 智能提醒</div>
-    <ul class="bullet-list">
-      <li>分離焦慮警示</li>
-      <li>異常行為提醒</li>
-      <li>每週狀態報告</li>
-    </ul>
-    <div class="divider"></div>
-    <p style="font-size:12px;color:var(--muted)">提前發現問題，降低風險。</p>
-  </div>
-</div>
-
-<!-- AI plans -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.6s">
-    <div class="section-title">💳 方案選擇</div>
-    <div class="plan-list">
-      <div class="plan-item">
-        <div class="plan-dot" style="background:var(--green)"></div>
-        <div class="plan-content">
-          <div class="plan-name">免費版</div>
-          <div class="plan-desc">每日 1 次分析 · 基本報告</div>
-        </div>
-        <div class="plan-price">$0</div>
-      </div>
-      <div class="plan-item highlight">
-        <div class="plan-dot" style="background:var(--accent)"></div>
-        <div class="plan-content">
-          <div class="plan-name">專業版</div>
-          <div class="plan-desc">無限分析 · 趨勢圖 · PDF · 優先處理</div>
-        </div>
-        <div class="plan-price">$299</div>
-      </div>
-      <div class="plan-item">
-        <div class="plan-dot" style="background:#c084fc"></div>
-        <div class="plan-content">
-          <div class="plan-name">家庭版</div>
-          <div class="plan-desc">多寵物 · 年度摘要 · 長期分析 · 客服</div>
-        </div>
-        <div class="plan-price">$499</div>
-      </div>
+    <div id="form-l" style="display:none">
+      <div class="fg"><label class="fl">電子郵件</label><input class="fi" type="email" placeholder="you@example.com"></div>
+      <div class="fg"><label class="fl">密碼</label><input class="fi" type="password" placeholder="輸入密碼"></div>
+      <button class="btn-main" onclick="goTo('sch')">登入 →</button>
     </div>
   </div>
 </div>
 
-<!-- AI why -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="animation-delay:0.7s">
-    <div class="section-title">🎯 為什麼選 Yu chen Al？</div>
-    <div class="why-list">
-      <div class="why-item">不娛樂化，專業報告格式</div>
-      <div class="why-item">可持續追蹤趨勢</div>
-      <div class="why-item">專為認真飼主設計</div>
-    </div>
+<!-- ══ ONBOARD ══ -->
+
+<div class="scr hid" id="sob">
+  <div class="ob-hd">
+    <button class="ob-skip" onclick="goTo('sch')">跳過</button>
+    <div class="ob-dots" id="ob-dots"></div>
   </div>
+  <div class="ob-body" id="ob-body"></div>
+  <div class="ob-foot"><button class="ob-btn" id="ob-btn" onclick="nxOb()">下一步</button></div>
 </div>
 
-<!-- AI CTA -->
-<div class="msg-group ai">
-  <div class="bubble ai" style="padding:0;background:transparent;border:none;animation-delay:0.8s">
-    <div class="cta-bubble" onclick="triggerUpload()">
-      <h3>立即開始分析</h3>
-      <p>上傳影片，30 秒後看見牠真正的狀態。</p>
-      <div class="cta-btn">🎬 上傳影片</div>
+<!-- ══ CHAT ══ -->
+
+<div class="scr hid" id="sch">
+  <div class="ch-hd">
+    <div class="ch-av">🐾</div>
+    <div>
+      <div class="ch-name">Yu chen <em>Al</em></div>
+      <div class="ch-online">在線 · 隨時回覆</div>
     </div>
+    <div class="h-dot"></div>
   </div>
-</div>
-```
-
-  </div>
-
-  <!-- INPUT AREA -->
-
-  <div class="input-area">
-    <div class="upload-preview" id="uploadPreview"></div>
-    <div class="input-row">
-      <button class="btn-plus" onclick="triggerUpload()" title="上傳照片或影片">＋</button>
-      <div class="input-pill">
-        <input class="chat-input" id="chatInput" type="text" placeholder="想問就問"
-          oninput="toggleSend()" onkeydown="handleKey(event)">
-        <button class="btn-mic" onclick="handleMic()">🎙</button>
+  <div class="ch-msgs" id="ch-msgs">
+    <div class="ts">今天</div>
+    <div class="mg ai">
+      <div class="bb ai">
+        <h2>你好，我是 Yu chen Al 🐾</h2>
+        <p style="font-size:13px;color:var(--t2);margin-top:4px">直接拍一段你貓咪的影片或照片給我，<br>我會幫你分析牠的行為與情緒狀態。</p>
+        <div class="bb-div"></div>
+        <p style="font-size:13px;color:var(--t2)">或者，你也可以直接用文字描述你觀察到的行為。</p>
       </div>
-      <button class="btn-send" id="sendBtn" onclick="sendMessage()">↑</button>
     </div>
-    <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple onchange="handleFiles(event)">
+  </div>
+  <div class="ch-in">
+    <div class="up-chips" id="up-chips"></div>
+    <div class="in-row">
+      <button class="plus-btn" onclick="document.getElementById('fi').click()" title="上傳照片或影片">＋</button>
+      <div class="in-pill">
+        <input class="in-text" id="in-text" placeholder="想問就問" oninput="onInput()" onkeydown="onKey(event)">
+        <button class="mic-btn" title="語音輸入">🎙</button>
+      </div>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()">↑</button>
+    </div>
+    <input type="file" id="fi" accept="image/*,video/*,audio/*" multiple onchange="onFiles(event)">
+  </div>
+  <div class="b-nav">
+    <button class="b-ni on" id="nav-chat" onclick="navTo('sch','nav-chat')"><div class="b-nic">💬</div><div class="b-nlb">對話</div></button>
+    <button class="b-ni" id="nav-rec" onclick="navTo('srec','nav-rec')"><div class="b-nic">📋</div><div class="b-nlb">紀錄</div></button>
+    <button class="b-ni" id="nav-cats" onclick="navTo('scats','nav-cats')"><div class="b-nic">🐱</div><div class="b-nlb">我的貓</div></button>
+  </div>
+</div>
+
+<!-- ══ RECORDS ══ -->
+
+<div class="scr hid" id="srec">
+  <div class="pg-hd">
+    <div class="pg-title">分析紀錄</div>
+  </div>
+  <div class="pg-scroll" id="rec-list">
+    <!-- populated by JS -->
+  </div>
+  <div class="b-nav">
+    <button class="b-ni" id="nav-chat2" onclick="navTo('sch','nav-chat')"><div class="b-nic">💬</div><div class="b-nlb">對話</div></button>
+    <button class="b-ni on" id="nav-rec2"><div class="b-nic">📋</div><div class="b-nlb">紀錄</div></button>
+    <button class="b-ni" id="nav-cats2" onclick="navTo('scats','nav-cats')"><div class="b-nic">🐱</div><div class="b-nlb">我的貓</div></button>
+  </div>
+</div>
+
+<!-- ══ CATS ══ -->
+
+<div class="scr hid" id="scats">
+  <div class="pg-hd">
+    <div class="pg-title">我的貓</div>
+    <button onclick="startNewCat()" style="margin-left:auto;background:var(--ac);color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">＋ 新增</button>
+  </div>
+  <div class="cat-list" id="cat-list">
+    <!-- populated by JS -->
+  </div>
+  <div class="b-nav">
+    <button class="b-ni" onclick="navTo('sch','nav-chat')"><div class="b-nic">💬</div><div class="b-nlb">對話</div></button>
+    <button class="b-ni" onclick="navTo('srec','nav-rec')"><div class="b-nic">📋</div><div class="b-nlb">紀錄</div></button>
+    <button class="b-ni on"><div class="b-nic">🐱</div><div class="b-nlb">我的貓</div></button>
   </div>
 </div>
 
 <script>
-const chat = document.getElementById('chat');
-const input = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
-const uploadPreview = document.getElementById('uploadPreview');
-const fileInput = document.getElementById('fileInput');
+// ── STATE ──
+var state = {
+  cats: [],       // [{id, name, breed, age, gender, neutered, emoji}]
+  records: [],    // [{id, catId, date, stress, emotion, risk, summary, tags}]
+  flow: null,     // current conversation flow
+  flowData: {}    // temp data for active flow
+};
 
-let pendingFiles = [];
-
-function toggleSend() {
-  sendBtn.classList.toggle('visible', input.value.trim().length > 0 || pendingFiles.length > 0);
+// ── NAV ──
+var hist = ['sa'];
+function goTo(id) {
+  var c = hist[hist.length-1];
+  if (c === id) return;
+  document.getElementById(c).classList.add('hid');
+  document.getElementById(id).classList.remove('hid');
+  hist.push(id);
 }
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+function goBack() {
+  if (hist.length <= 1) return;
+  var c = hist.pop();
+  document.getElementById(c).classList.add('hid');
+  document.getElementById(hist[hist.length-1]).classList.remove('hid');
 }
-
-function triggerUpload() { fileInput.click(); }
-
-function handleFiles(e) {
-  const files = Array.from(e.target.files);
-  files.forEach(f => {
-    pendingFiles.push(f);
-    const chip = document.createElement('div');
-    chip.className = 'preview-chip';
-    const icon = f.type.startsWith('video') ? '🎬' : f.type.startsWith('audio') ? '🔊' : '🖼';
-    chip.innerHTML = `${icon} ${f.name.length > 18 ? f.name.slice(0,18)+'…' : f.name} <span class="remove-chip">✕</span>`;
-    chip.onclick = () => {
-      pendingFiles = pendingFiles.filter(x => x !== f);
-      chip.remove();
-      if (!uploadPreview.children.length) uploadPreview.classList.remove('show');
-      toggleSend();
-    };
-    uploadPreview.appendChild(chip);
+function navTo(screenId, navId) {
+  // switch bottom nav active state
+  document.querySelectorAll('.b-ni').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('[id^="nav-"]').forEach(function(b){
+    if (b.id === navId || b.id === navId+'2') b.classList.add('on');
   });
-  uploadPreview.classList.add('show');
-  toggleSend();
-  fileInput.value = '';
+  goTo(screenId);
+  if (screenId === 'srec') renderRecords();
+  if (screenId === 'scats') renderCats();
 }
 
-function addMsg(html, side, delay=0) {
-  const group = document.createElement('div');
-  group.className = `msg-group ${side}`;
-  const b = document.createElement('div');
-  b.className = `bubble ${side}`;
-  b.style.animationDelay = delay + 's';
-  if (typeof html === 'string') b.innerHTML = html;
-  else b.appendChild(html);
-  group.appendChild(b);
-  chat.appendChild(group);
-  chat.scrollTop = chat.scrollHeight;
-  return b;
+// ── AUTH ──
+function swTab(t) {
+  document.getElementById('tab-r').classList.toggle('on', t==='r');
+  document.getElementById('tab-l').classList.toggle('on', t==='l');
+  document.getElementById('form-r').style.display = t==='r' ? 'block' : 'none';
+  document.getElementById('form-l').style.display = t==='l' ? 'block' : 'none';
 }
 
-function showTyping() {
-  const group = document.createElement('div');
-  group.className = 'msg-group ai';
-  group.id = 'typingIndicator';
-  const b = document.createElement('div');
-  b.className = 'bubble ai typing';
-  b.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  group.appendChild(b); chat.appendChild(group);
-  chat.scrollTop = chat.scrollHeight;
+// ── ONBOARD ──
+var OB = [
+  {i:'🐾', t:'歡迎來到 Yu chen Al', d:'直接把你的貓咪拍給我看，或用文字描述行為，我立刻幫你分析。'},
+  {i:'🔍', t:'文字 + 影片都可以', d:'不需要複雜操作。一句話、一段影片，都能生成完整行為分析報告。'},
+  {i:'📊', t:'持續追蹤，不只一次', d:'每次分析都會記錄下來，幫你看見牠情緒與壓力的長期趨勢。'},
+  {i:'🐱', t:'每隻貓都有自己的檔案', d:'分析完成後，AI 會問你牠的名字，自動建立完整健康資料庫。'}
+];
+var obIdx = 0;
+function initOb() {
+  var dots = document.getElementById('ob-dots');
+  dots.innerHTML = OB.map(function(_,i){ return '<div class="ob-dot'+(i===0?' on':'')+'"></div>'; }).join('');
+  renderOb();
 }
-function removeTyping() {
-  const el = document.getElementById('typingIndicator');
-  if (el) el.remove();
+function renderOb() {
+  var s = OB[obIdx];
+  document.getElementById('ob-body').innerHTML =
+    '<div class="ob-icon">'+s.i+'</div>'+
+    '<div class="ob-title">'+s.t+'</div>'+
+    '<div class="ob-desc">'+s.d+'</div>';
+  document.querySelectorAll('.ob-dot').forEach(function(d,i){ d.classList.toggle('on', i===obIdx); });
+  document.getElementById('ob-btn').textContent = obIdx===OB.length-1 ? '開始使用 →' : '下一步';
+}
+function nxOb() {
+  if (obIdx < OB.length-1) { obIdx++; renderOb(); }
+  else goTo('sch');
+}
+initOb();
+
+// ── CHAT ──
+var pendingFiles = [];
+var awaitingAnswer = null; // 'cat_name' | 'cat_breed' | 'cat_age' | 'cat_gender' | 'analysis_confirm'
+
+function onInput() {
+  var v = document.getElementById('in-text').value.trim();
+  document.getElementById('send-btn').classList.toggle('show', v.length > 0 || pendingFiles.length > 0);
+}
+function onKey(e) { if (e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+
+function onFiles(e) {
+  Array.from(e.target.files).forEach(function(f) {
+    pendingFiles.push(f);
+    var chip = document.createElement('div');
+    chip.className = 'uc';
+    var icon = f.type.startsWith('video') ? '🎬' : f.type.startsWith('audio') ? '🔊' : '🖼';
+    var name = f.name.length > 18 ? f.name.slice(0,18)+'…' : f.name;
+    chip.innerHTML = icon+' '+name+' <span style="margin-left:4px;opacity:.4">✕</span>';
+    chip.onclick = function() { pendingFiles = pendingFiles.filter(function(x){return x!==f;}); chip.remove(); onInput(); };
+    document.getElementById('up-chips').appendChild(chip);
+  });
+  onInput();
+  e.target.value = '';
 }
 
-async function sendMessage() {
-  const text = input.value.trim();
+function sendMsg() {
+  var inp = document.getElementById('in-text');
+  var text = inp.value.trim();
   if (!text && pendingFiles.length === 0) return;
 
-  // user bubble
-  const group = document.createElement('div');
-  group.className = 'msg-group user';
-
+  // show uploaded files
   if (pendingFiles.length > 0) {
-    for (const f of pendingFiles) {
-      const mediaGroup = document.createElement('div');
-      mediaGroup.className = 'msg-group user';
-      const thumb = document.createElement('div');
-      thumb.className = 'media-thumb';
+    pendingFiles.forEach(function(f) {
+      var g = document.createElement('div');
+      g.className = 'mg u';
+      var thumb = document.createElement('div');
       if (f.type.startsWith('image')) {
-        const img = document.createElement('img');
+        thumb.className = 'media-thumb';
+        var img = document.createElement('img');
         img.src = URL.createObjectURL(f);
         thumb.appendChild(img);
       } else {
-        const vid = document.createElement('div');
-        vid.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;font-size:13px;color:var(--muted)';
-        vid.textContent = (f.type.startsWith('video') ? '🎬 ' : '🔊 ') + f.name;
-        thumb.appendChild(vid);
+        thumb.className = 'media-file';
+        var icon = f.type.startsWith('video') ? '🎬' : '🔊';
+        thumb.innerHTML = icon+' <span>'+f.name+'</span>';
       }
-      mediaGroup.appendChild(thumb);
-      chat.appendChild(mediaGroup);
-    }
+      g.appendChild(thumb);
+      document.getElementById('ch-msgs').appendChild(g);
+    });
+    var hasMedia = pendingFiles.length > 0;
     pendingFiles = [];
-    uploadPreview.innerHTML = '';
-    uploadPreview.classList.remove('show');
+    document.getElementById('up-chips').innerHTML = '';
+
+    if (!text) {
+      inp.value = ''; onInput();
+      scrollChat();
+      // AI reacts to media upload
+      showTyping(function() { aiAfterMedia(hasMedia); });
+      return;
+    }
   }
 
-  if (text) {
-    const b = document.createElement('div');
-    b.className = 'bubble user';
-    b.textContent = text;
-    group.appendChild(b);
-    chat.appendChild(group);
+  // show user text bubble
+  if (text) addBubble(text, 'u');
+  inp.value = ''; onInput();
+  scrollChat();
+
+  // handle conversation flow
+  if (awaitingAnswer) {
+    handleFlowAnswer(text);
+  } else {
+    showTyping(function() { aiReply(text); });
   }
+}
 
-  input.value = '';
-  toggleSend();
-  chat.scrollTop = chat.scrollHeight;
+function aiAfterMedia(hasMedia) {
+  // After user uploads photo/video, AI shows analysis then asks for cat info
+  addBubble(
+    '<div class="bb-sec">🔍 正在分析...</div>'+
+    '<p style="font-size:13px;color:var(--t2)">我看到你的貓咪了。讓我先分析一下牠的行為模式。</p>', 'ai'
+  );
+  showTyping(function() { showAnalysisResult(); }, 2000);
+}
 
-  // AI response
-  showTyping();
-  await new Promise(r => setTimeout(r, 1200));
-  removeTyping();
-  aiReply(text);
+function showAnalysisResult() {
+  addBubble(
+    '<div class="bb-sec">📊 分析結果</div>'+
+    '<div class="bb-metrics">'+
+      '<div class="bb-m"><div class="bb-mv" style="color:var(--gr)">68%</div><div class="bb-ml">快樂指數</div></div>'+
+      '<div class="bb-mv-wrap bb-m"><div class="bb-mv" style="color:var(--ye)">35</div><div class="bb-ml">壓力指數</div></div>'+
+      '<div class="bb-m"><div class="bb-mv" style="color:var(--ac)">78%</div><div class="bb-ml">活躍度</div></div>'+
+      '<div class="bb-m"><div class="rp rm">中低風險</div><div class="bb-ml" style="margin-top:5px">風險等級</div></div>'+
+    '</div>'+
+    '<div class="bb-bars">'+
+      '<div class="bb-br"><div class="bb-bl">快樂</div><div class="bb-bt"><div class="bb-bf" style="width:68%;background:var(--gr)"></div></div><div class="bb-bp">68%</div></div>'+
+      '<div class="bb-br"><div class="bb-bl">好奇</div><div class="bb-bt"><div class="bb-bf" style="width:52%;background:var(--bl)"></div></div><div class="bb-bp">52%</div></div>'+
+      '<div class="bb-br"><div class="bb-bl">焦慮</div><div class="bb-bt"><div class="bb-bf" style="width:22%;background:var(--ye)"></div></div><div class="bb-bp">22%</div></div>'+
+    '</div>', 'ai'
+  );
+  showTyping(function() { askCatName(); }, 1200);
+}
+
+function askCatName() {
+  state.flowData = {};
+  awaitingAnswer = 'cat_name';
+  addBubble(
+    '分析完成了 🐾<br><br>為了幫牠建立完整的健康檔案，可以告訴我牠叫什麼名字嗎？', 'ai'
+  );
+}
+
+function handleFlowAnswer(text) {
+  if (awaitingAnswer === 'cat_name') {
+    state.flowData.name = text;
+    awaitingAnswer = 'cat_breed';
+    showTyping(function() {
+      addBubble(text+'，好可愛的名字！🐱<br><br>牠是什麼品種呢？（不確定可以說「不確定」）', 'ai');
+    });
+  }
+  else if (awaitingAnswer === 'cat_breed') {
+    state.flowData.breed = text;
+    awaitingAnswer = 'cat_age';
+    showTyping(function() {
+      addBubble('了解～ 那'+state.flowData.name+'幾歲了呢？', 'ai');
+    });
+  }
+  else if (awaitingAnswer === 'cat_age') {
+    state.flowData.age = text;
+    awaitingAnswer = 'cat_gender';
+    showTyping(function() {
+      var g = document.createElement('div');
+      g.className = 'mg ai';
+      var b = document.createElement('div');
+      b.className = 'bb ai';
+      b.innerHTML = '性別是？';
+      var qr = document.createElement('div');
+      qr.className = 'qr-row';
+      ['公（已結紮）','公（未結紮）','母（已結紮）','母（未結紮）'].forEach(function(opt) {
+        var btn = document.createElement('button');
+        btn.className = 'qr';
+        btn.textContent = opt;
+        btn.onclick = function() { addBubble(opt,'u'); handleFlowAnswer(opt); };
+        qr.appendChild(btn);
+      });
+      b.appendChild(qr);
+      g.appendChild(b);
+      document.getElementById('ch-msgs').appendChild(g);
+      scrollChat();
+    });
+  }
+  else if (awaitingAnswer === 'cat_gender') {
+    state.flowData.gender = text;
+    awaitingAnswer = null;
+    // save cat
+    var cat = {
+      id: Date.now(),
+      name: state.flowData.name,
+      breed: state.flowData.breed,
+      age: state.flowData.age,
+      gender: state.flowData.gender,
+      emoji: '🐱'
+    };
+    state.cats.push(cat);
+    // save record
+    var rec = {
+      id: Date.now()+1,
+      catId: cat.id,
+      date: new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+      stress: 35,
+      emotion: '中低風險',
+      risk: 'mid',
+      summary: '觀察到輕微焦慮跡象，整體活躍度良好',
+      tags:['焦慮偵測','活躍正常','建議追蹤']
+    };
+    state.records.push(rec);
+    showTyping(function() { showProfileCreated(cat); }, 800);
+  }
+}
+
+function showProfileCreated(cat) {
+  addBubble(
+    '好了！我幫 <strong>'+cat.name+'</strong> 建立了專屬檔案 🐾<br><br>'+
+    '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-top:8px;font-size:13px;">'+
+      '<div style="font-family:\'DM Serif Display\',serif;font-size:17px;font-style:italic;margin-bottom:8px;">'+cat.name+'</div>'+
+      '<div style="color:var(--t2);display:flex;flex-direction:column;gap:5px;">'+
+        '<span>品種：'+cat.breed+'</span>'+
+        '<span>年齡：'+cat.age+'</span>'+
+        '<span>性別：'+cat.gender+'</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="bb-action">'+
+      '<button class="bb-btn-acc" onclick="navTo(\'scats\',\'nav-cats\')">查看檔案</button>'+
+      '<button class="bb-btn-sec" onclick="navTo(\'srec\',\'nav-rec\')">查看報告</button>'+
+    '</div>', 'ai'
+  );
 }
 
 function aiReply(text) {
-  const t = (text || '').toLowerCase();
-
-  if (t.includes('方案') || t.includes('價格') || t.includes('訂閱') || t.includes('多少錢')) {
-    addMsg(`<div class="section-title">💳 方案說明</div>
-      <div class="plan-list">
-        <div class="plan-item"><div class="plan-dot" style="background:var(--green)"></div><div class="plan-content"><div class="plan-name">免費版</div><div class="plan-desc">每日 1 次 · 基本報告</div></div><div class="plan-price">$0</div></div>
-        <div class="plan-item highlight"><div class="plan-dot" style="background:var(--accent)"></div><div class="plan-content"><div class="plan-name">專業版</div><div class="plan-desc">無限次 · 趨勢圖 · PDF 匯出</div></div><div class="plan-price">$299</div></div>
-        <div class="plan-item"><div class="plan-dot" style="background:#c084fc"></div><div class="plan-content"><div class="plan-name">家庭版</div><div class="plan-desc">多寵物管理 · 年度摘要</div></div><div class="plan-price">$499</div></div>
-      </div>`, 'ai');
-  } else if (t.includes('壓力') || t.includes('焦慮') || t.includes('情緒')) {
-    addMsg(`<div class="section-title">📊 情緒分析說明</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">我們從影片中提取以下指標：</p>
-      <div class="metric-grid">
-        <div class="metric-item"><div class="metric-val green">快樂</div><div class="metric-label">正面情緒比例</div></div>
-        <div class="metric-item"><div class="metric-val yellow">焦慮</div><div class="metric-label">緊張行為偵測</div></div>
-        <div class="metric-item"><div class="metric-val purple">活躍</div><div class="metric-label">動作頻率分析</div></div>
-        <div class="metric-item"><div class="metric-val red">壓力</div><div class="metric-label">0–100 指數化</div></div>
-      </div>`, 'ai');
-  } else if (t.includes('上傳') || t.includes('影片') || t.includes('怎麼')) {
-    addMsg(`點擊左下角的 <strong>＋</strong> 按鈕，就可以上傳照片或影片 🎬<br><br>建議錄製 <strong>10–30 秒</strong>的清晰短片，涵蓋你觀察到的行為。上傳後我會立即開始分析！`, 'ai');
-  } else if (t === '' || t.includes('你好') || t.includes('hi') || t.includes('hello')) {
-    addMsg(`你好！我是 <strong>Yu chen Al</strong>，你的寵物行為分析師 🐾<br><br>你可以上傳寵物影片，我來幫你分析情緒、壓力指數和行為模式。`, 'ai');
+  var t = text.toLowerCase();
+  if (t.includes('方案')||t.includes('價格')||t.includes('費用')||t.includes('多少錢')) {
+    addBubble(
+      '<div class="bb-sec">💳 訂閱方案</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px;">'+
+        '<div style="padding:12px;background:var(--s2);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:8px;height:8px;border-radius:50%;background:var(--gr);flex-shrink:0"></div><div style="flex:1"><strong>免費版</strong><div style="color:var(--t2);font-size:11px;margin-top:2px">每日 1 次分析 · 基本報告</div></div><div style="font-family:\'DM Serif Display\',serif;color:var(--ac)">$0</div></div>'+
+        '<div style="padding:12px;background:var(--acs);border:1px solid rgba(124,106,240,.3);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ac);flex-shrink:0"></div><div style="flex:1"><strong>專業版</strong><div style="color:var(--t2);font-size:11px;margin-top:2px">無限次 · 趨勢圖 · PDF 匯出</div></div><div style="font-family:\'DM Serif Display\',serif;color:var(--ac)">$299</div></div>'+
+        '<div style="padding:12px;background:var(--s2);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:13px"><div style="width:8px;height:8px;border-radius:50%;background:#c084fc;flex-shrink:0"></div><div style="flex:1"><strong>家庭版</strong><div style="color:var(--t2);font-size:11px;margin-top:2px">多貓管理 · 年度健康摘要</div></div><div style="font-family:\'DM Serif Display\',serif;color:var(--ac)">$499</div></div>'+
+      '</div>', 'ai');
+  } else if (t.includes('焦慮')||t.includes('壓力')||t.includes('緊張')||t.includes('情緒')) {
+    addBubble(
+      '貓咪焦慮有很多種表現 🐱<br><br>你觀察到哪些行為？例如：<br><br>'+
+      '<div class="qr-row">'+
+        '<button class="qr" onclick="addBubble(this.textContent,\'u\');sendTextReply(this.textContent)">過度舔毛</button>'+
+        '<button class="qr" onclick="addBubble(this.textContent,\'u\');sendTextReply(this.textContent)">躲藏不出來</button>'+
+        '<button class="qr" onclick="addBubble(this.textContent,\'u\');sendTextReply(this.textContent)">亂尿尿</button>'+
+        '<button class="qr" onclick="addBubble(this.textContent,\'u\');sendTextReply(this.textContent)">夜間暴衝</button>'+
+        '<button class="qr" onclick="addBubble(this.textContent,\'u\');sendTextReply(this.textContent)">不吃東西</button>'+
+      '</div>', 'ai');
+  } else if (t.includes('如何')||t.includes('怎麼')||t.includes('使用')||t.includes('開始')) {
+    addBubble(
+      '很簡單 🐾<br><br>'+
+      '<ul class="bb-list">'+
+        '<li>點左下角 <strong>＋</strong> 上傳你貓咪的照片或影片</li>'+
+        '<li>或者直接用文字描述你觀察到的行為</li>'+
+        '<li>我會分析完後問你牠的名字，自動建立檔案</li>'+
+      '</ul>', 'ai');
   } else {
-    addMsg(`收到你的問題了！如果你想開始分析，可以點 <strong>＋</strong> 上傳影片，或者告訴我你觀察到的具體行為，我來幫你解讀 🐾`, 'ai');
+    // treat as behavior description, start analysis
+    addBubble(
+      '了解，我來分析一下「'+text.slice(0,20)+(text.length>20?'...':'')+'」這個行為。', 'ai'
+    );
+    showTyping(function() { showAnalysisResult(); }, 1500);
   }
 }
 
-function handleMic() {
-  addMsg('🎙 語音輸入功能即將上線...', 'ai');
+function sendTextReply(text) {
+  showTyping(function() {
+    addBubble('這是常見的焦慮跡象。你可以直接把牠的影片或照片傳給我，我來做更準確的分析 🔍', 'ai');
+  });
 }
 
-// Auto-scroll on load
-window.addEventListener('load', () => {
-  setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 100);
-});
+function startNewCat() {
+  goTo('sch');
+  setTimeout(function() {
+    addBubble('好，我們來新增一隻貓咪的檔案 🐾<br><br>先把牠的照片或影片傳給我吧！', 'ai');
+  }, 300);
+}
+
+// ── HELPERS ──
+function addBubble(html, side) {
+  var g = document.createElement('div');
+  g.className = 'mg ' + side;
+  var b = document.createElement('div');
+  b.className = 'bb ' + side;
+  b.innerHTML = html;
+  g.appendChild(b);
+  document.getElementById('ch-msgs').appendChild(g);
+  scrollChat();
+}
+function showTyping(cb, delay) {
+  delay = delay || 800;
+  var g = document.createElement('div');
+  g.className = 'mg ai';
+  g.id = 'typing-ind';
+  var b = document.createElement('div');
+  b.className = 'ty-wrap';
+  b.innerHTML = '<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>';
+  g.appendChild(b);
+  document.getElementById('ch-msgs').appendChild(g);
+  scrollChat();
+  setTimeout(function() {
+    var el = document.getElementById('typing-ind');
+    if (el) el.remove();
+    cb();
+    scrollChat();
+  }, delay);
+}
+function scrollChat() {
+  var m = document.getElementById('ch-msgs');
+  if (m) m.scrollTop = m.scrollHeight;
+}
+
+// ── RECORDS ──
+function renderRecords() {
+  var el = document.getElementById('rec-list');
+  if (state.records.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">還沒有分析紀錄</div><div class="empty-desc">傳一段貓咪影片或描述行為，就能開始建立紀錄。</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  state.records.slice().reverse().forEach(function(r) {
+    var cat = state.cats.find(function(c){return c.id===r.catId;}) || {name:'未知',emoji:'🐱'};
+    var stressColor = r.stress >= 60 ? 'var(--re)' : r.stress >= 35 ? 'var(--ye)' : 'var(--gr)';
+    var item = document.createElement('div');
+    item.className = 'rec-item';
+    item.innerHTML =
+      '<div class="rec-top">'+
+        '<div class="rec-cat-av">'+cat.emoji+'</div>'+
+        '<div><div class="rec-cat-name">'+cat.name+'</div><div class="rec-date">'+r.date+'</div></div>'+
+        '<div class="rec-stress" style="color:'+stressColor+'">'+r.stress+'</div>'+
+      '</div>'+
+      '<div class="rec-summary">'+r.summary+'</div>'+
+      '<div class="rec-tags">'+r.tags.map(function(t){return'<span class="rec-tag">'+t+'</span>';}).join('')+'</div>';
+    el.appendChild(item);
+  });
+}
+
+// ── CATS ──
+function renderCats() {
+  var el = document.getElementById('cat-list');
+  if (state.cats.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🐱</div><div class="empty-title">還沒有貓咪檔案</div><div class="empty-desc">傳一段貓咪影片給 AI，分析完成後牠會問你名字，自動建立檔案。</div></div>';
+    return;
+  }
+  el.innerHTML = '';
+  state.cats.forEach(function(cat) {
+    var catRecs = state.records.filter(function(r){return r.catId===cat.id;});
+    var lastRec = catRecs[catRecs.length-1];
+    var card = document.createElement('div');
+    card.className = 'cat-card';
+    var metricsHTML = lastRec ?
+      '<div class="cat-card-metrics">'+
+        '<div class="cat-mini-m"><div class="cat-mini-v" style="color:var(--gr)">68%</div><div class="cat-mini-l">快樂</div></div>'+
+        '<div class="cat-mini-m"><div class="cat-mini-v" style="color:var(--ye)">'+lastRec.stress+'</div><div class="cat-mini-l">壓力</div></div>'+
+        '<div class="cat-mini-m"><div class="cat-mini-v" style="color:var(--ac)">78%</div><div class="cat-mini-l">活躍</div></div>'+
+      '</div>' : '<div style="font-size:12px;color:var(--mu);margin-top:10px">還沒有分析資料</div>';
+    card.innerHTML =
+      '<div class="cat-card-top">'+
+        '<div class="cat-av-lg">'+cat.emoji+'</div>'+
+        '<div class="cat-card-info">'+
+          '<div class="cat-card-name">'+cat.name+'</div>'+
+          '<div class="cat-card-meta">'+cat.breed+' · '+cat.age+' · '+cat.gender+'</div>'+
+        '</div>'+
+      '</div>'+metricsHTML;
+    el.appendChild(card);
+  });
+}
+
+window.addEventListener('load', function() { scrollChat(); });
 </script>
 
 </body>
