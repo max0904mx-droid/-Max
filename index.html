@@ -20,9 +20,9 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .app{width:100%;max-width:430px;height:100vh;max-height:926px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--bd);border-right:1px solid var(--bd)}
 
 /* ── SCREENS ── */
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;transition:transform .34s cubic-bezier(.25,.46,.45,.94),opacity .24s ease}
-.scr.out{transform:translateX(-22px);opacity:0;pointer-events:none}
-.scr.hid{transform:translateX(100%);opacity:0;pointer-events:none}
+.scr{position:absolute;inset:0;flex-direction:column;overflow:hidden}
+.scr.hid{display:none!important}
+.scr:not(.hid){display:flex}
 
 /* ── SHARED ── */
 .nav-hd{display:flex;align-items:center;padding:52px 20px 14px;flex-shrink:0;gap:12px}
@@ -142,8 +142,8 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .dash-fab:active{transform:translateX(-50%) scale(.97)}
 
 /* ══ ⑤ ANALYZE ══ */
-#s-analyze{background:var(–bg)}
-.ana-sc{flex:1;overflow-y:auto;padding:8px 20px 120px}
+#s-analyze{background:var(–bg);position:relative}
+.ana-sc{flex:1;overflow-y:auto;padding:8px 20px 20px}
 .ana-sc::-webkit-scrollbar{display:none}
 .step-block{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:var(–cg)}
 .step-num{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(–ac);margin-bottom:8px}
@@ -164,7 +164,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .mo-ic{font-size:24px;margin-bottom:6px}
 .mo-lb{font-size:12px;color:var(–t2)}
 .mo.upl .mo-lb{color:var(–gr)}
-.ana-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 20px 36px;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
+.ana-foot{flex-shrink:0;padding:14px 20px 36px;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
 /* no-cat warning */
 .warn-box{background:rgba(242,109,109,.08);border:1px solid rgba(242,109,109,.25);border-radius:16px;padding:20px;text-align:center}
 .warn-box .wi{font-size:36px;margin-bottom:10px}
@@ -172,7 +172,8 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .warn-box .ws{font-size:13px;color:var(–t2);margin-bottom:16px;line-height:1.5}
 
 /* ══ ⑥ LOADING ══ */
-#s-loading{background:var(–bg);align-items:center;justify-content:center;gap:28px;padding:40px}
+#s-loading{background:var(–bg);align-items:center;justify-content:center;gap:28px;padding:40px;display:flex;flex-direction:column}
+#s-loading.hid{display:none}
 .load-paw{font-size:56px;animation:lp 2s ease-in-out infinite}
 @keyframes lp{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.1) rotate(-5deg)}}
 .load-title{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;text-align:center}
@@ -437,7 +438,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 
 <!-- ⑥ LOADING -->
 
-<div class="scr hid" id="s-loading" style="display:flex">
+<div class="scr hid" id="s-loading">
   <div class="load-paw">🐾</div>
   <div class="load-title">AI 分析進行中...</div>
   <div class="load-msg" id="load-msg">搜尋獸醫文獻資料庫</div>
@@ -643,43 +644,34 @@ function curU(){
 // NAV
 // ═══════════════════════════════════════
 var hist=[];
+function showOnly(id){
+  // hide all screens
+  document.querySelectorAll('.scr').forEach(function(s){ s.classList.add('hid'); });
+  var el=document.getElementById(id);
+  if(el){ el.classList.remove('hid'); }
+}
 function goTo(id){
-  var prev=hist.length?hist[hist.length-1]:null;
-  if(prev===id) return;
-  if(prev){
-    var pe=document.getElementById(prev);
-    pe.classList.add('out');
-    setTimeout(function(){ pe.classList.add('hid'); pe.classList.remove('out'); },300);
-  }
-  var ne=document.getElementById(id);
-  ne.classList.remove('hid');
+  if(hist.length && hist[hist.length-1]===id) return;
+  showOnly(id);
   hist.push(id);
   onEnter(id);
 }
 function goBk(){
   if(hist.length<=1) return;
-  var c=hist.pop();
-  document.getElementById(c).classList.add('hid');
+  hist.pop();
   var p=hist[hist.length-1];
-  document.getElementById(p).classList.remove('hid');
+  showOnly(p);
   onEnter(p);
 }
 function navTo(sid,bid){
-  // update nav highlight
   document.querySelectorAll('.bni').forEach(function(b){ b.classList.remove('on'); });
   document.querySelectorAll('[id^="bn-"]').forEach(function(b){
     if(b.id===bid||b.id===bid+'2'||b.id===bid+'3') b.classList.add('on');
   });
-  // hide current, show new
-  var nav=['s-dash','s-chat','s-trends','s-plans'];
-  var cur=hist[hist.length-1];
-  if(cur&&cur!==sid){ document.getElementById(cur).classList.add('hid'); }
-  // go straight, no push if already at root
-  if(!hist.length||hist[hist.length-1]!==sid){
-    hist=hist.filter(function(h){ return nav.indexOf(h)<0; });
-    hist.push(sid);
-  }
-  document.getElementById(sid).classList.remove('hid');
+  var navRoots=['s-dash','s-chat','s-trends','s-plans'];
+  hist=hist.filter(function(h){ return navRoots.indexOf(h)<0; });
+  if(!hist.length||hist[hist.length-1]!==sid) hist.push(sid);
+  showOnly(sid);
   onEnter(sid);
 }
 function onEnter(id){
@@ -720,10 +712,8 @@ function doLogin(){
 }
 function doLogout(){
   DB.cur=null; saveDB();
-  hist=[]; chatInited=false;
-  document.querySelectorAll('.scr').forEach(function(s){ s.classList.add('hid'); });
-  document.getElementById('s-land').classList.remove('hid');
-  hist=['s-land'];
+  hist=['s-land']; chatInited=false;
+  showOnly('s-land');
 }
 
 // ═══════════════════════════════════════
@@ -977,11 +967,9 @@ if(data.error){ throw new Error(data.error.message||‘API 錯誤’); }
 var fullText=(data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('\n').trim();
 if(!fullText) throw new Error('AI 未回傳分析結果');
 
-// parse stress level from text
-var sm=fullText.match(/壓力指數[^：:0-9]*[：:\s]*(\d+)/);
+var sm=fullText.match(/(\d+)\s*[\/／]\s*100/)||fullText.match(/壓力指數[^\d]*(\d+)/);
 var stressLevel=sm?Math.min(100,Math.max(0,parseInt(sm[1]))):50;
-// parse risk
-var rm=fullText.match(/風險等級[^：:]*[：:\s]*(低|中|高)/);
+var rm=fullText.match(/風險等級[^低中高]*(低|中|高)/)||fullText.match(/(低|中|高)風險/);
 var risk=rm?rm[1]:'中';
 
 document.getElementById('load-bar').style.width='100%';
@@ -995,14 +983,18 @@ var rec={
 };
 u.records.push(rec); saveDB(); lastRec=rec;
 
-setTimeout(function(){ renderResult(rec); goTo('s-result'); },500);
+renderResult(rec);
+goTo('s-result');
 ```
 
 } catch(err){
 clearInterval(stimer);
 document.querySelectorAll(’.l-step’).forEach(function(el){ el.classList.remove(‘act’); });
-alert(‘分析失敗：’+err.message+’\n\n請確認網路連線，然後再試一次。’);
-goBk();
+// 顯示錯誤但留在有意義的畫面
+var errMsg=‘分析失敗：’+err.message;
+// 回到分析頁面，顯示錯誤
+goTo(‘s-analyze’);
+setTimeout(function(){ alert(errMsg+’\n\n可能原因：\n1. 網路連線問題\n2. API 暫時無法使用\n請稍後再試’); },300);
 }
 }
 
@@ -1320,17 +1312,15 @@ function scrollChat(){ var m=document.getElementById(‘chat-msgs’); if(m) m.s
 // BOOT — 記住登入狀態
 // ═══════════════════════════════════════
 (function boot(){
-// start hidden
 document.querySelectorAll(’.scr’).forEach(function(s){ s.classList.add(‘hid’); });
 var u=curUser();
 if(u){
-// already logged in
-document.getElementById(‘s-dash’).classList.remove(‘hid’);
 hist=[‘s-dash’];
+showOnly(‘s-dash’);
 refreshDash();
 } else {
-document.getElementById(‘s-land’).classList.remove(‘hid’);
 hist=[‘s-land’];
+showOnly(‘s-land’);
 }
 })();
 </script>
