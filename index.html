@@ -3,1325 +3,700 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>PawSense AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0a0a">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#080808;--s1:#111;--s2:#181818;--s3:#202020;--s4:#2a2a2a;
+  --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;--s4:#2c2c2c;
   --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.04);
-  --t:#efefef;--t2:#888;--t3:#555;--mu:#3a3a3a;
-  --ac:#5b8ff9;--acs:rgba(91,143,249,.14);--acb:#4070e0;
+  --t:#ececec;--t2:#8a8a8a;--t3:#4a4a4a;--mu:#2a2a2a;
+  --ac:#5b8ff9;--acs:rgba(91,143,249,.12);--acb:#3d6fe0;
   --gr:#3ecf8e;--ye:#f5a623;--re:#f26d6d;--pu:#9b8fef;
-  --cg:0 0 0 1px var(--bd),0 4px 24px rgba(0,0,0,.4);
 }
 html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
-.app{width:100%;max-width:430px;height:100vh;max-height:926px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--bd);border-right:1px solid var(--bd)}
+.app{width:100%;max-width:430px;height:100svh;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
 
-/* ── SCREENS ── */
-.scr{position:absolute;inset:0;flex-direction:column;overflow:hidden}
-.scr.hid{display:none!important}
-.scr:not(.hid){display:flex}
+/* ── SIDEBAR ── */
+.sidebar{position:absolute;top:0;left:0;bottom:0;width:272px;background:var(–s1);border-right:1px solid var(–bd);z-index:100;transform:translateX(-100%);transition:transform .28s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+.sidebar.open{transform:translateX(0)}
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:99;opacity:0;pointer-events:none;transition:opacity .28s}
+.sb-overlay.show{opacity:1;pointer-events:all}
+.sb-top{padding:54px 14px 10px;flex-shrink:0}
+.sb-logo{display:flex;align-items:center;gap:8px;padding:0 4px;margin-bottom:14px}
+.sb-logo-ic{width:30px;height:30px;background:linear-gradient(135deg,var(–ac),var(–pu));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-logo-tx{font-family:‘Instrument Serif’,serif;font-size:17px;font-style:italic}
+.sb-logo-tx em{color:var(–ac);font-style:normal}
+.sb-new{width:100%;display:flex;align-items:center;gap:9px;background:transparent;border:1px solid var(–bd);border-radius:9px;padding:9px 12px;color:var(–t2);font-family:‘DM Sans’,sans-serif;font-size:13px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
+.sb-new:hover{background:var(–s2);color:var(–t);border-color:rgba(255,255,255,.13)}
+.sb-sec{padding:14px 16px 5px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(–t3)}
+.sb-list{flex:1;overflow-y:auto;padding:0 6px}
+.sb-list::-webkit-scrollbar{display:none}
+.sb-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:background .14s;font-size:13px;color:var(–t2);user-select:none}
+.sb-item:hover{background:var(–s2);color:var(–t)}
+.sb-item.act{background:var(–s3);color:var(–t)}
+.sb-item-ic{font-size:14px;flex-shrink:0}
+.sb-item-tx{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-item-del{opacity:0;font-size:15px;padding:2px 5px;background:none;border:none;color:var(–t3);cursor:pointer;flex-shrink:0;transition:opacity .14s;line-height:1}
+.sb-item:hover .sb-item-del{opacity:1}
+.sb-bottom{padding:10px 6px;border-top:1px solid var(–bd);flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:background .14s}
+.sb-user:hover{background:var(–s2)}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(–ac),var(–pu));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sb-uname{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-logout{font-size:12px;color:var(–t3);background:none;border:none;cursor:pointer;padding:4px;font-family:‘DM Sans’,sans-serif;transition:color .18s;flex-shrink:0}
+.sb-logout:hover{color:var(–re)}
 
-/* ── SHARED ── */
-.nav-hd{display:flex;align-items:center;padding:52px 20px 14px;flex-shrink:0;gap:12px}
-.nav-hd.sub{padding-top:14px}
-.bk{width:36px;height:36px;border-radius:50%;background:var(–s2);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex-shrink:0;transition:background .15s;user-select:none}
-.bk:hover{background:var(–s3)}
-.pg-t{font-family:‘Instrument Serif’,serif;font-size:20px;font-style:italic}
-.slbl{font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(–t3);margin-bottom:10px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:14px;font-family:‘DM Sans’,sans-serif;font-weight:600;cursor:pointer;transition:all .2s;user-select:none}
-.btn:active{transform:scale(.97)}
-.btn-p{background:var(–ac);color:#fff;padding:15px 24px;font-size:15px;box-shadow:0 4px 20px rgba(91,143,249,.28)}
-.btn-p:hover{background:var(–acb)}
-.btn-g{background:transparent;color:var(–t2);padding:14px 24px;font-size:15px;border:1px solid var(–bd)}
-.btn-g:hover{background:var(–s2);color:var(–t)}
-.btn-w{width:100%}
-.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:500}
-.chip-gr{background:rgba(62,207,142,.12);color:var(–gr)}
-.chip-ye{background:rgba(245,166,35,.12);color:var(–ye)}
-.chip-re{background:rgba(242,109,109,.12);color:var(–re)}
-.dv{height:1px;background:var(–bd);margin:16px 0}
-.field{margin-bottom:15px}
-.field label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(–t3);display:block;margin-bottom:7px}
-.fi{width:100%;padding:13px 16px;background:var(–s2);border:1px solid var(–bd);border-radius:12px;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:14px;outline:none;transition:border-color .2s}
-.fi:focus{border-color:rgba(91,143,249,.5)}
-.fi::placeholder{color:var(–t3)}
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:rgba(10,10,10,.92);backdrop-filter:blur(14px);position:relative;z-index:10}
+.menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
+.menu-btn:hover{background:var(–s2)}
+.menu-ic{display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.menu-ic span{display:block;width:17px;height:1.5px;background:var(–t2);border-radius:1px}
+.hd-title{flex:1;font-size:13px;font-weight:500;color:var(–t2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mode-chip{background:var(–s2);border:1px solid var(–bd);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;color:var(–t2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px;flex-shrink:0;user-select:none}
+.mode-chip:hover{background:var(–s3);color:var(–t)}
 
-/* ── BOTTOM NAV ── */
-.bnav{position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-around;padding:0 4px 16px;flex-shrink:0}
-.bni{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:8px 14px;border-radius:12px;transition:background .15s;min-width:56px;user-select:none}
-.bni:hover{background:var(–s2)}
-.bnic{font-size:21px;line-height:1}
-.bnlb{font-size:10px;font-weight:500;color:var(–t3)}
-.bni.on .bnlb{color:var(–ac)}
-.bni.on .bnic{filter:drop-shadow(0 0 8px rgba(91,143,249,.55))}
+/* ── MESSAGES ── */
+.msgs{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 12px;min-height:0}
+.msgs::-webkit-scrollbar{width:2px}
+.msgs::-webkit-scrollbar-thumb{background:var(–s3);border-radius:2px}
 
-/* ══ ① LANDING ══ */
-#s-land{background:var(–bg);justify-content:space-between}
-.land-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(91,143,249,.13),transparent 68%);pointer-events:none}
-.land-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px 24px;text-align:center;position:relative}
-.land-paw{font-size:62px;margin-bottom:22px;filter:drop-shadow(0 0 30px rgba(91,143,249,.5));animation:fl 4s ease-in-out infinite}
-@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.land-logo{font-family:‘Instrument Serif’,serif;font-size:36px;font-style:italic;margin-bottom:8px}
-.land-logo em{color:var(–ac);font-style:normal}
-.land-badge{background:var(–s2);border:1px solid var(–bd);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:500;color:var(–t2);margin-bottom:24px;display:inline-flex;align-items:center;gap:6px}
-.land-badge::before{content:’’;width:6px;height:6px;border-radius:50%;background:var(–gr);display:inline-block;animation:pu 2s ease infinite}
-@keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
-.land-tagline{font-family:‘Instrument Serif’,serif;font-size:26px;font-style:italic;line-height:1.3;margin-bottom:12px}
-.land-sub{font-size:14px;color:var(–t2);line-height:1.65;max-width:280px;margin-bottom:44px}
-.land-acts{display:flex;flex-direction:column;gap:12px;width:100%}
-.land-stats{display:flex;gap:28px;padding:20px 0;justify-content:center;flex-shrink:0}
-.ls-item{text-align:center}
-.ls-num{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;color:var(–ac);line-height:1}
-.ls-lbl{font-size:11px;color:var(–t3);margin-top:3px}
-.land-foot{padding:12px 32px 28px;text-align:center;flex-shrink:0;font-size:11px;color:var(–t3);line-height:1.6}
+/* Welcome */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 20px;text-align:center}
+.wl-logo{width:52px;height:52px;background:linear-gradient(135deg,var(–ac),var(–pu));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;box-shadow:0 6px 28px rgba(91,143,249,.28)}
+.wl-title{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;margin-bottom:7px}
+.wl-title em{color:var(–ac);font-style:normal}
+.wl-sub{font-size:13px;color:var(–t2);line-height:1.6;max-width:260px;margin-bottom:24px}
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:310px}
+.sg-card{background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:13px 12px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
+.sg-card:hover{background:var(–s2);border-color:rgba(91,143,249,.22);transform:translateY(-1px)}
+.sg-card:active{transform:scale(.97)}
+.sg-ic{font-size:18px;margin-bottom:6px}
+.sg-t{font-size:12px;font-weight:600;margin-bottom:2px}
+.sg-d{font-size:11px;color:var(–t2);line-height:1.4}
 
-/* ══ ② AUTH ══ */
-#s-auth{background:var(–bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
-#s-auth::-webkit-scrollbar{display:none}
-.auth-top{display:flex;flex-direction:column;padding:52px 24px 0}
-.auth-title{font-family:‘Instrument Serif’,serif;font-size:32px;font-style:italic;margin-bottom:6px}
-.auth-sub{font-size:14px;color:var(–t2);margin-bottom:28px}
-.auth-tabs{display:flex;background:var(–s2);border-radius:12px;padding:4px;margin-bottom:22px;border:1px solid var(–bd)}
-.a-tab{flex:1;padding:10px;border:none;border-radius:9px;background:transparent;color:var(–t2);font-family:‘DM Sans’,sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
-.a-tab.on{background:var(–s4);color:var(–t);box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.auth-pan{background:var(–s1);border-top-left-radius:24px;border-top-right-radius:24px;padding:26px 24px 52px;border-top:1px solid var(–bd)}
-.auth-terms{font-size:11px;color:var(–t3);text-align:center;margin-top:14px;line-height:1.5}
-.err{font-size:12px;color:var(–re);margin-top:8px;display:none}
-
-/* ══ ③ ONBOARD ══ */
-#s-onboard{background:var(–bg)}
-.ob-hd{display:flex;align-items:center;justify-content:space-between;padding:52px 24px 0;flex-shrink:0}
-.ob-skip{font-size:14px;color:var(–t3);background:none;border:none;cursor:pointer;transition:color .2s}
-.ob-skip:hover{color:var(–t2)}
-.ob-dots{display:flex;gap:6px}
-.ob-dot{height:4px;border-radius:2px;background:var(–mu);transition:all .35s}
-.ob-dot.on{width:24px;background:var(–ac)}.ob-dot:not(.on){width:8px}
-.ob-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;gap:20px}
-.ob-icon{width:100px;height:100px;border-radius:28px;background:var(–s2);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.ob-title{font-family:‘Instrument Serif’,serif;font-size:26px;font-style:italic;line-height:1.25}
-.ob-desc{font-size:14px;color:var(–t2);line-height:1.7;max-width:280px}
-.ob-foot{padding:20px 24px 44px;flex-shrink:0}
-
-/* ══ ④ DASHBOARD ══ */
-#s-dash{background:var(–bg)}
-.dash-hd{padding:52px 20px 14px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between}
-.dash-greet{font-size:13px;color:var(–t2);margin-bottom:4px}
-.dash-title{font-family:‘Instrument Serif’,serif;font-size:28px;font-style:italic}
-.dash-title em{color:var(–ac);font-style:normal}
-.logout-btn{background:none;border:1px solid var(–bd);border-radius:100px;padding:6px 14px;font-size:12px;color:var(–t3);cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all .2s;margin-top:6px}
-.logout-btn:hover{border-color:var(–re);color:var(–re)}
-.dash-sc{flex:1;overflow-y:auto;padding:4px 20px 100px}
-.dash-sc::-webkit-scrollbar{display:none}
-.cats-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px}
-.cats-row::-webkit-scrollbar{display:none}
-.ccs{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:16px;flex-shrink:0;width:148px;cursor:pointer;transition:all .2s;box-shadow:var(–cg)}
-.ccs:hover{border-color:rgba(91,143,249,.35);transform:translateY(-2px)}
-.ccs-av{width:44px;height:44px;border-radius:50%;background:var(–s3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px}
-.ccs-name{font-family:‘Instrument Serif’,serif;font-size:16px;font-style:italic;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ccs-meta{font-size:11px;color:var(–t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ccs-sv{font-family:‘Instrument Serif’,serif;font-size:20px;line-height:1;margin-top:10px}
-.ccs-sl{font-size:10px;color:var(–t3)}
-.add-cc{background:transparent;border:1px dashed var(–mu);border-radius:18px;padding:16px;flex-shrink:0;width:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s}
-.add-cc:hover{border-color:var(–ac);background:var(–acs)}
-.add-cc span{font-size:12px;color:var(–t3)}
-.rec-row{display:flex;align-items:center;padding:14px 16px;background:var(–s1);border:1px solid var(–bd);border-radius:14px;margin-bottom:8px;cursor:pointer;gap:12px;transition:background .15s;box-shadow:var(–cg)}
-.rec-row:hover{background:var(–s2)}
-.rec-av{width:36px;height:36px;border-radius:50%;background:var(–s3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.rec-info{flex:1;min-width:0}
-.rec-cat{font-size:13px;font-weight:600;margin-bottom:2px}
-.rec-date{font-size:11px;color:var(–t3)}
-.rec-sv{font-family:‘Instrument Serif’,serif;font-size:22px;flex-shrink:0}
-.trend-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:18px;margin-bottom:24px;box-shadow:var(–cg)}
-.tbars{display:flex;align-items:flex-end;gap:5px;height:48px;margin:10px 0 4px}
-.tbar{flex:1;border-radius:3px 3px 0 0;background:var(–s3);border-top:2px solid;min-height:4px}
-.dash-fab{position:absolute;bottom:88px;left:50%;transform:translateX(-50%);background:var(–ac);color:#fff;border:none;border-radius:100px;padding:15px 34px;font-family:‘Instrument Serif’,serif;font-size:18px;font-style:italic;cursor:pointer;box-shadow:0 8px 32px rgba(91,143,249,.4);white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:10px;user-select:none}
-.dash-fab:hover{transform:translateX(-50%) translateY(-2px)}
-.dash-fab:active{transform:translateX(-50%) scale(.97)}
-
-/* ══ ⑤ ANALYZE ══ */
-#s-analyze{background:var(–bg);position:relative}
-.ana-sc{flex:1;overflow-y:auto;padding:8px 20px 20px}
-.ana-sc::-webkit-scrollbar{display:none}
-.step-block{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:var(–cg)}
-.step-num{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(–ac);margin-bottom:8px}
-.step-title{font-size:16px;font-weight:600;margin-bottom:14px}
-.cat-opt-row{display:flex;gap:8px;flex-wrap:wrap}
-.cat-opt{display:flex;align-items:center;gap:8px;background:var(–s2);border:1px solid var(–bd);border-radius:100px;padding:9px 16px;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;user-select:none}
-.cat-opt.sel{border-color:var(–ac);background:var(–acs);color:var(–ac)}
-.ana-ta{width:100%;min-height:120px;padding:14px;background:var(–s2);border:1px solid var(–bd);border-radius:14px;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:14px;line-height:1.65;outline:none;resize:none;transition:border-color .2s}
-.ana-ta:focus{border-color:rgba(91,143,249,.5)}
-.ana-ta::placeholder{color:var(–t3)}
-.hint-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.hint-c{background:var(–s2);border:1px solid var(–bd);border-radius:100px;padding:5px 12px;font-size:12px;color:var(–t3);cursor:pointer;transition:all .2s;user-select:none}
-.hint-c:hover{border-color:var(–ac);color:var(–ac)}
-.media-row{display:flex;gap:10px}
-.mo{flex:1;background:var(–s2);border:1px dashed var(–t3);border-radius:14px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;user-select:none}
-.mo:hover{border-color:var(–ac);background:var(–acs)}
-.mo.upl{border-color:var(–gr);background:rgba(62,207,142,.08);border-style:solid}
-.mo-ic{font-size:24px;margin-bottom:6px}
-.mo-lb{font-size:12px;color:var(–t2)}
-.mo.upl .mo-lb{color:var(–gr)}
-.ana-foot{flex-shrink:0;padding:14px 20px 36px;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
-/* no-cat warning */
-.warn-box{background:rgba(242,109,109,.08);border:1px solid rgba(242,109,109,.25);border-radius:16px;padding:20px;text-align:center}
-.warn-box .wi{font-size:36px;margin-bottom:10px}
-.warn-box .wt{font-size:15px;font-weight:600;margin-bottom:6px}
-.warn-box .ws{font-size:13px;color:var(–t2);margin-bottom:16px;line-height:1.5}
-
-/* ══ ⑥ LOADING ══ */
-#s-loading{background:var(–bg);align-items:center;justify-content:center;gap:28px;padding:40px;display:flex;flex-direction:column}
-#s-loading.hid{display:none}
-.load-paw{font-size:56px;animation:lp 2s ease-in-out infinite}
-@keyframes lp{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.1) rotate(-5deg)}}
-.load-title{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;text-align:center}
-.load-msg{font-size:13px;color:var(–t2);text-align:center;min-height:20px}
-.load-track{width:100%;max-width:280px;height:3px;background:var(–s3);border-radius:100px;overflow:hidden}
-.load-bar{height:100%;background:linear-gradient(90deg,var(–ac),var(–pu));border-radius:100px;transition:width .7s cubic-bezier(.16,1,.3,1);width:0}
-.load-steps{display:flex;flex-direction:column;gap:12px;width:100%;max-width:280px}
-.l-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(–t3);transition:color .3s}
-.l-step.act{color:var(–t)}.l-step.done{color:var(–gr)}
-.l-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-
-/* ══ ⑦ RESULT ══ */
-#s-result{background:var(–bg)}
-.res-sc{flex:1;overflow-y:auto;padding:8px 20px 100px}
-.res-sc::-webkit-scrollbar{display:none}
-.res-hero{background:linear-gradient(135deg,rgba(91,143,249,.15),rgba(155,143,239,.06));border:1px solid rgba(91,143,249,.2);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center}
-.res-cat-lb{font-size:12px;color:var(–t2);margin-bottom:6px}
-.res-verdict{font-family:‘Instrument Serif’,serif;font-size:26px;font-style:italic;margin-bottom:10px;line-height:1.2}
-.res-date{font-size:11px;color:var(–t3)}
-.res-sec{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(–ac);margin-bottom:12px}
-.res-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(–cg)}
-.res-text{font-size:13px;line-height:1.8;color:var(–t2);white-space:pre-wrap;word-break:break-word}
-.stress-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(–bd2)}
-.stress-row:last-child{border-bottom:none;padding-bottom:0}
-.stress-row:first-child{padding-top:0}
-.stress-key{font-size:13px;color:var(–t2);flex:1}
-.stress-val{font-family:‘Instrument Serif’,serif;font-size:22px;font-style:italic}
-.res-acts{display:flex;gap:10px;padding:14px 20px 36px;flex-shrink:0;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
-.btn-sm{flex:1;padding:13px;font-size:14px;border-radius:12px}
-
-/* ══ ⑧ CAT PROFILE ══ */
-#s-cat{background:var(–bg)}
-.cat-sc{flex:1;overflow-y:auto;padding:8px 20px 100px}
-.cat-sc::-webkit-scrollbar{display:none}
-.cat-hero{text-align:center;padding:20px 0 20px}
-.cat-av-xl{width:80px;height:80px;border-radius:50%;background:var(–s2);border:2px solid var(–bd);display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 12px;box-shadow:0 0 0 8px rgba(91,143,249,.06)}
-.cat-nm{font-family:‘Instrument Serif’,serif;font-size:28px;font-style:italic;margin-bottom:4px}
-.cat-mt{font-size:13px;color:var(–t2)}
-.info-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;overflow:hidden;margin-bottom:14px}
-.info-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(–bd2)}
-.info-row:last-child{border-bottom:none}
-.info-k{font-size:13px;color:var(–t2);flex:1}
-.info-v{font-size:13px;font-weight:500}
-.ai-card{background:linear-gradient(135deg,rgba(91,143,249,.11),rgba(155,143,239,.05));border:1px solid rgba(91,143,249,.18);border-radius:16px;padding:16px;margin-bottom:12px}
-.ai-lbl{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(–ac);margin-bottom:8px}
-.ai-txt{font-size:13px;line-height:1.65;color:var(–t2)}
-.tag-row{display:flex;flex-wrap:wrap;gap:7px}
-.tag{background:var(–s2);border:1px solid var(–bd);border-radius:100px;padding:5px 12px;font-size:12px;color:var(–t2)}
-.cat-foot{display:flex;gap:10px;padding:14px 20px 36px;flex-shrink:0;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
-
-/* ══ ⑨ TRENDS ══ */
-#s-trends{background:var(–bg)}
-.trends-sc{flex:1;overflow-y:auto;padding:8px 20px 100px}
-.trends-sc::-webkit-scrollbar{display:none}
-.pt-row{display:flex;gap:8px;margin-bottom:20px}
-.pt{padding:8px 20px;border-radius:100px;border:1px solid var(–bd);background:transparent;color:var(–t2);font-family:‘DM Sans’,sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
-.pt.on{background:var(–acs);border-color:var(–ac);color:var(–ac)}
-.chart-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(–cg)}
-.chart-title{font-size:13px;font-weight:600;margin-bottom:4px}
-.chart-sub{font-size:11px;color:var(–t3);margin-bottom:14px}
-.bchart{height:80px;display:flex;align-items:flex-end;gap:4px}
-.bc-bar{flex:1;border-radius:4px 4px 0 0;border-top:2px solid;min-height:4px}
-.chart-lbs{display:flex;justify-content:space-between;margin-top:6px}
-.chart-lbs span{font-size:9px;color:var(–t3)}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.stat-box{background:var(–s1);border:1px solid var(–bd);border-radius:16px;padding:14px;text-align:center}
-.stat-v{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;line-height:1;margin-bottom:3px}
-.stat-l{font-size:10px;color:var(–t3)}
-
-/* ══ ⑩ PLANS ══ */
-#s-plans{background:var(–bg)}
-.plans-sc{flex:1;overflow-y:auto;padding:8px 20px 100px}
-.plans-sc::-webkit-scrollbar{display:none}
-.plan-card{border-radius:20px;padding:22px;margin-bottom:14px;position:relative}
-.plan-card.free{background:var(–s1);border:1px solid var(–bd)}
-.plan-card.pro{background:linear-gradient(135deg,rgba(91,143,249,.17),rgba(91,143,249,.05));border:1px solid rgba(91,143,249,.35)}
-.plan-card.fam{background:linear-gradient(135deg,rgba(155,143,239,.15),rgba(155,143,239,.04));border:1px solid rgba(155,143,239,.3)}
-.plan-badge{position:absolute;top:16px;right:16px;background:var(–ac);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px}
-.plan-name{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(–t2);margin-bottom:10px}
-.plan-price{font-family:‘Instrument Serif’,serif;font-size:40px;font-style:italic;line-height:1;margin-bottom:4px}
-.plan-price span{font-size:16px;font-style:normal;color:var(–t2)}
-.plan-period{font-size:12px;color:var(–t3);margin-bottom:18px}
-.plan-feats{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.plan-feats li{display:flex;align-items:center;gap:8px;font-size:13px}
-.fc{color:var(–gr);font-size:12px}.fx{color:var(–t3);font-size:12px}
-.plan-btn{width:100%;padding:13px;border:none;border-radius:12px;font-family:‘DM Sans’,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
-.plan-btn.ghost{background:transparent;color:var(–t2);border:1px solid var(–bd)}
-.plan-btn.ghost:hover{background:var(–s2)}
-.plan-btn.filled{background:var(–ac);color:#fff}
-.plan-btn.pu{background:var(–pu);color:#fff}
-
-/* ══ ADD CAT ══ */
-#s-addcat{background:var(–bg)}
-.addcat-sc{flex:1;overflow-y:auto;padding:8px 20px 120px}
-.addcat-sc::-webkit-scrollbar{display:none}
-.emoji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:4px}
-.emoji-opt{height:48px;background:var(–s2);border:1px solid var(–bd);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .2s;user-select:none}
-.emoji-opt.sel{border-color:var(–ac);background:var(–acs)}
-.sel-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sel-opt{padding:12px;background:var(–s2);border:1px solid var(–bd);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;user-select:none}
-.sel-opt.on{border-color:var(–ac);background:var(–acs);color:var(–ac)}
-.addcat-foot{position:absolute;bottom:0;left:0;right:0;padding:14px 20px 36px;background:rgba(8,8,8,.96);border-top:1px solid var(–bd);backdrop-filter:blur(16px)}
-
-/* ══ ⑪ CHAT ══ */
-#s-chat{background:var(–bg)}
-.chat-top{flex-shrink:0;padding:52px 20px 12px;border-bottom:1px solid var(–bd2)}
-.chat-hd-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.chat-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(–ac),var(–pu));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.chat-nm{font-family:‘Instrument Serif’,serif;font-size:18px;font-style:italic}
-.chat-nm em{color:var(–ac);font-style:normal}
-.chat-status{font-size:11px;color:var(–gr);display:flex;align-items:center;gap:5px}
-.chat-status::before{content:’’;width:6px;height:6px;border-radius:50%;background:var(–gr);display:inline-block;animation:pu 2s ease infinite}
-.mode-sw{display:flex;background:var(–s2);border:1px solid var(–bd);border-radius:100px;padding:3px;gap:2px}
-.mode-btn{padding:7px 16px;border-radius:100px;border:none;background:transparent;font-family:‘DM Sans’,sans-serif;font-size:12px;font-weight:500;color:var(–t3);cursor:pointer;transition:all .22s;white-space:nowrap;user-select:none}
-.mode-btn.on{background:var(–ac);color:#fff;box-shadow:0 2px 10px rgba(91,143,249,.35)}
-.ctx-row{display:flex;gap:7px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
-.ctx-row::-webkit-scrollbar{display:none}
-.ctx-chip{padding:6px 14px;background:var(–s2);border:1px solid var(–bd);border-radius:100px;cursor:pointer;transition:all .2s;font-size:12px;font-weight:500;color:var(–t2);flex-shrink:0;white-space:nowrap;user-select:none}
-.ctx-chip.on{border-color:var(–ac);background:var(–acs);color:var(–ac)}
-.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px 8px}
-.chat-msgs::-webkit-scrollbar{display:none}
-.ts-lbl{font-size:10px;color:var(–t3);text-align:center;margin:6px 0 10px}
-.mg{margin-bottom:14px;display:flex;flex-direction:column}
-.mg.u{align-items:flex-end}.mg.ai{align-items:flex-start}
-.bb{max-width:86%;padding:12px 16px;font-size:14px;line-height:1.65;animation:fu .28s ease both}
-@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.bb.u{background:#1a1a2e;border:1px solid rgba(91,143,249,.2);border-radius:18px 18px 4px 18px;color:var(–t);font-size:14px}
-.bb.ai{background:var(–s1);border:1px solid var(–bd);border-radius:18px 18px 18px 4px;color:var(–t);font-size:13px;line-height:1.75}
-.bb.ai h3{font-family:‘Instrument Serif’,serif;font-size:17px;font-style:italic;margin-bottom:8px;color:var(–t)}
+/* Bubbles */
+.mg{padding:16px 14px 0;display:flex}
+.mg.user{justify-content:flex-end}
+.mg.ai{align-items:flex-start;gap:9px}
+.ai-av{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(–ac),var(–pu));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:3px}
+.bb{font-size:14px;line-height:1.72;animation:bup .22s ease both}
+@keyframes bup{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.bb.user{max-width:80%;padding:11px 15px;background:var(–s2);border:1px solid var(–bd);border-radius:17px 17px 4px 17px;color:var(–t)}
+.bb.ai{max-width:calc(100% - 35px);color:var(–t);padding:2px 0 0}
+.bb.ai p{margin-bottom:9px;color:var(–t2)}
+.bb.ai p:last-child{margin-bottom:0}
+.bb.ai h3{font-family:‘Instrument Serif’,serif;font-size:16px;font-style:italic;margin-bottom:7px;color:var(–t)}
 .bb.ai strong{color:var(–t);font-weight:600}
-.bb.ai ul{list-style:none;margin-top:6px;display:flex;flex-direction:column;gap:5px}
-.bb.ai ul li::before{content:’–’;color:var(–ac);margin-right:8px}
-.qr-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.qr{background:transparent;border:1px solid var(–bd);border-radius:100px;padding:7px 14px;font-size:12px;color:var(–t2);cursor:pointer;transition:all .2s;font-family:‘DM Sans’,sans-serif;user-select:none}
+.bb.ai ul{list-style:none;margin:5px 0;display:flex;flex-direction:column;gap:4px}
+.bb.ai ul li{padding-left:13px;position:relative;font-size:13px;line-height:1.65;color:var(–t2)}
+.bb.ai ul li::before{content:’·’;position:absolute;left:0;color:var(–ac);font-weight:800;font-size:16px;line-height:1.2}
+.qr-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.qr{background:transparent;border:1px solid var(–bd);border-radius:18px;padding:6px 12px;font-size:12px;color:var(–t2);cursor:pointer;transition:all .18s;font-family:‘DM Sans’,sans-serif;user-select:none}
 .qr:hover{border-color:var(–ac);color:var(–ac);background:var(–acs)}
-.ty-wrap{background:var(–s1);border:1px solid var(–bd);border-radius:18px 18px 18px 4px;padding:12px 16px;display:inline-flex;gap:4px}
-.ty-d{width:6px;height:6px;border-radius:50%;background:var(–mu);animation:tb 1.2s ease infinite}
-.ty-d:nth-child(2){animation-delay:.15s}.ty-d:nth-child(3){animation-delay:.3s}
-@keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-.chat-in{flex-shrink:0;padding:8px 14px 28px;border-top:1px solid var(–bd2);background:rgba(8,8,8,.95);backdrop-filter:blur(12px)}
-.in-row{display:flex;align-items:center;gap:8px}
-.attach-btn{width:40px;height:40px;border-radius:50%;background:var(–s2);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;color:var(–t3);flex-shrink:0;transition:all .2s;user-select:none}
-.attach-btn:hover{background:var(–s3);color:var(–t2)}
-.in-pill{flex:1;display:flex;align-items:center;background:var(–s2);border:1px solid var(–bd);border-radius:24px;padding:0 16px;gap:8px;height:46px;transition:border-color .2s}
-.in-pill:focus-within{border-color:rgba(91,143,249,.5)}
-.in-txt{flex:1;background:transparent;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;caret-color:var(–ac)}
-.in-txt::placeholder{color:var(–t3)}
-.send-btn{width:40px;height:40px;border-radius:50%;background:var(–ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;opacity:0;pointer-events:none;transition:all .22s;box-shadow:0 4px 14px rgba(91,143,249,.35);user-select:none}
-.send-btn.show{opacity:1;pointer-events:all}
-.send-btn:hover{background:var(–acb);transform:scale(1.05)}
+.qr:active{transform:scale(.95)}
+
+/* Result card */
+.res-card{background:var(–s1);border:1px solid var(–bd);border-radius:14px;padding:15px;margin-top:6px;max-width:min(82%,320px)}
+.res-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.res-cat{font-size:11px;color:var(–t2)}
+.res-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600}
+.sb-wrap{margin-bottom:11px}
+.sb-label{display:flex;justify-content:space-between;font-size:11px;color:var(–t2);margin-bottom:4px}
+.sb-track{height:5px;background:var(–s3);border-radius:3px;overflow:hidden}
+.sb-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.16,1,.3,1)}
+.res-txt{font-size:12px;color:var(–t2);line-height:1.72;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto}
+.res-txt::-webkit-scrollbar{width:2px}
+.res-txt::-webkit-scrollbar-thumb{background:var(–s3)}
+.rat-row{display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(–bd2)}
+.rat-lbl{font-size:11px;color:var(–t3);flex:1}
+.stars{display:flex;gap:2px}
+.star{font-size:17px;cursor:pointer;opacity:.22;color:var(–ye);transition:all .14s;user-select:none}
+.star.on{opacity:1}
+.star:hover{transform:scale(1.18);opacity:.7}
+
+/* Typing */
+.ty-wrap{padding:16px 14px 0;display:flex;align-items:flex-start;gap:9px}
+.ty-dots{display:inline-flex;gap:4px;padding:10px 13px;background:var(–s1);border:1px solid var(–bd);border-radius:4px 13px 13px 13px}
+.ty-d{width:5px;height:5px;border-radius:50%;background:var(–t3);animation:td 1.2s ease infinite}
+.ty-d:nth-child(2){animation-delay:.16s}.ty-d:nth-child(3){animation-delay:.32s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ── INPUT ── */
+.inp-area{flex-shrink:0;padding:8px 12px 26px;background:var(–bg)}
+.inp-wrap{display:flex;align-items:flex-end;gap:7px;background:var(–s1);border:1px solid var(–bd);border-radius:15px;padding:7px 7px 7px 15px;transition:border-color .2s}
+.inp-wrap:focus-within{border-color:rgba(91,143,249,.32)}
+.inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
+.inp-tx::placeholder{color:var(–t3)}
+.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–ac);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:.35;pointer-events:none;flex-shrink:0;user-select:none}
+.send-btn.on{opacity:1;pointer-events:all}
+.send-btn:hover{background:var(–acb)}
+.send-btn:active{transform:scale(.9)}
+.inp-hint{font-size:10px;color:var(–t3);text-align:center;margin-top:6px}
+
+/* ── MODE SHEET ── */
+.sh-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:149;opacity:0;pointer-events:none;transition:opacity .25s}
+.sh-overlay.show{opacity:1;pointer-events:all}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(–s1);border-top:1px solid var(–bd);border-radius:18px 18px 0 0;z-index:150;transform:translateY(100%);transition:transform .28s cubic-bezier(.16,1,.3,1);padding-bottom:28px}
+.sheet.open{transform:translateY(0)}
+.sh-handle{width:32px;height:3px;background:var(–s4);border-radius:2px;margin:11px auto 14px}
+.sh-title{font-size:12px;font-weight:600;color:var(–t3);padding:0 18px 11px;border-bottom:1px solid var(–bd2);letter-spacing:.5px;text-transform:uppercase}
+.sh-item{display:flex;align-items:center;gap:13px;padding:15px 18px;cursor:pointer;transition:background .14s;user-select:none}
+.sh-item:hover{background:var(–s2)}
+.sh-item:active{background:var(–s3)}
+.sh-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.sh-body{}
+.sh-nm{font-size:14px;font-weight:600;margin-bottom:2px}
+.sh-ds{font-size:12px;color:var(–t2)}
+.sh-item.act .sh-nm{color:var(–ac)}
+
+/* ── AUTH ── */
+.auth-ov{position:absolute;inset:0;background:var(–bg);z-index:200;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.auth-ov::-webkit-scrollbar{display:none}
+.auth-ov.hid{display:none}
+.auth-in{min-height:100%;display:flex;flex-direction:column;padding:60px 26px 40px}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:34px}
+.auth-logo-ic{width:42px;height:42px;background:linear-gradient(135deg,var(–ac),var(–pu));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px}
+.auth-logo-tx{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic}
+.auth-logo-tx em{color:var(–ac);font-style:normal}
+.auth-tag{font-family:‘Instrument Serif’,serif;font-size:26px;font-style:italic;line-height:1.25;margin-bottom:9px}
+.auth-tag em{color:var(–ac);font-style:normal}
+.auth-sub{font-size:13px;color:var(–t2);line-height:1.6;margin-bottom:28px}
+.auth-tabs{display:flex;background:var(–s2);border-radius:11px;padding:3px;gap:2px;margin-bottom:18px;border:1px solid var(–bd)}
+.a-tab{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:var(–t3);font-family:‘DM Sans’,sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;user-select:none}
+.a-tab.on{background:var(–s4);color:var(–t)}
+.field{margin-bottom:13px}
+.field label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(–t3);display:block;margin-bottom:6px}
+.fi{width:100%;padding:13px 15px;background:var(–s2);border:1px solid var(–bd);border-radius:11px;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;outline:none;transition:all .2s;-webkit-appearance:none}
+.fi:focus{border-color:rgba(91,143,249,.45);box-shadow:0 0 0 3px rgba(91,143,249,.09)}
+.fi::placeholder{color:var(–t3)}
+.err{font-size:12px;color:var(–re);margin-top:7px;display:none;padding:8px 12px;background:rgba(242,109,109,.07);border-radius:9px;border:1px solid rgba(242,109,109,.14)}
+.auth-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(–ac);color:#fff;font-family:‘DM Sans’,sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .18s;margin-top:5px;user-select:none}
+.auth-btn:hover{background:var(–acb)}
+.auth-btn:active{transform:scale(.98)}
+.auth-sw{font-size:12px;color:var(–t3);text-align:center;margin-top:12px}
+.auth-sw button{background:none;border:none;color:var(–ac);font-size:12px;cursor:pointer;font-weight:600;font-family:‘DM Sans’,sans-serif}
+.auth-terms{font-size:10px;color:var(–t3);text-align:center;margin-top:18px;line-height:1.6}
+
+/* ── ONBOARD ── */
+.ob-ov{position:absolute;inset:0;background:var(–bg);z-index:190;display:flex;flex-direction:column}
+.ob-ov.hid{display:none}
+.ob-top{display:flex;align-items:center;justify-content:space-between;padding:52px 22px 0;flex-shrink:0}
+.ob-skip{font-size:13px;color:var(–t3);background:none;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif}
+.ob-dots{display:flex;gap:5px}
+.ob-dot{height:3px;border-radius:2px;background:var(–s4);transition:all .28s}
+.ob-dot.on{width:18px;background:var(–ac)}.ob-dot:not(.on){width:6px}
+.ob-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 26px;text-align:center;gap:14px}
+.ob-icon{width:84px;height:84px;border-radius:22px;background:var(–s2);border:1px solid var(–bd);display:flex;align-items:center;justify-content:center;font-size:40px}
+.ob-title{font-family:‘Instrument Serif’,serif;font-size:23px;font-style:italic;line-height:1.25}
+.ob-desc{font-size:13px;color:var(–t2);line-height:1.7;max-width:270px}
+.ob-foot{padding:14px 22px 38px;flex-shrink:0}
+.ob-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(–ac);color:#fff;font-family:‘DM Sans’,sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .18s;user-select:none}
+.ob-btn:active{transform:scale(.98)}
 </style>
 
 </head>
 <body>
 <div class="app">
 
-<!-- ① LANDING -->
+<!-- SIDEBAR -->
 
-<div class="scr" id="s-land">
-  <div class="land-bg"></div>
-  <div class="land-body">
-    <div class="land-paw">🐾</div>
-    <div class="land-logo">Paw<em>Sense</em> AI</div>
-    <div class="land-badge">AI 貓咪行為與情緒分析平台</div>
-    <div class="land-tagline">讀懂牠的行為，<br>不只是聽牠叫。</div>
-    <div class="land-sub">輸入你觀察到的行為，AI 即時搜尋獸醫文獻，給你真實有依據的分析。</div>
-    <div class="land-acts">
-      <button class="btn btn-p btn-w" onclick="goTo('s-auth')">登入 / 註冊</button>
-      <button class="btn btn-g btn-w" onclick="goTo('s-plans')">了解方案</button>
+<div class="sidebar" id="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">
+      <div class="sb-logo-ic">🐾</div>
+      <div class="sb-logo-tx">Paw<em>Sense</em></div>
     </div>
+    <button class="sb-new" onclick="newChat()">
+      <span style="font-size:15px">✏️</span> 新對話
+    </button>
   </div>
-  <div class="land-stats">
-    <div class="ls-item"><div class="ls-num">即時</div><div class="ls-lbl">網路搜尋</div></div>
-    <div class="ls-item"><div class="ls-num">真實</div><div class="ls-lbl">AI 分析</div></div>
-    <div class="ls-item"><div class="ls-num">永久</div><div class="ls-lbl">保存紀錄</div></div>
-  </div>
-  <div class="land-foot">分析結果僅供參考，不代替專業獸醫診斷。</div>
-</div>
-
-<!-- ② AUTH -->
-
-<div class="scr hid" id="s-auth">
-  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column">
-    <div style="height:54px;display:flex;align-items:flex-end;padding:0 20px 8px;flex-shrink:0">
-      <button class="bk" onclick="goBk()">←</button>
-    </div>
-    <div style="padding:16px 24px 0;flex-shrink:0">
-      <div class="auth-title">開始使用</div>
-      <div class="auth-sub">建立帳號，永久保存你的貓咪分析紀錄。</div>
-      <div class="auth-tabs">
-        <button class="a-tab on" id="tab-r" onclick="swTab('r')">註冊</button>
-        <button class="a-tab" id="tab-l" onclick="swTab('l')">登入</button>
-      </div>
-    </div>
-    <div class="auth-pan" style="margin-top:auto">
-      <div id="form-r">
-        <div class="field"><label>暱稱</label><input class="fi" id="reg-name" type="text" placeholder="你的名字"></div>
-        <div class="field"><label>電子郵件</label><input class="fi" id="reg-email" type="email" placeholder="you@example.com"></div>
-        <div class="field"><label>密碼</label><input class="fi" id="reg-pw" type="password" placeholder="至少 6 個字元"></div>
-        <div class="err" id="reg-err">請填寫所有欄位</div>
-        <button class="btn btn-p btn-w" onclick="doRegister()">建立帳號 →</button>
-      </div>
-      <div id="form-l" style="display:none">
-        <div class="field"><label>電子郵件</label><input class="fi" id="log-email" type="email" placeholder="you@example.com"></div>
-        <div class="field"><label>密碼</label><input class="fi" id="log-pw" type="password" placeholder="輸入密碼"></div>
-        <div class="err" id="log-err">電子郵件或密碼錯誤</div>
-        <button class="btn btn-p btn-w" onclick="doLogin()">登入 →</button>
-      </div>
-      <p class="auth-terms">繼續即表示同意服務條款與隱私政策</p>
+  <div class="sb-sec">對話紀錄</div>
+  <div class="sb-list" id="sb-list"></div>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av">🐱</div>
+      <div class="sb-uname" id="sb-name">—</div>
+      <button class="sb-logout" onclick="doLogout()">登出</button>
     </div>
   </div>
 </div>
+<div class="sb-overlay" id="sb-ov" onclick="closeSB()"></div>
 
-<!-- ③ ONBOARD -->
+<!-- MAIN -->
 
-<div class="scr hid" id="s-onboard">
-  <div class="ob-hd">
-    <button class="ob-skip" onclick="finishOnboard()">跳過</button>
+<div class="main">
+  <div class="chat-hd">
+    <button class="menu-btn" onclick="toggleSB()">
+      <div class="menu-ic"><span></span><span></span><span></span></div>
+    </button>
+    <div class="hd-title" id="hd-title">PawSense AI</div>
+    <div class="mode-chip" id="mode-chip" onclick="openSheet()">🐱 問答</div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="inp-area">
+    <div class="inp-wrap">
+      <textarea class="inp-tx" id="inp-tx" placeholder="輸入訊息..." rows="1"
+        oninput="onInp()" onkeydown="onKey(event)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()">↑</button>
+    </div>
+    <div class="inp-hint">PawSense AI · 分析結果僅供參考</div>
+  </div>
+</div>
+
+<!-- MODE SHEET -->
+
+<div class="sh-overlay" id="sh-ov" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title">選擇模式</div>
+  <div class="sh-item act" id="sm-general" onclick="setMode('general')">
+    <div class="sh-ic" style="background:rgba(91,143,249,.1)">🐱</div>
+    <div class="sh-body"><div class="sh-nm">貓咪問答</div><div class="sh-ds">問任何關於貓咪的問題</div></div>
+  </div>
+  <div class="sh-item" id="sm-analyze" onclick="setMode('analyze')">
+    <div class="sh-ic" style="background:rgba(62,207,142,.1)">🔍</div>
+    <div class="sh-body"><div class="sh-nm">行為分析</div><div class="sh-ds">AI 搜尋獸醫文獻，評估壓力與風險</div></div>
+  </div>
+  <div class="sh-item" id="sm-report" onclick="setMode('report')">
+    <div class="sh-ic" style="background:rgba(155,143,239,.1)">📋</div>
+    <div class="sh-body"><div class="sh-nm">報告解讀</div><div class="sh-ds">解讀過往的分析報告</div></div>
+  </div>
+  <div class="sh-item" id="sm-cat" onclick="setMode('cat')">
+    <div class="sh-ic" style="background:rgba(245,166,35,.1)">🐈</div>
+    <div class="sh-body"><div class="sh-nm">貓咪管理</div><div class="sh-ds">新增 / 查看貓咪資料</div></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+
+<div class="auth-ov" id="auth-ov">
+  <div class="auth-in">
+    <div class="auth-logo">
+      <div class="auth-logo-ic">🐾</div>
+      <div class="auth-logo-tx">Paw<em>Sense</em> AI</div>
+    </div>
+    <div class="auth-tag">讀懂牠的行為，<br><em>不只是聽牠叫。</em></div>
+    <div class="auth-sub">AI 即時搜尋獸醫文獻，給你有科學依據的貓咪行為分析。</div>
+    <div class="auth-tabs">
+      <button class="a-tab on" id="tab-r" onclick="swTab('r')">建立帳號</button>
+      <button class="a-tab" id="tab-l" onclick="swTab('l')">登入</button>
+    </div>
+    <div id="form-r">
+      <div class="field"><label>暱稱</label><input class="fi" id="reg-name" type="text" placeholder="例：小花的媽媽" autocomplete="name"></div>
+      <div class="field"><label>電子郵件</label><input class="fi" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>密碼</label><input class="fi" id="reg-pw" type="password" placeholder="至少 6 個字元" autocomplete="new-password"></div>
+      <div class="err" id="reg-err"></div>
+      <button class="auth-btn" onclick="doRegister()">建立帳號 →</button>
+      <div class="auth-sw">已有帳號？<button onclick="swTab('l')">點此登入</button></div>
+    </div>
+    <div id="form-l" style="display:none">
+      <div class="field"><label>電子郵件</label><input class="fi" id="log-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>密碼</label><input class="fi" id="log-pw" type="password" placeholder="輸入密碼" autocomplete="current-password"></div>
+      <div class="err" id="log-err"></div>
+      <button class="auth-btn" onclick="doLogin()">登入 →</button>
+      <div class="auth-sw">還沒有帳號？<button onclick="swTab('r')">點此註冊</button></div>
+    </div>
+    <div class="auth-terms">繼續即表示同意服務條款與隱私政策</div>
+  </div>
+</div>
+
+<!-- ONBOARD -->
+
+<div class="ob-ov hid" id="ob-ov">
+  <div class="ob-top">
+    <button class="ob-skip" onclick="finishOb()">跳過</button>
     <div class="ob-dots" id="ob-dots"></div>
   </div>
   <div class="ob-body" id="ob-body"></div>
-  <div class="ob-foot"><button class="btn btn-p btn-w" id="ob-btn" onclick="nxOb()">下一步</button></div>
-</div>
-
-<!-- ④ DASHBOARD -->
-
-<div class="scr hid" id="s-dash">
-  <div class="dash-hd">
-    <div>
-      <div class="dash-greet" id="dash-greet">歡迎回來 👋</div>
-      <div class="dash-title">我的<em>貓咪</em></div>
-    </div>
-    <button class="logout-btn" onclick="doLogout()">登出</button>
-  </div>
-  <div class="dash-sc" id="dash-sc">
-    <div class="slbl">我的貓咪</div>
-    <div class="cats-row" id="cats-row"></div>
-    <div class="slbl">最近分析</div>
-    <div id="recent-recs"></div>
-    <div class="dv"></div>
-    <div class="slbl">壓力趨勢</div>
-    <div class="trend-card" id="trend-card"></div>
-  </div>
-  <button class="dash-fab" onclick="goTo('s-analyze')">🔍 開始分析</button>
-  <div class="bnav">
-    <button class="bni on" id="bn-dash" onclick="navTo('s-dash','bn-dash')"><div class="bnic">🏠</div><div class="bnlb">首頁</div></button>
-    <button class="bni" id="bn-chat" onclick="navTo('s-chat','bn-chat')"><div class="bnic">💬</div><div class="bnlb">聊天</div></button>
-    <button class="bni" id="bn-trends" onclick="navTo('s-trends','bn-trends')"><div class="bnic">📊</div><div class="bnlb">趨勢</div></button>
-    <button class="bni" id="bn-plans" onclick="navTo('s-plans','bn-plans')"><div class="bnic">💎</div><div class="bnlb">方案</div></button>
-  </div>
-</div>
-
-<!-- ⑤ ANALYZE -->
-
-<div class="scr hid" id="s-analyze">
-  <div class="nav-hd sub"><button class="bk" onclick="goBk()">←</button><div class="pg-t">開始分析</div></div>
-  <div class="ana-sc" id="ana-sc">
-    <!-- content filled by JS depending on whether cats exist -->
-  </div>
-  <div class="ana-foot" id="ana-foot"></div>
-</div>
-
-<!-- ⑥ LOADING -->
-
-<div class="scr hid" id="s-loading">
-  <div class="load-paw">🐾</div>
-  <div class="load-title">AI 分析進行中...</div>
-  <div class="load-msg" id="load-msg">搜尋獸醫文獻資料庫</div>
-  <div class="load-track"><div class="load-bar" id="load-bar"></div></div>
-  <div class="load-steps">
-    <div class="l-step" id="ls1"><div class="l-dot"></div>搜尋獸醫行為文獻</div>
-    <div class="l-step" id="ls2"><div class="l-dot"></div>AI 解析行為描述</div>
-    <div class="l-step" id="ls3"><div class="l-dot"></div>評估情緒與風險</div>
-    <div class="l-step" id="ls4"><div class="l-dot"></div>生成完整報告</div>
-  </div>
-</div>
-
-<!-- ⑦ RESULT -->
-
-<div class="scr hid" id="s-result">
-  <div class="nav-hd sub"><button class="bk" onclick="goBk()">←</button><div class="pg-t">分析結果</div></div>
-  <div class="res-sc" id="res-sc"></div>
-  <div class="res-acts">
-    <button class="btn btn-g btn-sm" onclick="goTo('s-analyze')">再分析一次</button>
-    <button class="btn btn-p btn-sm" onclick="navTo('s-dash','bn-dash')">返回首頁</button>
-  </div>
-</div>
-
-<!-- ⑧ CAT PROFILE -->
-
-<div class="scr hid" id="s-cat">
-  <div class="nav-hd sub">
-    <button class="bk" onclick="goBk()">←</button>
-    <div class="pg-t">貓咪檔案</div>
-  </div>
-  <div class="cat-sc" id="cat-sc"></div>
-  <div class="cat-foot">
-    <button class="btn btn-g btn-sm" style="flex:1" onclick="navTo('s-trends','bn-trends')">查看趨勢</button>
-    <button class="btn btn-p btn-sm" style="flex:1" onclick="goTo('s-analyze')">為牠分析</button>
-  </div>
-</div>
-
-<!-- ⑨ TRENDS -->
-
-<div class="scr hid" id="s-trends">
-  <div class="nav-hd"><div class="pg-t">歷史趨勢</div></div>
-  <div class="trends-sc" id="trends-sc"></div>
-  <div class="bnav">
-    <button class="bni" onclick="navTo('s-dash','bn-dash')"><div class="bnic">🏠</div><div class="bnlb">首頁</div></button>
-    <button class="bni" onclick="navTo('s-chat','bn-chat')"><div class="bnic">💬</div><div class="bnlb">聊天</div></button>
-    <button class="bni on"><div class="bnic">📊</div><div class="bnlb">趨勢</div></button>
-    <button class="bni" onclick="navTo('s-plans','bn-plans')"><div class="bnic">💎</div><div class="bnlb">方案</div></button>
-  </div>
-</div>
-
-<!-- ⑩ PLANS -->
-
-<div class="scr hid" id="s-plans">
-  <div class="nav-hd sub"><button class="bk" onclick="goBk()">←</button><div class="pg-t">選擇方案</div></div>
-  <div class="plans-sc">
-    <div class="plan-card free">
-      <div class="plan-name">免費版</div>
-      <div class="plan-price">$0 <span>/月</span></div>
-      <div class="plan-period">適合偶爾觀察</div>
-      <ul class="plan-feats">
-        <li><span class="fc">✓</span> 每日 1 次 AI 分析</li>
-        <li><span class="fc">✓</span> 即時網路搜尋資料</li>
-        <li><span class="fc">✓</span> 基本分析報告</li>
-        <li><span class="fx">–</span> 趨勢追蹤圖表</li>
-        <li><span class="fx">–</span> PDF 匯出</li>
-        <li><span class="fx">–</span> 多貓管理</li>
-      </ul>
-      <button class="plan-btn ghost">目前使用中</button>
-    </div>
-    <div class="plan-card pro">
-      <div class="plan-badge">最受歡迎</div>
-      <div class="plan-name">專業版</div>
-      <div class="plan-price">$299 <span>/月</span></div>
-      <div class="plan-period">認真的貓咪主人</div>
-      <ul class="plan-feats">
-        <li><span class="fc">✓</span> 無限次分析</li>
-        <li><span class="fc">✓</span> 完整情緒報告</li>
-        <li><span class="fc">✓</span> 7天 / 30天趨勢圖</li>
-        <li><span class="fc">✓</span> PDF 匯出</li>
-        <li><span class="fc">✓</span> 最多 3 隻貓</li>
-      </ul>
-      <button class="plan-btn filled">立即升級</button>
-    </div>
-    <div class="plan-card fam">
-      <div class="plan-name">家庭版</div>
-      <div class="plan-price">$499 <span>/月</span></div>
-      <div class="plan-period">多貓家庭</div>
-      <ul class="plan-feats">
-        <li><span class="fc">✓</span> 所有專業版功能</li>
-        <li><span class="fc">✓</span> 無限隻貓</li>
-        <li><span class="fc">✓</span> 每月健康摘要</li>
-        <li><span class="fc">✓</span> 壓力異常通知</li>
-        <li><span class="fc">✓</span> 專屬客服</li>
-      </ul>
-      <button class="plan-btn pu">選擇家庭版</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <button class="bni" onclick="navTo('s-dash','bn-dash')"><div class="bnic">🏠</div><div class="bnlb">首頁</div></button>
-    <button class="bni" onclick="navTo('s-chat','bn-chat')"><div class="bnic">💬</div><div class="bnlb">聊天</div></button>
-    <button class="bni" onclick="navTo('s-trends','bn-trends')"><div class="bnic">📊</div><div class="bnlb">趨勢</div></button>
-    <button class="bni on"><div class="bnic">💎</div><div class="bnlb">方案</div></button>
-  </div>
-</div>
-
-<!-- ADD CAT -->
-
-<div class="scr hid" id="s-addcat">
-  <div class="nav-hd sub"><button class="bk" onclick="goBk()">←</button><div class="pg-t">新增貓咪</div></div>
-  <div class="addcat-sc">
-    <div class="step-block">
-      <div class="step-num">選擇頭像</div>
-      <div class="emoji-grid" id="emoji-grid"></div>
-    </div>
-    <div class="step-block">
-      <div class="field"><label>名字 *</label><input class="fi" id="cat-name" type="text" placeholder="例：小白"></div>
-      <div class="field"><label>品種</label><input class="fi" id="cat-breed" type="text" placeholder="例：英國短毛貓（不確定可填「混種」）"></div>
-      <div class="field"><label>年齡</label><input class="fi" id="cat-age" type="text" placeholder="例：3歲 / 6個月"></div>
-      <div class="field"><label>體重（kg）</label><input class="fi" id="cat-weight" type="number" step="0.1" placeholder="例：4.2"></div>
-    </div>
-    <div class="step-block">
-      <div class="step-num">性別</div>
-      <div class="sel-opts" id="gender-opts">
-        <div class="sel-opt" onclick="selOpt(this,'gender','公（已結紮）','gender-opts')">公（已結紮）</div>
-        <div class="sel-opt" onclick="selOpt(this,'gender','公（未結紮）','gender-opts')">公（未結紮）</div>
-        <div class="sel-opt" onclick="selOpt(this,'gender','母（已結紮）','gender-opts')">母（已結紮）</div>
-        <div class="sel-opt" onclick="selOpt(this,'gender','母（未結紮）','gender-opts')">母（未結紮）</div>
-      </div>
-    </div>
-    <div class="step-block">
-      <div class="step-num">生活方式</div>
-      <div class="sel-opts" id="living-opts">
-        <div class="sel-opt" onclick="selOpt(this,'living','純室內','living-opts')">純室內</div>
-        <div class="sel-opt" onclick="selOpt(this,'living','室內外都有','living-opts')">室內外都有</div>
-      </div>
-    </div>
-  </div>
-  <div class="addcat-foot"><button class="btn btn-p btn-w" onclick="saveCat()">儲存貓咪檔案</button></div>
-</div>
-
-<!-- ⑪ CHAT -->
-
-<div class="scr hid" id="s-chat">
-  <div class="chat-top">
-    <div class="chat-hd-row">
-      <div class="chat-av">🐾</div>
-      <div>
-        <div class="chat-nm">Paw<em>Sense</em> AI</div>
-        <div class="chat-status">AI 隨時在線</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="mode-sw">
-        <button class="mode-btn on" id="mode-gen" onclick="setMode('general')">🐱 貓咪問答</button>
-        <button class="mode-btn" id="mode-rep" onclick="setMode('report')">📋 報告解讀</button>
-      </div>
-    </div>
-    <div class="ctx-row" id="ctx-row" style="display:none"></div>
-  </div>
-  <div class="chat-msgs" id="chat-msgs">
-    <div class="ts-lbl">今天</div>
-  </div>
-  <div class="chat-in">
-    <div class="in-row">
-      <div class="in-pill">
-        <input class="in-txt" id="in-txt" placeholder="想問就問..." oninput="onChatInput()" onkeydown="onChatKey(event)">
-      </div>
-      <button class="send-btn show" id="send-btn" onclick="sendChat()">↑</button>
-    </div>
-  </div>
-  <div class="bnav">
-    <button class="bni" onclick="navTo('s-dash','bn-dash')"><div class="bnic">🏠</div><div class="bnlb">首頁</div></button>
-    <button class="bni on" id="bn-chat2"><div class="bnic">💬</div><div class="bnlb">聊天</div></button>
-    <button class="bni" onclick="navTo('s-trends','bn-trends')"><div class="bnic">📊</div><div class="bnlb">趨勢</div></button>
-    <button class="bni" onclick="navTo('s-plans','bn-plans')"><div class="bnic">💎</div><div class="bnlb">方案</div></button>
-  </div>
+  <div class="ob-foot"><button class="ob-btn" id="ob-btn" onclick="nxOb()">下一步</button></div>
 </div>
 
 <script>
-// ═══════════════════════════════════════
-// STORAGE — 真正用 localStorage 記住帳號
-// ═══════════════════════════════════════
-var DB_KEY = 'pawsense_v3';
-function loadDB(){
-  try{ var r=localStorage.getItem(DB_KEY); return r?JSON.parse(r):{users:[],cur:null}; }
-  catch(e){ return {users:[],cur:null}; }
-}
-function saveDB(){ try{ localStorage.setItem(DB_KEY,JSON.stringify(DB)); }catch(e){} }
-var DB = loadDB();
-
-function curUser(){
-  if(!DB.cur) return null;
-  return DB.users.find(function(u){ return u.email===DB.cur; })||null;
-}
+// ══ STORAGE ══
+var DB_KEY='pawsense_v5';
+function loadDB(){try{var r=localStorage.getItem(DB_KEY);return r?JSON.parse(r):{users:[],cur:null};}catch(e){return{users:[],cur:null};}}
+function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
+var DB=loadDB();
 function curU(){
-  var u=curUser(); if(!u) return null;
-  if(!u.cats) u.cats=[];
-  if(!u.records) u.records=[];
+  if(!DB.cur)return null;
+  var u=DB.users.find(function(u){return u.email===DB.cur;})||null;
+  if(!u)return null;
+  if(!u.cats)u.cats=[];if(!u.records)u.records=[];if(!u.sessions)u.sessions=[];if(!u.favs)u.favs=[];
   return u;
 }
 
-// ═══════════════════════════════════════
-// NAV
-// ═══════════════════════════════════════
-var hist=[];
-function showOnly(id){
-  // hide all screens
-  document.querySelectorAll('.scr').forEach(function(s){ s.classList.add('hid'); });
-  var el=document.getElementById(id);
-  if(el){ el.classList.remove('hid'); }
-}
-function goTo(id){
-  if(hist.length && hist[hist.length-1]===id) return;
-  showOnly(id);
-  hist.push(id);
-  onEnter(id);
-}
-function goBk(){
-  if(hist.length<=1) return;
-  hist.pop();
-  var p=hist[hist.length-1];
-  showOnly(p);
-  onEnter(p);
-}
-function navTo(sid,bid){
-  document.querySelectorAll('.bni').forEach(function(b){ b.classList.remove('on'); });
-  document.querySelectorAll('[id^="bn-"]').forEach(function(b){
-    if(b.id===bid||b.id===bid+'2'||b.id===bid+'3') b.classList.add('on');
-  });
-  var navRoots=['s-dash','s-chat','s-trends','s-plans'];
-  hist=hist.filter(function(h){ return navRoots.indexOf(h)<0; });
-  if(!hist.length||hist[hist.length-1]!==sid) hist.push(sid);
-  showOnly(sid);
-  onEnter(sid);
-}
-function onEnter(id){
-  if(id==='s-dash') refreshDash();
-  if(id==='s-analyze') refreshAnalyze();
-  if(id==='s-trends') renderTrends();
-  if(id==='s-chat') initChat();
-}
-
-// ═══════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════
+// ══ AUTH ══
 function swTab(t){
   document.getElementById('tab-r').classList.toggle('on',t==='r');
   document.getElementById('tab-l').classList.toggle('on',t==='l');
   document.getElementById('form-r').style.display=t==='r'?'block':'none';
   document.getElementById('form-l').style.display=t==='l'?'block':'none';
 }
+function showE(id,msg){var e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+function hideE(id){document.getElementById(id).style.display='none';}
 function doRegister(){
+  hideE('reg-err');
   var name=document.getElementById('reg-name').value.trim();
   var email=document.getElementById('reg-email').value.trim().toLowerCase();
   var pw=document.getElementById('reg-pw').value;
-  var err=document.getElementById('reg-err');
-  if(!name||!email||!pw){ err.style.display='block'; err.textContent='請填寫所有欄位'; return; }
-  if(pw.length<6){ err.style.display='block'; err.textContent='密碼至少 6 個字元'; return; }
-  if(DB.users.find(function(u){ return u.email===email; })){ err.style.display='block'; err.textContent='此電子郵件已註冊'; return; }
-  err.style.display='none';
-  DB.users.push({ name:name, email:email, pw:pw, cats:[], records:[], onboarded:false });
-  DB.cur=email; saveDB(); goTo('s-onboard');
+  if(!name)return showE('reg-err','請輸入暱稱');
+  if(!email||!/\S+@\S+\.\S+/.test(email))return showE('reg-err','請輸入有效的電子郵件');
+  if(pw.length<6)return showE('reg-err','密碼至少 6 個字元');
+  if(DB.users.find(function(u){return u.email===email;}))return showE('reg-err','此電子郵件已被使用');
+  DB.users.push({name:name,email:email,pw:pw,cats:[],records:[],sessions:[],favs:[],onboarded:false});
+  DB.cur=email;saveDB();
+  document.getElementById('auth-ov').classList.add('hid');
+  showOb();
 }
 function doLogin(){
+  hideE('log-err');
   var email=document.getElementById('log-email').value.trim().toLowerCase();
   var pw=document.getElementById('log-pw').value;
-  var err=document.getElementById('log-err');
-  var u=DB.users.find(function(u){ return u.email===email&&u.pw===pw; });
-  if(!u){ err.style.display='block'; return; }
-  err.style.display='none'; DB.cur=email; saveDB(); goTo('s-dash');
+  if(!email)return showE('log-err','請輸入電子郵件');
+  if(!pw)return showE('log-err','請輸入密碼');
+  var u=DB.users.find(function(u){return u.email===email&&u.pw===pw;});
+  if(!u)return showE('log-err','電子郵件或密碼錯誤');
+  DB.cur=email;saveDB();
+  document.getElementById('auth-ov').classList.add('hid');
+  initApp();
 }
 function doLogout(){
-  DB.cur=null; saveDB();
-  hist=['s-land']; chatInited=false;
-  showOnly('s-land');
+  DB.cur=null;saveDB();closeSB();
+  chatMode='general';chatHist=[];curSessId=null;sessMsgs=[];catAddStep=null;catTemp={};
+  document.getElementById('auth-ov').classList.remove('hid');
+  renderMsgs([]);
 }
 
-// ═══════════════════════════════════════
-// ONBOARD
-// ═══════════════════════════════════════
+// ══ ONBOARD ══
 var OBS=[
-  {i:'🔍',t:'真實 AI 分析',d:'每次分析都會即時搜尋最新獸醫行為文獻，提供有依據的真實建議，不是假數據。'},
-  {i:'🐱',t:'先新增貓咪',d:'在首頁新增你的貓咪資料，分析時選擇對應的貓咪，AI 才能給出更準確的評估。'},
-  {i:'📊',t:'長期追蹤',d:'每次分析都永久保存在帳號裡。前往「趨勢」頁面查看壓力與行為的長期變化。'},
-  {i:'💬',t:'隨時聊聊',d:'切換到「聊天」頁面，可以問任何關於貓咪的問題，或讓 AI 幫你解讀分析報告。'}
+  {i:'🔍',t:'真實 AI 分析',d:'每次分析即時搜尋最新獸醫行為文獻，給你有依據的真實建議。'},
+  {i:'🐱',t:'所有功能都在聊天',d:'切換上方模式，即可進行行為分析、管理貓咪、解讀報告。'},
+  {i:'📊',t:'分析紀錄自動保存',d:'每次對話保存在左側紀錄欄，隨時查看過往分析。'},
+  {i:'💬',t:'開始你的第一次分析',d:'直接說「分析我的貓咪行為」或選建議問題，立即開始。'}
 ];
 var obI=0;
-function initOb(){
+function showOb(){
+  var ov=document.getElementById('ob-ov');ov.classList.remove('hid');
   obI=0;
-  document.getElementById('ob-dots').innerHTML=OBS.map(function(_,i){ return '<div class="ob-dot'+(i===0?' on':'')+'"></div>'; }).join('');
+  document.getElementById('ob-dots').innerHTML=OBS.map(function(_,i){return'<div class="ob-dot'+(i===0?' on':'')+'"></div>';}).join('');
   renderOb();
 }
 function renderOb(){
   var s=OBS[obI];
   document.getElementById('ob-body').innerHTML='<div class="ob-icon">'+s.i+'</div><div class="ob-title">'+s.t+'</div><div class="ob-desc">'+s.d+'</div>';
-  document.querySelectorAll('.ob-dot').forEach(function(d,i){ d.classList.toggle('on',i===obI); });
+  document.querySelectorAll('.ob-dot').forEach(function(d,i){d.classList.toggle('on',i===obI);});
   document.getElementById('ob-btn').textContent=obI===OBS.length-1?'開始使用 →':'下一步';
 }
-function nxOb(){ if(obI<OBS.length-1){ obI++; renderOb(); } else finishOnboard(); }
-function finishOnboard(){ var u=curUser(); if(u){ u.onboarded=true; saveDB(); } goTo('s-dash'); }
-initOb();
+function nxOb(){if(obI<OBS.length-1){obI++;renderOb();}else finishOb();}
+function finishOb(){var u=curU();if(u){u.onboarded=true;saveDB();}document.getElementById('ob-ov').classList.add('hid');initApp();}
 
-// ═══════════════════════════════════════
-// ADD CAT
-// ═══════════════════════════════════════
-var EMOJIS=['🐱','😸','😺','🐈','🐈‍⬛','😻','😾','🐾','🦁','🐯'];
-var catEmoji='🐱', catGender='', catLiving='';
-(function(){
-  document.getElementById('emoji-grid').innerHTML=EMOJIS.map(function(e,i){
-    return '<div class="emoji-opt'+(i===0?' sel':'')+'" onclick="selEmoji(this,\''+e+'\')">'+e+'</div>';
-  }).join('');
-})();
-function selEmoji(el,e){ document.querySelectorAll('.emoji-opt').forEach(function(x){ x.classList.remove('sel'); }); el.classList.add('sel'); catEmoji=e; }
-function selOpt(el,key,val,groupId){
-  document.querySelectorAll('#'+groupId+' .sel-opt').forEach(function(x){ x.classList.remove('on'); });
-  el.classList.add('on');
-  if(key==='gender') catGender=val;
-  if(key==='living') catLiving=val;
-}
-function saveCat(){
-  var name=document.getElementById('cat-name').value.trim();
-  if(!name){ alert('請輸入貓咪名字'); return; }
-  var u=curU(); if(!u) return;
-  u.cats.push({
-    id:Date.now(), emoji:catEmoji, name:name,
-    breed:document.getElementById('cat-breed').value.trim()||'未填',
-    age:document.getElementById('cat-age').value.trim()||'未填',
-    weight:document.getElementById('cat-weight').value.trim()||'未填',
-    gender:catGender||'未填', living:catLiving||'未填',
-    createdAt:new Date().toLocaleDateString('zh-TW')
+// ══ SIDEBAR ══
+function toggleSB(){var s=document.getElementById('sidebar'),o=document.getElementById('sb-ov');var op=s.classList.toggle('open');o.classList.toggle('show',op);}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-ov').classList.remove('show');}
+function openSheet(){document.getElementById('sheet').classList.add('open');document.getElementById('sh-ov').classList.add('show');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');document.getElementById('sh-ov').classList.remove('show');}
+function renderSB(){
+  var u=curU();if(!u)return;
+  document.getElementById('sb-name').textContent=u.name;
+  document.getElementById('sb-av').textContent=(u.cats&&u.cats.length)?u.cats[0].emoji:'🐱';
+  var list=document.getElementById('sb-list');list.innerHTML='';
+  if(!u.sessions||!u.sessions.length){list.innerHTML='<div style="padding:10px 12px;font-size:12px;color:var(--t3)">還沒有對話紀錄</div>';return;}
+  u.sessions.slice().reverse().forEach(function(s){
+    var el=document.createElement('div');
+    el.className='sb-item'+(s.id===curSessId?' act':'');
+    var ic={general:'🐱',analyze:'🔍',report:'📋',cat:'🐈'}[s.mode]||'🐱';
+    el.innerHTML='<span class="sb-item-ic">'+ic+'</span><span class="sb-item-tx">'+esc(s.title||'新對話')+'</span><button class="sb-item-del" onclick="delSess(event,\''+s.id+'\')">×</button>';
+    el.onclick=function(e){if(e.target.classList.contains('sb-item-del'))return;loadSess(s.id);closeSB();};
+    list.appendChild(el);
   });
-  saveDB();
-  // reset
-  ['cat-name','cat-breed','cat-age','cat-weight'].forEach(function(id){ document.getElementById(id).value=''; });
-  catGender=''; catLiving='';
-  document.querySelectorAll('.sel-opt').forEach(function(x){ x.classList.remove('on'); });
-  goBk();
+}
+function delSess(e,id){e.stopPropagation();var u=curU();if(!u)return;u.sessions=u.sessions.filter(function(s){return s.id!==id;});saveDB();if(curSessId===id)newChat();renderSB();}
+
+// ══ SESSIONS ══
+var curSessId=null,sessMsgs=[];
+function newChat(){
+  curSessId=null;chatHist=[];sessMsgs=[];catAddStep=null;catTemp={};
+  document.getElementById('hd-title').textContent='PawSense AI';
+  renderMsgs([]);renderSB();closeSB();
+}
+function loadSess(id){
+  var u=curU();if(!u)return;
+  var s=u.sessions.find(function(s){return s.id===id;});if(!s)return;
+  curSessId=id;sessMsgs=s.messages||[];chatHist=s.history||[];
+  setModeSilent(s.mode||'general');
+  document.getElementById('hd-title').textContent=s.title||'對話';
+  renderMsgs(sessMsgs);
+}
+function saveSess(title){
+  var u=curU();if(!u)return;
+  if(!u.sessions)u.sessions=[];
+  if(curSessId){var s=u.sessions.find(function(s){return s.id===curSessId;});if(s){s.messages=sessMsgs;s.history=chatHist;if(title)s.title=title;saveDB();renderSB();return;}}
+  var id='s'+Date.now();curSessId=id;
+  u.sessions.push({id:id,title:title||'新對話',mode:chatMode,messages:sessMsgs,history:chatHist,createdAt:new Date().toLocaleString('zh-TW')});
+  saveDB();renderSB();if(title)document.getElementById('hd-title').textContent=title;
 }
 
-// ═══════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════
-function refreshDash(){
-  var u=curU(); if(!u) return;
-  document.getElementById('dash-greet').textContent='歡迎回來，'+u.name+' 👋';
-  // cats row
-  var cr=document.getElementById('cats-row'); cr.innerHTML='';
-  u.cats.forEach(function(cat){
-    var recs=u.records.filter(function(r){ return r.catId===cat.id; });
-    var lr=recs[recs.length-1];
-    var el=document.createElement('div'); el.className='ccs';
-    var sv=lr?('<div class="ccs-sv" style="color:'+(lr.stressLevel>=60?'var(--re)':lr.stressLevel>=35?'var(--ye)':'var(--gr)')+'">'+lr.stressLevel+'</div><div class="ccs-sl">壓力指數</div>'):'<div class="ccs-sl" style="margin-top:10px;color:var(--mu)">尚無資料</div>';
-    el.innerHTML='<div class="ccs-av">'+cat.emoji+'</div><div class="ccs-name">'+cat.name+'</div><div class="ccs-meta">'+cat.age+' · '+cat.breed+'</div>'+sv;
-    el.onclick=function(){ renderCatProfile(cat.id); goTo('s-cat'); };
-    cr.appendChild(el);
-  });
-  var add=document.createElement('div'); add.className='add-cc';
-  add.innerHTML='<div style="font-size:26px;color:var(--t3)">＋</div><span>新增貓咪</span>';
-  add.onclick=function(){ goTo('s-addcat'); }; cr.appendChild(add);
-  // recent records
-  var rr=document.getElementById('recent-recs');
-  if(!u.records.length){
-    rr.innerHTML='<div style="padding:22px;text-align:center;color:var(--t3);font-size:13px;background:var(--s1);border:1px solid var(--bd);border-radius:14px">還沒有分析紀錄<br><span style="font-size:11px;margin-top:4px;display:block;color:var(--mu)">點「開始分析」建立第一份報告</span></div>';
-  } else {
-    rr.innerHTML='';
-    u.records.slice(-4).reverse().forEach(function(r){
-      var cat=u.cats.find(function(c){ return c.id===r.catId; })||{name:'未知',emoji:'🐱'};
-      var sc=r.stressLevel>=60?'var(--re)':r.stressLevel>=35?'var(--ye)':'var(--gr)';
-      var el=document.createElement('div'); el.className='rec-row';
-      el.innerHTML='<div class="rec-av">'+cat.emoji+'</div><div class="rec-info"><div class="rec-cat">'+cat.name+'</div><div class="rec-date">'+r.date+'</div></div><div class="rec-sv" style="color:'+sc+'">'+r.stressLevel+'</div>';
-      el.onclick=function(){ renderResult(r); goTo('s-result'); };
-      rr.appendChild(el);
-    });
-  }
-  // trend mini
-  var tc=document.getElementById('trend-card');
-  if(u.records.length<2){ tc.innerHTML='<div style="font-size:13px;color:var(--t3);text-align:center;padding:8px">分析兩次以上後顯示趨勢圖</div>'; return; }
-  var last=u.records.slice(-7);
-  tc.innerHTML='<div class="slbl" style="margin-bottom:6px">最近 '+last.length+' 次壓力</div>'+
-    '<div class="tbars">'+last.map(function(r){ var c=r.stressLevel>=60?'var(--re)':r.stressLevel>=35?'var(--ye)':'var(--gr)'; return '<div class="tbar" style="height:'+Math.max(6,r.stressLevel)+'%;border-color:'+c+';background:rgba(255,255,255,.05)"></div>'; }).join('')+'</div>';
+// ══ RENDER MESSAGES ══
+function renderMsgs(msgs){
+  sessMsgs=msgs;
+  var el=document.getElementById('msgs');el.innerHTML='';
+  if(!msgs||!msgs.length){el.appendChild(buildWelcome());return;}
+  msgs.forEach(function(m){appendMsgEl(m,false);});
+  scrollBot();
 }
-
-// ═══════════════════════════════════════
-// ANALYZE — 沒有貓咪就封鎖，有貓才能分析
-// ═══════════════════════════════════════
-var selCatId=null, lastRec=null;
-
-function refreshAnalyze(){
+function buildWelcome(){
   var u=curU();
-  var sc=document.getElementById('ana-sc');
-  var foot=document.getElementById('ana-foot');
+  var div=document.createElement('div');div.className='welcome';
+  var suggests=[
+    {ic:'🔍',t:'行為分析',d:'描述行為，取得評估',q:'我想分析貓咪的行為'},
+    {ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
+    {ic:'💊',t:'健康問題',d:'詢問健康建議',q:'我的貓咪最近食慾不振'},
+    {ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
+  ];
+  div.innerHTML='<div class="wl-logo">🐾</div>'+
+    '<div class="wl-title">Paw<em>Sense</em> AI</div>'+
+    '<div class="wl-sub">'+(u?'嗨，'+u.name+'！有什麼關於貓咪的問題嗎？':'讀懂牠的行為，不只是聽牠叫。')+'</div>'+
+    '<div class="sg-grid">'+suggests.map(function(s){return'<div class="sg-card" onclick="tapQ(\''+s.q+'\')"><div class="sg-ic">'+s.ic+'</div><div class="sg-t">'+s.t+'</div><div class="sg-d">'+s.d+'</div></div>';}).join('')+'</div>';
+  return div;
+}
+function appendMsgEl(m,anim){
+  var el=document.getElementById('msgs');
+  var w=el.querySelector('.welcome');if(w)w.remove();
+  if(m.role==='user'){
+    var g=document.createElement('div');g.className='mg user';
+    var b=document.createElement('div');b.className='bb user';
+    if(!anim)b.style.animation='none';
+    b.textContent=m.content;g.appendChild(b);el.appendChild(g);
+  } else {
+    var g=document.createElement('div');g.className='mg ai';
+    var av=document.createElement('div');av.className='ai-av';av.textContent='🐾';
+    var b=document.createElement('div');b.className='bb ai';
+    if(!anim)b.style.animation='none';
+    if(m.type==='result'&&m.rd){b.appendChild(buildResCard(m.rd));}
+    else{
+      b.innerHTML=fmtAI(m.content);
+      if(m.qr&&m.qr.length){
+        var qr=document.createElement('div');qr.className='qr-row';
+        m.qr.forEach(function(q){var btn=document.createElement('button');btn.className='qr';btn.textContent=q;btn.onclick=function(){tapQ(q);};qr.appendChild(btn);});
+        b.appendChild(qr);
+      }
+    }
+    g.appendChild(av);g.appendChild(b);el.appendChild(g);
+  }
+  if(anim)scrollBot();
+}
+function buildResCard(r){
+  var sc=r.sl>=60?'var(--re)':r.sl>=35?'var(--ye)':'var(--gr)';
+  var rl=r.risk==='高'?'高風險':r.risk==='低'?'低風險':'中風險';
+  var rc=r.risk==='高'?'rgba(242,109,109,.13)':r.risk==='低'?'rgba(62,207,142,.13)':'rgba(245,166,35,.13)';
+  var rt=r.risk==='高'?'var(--re)':r.risk==='低'?'var(--gr)':'var(--ye)';
+  var stars='';for(var i=1;i<=5;i++)stars+='<div class="star'+(i<=(r.rating||0)?' on':'')+'" onclick="rateRes(\''+r.id+'\','+i+')">★</div>';
+  var c=document.createElement('div');c.className='res-card';c.id='rc-'+r.id;
+  c.innerHTML='<div class="res-hd"><div class="res-cat">'+esc(r.catName||'貓咪')+'・'+esc(r.date)+'</div><div class="res-badge" style="background:'+rc+';color:'+rt+'">'+rl+'</div></div>'+
+    '<div class="sb-wrap"><div class="sb-label"><span>壓力指數</span><span style="color:'+sc+';font-weight:600">'+r.sl+' / 100</span></div><div class="sb-track"><div class="sb-fill" id="sf-'+r.id+'" style="width:0%;background:'+sc+'"></div></div></div>'+
+    '<div class="res-txt">'+esc(r.fullReport)+'</div>'+
+    '<div class="rat-row"><div class="rat-lbl">這份分析有幫助嗎？</div><div class="stars" id="rs-'+r.id+'">'+stars+'</div></div>';
+  setTimeout(function(){var f=document.getElementById('sf-'+r.id);if(f)f.style.width=r.sl+'%';},80);
+  return c;
+}
+function fmtAI(text){
+  if(!text)return'';
+  return esc(text)
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,3}\s+(.+)$/gm,'<h3>$1</h3>')
+    .replace(/^[•\-]\s+(.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/g,'<ul>$1</ul>')
+    .replace(/<\/ul>\n?<ul>/g,'')
+    .replace(/\n\n+/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+}
+function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function scrollBot(){var m=document.getElementById('msgs');if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
+function tapQ(q){document.getElementById('inp-tx').value=q;onInp();sendMsg();}
 
-  // ── 沒有貓咪 → 顯示警告，無法分析 ──
-  if(!u||!u.cats.length){
-    sc.innerHTML=
-      '<div class="warn-box">'+
-        '<div class="wi">🐱</div>'+
-        '<div class="wt">還沒有貓咪資料</div>'+
-        '<div class="ws">分析前請先新增你的貓咪，AI 才能根據牠的品種、年齡、生活習慣給出更準確的評估。</div>'+
-        '<button class="btn btn-p" style="width:100%" onclick="goTo(\'s-addcat\')">＋ 新增我的第一隻貓咪</button>'+
-      '</div>';
-    foot.innerHTML='';
+// ══ MODE ══
+var chatMode='general';
+var modeLabel={general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'};
+function setModeSilent(m){
+  chatMode=m;
+  document.getElementById('mode-chip').textContent=modeLabel[m]||'🐱 問答';
+  ['general','analyze','report','cat'].forEach(function(k){var el=document.getElementById('sm-'+k);if(el)el.classList.toggle('act',k===m);});
+  var ph={general:'有什麼想問的？',analyze:'描述貓咪的行為...',report:'問我關於分析報告...',cat:'說「新增貓咪」或「查看貓咪」...'};
+  document.getElementById('inp-tx').placeholder=ph[m]||'輸入訊息...';
+}
+function setMode(m){
+  setModeSilent(m);closeSheet();
+  var intro={
+    general:'已切換到**貓咪問答**模式。有什麼關於貓咪的問題嗎？',
+    analyze:'已切換到**行為分析**模式。請描述觀察到的行為，我會搜尋最新獸醫文獻幫你分析。',
+    report:'已切換到**報告解讀**模式。我可以幫你解讀過往分析報告。',
+    cat:'已切換到**貓咪管理**模式。說「新增貓咪」或「查看我的貓咪」。'
+  };
+  if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
+}
+
+// ══ INPUT ══
+function onInp(){
+  var t=document.getElementById('inp-tx');
+  t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';
+  document.getElementById('send-btn').classList.toggle('on',t.value.trim().length>0);
+}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+
+// ══ SEND ══
+var chatHist=[];
+async function sendMsg(){
+  var t=document.getElementById('inp-tx');var txt=t.value.trim();if(!txt)return;
+  t.value='';t.style.height='auto';document.getElementById('send-btn').classList.remove('on');
+  var u=curU();
+  var um={role:'user',content:txt};sessMsgs.push(um);appendMsgEl(um,true);
+  if(!curSessId)saveSess(txt.substring(0,22));else saveSess(null);
+  // typing indicator
+  var tid='ty'+Date.now();
+  var tg=document.createElement('div');tg.className='ty-wrap';tg.id=tid;
+  tg.innerHTML='<div class="ai-av">🐾</div><div class="ty-dots"><div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div></div>';
+  document.getElementById('msgs').appendChild(tg);scrollBot();
+  if(chatMode==='cat'||(catAddStep)){removeEl(tid);await catFlow(txt,u);return;}
+  // Smart intent detection regardless of mode
+  var low2=txt.toLowerCase();
+  if((low2.includes('新增貓咪')||low2.includes('加入貓咪')||low2.includes('新增一隻'))&&chatMode!=='cat'){
+    removeEl(tid);setModeSilent('cat');pushAI('切換到**貓咪管理**模式！',null);await catFlow(txt,u);return;
+  }
+  if((low2.includes('最近的分析')||low2.includes('查看紀錄')||low2.includes('分析結果'))&&chatMode!=='analyze'&&chatMode!=='report'){
+    removeEl(tid);
+    if(!u||!u.records||!u.records.length){pushAI('你還沒有分析紀錄。\n\n切換到**🔍 行為分析**模式，描述貓咪行為即可開始。',['切換到行為分析']);return;}
+    var recent2=u.records.slice(-3).reverse().map(function(r){var c2=u.cats.find(function(c){return c.id===r.catId;})||{name:'貓咪'};return'📅 '+r.date+' — **'+c2.name+'** 壓力 '+r.sl+'/100（'+r.risk+'風險）';}).join('\n\n');
+    pushAI('最近'+Math.min(3,u.records.length)+'筆分析：\n\n'+recent2+'\n\n切換到**報告解讀**模式可以讓我詳細解讀。',['解讀最新報告']);return;
+  }
+  // build system
+  var sys='你是 PawSense AI，專業貓咪行為學顧問。用繁體中文回答，親切專業，給出有依據的內容。回覆請用 Markdown（**粗體**、- 列表）讓排版清晰，保持簡潔。';
+  if(u&&u.cats&&u.cats.length)sys+='\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'）';}).join('、');
+  if(chatMode==='analyze')sys+='\n\n進行行為分析時請搜尋最新獸醫文獻，回覆須包含：\n【行為解析】\n【情緒評估】\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】\n【何時就醫】';
+  if(chatMode==='report'&&u&&u.records&&u.records.length){var lr=u.records[u.records.length-1];var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:'貓咪'};sys+='\n\n最近分析報告（'+lc.name+'，'+lr.date+'）：\n'+lr.fullReport;}
+  chatHist.push({role:'user',content:txt});
+  try{
+    var baseMessages=chatHist.slice(-12);
+    var body={model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:baseMessages};
+    if(chatMode==='analyze')body.tools=[{type:'web_search_20250305',name:'web_search'}];
+    var reply='';var data=null;
+    for(var loop=0;loop<6;loop++){
+      var res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify(body)
+      });
+      if(!res.ok){var et=await res.text();throw new Error('HTTP '+res.status);}
+      data=await res.json();
+      if(data.error)throw new Error(data.error.message||'API 錯誤');
+      var textBlocks=(data.content||[]).filter(function(b){return b.type==='text';});
+      var toolBlocks=(data.content||[]).filter(function(b){return b.type==='tool_use';});
+      if(data.stop_reason==='tool_use'&&toolBlocks.length){
+        body.messages=body.messages.concat([{role:'assistant',content:data.content}]);
+        var toolResults=toolBlocks.map(function(tb){return{type:'tool_result',tool_use_id:tb.id,content:'搜尋完成'};});
+        body.messages=body.messages.concat([{role:'user',content:toolResults}]);
+        continue;
+      }
+      reply=textBlocks.map(function(b){return b.text;}).join('\n').trim();
+      break;
+    }
+    if(!reply)throw new Error('AI 未返回文字回覆');
+    chatHist.push({role:'assistant',content:reply});
+    removeEl(tid);
+    // detect analysis result
+    var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[\/／]\s*100/);
+    var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
+    if(chatMode==='analyze'&&sm&&rm&&u&&u.cats&&u.cats.length){
+      var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
+      var cat=u.cats[0];
+      var rec={id:Date.now(),catId:cat.id,catName:cat.name,date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
+      u.records.push(rec);saveDB();
+      var am={role:'assistant',type:'result',content:reply,rd:rec,qr:['再問一個問題','繼續分析']};
+      sessMsgs.push(am);appendMsgEl(am,true);
+    } else {
+      pushAI(reply,[]);
+    }
+    saveSess(null);
+  }catch(err){
+    removeEl(tid);
+    var errDetail=err.message||'未知錯誤';
+    pushAI('⚠️ 發生錯誤：'+errDetail+'\n\n如果持續發生，請重新整理頁面再試。',[]);
+    saveSess(null);
+  }
+}
+
+// ══ CAT MANAGEMENT FLOW ══
+var catAddStep=null,catTemp={};
+async function catFlow(txt,u){
+  var low=txt.toLowerCase();
+  if(low.includes('查看')||low.includes('我的貓')||low.includes('列出')){
+    if(!u||!u.cats||!u.cats.length){pushAI('你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻貓咪的資料吧！',['新增貓咪']);return;}
+    var list=u.cats.map(function(c,i){return'**'+(i+1)+'. '+c.name+'**（'+c.breed+'，'+c.age+'，'+c.gender+'）\n分析次數：'+u.records.filter(function(r){return r.catId===c.id;}).length+'次';}).join('\n\n');
+    pushAI('你的貓咪：\n\n'+list,['新增貓咪','切換到行為分析']);return;
+  }
+  if((low.includes('新增')||low.includes('加入')||catAddStep)&&!low.includes('查看')){
+    await catAddFlow(txt,u);return;
+  }
+  if(low.includes('紀錄')||low.includes('趨勢')||low.includes('報告')){
+    if(!u||!u.records||!u.records.length){pushAI('你還沒有分析紀錄。\n\n切換到**行為分析**模式，描述貓咪行為即可建立第一份報告。',['切換到行為分析']);return;}
+    var recent=u.records.slice(-3).reverse().map(function(r){var c=u.cats.find(function(c){return c.id===r.catId;})||{name:'貓咪'};return'📅 '+r.date+' — **'+c.name+'** 壓力 '+r.sl+'/100（'+r.risk+'風險）';}).join('\n\n');
+    pushAI('最近'+Math.min(3,u.records.length)+'筆分析：\n\n'+recent,['解讀最新報告','切換到行為分析']);return;
+  }
+  if(txt.includes('切換到行為分析')){setMode('analyze');return;}
+  if(txt.includes('解讀最新報告')){setMode('report');return;}
+  pushAI('在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪** — 列出所有貓咪\n- **新增貓咪** — 建立新貓咪資料\n- **查看紀錄** — 查看分析歷史',['查看我的貓咪','新增貓咪','查看紀錄']);
+}
+async function catAddFlow(txt,u){
+  var low=txt.toLowerCase();
+  if(!catAddStep||(low.includes('新增')&&!catAddStep)){
+    catAddStep='name';catTemp={emoji:'🐱'};
+    pushAI('好的！讓我幫你建立貓咪資料 🐾\n\n**第一步：貓咪的名字是？**',[]);return;
+  }
+  if(catAddStep==='name'){catTemp.name=txt.trim();catAddStep='breed';pushAI('**'+catTemp.name+'**！\n\n**品種是什麼？**（例：英國短毛貓、米克斯）',[]);return;}
+  if(catAddStep==='breed'){catTemp.breed=txt.trim()||'未填';catAddStep='age';pushAI('了解！**年齡是？**（例：3歲、8個月）',[]);return;}
+  if(catAddStep==='age'){catTemp.age=txt.trim()||'未填';catAddStep='gender';pushAI('**性別？**',['公（已結紮）','公（未結紮）','母（已結紮）','母（未結紮）']);return;}
+  if(catAddStep==='gender'){
+    catTemp.gender=txt.trim()||'未填';catAddStep='confirm';
+    pushAI('確認資料：\n\n🐱 **名字：**'+catTemp.name+'\n🏷 **品種：**'+catTemp.breed+'\n🎂 **年齡：**'+catTemp.age+'\n⚥ **性別：**'+catTemp.gender+'\n\n**確認儲存嗎？**',['確認','重新開始']);return;
+  }
+  if(catAddStep==='confirm'){
+    if(txt.includes('確認')){
+      catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString('zh-TW');
+      u.cats.push(catTemp);saveDB();
+      var savedName=catTemp.name;catAddStep=null;catTemp={};
+      document.getElementById('sb-av').textContent=u.cats[0].emoji||'🐱';
+      pushAI('✅ **'+savedName+'** 已成功新增！\n\n切換到**行為分析**模式，就能針對牠的行為進行 AI 分析了。',['切換到行為分析','查看我的貓咪']);
+    } else {catAddStep=null;catTemp={};pushAI('已取消。說「**新增貓咪**」可以重新開始。',['新增貓咪']);}
     return;
   }
+}
+function pushAI(content,qr){
+  chatHist.push({role:'assistant',content:content});
+  var msg={role:'assistant',content:content,qr:qr||[]};
+  sessMsgs.push(msg);appendMsgEl(msg,true);saveSess(null);
+}
+function removeEl(id){var e=document.getElementById(id);if(e)e.remove();}
 
-  // ── 有貓咪 → 顯示完整分析表單 ──
-  // auto-select first cat if not yet selected
-  if(!selCatId||!u.cats.find(function(c){ return c.id===selCatId; })){
-    selCatId=u.cats[0].id;
-  }
-  var catOptsHTML=u.cats.map(function(cat){
-    return '<div class="cat-opt'+(selCatId===cat.id?' sel':'')+'" onclick="selCat(this,'+cat.id+')">'+cat.emoji+' '+cat.name+'</div>';
-  }).join('');
-
-  sc.innerHTML=
-    '<div class="step-block">'+
-      '<div class="step-num">步驟 01</div>'+
-      '<div class="step-title">選擇要分析的貓咪</div>'+
-      '<div class="cat-opt-row" id="cat-opt-row">'+catOptsHTML+'</div>'+
-    '</div>'+
-    '<div class="step-block">'+
-      '<div class="step-num">步驟 02</div>'+
-      '<div class="step-title">描述你觀察到的行為</div>'+
-      '<div class="hint-row">'+
-        '<div class="hint-c" onclick="appendHint(\'發生時間：\')">⏰ 發生時間</div>'+
-        '<div class="hint-c" onclick="appendHint(\'行為內容：\')">📝 行為內容</div>'+
-        '<div class="hint-c" onclick="appendHint(\'持續多久：\')">⏱ 持續時間</div>'+
-        '<div class="hint-c" onclick="appendHint(\'發生頻率：\')">🔄 發生頻率</div>'+
-      '</div>'+
-      '<textarea class="ana-ta" id="ana-text" placeholder="例：昨晚開始不停繞圈走路，大約 20 分鐘，今天又發生兩次，同時也在過度舔毛，食慾比平常差..."></textarea>'+
-
-```
-'</div>'+
-'<div class="step-block">'+
-  '<div class="step-num">步驟 03（選填）</div>'+
-  '<div class="step-title">補充媒體（影片 / 錄音）</div>'+
-  '<div class="media-row">'+
-    '<div class="mo" id="m-video" onclick="toggleMedia(\'video\')"><div class="mo-ic">🎬</div><div class="mo-lb">上傳影片</div></div>'+
-    '<div class="mo" id="m-audio" onclick="toggleMedia(\'audio\')"><div class="mo-ic">🔊</div><div class="mo-lb">上傳錄音</div></div>'+
-  '</div>'+
-'</div>';
-```
-
-foot.innerHTML=’<button class="btn btn-p btn-w" onclick="startAnalysis()">🔍 開始 AI 分析</button>’;
+// ══ RATING ══
+function rateRes(id,score){
+  var u=curU();if(!u)return;
+  var rec=u.records.find(function(r){return r.id==id;});if(rec){rec.rating=score;saveDB();}
+  var el=document.getElementById('rs-'+id);if(!el)return;
+  el.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('on',i<score);});
 }
 
-function selCat(el,id){
-document.querySelectorAll(’.cat-opt’).forEach(function(x){ x.classList.remove(‘sel’); });
-el.classList.add(‘sel’); selCatId=id;
+// ══ BOOT ══
+function initApp(){
+  var u=curU();if(!u)return;
+  renderSB();renderMsgs([]);
 }
-function appendHint(h){ var t=document.getElementById(‘ana-text’); if(t){ t.value+=(t.value?’\n’:’’)+h; t.focus(); } }
-function toggleMedia(type){
-var el=document.getElementById(‘m-’+type); if(!el) return;
-el.classList.toggle(‘upl’);
-var on=el.classList.contains(‘upl’);
-el.querySelector(’.mo-ic’).textContent=on?‘✅’:(type===‘video’?‘🎬’:‘🔊’);
-el.querySelector(’.mo-lb’).textContent=on?(type===‘video’?‘影片已選取’:‘錄音已選取’):(type===‘video’?‘上傳影片’:‘上傳錄音’);
-}
-
-// ═══════════════════════════════════════
-// REAL AI ANALYSIS — Anthropic API + web search
-// ═══════════════════════════════════════
-async function startAnalysis(){
-var u=curU();
-var textEl=document.getElementById(‘ana-text’);
-var text=textEl?textEl.value.trim():’’;
-if(!text){ alert(‘請在步驟 02 描述你觀察到的行為’); return; }
-if(!selCatId){ alert(‘請選擇貓咪’); return; }
-var cat=u.cats.find(function(c){ return c.id===selCatId; });
-if(!cat){ alert(‘找不到貓咪資料’); return; }
-
-goTo(‘s-loading’);
-
-// animate loading
-var steps=[
-{id:‘ls1’,p:20,m:‘搜尋獸醫行為文獻…’},
-{id:‘ls2’,p:48,m:‘AI 解析行為描述…’},
-{id:‘ls3’,p:75,m:‘評估情緒與風險等級…’},
-{id:‘ls4’,p:92,m:‘生成完整分析報告…’}
-];
-var si=0;
-document.getElementById(‘load-bar’).style.width=‘0’;
-[‘ls1’,‘ls2’,‘ls3’,‘ls4’].forEach(function(id){ var el=document.getElementById(id); el.classList.remove(‘act’,‘done’); });
-
-var stimer=setInterval(function(){
-if(si>=steps.length){ clearInterval(stimer); return; }
-var s=steps[si];
-document.getElementById(‘load-bar’).style.width=s.p+’%’;
-document.getElementById(‘load-msg’).textContent=s.m;
-if(si>0){ var prev=document.getElementById(steps[si-1].id); prev.classList.remove(‘act’); prev.classList.add(‘done’); }
-document.getElementById(s.id).classList.add(‘act’);
-si++;
-},1500);
-
-var catInfo=’【貓咪資料】\n名字：’+cat.name+’\n品種：’+cat.breed+’\n年齡：’+cat.age+’\n性別：’+cat.gender+’\n體重：’+cat.weight+‘kg\n生活方式：’+cat.living;
-
-var prompt=
-‘你是一位專業的貓咪行為學與獸醫學分析師。請根據以下資料，搜尋最新的貓咪行為學文獻與獸醫資訊後，用繁體中文提供真實、有科學依據的分析。\n\n’+
-catInfo+’\n\n’+
-‘【飼主描述的行為觀察】\n’+text+’\n\n’+
-‘請依照以下格式輸出分析結果（每個區塊都要完整填寫）：\n\n’+
-‘【行為解析】\n請詳細解釋觀察到的行為，說明這些行為在貓咪行為學上的意義與可能原因。\n\n’+
-‘【情緒狀態評估】\n根據描述評估貓咪目前的情緒狀態，說明判斷依據。\n\n’+
-‘【壓力指數】：[請給一個 0-100 的數字]/100\n（0=完全放鬆，100=極度緊張。請說明評分理由）\n\n’+
-‘【風險等級】：[低/中/高]\n（說明判斷這個等級的具體理由）\n\n’+
-‘【改善建議】\n請提供 3-5 條具體可執行的建議，每條都要有行為學或醫學依據。\n\n’+
-‘【何時需要立即就醫】\n列出需要立即帶去看獸醫的警告信號。\n\n’+
-‘注意：請務必基於真實的貓咪行為學知識回答，不要提供沒有依據的猜測。’;
-
-try{
-var res=await fetch(‘https://api.anthropic.com/v1/messages’,{
-method:‘POST’,
-headers:{‘Content-Type’:‘application/json’},
-body:JSON.stringify({
-model:‘claude-sonnet-4-20250514’,
-max_tokens:1500,
-tools:[{type:‘web_search_20250305’,name:‘web_search’}],
-messages:[{role:‘user’,content:prompt}]
-})
-});
-clearInterval(stimer);
-var data=await res.json();
-if(data.error){ throw new Error(data.error.message||‘API 錯誤’); }
-
-```
-var fullText=(data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('\n').trim();
-if(!fullText) throw new Error('AI 未回傳分析結果');
-
-var sm=fullText.match(/(\d+)\s*[\/／]\s*100/)||fullText.match(/壓力指數[^\d]*(\d+)/);
-var stressLevel=sm?Math.min(100,Math.max(0,parseInt(sm[1]))):50;
-var rm=fullText.match(/風險等級[^低中高]*(低|中|高)/)||fullText.match(/(低|中|高)風險/);
-var risk=rm?rm[1]:'中';
-
-document.getElementById('load-bar').style.width='100%';
-['ls1','ls2','ls3','ls4'].forEach(function(id){ var el=document.getElementById(id); el.classList.remove('act'); el.classList.add('done'); });
-
-var rec={
-  id:Date.now(), catId:selCatId,
-  date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
-  inputText:text, fullReport:fullText,
-  stressLevel:stressLevel, risk:risk
-};
-u.records.push(rec); saveDB(); lastRec=rec;
-
-renderResult(rec);
-goTo('s-result');
-```
-
-} catch(err){
-clearInterval(stimer);
-document.querySelectorAll(’.l-step’).forEach(function(el){ el.classList.remove(‘act’); });
-// 顯示錯誤但留在有意義的畫面
-var errMsg=‘分析失敗：’+err.message;
-// 回到分析頁面，顯示錯誤
-goTo(‘s-analyze’);
-setTimeout(function(){ alert(errMsg+’\n\n可能原因：\n1. 網路連線問題\n2. API 暫時無法使用\n請稍後再試’); },300);
-}
-}
-
-// ═══════════════════════════════════════
-// RESULT — 顯示真實 AI 報告，不亂加數字
-// ═══════════════════════════════════════
-function renderResult(rec){
-if(!rec) rec=lastRec; if(!rec) return;
-var u=curU();
-var cat=(u?u.cats.find(function(c){ return c.id===rec.catId; }):null)||{name:‘貓咪’,emoji:‘🐱’};
-var riskLbl=rec.risk===‘高’?‘高風險’:rec.risk===‘低’?‘低風險’:‘中風險’;
-var riskCls=rec.risk===‘高’?‘chip-re’:rec.risk===‘低’?‘chip-gr’:‘chip-ye’;
-var stressColor=rec.stressLevel>=60?‘var(–re)’:rec.stressLevel>=35?‘var(–ye)’:‘var(–gr)’;
-
-document.getElementById(‘res-sc’).innerHTML=
-‘<div class="res-hero">’+
-‘<div class="res-cat-lb">’+cat.emoji+’ ‘+cat.name+’</div>’+
-‘<div class="res-verdict">AI 行為分析報告</div>’+
-‘<div style="display:inline-flex;align-items:center;gap:10px;margin:10px 0">’+
-‘<span class="chip '+riskCls+'">’+riskLbl+’</span>’+
-‘<span style="font-family:\'Instrument Serif\',serif;font-size:22px;font-style:italic;color:'+stressColor+'">壓力 ‘+rec.stressLevel+’ / 100</span>’+
-‘</div>’+
-‘<div class="res-date">’+rec.date+’</div>’+
-‘</div>’+
-‘<div class="res-card">’+
-‘<div class="res-sec">完整分析報告</div>’+
-‘<div class="res-text">’+esc(rec.fullReport)+’</div>’+
-‘</div>’+
-‘<div class="res-card" style="background:rgba(91,143,249,.06);border-color:rgba(91,143,249,.18)">’+
-‘<div class="res-sec">你的描述</div>’+
-‘<div style="font-size:13px;color:var(--t2);line-height:1.65">’+esc(rec.inputText)+’</div>’+
-‘</div>’;
-document.getElementById(‘res-sc’).scrollTop=0;
-}
-function esc(t){ return (t||’’).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’); }
-
-// ═══════════════════════════════════════
-// CAT PROFILE
-// ═══════════════════════════════════════
-function renderCatProfile(catId){
-var u=curU(); if(!u) return;
-var cat=u.cats.find(function(c){ return c.id===catId; }); if(!cat) return;
-var recs=u.records.filter(function(r){ return r.catId===catId; });
-var avg=recs.length?Math.round(recs.reduce(function(a,r){ return a+r.stressLevel; },0)/recs.length):null;
-var sc=document.getElementById(‘cat-sc’);
-sc.innerHTML=
-‘<div class="cat-hero">’+
-‘<div class="cat-av-xl">’+cat.emoji+’</div>’+
-‘<div class="cat-nm">’+cat.name+’</div>’+
-‘<div class="cat-mt">’+cat.breed+’ · ‘+cat.age+’ · ‘+cat.gender+’</div>’+
-‘</div>’+
-‘<div style="padding:0">’+
-‘<div class="slbl">基本資料</div>’+
-‘<div class="info-card">’+
-mkRow(‘名字’,cat.name)+mkRow(‘品種’,cat.breed)+mkRow(‘年齡’,cat.age)+
-mkRow(‘性別’,cat.gender)+mkRow(‘體重’,cat.weight+’ kg’)+
-mkRow(‘生活方式’,cat.living)+mkRow(‘建立日期’,cat.createdAt)+
-‘</div>’+
-‘<div class="slbl">分析統計</div>’+
-(recs.length?
-‘<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">’+
-‘<div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:16px;text-align:center;box-shadow:var(--cg)">’+
-‘<div style="font-family:\'Instrument Serif\',serif;font-size:32px;font-style:italic;color:'+(avg>=60?'var(--re)':avg>=35?'var(--ye)':'var(--gr)')+'">’+avg+’</div>’+
-‘<div style="font-size:11px;color:var(--t2)">平均壓力指數</div>’+
-‘</div>’+
-‘<div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:16px;text-align:center;box-shadow:var(--cg)">’+
-‘<div style="font-family:\'Instrument Serif\',serif;font-size:32px;font-style:italic;color:var(--ac)">’+recs.length+’</div>’+
-‘<div style="font-size:11px;color:var(--t2)">分析次數</div>’+
-‘</div>’+
-‘</div>’+
-‘<div class="slbl">最近分析</div>’+
-recs.slice(-3).reverse().map(function(r){
-var c=r.stressLevel>=60?‘var(–re)’:r.stressLevel>=35?‘var(–ye)’:‘var(–gr)’;
-var riskLbl=r.risk===‘高’?‘高風險’:r.risk===‘低’?‘低風險’:‘中風險’;
-return ‘<div class="rec-row" onclick="renderResult(getRec('+r.id+'));goTo(\'s-result\')">’+
-‘<div class="rec-info"><div class="rec-cat">’+r.date+’</div>’+
-‘<div class="rec-date" style="margin-top:3px">’+riskLbl+’ · 壓力 ‘+r.stressLevel+’</div></div>’+
-‘<div class="rec-sv" style="color:'+c+'">’+r.stressLevel+’</div></div>’;
-}).join(’’)
-:’<div style="padding:20px;text-align:center;color:var(--t3);font-size:13px;background:var(--s1);border:1px solid var(--bd);border-radius:14px">還沒有分析紀錄</div>’
-)+
-‘</div>’;
-}
-function mkRow(k,v){ return ‘<div class="info-row"><div class="info-k">’+k+’</div><div class="info-v">’+esc(v)+’</div></div>’; }
-function getRec(id){ var u=curU(); return u?u.records.find(function(r){ return r.id===id; }):null; }
-
-// ═══════════════════════════════════════
-// TRENDS — 只顯示真實資料
-// ═══════════════════════════════════════
-function renderTrends(){
-var u=curU();
-var el=document.getElementById(‘trends-sc’);
-if(!u||!u.records.length){
-el.innerHTML=’<div style="padding:40px 20px;text-align:center"><div style="font-size:48px;margin-bottom:16px;opacity:.3">📊</div><div style="font-family:\'Instrument Serif\',serif;font-size:20px;font-style:italic;color:var(--t2);margin-bottom:8px">還沒有分析紀錄</div><div style="font-size:13px;color:var(--t3)">進行第一次分析後，趨勢圖將自動生成。</div></div>’;
-return;
-}
-var recs=u.records.slice(-7);
-var avg=Math.round(recs.reduce(function(a,r){ return a+r.stressLevel; },0)/recs.length);
-var maxS=Math.max.apply(null,recs.map(function(r){ return r.stressLevel; }));
-var minS=Math.min.apply(null,recs.map(function(r){ return r.stressLevel; }));
-
-var bars=recs.map(function(r){
-var c=r.stressLevel>=60?‘var(–re)’:r.stressLevel>=35?‘var(–ye)’:‘var(–gr)’;
-return ‘<div class="bc-bar" style="height:'+Math.max(6,r.stressLevel)+'%;border-color:'+c+';background:rgba(255,255,255,.05)"></div>’;
-}).join(’’);
-var lbs=recs.map(function(r){ return ‘<span>’+r.date.replace(’ ‘,’<br>’)+’</span>’; }).join(’’);
-
-var riskCount={低:0,中:0,高:0};
-u.records.forEach(function(r){ if(r.risk) riskCount[r.risk]=(riskCount[r.risk]||0)+1; });
-var tagsHTML=Object.keys(riskCount).filter(function(k){ return riskCount[k]>0; }).map(function(k){
-var c=k===‘高’?‘var(–re)’:k===‘低’?‘var(–gr)’:‘var(–ye)’;
-return ‘<div class="tag" style="color:'+c+'">’+k+‘風險 ×’+riskCount[k]+’</div>’;
-}).join(’’);
-
-el.innerHTML=
-‘<div style="padding:0 20px">’+
-‘<div class="pt-row">’+
-‘<button class="pt on" onclick="swPeriod(this)">7 次</button>’+
-‘<button class="pt" onclick="swPeriod(this)">全部</button>’+
-‘</div>’+
-‘<div class="stat-row">’+
-‘<div class="stat-box"><div class="stat-v" style="color:var(--ye)">’+avg+’</div><div class="stat-l">平均壓力</div></div>’+
-‘<div class="stat-box"><div class="stat-v" style="color:var(--re)">’+maxS+’</div><div class="stat-l">最高壓力</div></div>’+
-‘<div class="stat-box"><div class="stat-v" style="color:var(--gr)">’+minS+’</div><div class="stat-l">最低壓力</div></div>’+
-‘</div>’+
-‘<div class="chart-card">’+
-‘<div class="chart-title">壓力走勢</div>’+
-‘<div class="chart-sub">最近 ‘+recs.length+’ 次分析（來自 AI 真實評估）</div>’+
-‘<div class="bchart">’+bars+’</div>’+
-‘<div class="chart-lbs">’+lbs+’</div>’+
-‘</div>’+
-‘<div class="chart-card">’+
-‘<div class="chart-title">風險等級分布</div>’+
-‘<div class="chart-sub">所有 ‘+u.records.length+’ 次分析</div>’+
-‘<div class="tag-row">’+tagsHTML+’</div>’+
-‘</div>’+
-‘<div class="chart-card">’+
-‘<div class="chart-title">最近分析紀錄</div>’+
-‘<div class="chart-sub">按時間排序</div>’+
-u.records.slice(-5).reverse().map(function(r){
-var cat=u.cats.find(function(c){ return c.id===r.catId; })||{emoji:‘🐱’,name:‘未知’};
-var c=r.stressLevel>=60?‘var(–re)’:r.stressLevel>=35?‘var(–ye)’:‘var(–gr)’;
-return ‘<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd2)">’+
-‘<div style="font-size:20px">’+cat.emoji+’</div>’+
-‘<div style="flex:1"><div style="font-size:13px;font-weight:600">’+cat.name+’</div><div style="font-size:11px;color:var(--t3)">’+r.date+’</div></div>’+
-‘<div style="font-family:\'Instrument Serif\',serif;font-size:20px;color:'+c+'">’+r.stressLevel+’</div>’+
-‘</div>’;
-}).join(’’)+
-‘</div>’+
-‘</div>’;
-}
-function swPeriod(el){ document.querySelectorAll(’.pt’).forEach(function(b){ b.classList.remove(‘on’); }); el.classList.add(‘on’); }
-
-// ═══════════════════════════════════════
-// CHAT — 真實 AI，不預設假回答
-// ═══════════════════════════════════════
-var chatMode=‘general’, chatHistory=[], chatInited=false;
-
-function initChat(){
-if(chatInited) return;
-chatInited=true;
-updateCtxChips();
-// welcome message
-addAI(
-‘<h3>你好！我是 PawSense AI 🐾</h3>’+
-‘我可以回答你任何關於貓咪行為、健康、飲食的問題。’+
-‘<div class="qr-row">’+
-‘<button class="qr" onclick="tapQR(this,\'貓咪為什麼突然變得很黏人？\')">為什麼突然很黏人？</button>’+
-‘<button class="qr" onclick="tapQR(this,\'貓咪分離焦慮怎麼處理？\')">分離焦慮怎麼辦？</button>’+
-‘<button class="qr" onclick="tapQR(this,\'貓咪喝水太少怎麼辦？\')">喝水太少怎麼辦？</button>’+
-‘</div>’
-);
-}
-
-function setMode(m){
-chatMode=m;
-document.getElementById(‘mode-gen’).classList.toggle(‘on’,m===‘general’);
-document.getElementById(‘mode-rep’).classList.toggle(‘on’,m===‘report’);
-document.getElementById(‘ctx-row’).style.display=m===‘report’?‘flex’:‘none’;
-document.getElementById(‘in-txt’).placeholder=m===‘report’?‘問我關於分析報告的問題…’:‘想問就問…’;
-if(m===‘general’){
-addAI(’<p>已切換到<strong>貓咪問答</strong>模式。你可以問我任何關於貓咪的問題。</p>’);
-} else {
-updateCtxChips();
-var u=curU();
-if(!u||!u.records.length){
-addAI(’<p>你還沒有分析紀錄。請先進行一次分析，再回來讓我幫你解讀報告。</p>’);
-} else {
-var lr=u.records[u.records.length-1];
-var cat=u.cats.find(function(c){ return c.id===lr.catId; })||{name:‘你的貓咪’,emoji:‘🐱’};
-addAI(’<p>已切換到<strong>報告解讀</strong>模式。</p><p>最近一次分析是 <strong>’+cat.emoji+’ ‘+cat.name+’</strong>（’+lr.date+’），壓力指數 ‘+lr.stressLevel+’。你想了解哪個部分？</p>’+
-‘<div class="qr-row">’+
-‘<button class="qr" onclick="tapQR(this,\'幫我解釋最近一次的分析結果\')">解釋最近分析</button>’+
-‘<button class="qr" onclick="tapQR(this,\'壓力指數 '+lr.stressLevel+' 代表什麼？\')">壓力代表什麼？</button>’+
-‘<button class="qr" onclick="tapQR(this,\'改善建議要怎麼執行？\')">建議怎麼執行？</button>’+
-‘</div>’
-);
-}
-}
-}
-
-function updateCtxChips(){
-var u=curU();
-var cr=document.getElementById(‘ctx-row’); if(!cr) return;
-if(!u||!u.records.length){ cr.innerHTML=’’; return; }
-cr.innerHTML=u.records.slice(-5).reverse().map(function(r,i){
-var cat=u.cats.find(function(c){ return c.id===r.catId; })||{name:‘未知’,emoji:‘🐱’};
-return ‘<div class="ctx-chip'+(i===0?' on':'')+'" onclick="selCtx(this,'+r.id+')">’+cat.emoji+’ ‘+cat.name+’ ‘+r.date+’</div>’;
-}).join(’’);
-}
-
-var ctxRecId=null;
-function selCtx(el,id){
-document.querySelectorAll(’.ctx-chip’).forEach(function(x){ x.classList.remove(‘on’); });
-el.classList.add(‘on’); ctxRecId=id;
-}
-
-function onChatInput(){
-var v=document.getElementById(‘in-txt’).value.trim();
-document.getElementById(‘send-btn’).classList.toggle(‘show’,v.length>0);
-}
-function onChatKey(e){ if(e.key===‘Enter’&&!e.shiftKey){ e.preventDefault(); sendChat(); } }
-
-async function sendChat(){
-var txt=document.getElementById(‘in-txt’).value.trim();
-if(!txt) return;
-addUser(txt);
-document.getElementById(‘in-txt’).value=’’;
-document.getElementById(‘send-btn’).classList.remove(‘show’);
-
-// show typing
-var tid=‘ty-’+Date.now();
-var tg=document.createElement(‘div’); tg.className=‘mg ai’; tg.id=tid;
-var tw=document.createElement(‘div’); tw.className=‘ty-wrap’;
-tw.innerHTML=’<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>’;
-tg.appendChild(tw);
-document.getElementById(‘chat-msgs’).appendChild(tg);
-scrollChat();
-
-// build system context
-var u=curU();
-var sysCtx=‘你是 PawSense AI，一位專業的貓咪行為學與獸醫知識顧問。用繁體中文回答，語氣親切專業。回答要有實質內容和依據，不要說廢話。’;
-
-// add user cat context
-if(u&&u.cats.length){
-sysCtx+=’\n\n用戶的貓咪資料：’+u.cats.map(function(c){ return c.name+’（’+c.breed+’，’+c.age+’，’+c.gender+’）’; }).join(’、’)+’。’;
-}
-
-// report mode: attach the selected or latest record
-if(chatMode===‘report’&&u&&u.records.length){
-var targetRec=ctxRecId?u.records.find(function(r){ return r.id===ctxRecId; }):u.records[u.records.length-1];
-if(targetRec){
-var targetCat=u.cats.find(function(c){ return c.id===targetRec.catId; })||{name:‘貓咪’};
-sysCtx+=’\n\n最近的分析報告（’+targetCat.name+’，’+targetRec.date+’）：\n’+targetRec.fullReport;
-}
-}
-
-chatHistory.push({role:‘user’,content:txt});
-
-try{
-var res=await fetch(‘https://api.anthropic.com/v1/messages’,{
-method:‘POST’,
-headers:{‘Content-Type’:‘application/json’},
-body:JSON.stringify({
-model:‘claude-sonnet-4-20250514’,
-max_tokens:800,
-system:sysCtx,
-tools:[{type:‘web_search_20250305’,name:‘web_search’}],
-messages:chatHistory.slice(-10)
-})
-});
-var data=await res.json();
-if(data.error) throw new Error(data.error.message);
-
-```
-var reply=(data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('\n').trim();
-if(!reply) throw new Error('空回覆');
-
-chatHistory.push({role:'assistant',content:reply});
-
-var tgEl=document.getElementById(tid);
-if(tgEl) tgEl.remove();
-addAI(esc(reply).replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>'));
-```
-
-} catch(err){
-var tgEl=document.getElementById(tid);
-if(tgEl) tgEl.remove();
-addAI(‘抱歉，回覆時發生錯誤（’+err.message+’）。請確認網路連線後再試。’);
-}
-}
-
-function tapQR(btn,text){
-document.getElementById(‘in-txt’).value=text;
-sendChat();
-}
-
-function addUser(txt){
-var g=document.createElement(‘div’); g.className=‘mg u’;
-var b=document.createElement(‘div’); b.className=‘bb u’;
-b.textContent=txt; g.appendChild(b);
-document.getElementById(‘chat-msgs’).appendChild(g);
-scrollChat();
-}
-function addAI(html){
-var g=document.createElement(‘div’); g.className=‘mg ai’;
-var b=document.createElement(‘div’); b.className=‘bb ai’;
-b.innerHTML=html; g.appendChild(b);
-document.getElementById(‘chat-msgs’).appendChild(g);
-scrollChat();
-}
-function scrollChat(){ var m=document.getElementById(‘chat-msgs’); if(m) m.scrollTop=m.scrollHeight; }
-
-// ═══════════════════════════════════════
-// BOOT — 記住登入狀態
-// ═══════════════════════════════════════
 (function boot(){
-document.querySelectorAll(’.scr’).forEach(function(s){ s.classList.add(‘hid’); });
-var u=curUser();
-if(u){
-hist=[‘s-dash’];
-showOnly(‘s-dash’);
-refreshDash();
-} else {
-hist=[‘s-land’];
-showOnly(‘s-land’);
-}
+  var u=curU();
+  if(u){document.getElementById('auth-ov').classList.add('hid');initApp();}
 })();
 </script>
 
