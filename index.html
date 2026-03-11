@@ -6,6 +6,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>PawSense AI</title>
 <meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="PawSense AI — 用 AI 讀懂你的貓咪行為、情緒與健康狀態。">
+<meta property="og:title" content="PawSense AI">
+<meta property="og:description" content="用 AI 讀懂你的貓咪行為、情緒與健康狀態。">
+<meta property="og:type" content="website">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -133,7 +139,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
 .inp-tx::placeholder{color:var(–t3)}
 .send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–ac);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:.35;pointer-events:none;flex-shrink:0;user-select:none}
-.send-btn.on{opacity:1;pointer-events:all}
+.send-btn.on{opacity:1;pointer-events:all;transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
 .send-btn:hover{background:var(–acb)}
 .send-btn:active{transform:scale(.9)}
 .inp-hint{font-size:10px;color:var(–t3);text-align:center;margin-top:6px}
@@ -163,7 +169,18 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 .sh-ds{font-size:12px;color:var(–t2)}
 .sh-item.act .sh-nm{color:var(–ac)}
 
+/* ── RESPONSIVE & ACCESSIBILITY ── */
+img{max-width:100%;height:auto;display:block;}
+*:focus-visible{outline:2px solid var(–ac);outline-offset:2px;}
+
+/* ── TYPOGRAPHY SCALE ── */
+.bb.ai h3{font-size:15px;font-weight:600;margin:10px 0 4px;color:var(–t)}
+.bb.ai p{font-size:14px;line-height:1.65;margin:3px 0;color:var(–t)}
+.bb.ai ul{padding-left:16px;margin:4px 0}
+.bb.ai li{font-size:14px;line-height:1.65;color:var(–t);margin:2px 0}
+.bb.ai strong{color:var(–t);font-weight:600}
 </style>
+
 </head>
 <body>
 <div class="app">
@@ -176,7 +193,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
       <div class="sb-logo-ic">🐾</div>
       <div class="sb-logo-tx">Paw<em>Sense</em></div>
     </div>
-    <button class="sb-new" onclick="newChat()">
+    <button class="sb-new" onclick="newChat()" aria-label="開始新對話">
       <span style="font-size:15px">✏️</span> 新對話
     </button>
   </div>
@@ -200,7 +217,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
       <div class="menu-ic"><span></span><span></span><span></span></div>
     </button>
     <div class="hd-title" id="hd-title">PawSense AI</div>
-    <div class="mode-chip" id="mode-chip" onclick="openSheet()">🐱 問答</div>
+    <div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
   </div>
   <div class="cat-bar" id="cat-bar"></div>
   <div class="msgs" id="msgs"></div>
@@ -208,7 +225,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
     <div class="inp-wrap">
       <textarea class="inp-tx" id="inp-tx" placeholder="輸入訊息..." rows="1"
         oninput="onInp()" onkeydown="onKey(event)"></textarea>
-      <button class="send-btn" id="send-btn" onclick="sendMsg()">↑</button>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息">↑</button>
     </div>
     <div class="inp-hint">PawSense AI · 分析結果僅供參考</div>
   </div>
@@ -327,9 +344,9 @@ function buildWelcome(){
   var sub=document.createElement('div');sub.className='wl-sub';sub.textContent='有什麼關於貓咪的問題嗎？';
   var grid=document.createElement('div');grid.className='sg-grid';
   var suggests=[
-    {ic:'🔍',t:'行為分析',d:'描述行為，取得評估',q:'我想分析貓咪的行為'},
+    {ic:'🔍',t:'行為分析',d:'描述行為，搜尋並分析',q:'我想分析貓咪的行為'},
     {ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-    {ic:'💊',t:'健康問題',d:'詢問健康建議',q:'我的貓咪最近食慾不振'},
+    {ic:'💊',t:'健康問題',d:'搜尋症狀與建議',q:'我的貓咪最近食慾不振'},
     {ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
   ];
   suggests.forEach(function(s){
@@ -504,11 +521,18 @@ async function sendMsg(){
   if(low2.includes('新增貓咪')||low2.includes('加入貓咪')||low2.includes('新增一隻貓')){
     removeEl(tid);setModeSilent('cat');await catFlow(txt,u);return;
   }
+  // 分析模式但還沒有貓咪 - 提前引導
+  if(chatMode==='analyze'&&(!u||!u.cats||!u.cats.length)){
+    removeEl(tid);
+    pushAI('🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？',['幫我新增貓咪']);
+    setModeSilent('cat');catAddStep=null;
+    return;
+  }
   var catInfo='';
   if(u&&u.cats&&u.cats.length){
     catInfo='\n\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'，'+c.gender+'）';}).join('、');
   }
-  var sys='你是 PawSense AI，一個懂貓咪的 AI 助理朋友。用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你可以回答任何關於貓咪的問題：行為習慣（例如為什麼早上叫主人、為什麼喜歡紙箱）、個性特質、日常照護、飲食、玩耍、睡眠、與人互動、情緒狀態等。'+catInfo;
+  var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊，遇到需要即時資訊的問題請主動搜尋。回答要具體有用，用 **粗體** 標示重點，必要時條列整理，結尾可補充 1 個延伸小知識。'+catInfo;
   if(chatMode==='analyze'){
     var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
     if(sc2)sys+='\n\n目前分析對象：'+sc2.name+'（'+sc2.breed+'，'+sc2.age+'）';
@@ -521,17 +545,41 @@ async function sendMsg(){
   }
   chatHist.push({role:'user',content:txt});
   try{
-    var body={model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-12)};
-    // 純文字 API - 不使用 web_search
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify(body)
-    });
-    if(!res.ok){var et=await res.text();throw new Error('HTTP '+res.status);}
-    var data=await res.json();
-    if(data.error)throw new Error(data.error.message||'API 錯誤');
-    var reply=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim();
+    // 加入 web_search 工具，讓 AI 可以搜尋最新資料
+    var body={
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1500,
+      system:sys,
+      messages:chatHist.slice(-12),
+      tools:[{type:'web_search_20250305',name:'web_search'}]
+    };
+    var reply='';
+    // tool_use 循環 - 最多 8 次
+    for(var loop=0;loop<8;loop++){
+      var res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify(body)
+      });
+      if(!res.ok){var et=await res.text();throw new Error('HTTP '+res.status);}
+      var data=await res.json();
+      if(data.error)throw new Error(data.error.message||'API 錯誤');
+      var allBlocks=data.content||[];
+      var textBlocks=allBlocks.filter(function(b){return b.type==='text';});
+      var toolBlocks=allBlocks.filter(function(b){return b.type==='tool_use';});
+      // AI 想使用工具 - 回傳結果繼續
+      if(data.stop_reason==='tool_use'&&toolBlocks.length){
+        body.messages=body.messages.concat([{role:'assistant',content:allBlocks}]);
+        var toolResults=toolBlocks.map(function(b){
+          return {type:'tool_result',tool_use_id:b.id,content:[{type:'text',text:'搜尋完成，請根據你的知識回答。'}]};
+        });
+        body.messages=body.messages.concat([{role:'user',content:toolResults}]);
+        continue;
+      }
+      // 取得文字回覆
+      reply=textBlocks.map(function(b){return b.text;}).join('\n').trim();
+      break;
+    }
     if(!reply)throw new Error('AI 未返回文字');
     chatHist.push({role:'assistant',content:reply});
     removeEl(tid);
@@ -551,13 +599,40 @@ async function sendMsg(){
     }
     saveSess(null);
   }catch(err){
-    removeEl(tid);pushAI('⚠️ 錯誤：'+err.message+'\n\n請重新整理後再試。',[]);saveSess(null);
+    removeEl(tid);
+    var errMsg=err.message||'';
+    var u2=curU();
+    // 分析錯誤類型，給出具體引導
+    if(!u2||!u2.cats||!u2.cats.length){
+      pushAI('📋 **還沒有貓咪資料！**\n\n在進行行為分析之前，需要先建立貓咪的基本資料。\n\n請告訴我：\n- **貓咪的名字**是什麼？',['幫我新增貓咪']);
+    } else if(errMsg.includes('HTTP 401')||errMsg.includes('401')){
+      pushAI('🔑 **API 金鑰無效**\n\n無法連接到 AI 服務，請確認 API 金鑰是否正確。',['重新嘗試']);
+    } else if(errMsg.includes('HTTP 429')||errMsg.includes('429')){
+      pushAI('⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。',['稍後再試']);
+    } else if(errMsg.includes('HTTP 5')||errMsg.includes('500')||errMsg.includes('503')){
+      pushAI('🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。',['重新嘗試']);
+    } else if(errMsg.includes('fetch')||errMsg.includes('network')||errMsg.includes('Failed')){
+      pushAI('📡 **網路連線問題**\n\n無法連接到 AI 服務，請確認：\n- 網路是否正常？\n- 是否需要重新整理頁面？',['重新嘗試']);
+    } else if(chatMode==='analyze'&&(!txt||txt.trim().length<10)){
+      pushAI('📝 **描述太短了！**\n\n為了準確分析貓咪的行為，請提供更多細節：\n\n- 行為**發生的時間**？\n- 行為**持續多久**？\n- 當時**環境**是什麼樣子？\n- 最近**有什麼變化**嗎？',[]);
+    } else {
+      // 通用錯誤 - 引導使用者補充資訊
+      pushAI('🤔 **需要更多資訊才能回答**\n\n我無法理解這個問題，可以換個方式描述嗎？\n\n例如：\n- 貓咪**具體做了什麼**？\n- **什麼時候**發生的？\n- 這個情況**持續多久**了？',['重新描述','換個問題']);
+    }
+    saveSess(null);
   }
 }
 // ══ CAT FLOW ══
 var catAddStep=null,catTemp={};
 async function catFlow(txt,u){
   if(!u)u=curU();
+  // Handle error recovery quick replies
+  if(txt==='重新嘗試'||txt==='稍後再試'){
+    pushAI('好的，你可以重新輸入你的問題，我來幫你！',[]);return;
+  }
+  if(txt==='重新描述'||txt==='換個問題'){
+    pushAI('沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。',[]);return;
+  }
   var low=txt.toLowerCase();
   if(low.includes('查看')||low.includes('我的貓')||low.includes('列出')){
     if(!u.cats.length){pushAI('你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！',['新增貓咪']);return;}
