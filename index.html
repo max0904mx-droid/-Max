@@ -12,17 +12,17 @@
 <meta property="og:type" content="website">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;--s4:#2c2c2c;
   --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.04);
-  --t:#ececec;--t2:#8a8a8a;--t3:#4a4a4a;--mu:#2a2a2a;
+  --t:#ffffff;--t2:#aaaaaa;--t3:#666666;--mu:#2a2a2a;
   --ac:#5b8ff9;--acs:rgba(91,143,249,.12);--acb:#3d6fe0;
   --gr:#3ecf8e;--ye:#f5a623;--re:#f26d6d;--pu:#9b8fef;
 }
-html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+html,body{height:100%;background:#000;color:#ffffff;font-family:'Noto Serif TC',serif;overflow:hidden;-webkit-font-smoothing:antialiased}
 .app{width:100%;max-width:430px;height:100vh;height:100svh;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
 
 /* ── SIDEBAR ── */
@@ -133,7 +133,7 @@ html,body{height:100%;background:#000;color:var(--t);font-family:'DM Sans',sans-
 @keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 
 /* ── INPUT ── */
-.inp-area{flex-shrink:0;padding:8px 12px 26px;background:var(–bg)}
+.inp-area{flex-shrink:0;padding:8px 12px 12px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(–bg)}
 .inp-wrap{display:flex;align-items:flex-end;gap:7px;background:var(–s1);border:1px solid var(–bd);border-radius:15px;padding:7px 7px 7px 15px;transition:border-color .2s}
 .inp-wrap:focus-within{border-color:rgba(91,143,249,.32)}
 .inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
@@ -179,8 +179,41 @@ img{max-width:100%;height:auto;display:block;}
 .bb.ai ul{padding-left:16px;margin:4px 0}
 .bb.ai li{font-size:14px;line-height:1.65;color:var(–t);margin:2px 0}
 .bb.ai strong{color:var(–t);font-weight:600}
-</style>
 
+/* ── PHOTO UPLOAD ── */
+.plus-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(–t2);flex-shrink:0;transition:all .18s;user-select:none}
+.plus-btn:hover{background:var(–s3);border-color:rgba(255,255,255,.15);color:var(–t)}
+.plus-btn:active{transform:scale(.92)}
+.photo-bar{display:none;gap:8px;padding:8px 0 4px;overflow-x:auto;flex-shrink:0}
+.photo-bar::-webkit-scrollbar{display:none}
+.photo-bar.show{display:flex}
+.photo-thumb{position:relative;width:60px;height:60px;flex-shrink:0;border-radius:9px;overflow:hidden;border:1px solid var(–bd)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-del{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.65);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+#photo-input{display:none}
+/* image in chat bubble */
+.msg-img{max-width:200px;max-height:180px;border-radius:10px;margin-top:6px;display:block;object-fit:cover}
+
+/* ── LANGUAGE ── */
+.lang-btn{width:34px;height:28px;border-radius:8px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(–t2);flex-shrink:0;transition:all .18s;font-family:‘Noto Serif TC’,serif;user-select:none}
+.lang-btn:hover{background:var(–s3);color:var(–t);border-color:rgba(255,255,255,.15)}
+.lang-btn:active{transform:scale(.92)}
+.lang-check{font-size:14px;color:var(–ac);font-weight:700;flex-shrink:0;transition:opacity .18s}
+/* English mode overrides */
+body.lang-en{font-family:‘Dancing Script’,cursive}
+body.lang-en .inp-tx{font-family:‘Dancing Script’,cursive;font-size:16px}
+body.lang-en .bb.ai{font-family:‘Dancing Script’,cursive;font-size:15px;line-height:1.8}
+body.lang-en .bb.user{font-family:‘Dancing Script’,cursive;font-size:15px}
+body.lang-en .hd-title{font-family:‘Dancing Script’,cursive;font-size:18px}
+body.lang-en .wl-title{font-family:‘Dancing Script’,cursive}
+body.lang-en .sg-t{font-family:‘Dancing Script’,cursive;font-size:13px}
+body.lang-en .sg-d{font-family:‘Dancing Script’,cursive}
+body.lang-en .sh-nm{font-family:‘Dancing Script’,cursive}
+body.lang-en .sh-ds{font-family:‘Dancing Script’,cursive}
+body.lang-en .sb-item-tx{font-family:‘Dancing Script’,cursive}
+body.lang-en .qr{font-family:‘Dancing Script’,cursive;font-size:12px}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -217,17 +250,41 @@ img{max-width:100%;height:auto;display:block;}
       <div class="menu-ic"><span></span><span></span><span></span></div>
     </button>
     <div class="hd-title" id="hd-title">PawSense AI</div>
+    <button class="lang-btn" id="lang-btn" onclick="openLangSheet()" aria-label="切換語言">
+      <span id="lang-flag">中</span>
+    </button>
     <div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
   </div>
   <div class="cat-bar" id="cat-bar"></div>
   <div class="msgs" id="msgs"></div>
   <div class="inp-area">
+    <div class="photo-bar" id="photo-bar"></div>
     <div class="inp-wrap">
+      <button class="plus-btn" onclick="triggerPhoto()" aria-label="上傳照片" title="上傳照片">＋</button>
       <textarea class="inp-tx" id="inp-tx" placeholder="輸入訊息..." rows="1"
         oninput="onInp()" onkeydown="onKey(event)"></textarea>
       <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息">↑</button>
     </div>
+    <input type="file" id="photo-input" accept="image/*" multiple onchange="onPhotoSelect(event)">
     <div class="inp-hint">PawSense AI · 分析結果僅供參考</div>
+  </div>
+</div>
+
+<!-- LANG SHEET -->
+
+<div class="sh-overlay" id="lang-sh-ov" onclick="closeLangSheet()"></div>
+<div class="sheet" id="lang-sheet">
+  <div class="sh-handle"></div>
+  <div class="sh-title" id="lang-sh-title">切換語言</div>
+  <div class="sh-item" id="lang-zh" onclick="setLang('zh')">
+    <div class="sh-ic" style="background:rgba(91,143,249,.1);font-size:18px">🇹🇼</div>
+    <div class="sh-body"><div class="sh-nm lang-zh-label">繁體中文</div><div class="sh-ds lang-zh-sub">標楷體顯示</div></div>
+    <div class="lang-check" id="lc-zh">✓</div>
+  </div>
+  <div class="sh-item" id="lang-en" onclick="setLang('en')">
+    <div class="sh-ic" style="background:rgba(62,207,142,.1);font-size:18px">🇺🇸</div>
+    <div class="sh-body"><div class="sh-nm lang-en-label" style="font-family:'Dancing Script',cursive">English</div><div class="sh-ds lang-en-sub" style="font-family:'Dancing Script',cursive">Script font display</div></div>
+    <div class="lang-check" id="lc-en" style="opacity:0">✓</div>
   </div>
 </div>
 
@@ -502,201 +559,356 @@ function onInp(){
 }
 function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 // ══ SEND ══
+// ══ PHOTO UPLOAD ══
+var pendingPhotos=[]; // [{dataUrl, base64, mediaType}]
+function triggerPhoto(){document.getElementById('photo-input').click();}
+function onPhotoSelect(e){
+  var files=Array.from(e.target.files);
+  e.target.value=''; // reset so same file can be selected again
+  files.slice(0,4).forEach(function(file){
+    if(!file.type.startsWith('image/'))return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var dataUrl=ev.target.result;
+      var base64=dataUrl.split(',')[1];
+      var mediaType=file.type;
+      pendingPhotos.push({dataUrl:dataUrl,base64:base64,mediaType:mediaType,name:file.name});
+      renderPhotoBar();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotoBar(){
+  var bar=document.getElementById('photo-bar');
+  if(!pendingPhotos.length){bar.classList.remove('show');bar.innerHTML='';return;}
+  bar.classList.add('show');bar.innerHTML='';
+  pendingPhotos.forEach(function(p,i){
+    var thumb=document.createElement('div');thumb.className='photo-thumb';
+    var img=document.createElement('img');img.src=p.dataUrl;img.alt='照片'+(i+1);
+    var del=document.createElement('button');del.className='photo-del';del.textContent='×';del.title='移除';
+    del.onclick=(function(idx){return function(){pendingPhotos.splice(idx,1);renderPhotoBar();};})(i);
+    thumb.appendChild(img);thumb.appendChild(del);bar.appendChild(thumb);
+  });
+  // Update send button
+  document.getElementById('send-btn').classList.toggle('on', pendingPhotos.length>0||document.getElementById('inp-tx').value.trim().length>0);
+}
+
 var chatHist=[];
 async function sendMsg(){
-  var t=document.getElementById('inp-tx');var txt=t.value.trim();if(!txt)return;
-  t.value='';t.style.height='auto';document.getElementById('send-btn').classList.remove('on');
-  var u=curU();
-  var um={role:'user',content:txt};sessMsgs.push(um);appendMsgEl(um,true);
-  if(!curSessId)saveSess(txt.substring(0,22));else saveSess(null);
-  var tid='ty'+Date.now();
-  var tg=document.createElement('div');tg.className='ty-wrap';tg.id=tid;
-  var tav=document.createElement('div');tav.className='ai-av';tav.textContent='🐾';
-  var tdots=document.createElement('div');tdots.className='ty-dots';
-  tdots.innerHTML='<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>';
-  tg.appendChild(tav);tg.appendChild(tdots);
-  document.getElementById('msgs').appendChild(tg);scrollBot();
-  if(chatMode==='cat'||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
-  var low2=txt.toLowerCase();
-  if(low2.includes('新增貓咪')||low2.includes('加入貓咪')||low2.includes('新增一隻貓')){
-    removeEl(tid);setModeSilent('cat');await catFlow(txt,u);return;
-  }
-  // 分析模式但還沒有貓咪 - 提前引導
-  if(chatMode==='analyze'&&(!u||!u.cats||!u.cats.length)){
-    removeEl(tid);
-    pushAI('🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？',['幫我新增貓咪']);
-    setModeSilent('cat');catAddStep=null;
-    return;
-  }
-  var catInfo='';
-  if(u&&u.cats&&u.cats.length){
-    catInfo='\n\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'，'+c.gender+'）';}).join('、');
-  }
-  var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊，遇到需要即時資訊的問題請主動搜尋。回答要具體有用，用 **粗體** 標示重點，必要時條列整理，結尾可補充 1 個延伸小知識。'+catInfo;
-  if(chatMode==='analyze'){
-    var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
-    if(sc2)sys+='\n\n目前分析對象：'+sc2.name+'（'+sc2.breed+'，'+sc2.age+'）';
-    sys+='\n\n進行行為分析時請搜尋最新獸醫文獻，回覆須包含：\n【行為解析】\n【情緒評估】\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】\n【何時就醫】';
-  }
-  if(chatMode==='report'&&u&&u.records&&u.records.length){
-    var lr=u.records[u.records.length-1];
-    var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:'貓咪'};
-    sys+='\n\n最近分析報告（'+lc.name+'，'+lr.date+'）：\n'+lr.fullReport;
-  }
-  chatHist.push({role:'user',content:txt});
-  try{
-    // 加入 web_search 工具，讓 AI 可以搜尋最新資料
-    var body={
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      system:sys,
-      messages:chatHist.slice(-12),
-      tools:[{type:'web_search_20250305',name:'web_search'}]
-    };
-    var reply='';
-    // tool_use 循環 - 最多 8 次
-    for(var loop=0;loop<8;loop++){
-      var res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify(body)
-      });
-      if(!res.ok){var et=await res.text();throw new Error('HTTP '+res.status);}
-      var data=await res.json();
-      if(data.error)throw new Error(data.error.message||'API 錯誤');
-      var allBlocks=data.content||[];
-      var textBlocks=allBlocks.filter(function(b){return b.type==='text';});
-      var toolBlocks=allBlocks.filter(function(b){return b.type==='tool_use';});
-      // AI 想使用工具 - 回傳結果繼續
-      if(data.stop_reason==='tool_use'&&toolBlocks.length){
-        body.messages=body.messages.concat([{role:'assistant',content:allBlocks}]);
-        var toolResults=toolBlocks.map(function(b){
-          return {type:'tool_result',tool_use_id:b.id,content:[{type:'text',text:'搜尋完成，請根據你的知識回答。'}]};
-        });
-        body.messages=body.messages.concat([{role:'user',content:toolResults}]);
-        continue;
-      }
-      // 取得文字回覆
-      reply=textBlocks.map(function(b){return b.text;}).join('\n').trim();
-      break;
-    }
-    if(!reply)throw new Error('AI 未返回文字');
-    chatHist.push({role:'assistant',content:reply});
-    removeEl(tid);
-    var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[\/／]\s*100/);
-    var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
-    if(chatMode==='analyze'&&sm&&rm&&u&&u.cats&&u.cats.length){
-      var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
-      var cat=(selCatId&&u.cats.find(function(c){return c.id===selCatId;}))||u.cats[0];
-      var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||'🐱',
-        date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
-        inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
-      u.records.push(rec);saveDB();
-      var am={role:'assistant',type:'result',content:reply,rd:rec,qr:['再問一個問題','繼續分析']};
-      sessMsgs.push(am);appendMsgEl(am,true);
-    } else {
-      pushAI(reply,[]);
-    }
-    saveSess(null);
-  }catch(err){
-    removeEl(tid);
-    var errMsg=err.message||'';
-    var u2=curU();
-    // 分析錯誤類型，給出具體引導
-    if(!u2||!u2.cats||!u2.cats.length){
-      pushAI('📋 **還沒有貓咪資料！**\n\n在進行行為分析之前，需要先建立貓咪的基本資料。\n\n請告訴我：\n- **貓咪的名字**是什麼？',['幫我新增貓咪']);
-    } else if(errMsg.includes('HTTP 401')||errMsg.includes('401')){
-      pushAI('🔑 **API 金鑰無效**\n\n無法連接到 AI 服務，請確認 API 金鑰是否正確。',['重新嘗試']);
-    } else if(errMsg.includes('HTTP 429')||errMsg.includes('429')){
-      pushAI('⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。',['稍後再試']);
-    } else if(errMsg.includes('HTTP 5')||errMsg.includes('500')||errMsg.includes('503')){
-      pushAI('🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。',['重新嘗試']);
-    } else if(errMsg.includes('fetch')||errMsg.includes('network')||errMsg.includes('Failed')){
-      pushAI('📡 **網路連線問題**\n\n無法連接到 AI 服務，請確認：\n- 網路是否正常？\n- 是否需要重新整理頁面？',['重新嘗試']);
-    } else if(chatMode==='analyze'&&(!txt||txt.trim().length<10)){
-      pushAI('📝 **描述太短了！**\n\n為了準確分析貓咪的行為，請提供更多細節：\n\n- 行為**發生的時間**？\n- 行為**持續多久**？\n- 當時**環境**是什麼樣子？\n- 最近**有什麼變化**嗎？',[]);
-    } else {
-      // 通用錯誤 - 引導使用者補充資訊
-      pushAI('🤔 **需要更多資訊才能回答**\n\n我無法理解這個問題，可以換個方式描述嗎？\n\n例如：\n- 貓咪**具體做了什麼**？\n- **什麼時候**發生的？\n- 這個情況**持續多久**了？',['重新描述','換個問題']);
-    }
-    saveSess(null);
-  }
+var t=document.getElementById(‘inp-tx’);var txt=t.value.trim();if(!txt)return;
+t.value=’’;t.style.height=‘auto’;document.getElementById(‘send-btn’).classList.remove(‘on’);
+var u=curU();
+// Build user message with optional images
+var photos=pendingPhotos.slice();pendingPhotos=[];renderPhotoBar();
+var um;
+if(photos.length){
+var msgContent=[];
+photos.forEach(function(p){msgContent.push({type:‘image’,source:{type:‘base64’,media_type:p.mediaType,data:p.base64}});});
+if(txt)msgContent.push({type:‘text’,text:txt});
+um={role:‘user’,content:msgContent,_photos:photos.map(function(p){return p.dataUrl;})};
+} else {
+um={role:‘user’,content:txt};
+}
+sessMsgs.push(um);
+// Render user bubble with photos
+var msgs_el=document.getElementById(‘msgs’);
+var w=msgs_el.querySelector(’.welcome’);if(w)w.remove();
+var ug=document.createElement(‘div’);ug.className=‘mg user’;
+var ub=document.createElement(‘div’);ub.className=‘bb user’;ub.style.animation=‘none’;
+if(photos.length){
+photos.forEach(function(p){var i=document.createElement(‘img’);i.src=p.dataUrl;i.className=‘msg-img’;i.alt=‘上傳的照片’;ub.appendChild(i);});
+}
+if(txt){var sp=document.createElement(‘p’);sp.style.cssText=‘margin:0;’+(photos.length?‘margin-top:6px’:’’);sp.textContent=txt;ub.appendChild(sp);}
+ug.appendChild(ub);msgs_el.appendChild(ug);scrollBot();
+if(!curSessId)saveSess(txt.substring(0,22));else saveSess(null);
+var tid=‘ty’+Date.now();
+var tg=document.createElement(‘div’);tg.className=‘ty-wrap’;tg.id=tid;
+var tav=document.createElement(‘div’);tav.className=‘ai-av’;tav.textContent=‘🐾’;
+var tdots=document.createElement(‘div’);tdots.className=‘ty-dots’;
+tdots.innerHTML=’<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>’;
+tg.appendChild(tav);tg.appendChild(tdots);
+document.getElementById(‘msgs’).appendChild(tg);scrollBot();
+if(chatMode===‘cat’||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
+var low2=txt.toLowerCase();
+if(low2.includes(‘新增貓咪’)||low2.includes(‘加入貓咪’)||low2.includes(‘新增一隻貓’)){
+removeEl(tid);setModeSilent(‘cat’);await catFlow(txt,u);return;
+}
+// 分析模式但還沒有貓咪 - 提前引導
+if(chatMode===‘analyze’&&(!u||!u.cats||!u.cats.length)){
+removeEl(tid);
+pushAI(‘🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？’,[‘幫我新增貓咪’]);
+setModeSilent(‘cat’);catAddStep=null;
+return;
+}
+var catInfo=’’;
+if(u&&u.cats&&u.cats.length){
+catInfo=’\n\n用戶的貓咪：’+u.cats.map(function(c){return c.name+’（’+c.breed+’，’+c.age+’，’+c.gender+’）’;}).join(’、’);
+}
+var langInstr=curLang===‘en’?‘Please respond in English only.’:‘請用繁體中文回答。’;
+var sys=‘你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊，遇到需要即時資訊的問題請主動搜尋。回答要具體有用，用 **粗體** 標示重點，必要時條列整理，結尾可補充 1 個延伸小知識。\n\n’+langInstr+catInfo;
+if(chatMode===‘analyze’){
+var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
+if(sc2)sys+=’\n\n目前分析對象：’+sc2.name+’（’+sc2.breed+’，’+sc2.age+’）’;
+sys+=’\n\n進行行為分析時請搜尋最新獸醫文獻，回覆須包含：\n【行為解析】\n【情緒評估】\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】\n【何時就醫】’;
+}
+if(chatMode===‘report’&&u&&u.records&&u.records.length){
+var lr=u.records[u.records.length-1];
+var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:‘貓咪’};
+sys+=’\n\n最近分析報告（’+lc.name+’，’+lr.date+’）：\n’+lr.fullReport;
+}
+// Push to chatHist - use array format if photos present
+if(photos.length){
+var apiContent=[];
+photos.forEach(function(p){apiContent.push({type:‘image’,source:{type:‘base64’,media_type:p.mediaType,data:p.base64}});});
+if(txt)apiContent.push({type:‘text’,text:txt});
+else apiContent.push({type:‘text’,text:‘請描述或分析這張照片裡的寵物。’});
+chatHist.push({role:‘user’,content:apiContent});
+} else {
+chatHist.push({role:‘user’,content:txt});
+}
+try{
+// 加入 web_search 工具，讓 AI 可以搜尋最新資料
+var body={
+model:‘claude-sonnet-4-20250514’,
+max_tokens:1500,
+system:sys,
+messages:chatHist.slice(-12),
+tools:[{type:‘web_search_20250305’,name:‘web_search’}]
+};
+var reply=’’;
+// tool_use 循環 - 最多 8 次
+for(var loop=0;loop<8;loop++){
+var res=await fetch(‘https://api.anthropic.com/v1/messages’,{
+method:‘POST’,
+headers:{‘Content-Type’:‘application/json’,‘anthropic-dangerous-direct-browser-access’:‘true’},
+body:JSON.stringify(body)
+});
+if(!res.ok){var et=await res.text();throw new Error(‘HTTP ‘+res.status);}
+var data=await res.json();
+if(data.error)throw new Error(data.error.message||‘API 錯誤’);
+var allBlocks=data.content||[];
+var textBlocks=allBlocks.filter(function(b){return b.type===‘text’;});
+var toolBlocks=allBlocks.filter(function(b){return b.type===‘tool_use’;});
+// AI 想使用工具 - 回傳結果繼續
+if(data.stop_reason===‘tool_use’&&toolBlocks.length){
+body.messages=body.messages.concat([{role:‘assistant’,content:allBlocks}]);
+var toolResults=toolBlocks.map(function(b){
+return {type:‘tool_result’,tool_use_id:b.id,content:[{type:‘text’,text:‘搜尋完成，請根據你的知識回答。’}]};
+});
+body.messages=body.messages.concat([{role:‘user’,content:toolResults}]);
+continue;
+}
+// 取得文字回覆
+reply=textBlocks.map(function(b){return b.text;}).join(’\n’).trim();
+break;
+}
+if(!reply)throw new Error(‘AI 未返回文字’);
+chatHist.push({role:‘assistant’,content:reply});
+removeEl(tid);
+var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[/／]\s*100/);
+var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
+if(chatMode===‘analyze’&&sm&&rm&&u&&u.cats&&u.cats.length){
+var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
+var cat=(selCatId&&u.cats.find(function(c){return c.id===selCatId;}))||u.cats[0];
+var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||‘🐱’,
+date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
+inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
+u.records.push(rec);saveDB();
+var am={role:‘assistant’,type:‘result’,content:reply,rd:rec,qr:[‘再問一個問題’,‘繼續分析’]};
+sessMsgs.push(am);appendMsgEl(am,true);
+} else {
+pushAI(reply,[]);
+}
+saveSess(null);
+}catch(err){
+removeEl(tid);
+var errMsg=err.message||’’;
+var u2=curU();
+// 分析錯誤類型，給出具體引導
+if(!u2||!u2.cats||!u2.cats.length){
+pushAI(‘📋 **還沒有貓咪資料！**\n\n在進行行為分析之前，需要先建立貓咪的基本資料。\n\n請告訴我：\n- **貓咪的名字**是什麼？’,[‘幫我新增貓咪’]);
+} else if(errMsg.includes(‘HTTP 401’)||errMsg.includes(‘401’)){
+pushAI(‘🔑 **API 金鑰無效**\n\n無法連接到 AI 服務，請確認 API 金鑰是否正確。’,[‘重新嘗試’]);
+} else if(errMsg.includes(‘HTTP 429’)||errMsg.includes(‘429’)){
+pushAI(‘⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。’,[‘稍後再試’]);
+} else if(errMsg.includes(‘HTTP 5’)||errMsg.includes(‘500’)||errMsg.includes(‘503’)){
+pushAI(‘🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。’,[‘重新嘗試’]);
+} else if(errMsg.includes(‘fetch’)||errMsg.includes(‘network’)||errMsg.includes(‘Failed’)){
+pushAI(‘📡 **網路連線問題**\n\n無法連接到 AI 服務，請確認：\n- 網路是否正常？\n- 是否需要重新整理頁面？’,[‘重新嘗試’]);
+} else if(chatMode===‘analyze’&&(!txt||txt.trim().length<10)){
+pushAI(‘📝 **描述太短了！**\n\n為了準確分析貓咪的行為，請提供更多細節：\n\n- 行為**發生的時間**？\n- 行為**持續多久**？\n- 當時**環境**是什麼樣子？\n- 最近**有什麼變化**嗎？’,[]);
+} else {
+// 通用錯誤 - 引導使用者補充資訊
+pushAI(‘🤔 **需要更多資訊才能回答**\n\n我無法理解這個問題，可以換個方式描述嗎？\n\n例如：\n- 貓咪**具體做了什麼**？\n- **什麼時候**發生的？\n- 這個情況**持續多久**了？’,[‘重新描述’,‘換個問題’]);
+}
+saveSess(null);
+}
 }
 // ══ CAT FLOW ══
 var catAddStep=null,catTemp={};
 async function catFlow(txt,u){
-  if(!u)u=curU();
-  // Handle error recovery quick replies
-  if(txt==='重新嘗試'||txt==='稍後再試'){
-    pushAI('好的，你可以重新輸入你的問題，我來幫你！',[]);return;
-  }
-  if(txt==='重新描述'||txt==='換個問題'){
-    pushAI('沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。',[]);return;
-  }
-  var low=txt.toLowerCase();
-  if(low.includes('查看')||low.includes('我的貓')||low.includes('列出')){
-    if(!u.cats.length){pushAI('你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！',['新增貓咪']);return;}
-    var listTxt=u.cats.map(function(c,i){
-      return '**'+(i+1)+'. '+c.emoji+' '+c.name+'**（'+c.breed+'，'+c.age+'，'+c.gender+'）\n分析次數：'+u.records.filter(function(r){return r.catId===c.id;}).length+'次';
-    }).join('\n\n');
-    pushAI('你的貓咪：\n\n'+listTxt,['新增貓咪','切換到行為分析']);return;
-  }
-  if(low.includes('新增')||low.includes('加入')||catAddStep){await catAddFlow(txt,u);return;}
-  if(low.includes('紀錄')||low.includes('報告')){
-    if(!u.records.length){pushAI('還沒有分析紀錄。切換到**行為分析**模式開始吧！',['切換到行為分析']);return;}
-    var recentTxt=u.records.slice(-3).reverse().map(function(r){
-      var c=u.cats.find(function(x){return x.id===r.catId;})||{name:'貓咪'};
-      return '📅 '+r.date+' — **'+c.name+'** 壓力 '+r.sl+'/100（'+r.risk+'風險）';
-    }).join('\n\n');
-    pushAI('最近'+Math.min(3,u.records.length)+'筆分析：\n\n'+recentTxt,['解讀最新報告','切換到行為分析']);return;
-  }
-  if(txt.includes('切換到行為分析')){setMode('analyze');return;}
-  if(txt.includes('解讀最新報告')){setMode('report');return;}
-  pushAI('在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**',['查看我的貓咪','新增貓咪','查看紀錄']);
+if(!u)u=curU();
+// Handle error recovery quick replies
+if(txt===‘重新嘗試’||txt===‘稍後再試’){
+pushAI(‘好的，你可以重新輸入你的問題，我來幫你！’,[]);return;
+}
+if(txt===‘重新描述’||txt===‘換個問題’){
+pushAI(‘沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。’,[]);return;
+}
+var low=txt.toLowerCase();
+if(low.includes(‘查看’)||low.includes(‘我的貓’)||low.includes(‘列出’)){
+if(!u.cats.length){pushAI(‘你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！’,[‘新增貓咪’]);return;}
+var listTxt=u.cats.map(function(c,i){
+return ‘**’+(i+1)+’. ‘+c.emoji+’ ‘+c.name+’**（’+c.breed+’，’+c.age+’，’+c.gender+’）\n分析次數：’+u.records.filter(function(r){return r.catId===c.id;}).length+‘次’;
+}).join(’\n\n’);
+pushAI(‘你的貓咪：\n\n’+listTxt,[‘新增貓咪’,‘切換到行為分析’]);return;
+}
+if(low.includes(‘新增’)||low.includes(‘加入’)||catAddStep){await catAddFlow(txt,u);return;}
+if(low.includes(‘紀錄’)||low.includes(‘報告’)){
+if(!u.records.length){pushAI(‘還沒有分析紀錄。切換到**行為分析**模式開始吧！’,[‘切換到行為分析’]);return;}
+var recentTxt=u.records.slice(-3).reverse().map(function(r){
+var c=u.cats.find(function(x){return x.id===r.catId;})||{name:‘貓咪’};
+return ‘📅 ‘+r.date+’ — **’+c.name+’** 壓力 ‘+r.sl+’/100（’+r.risk+‘風險）’;
+}).join(’\n\n’);
+pushAI(‘最近’+Math.min(3,u.records.length)+‘筆分析：\n\n’+recentTxt,[‘解讀最新報告’,‘切換到行為分析’]);return;
+}
+if(txt.includes(‘切換到行為分析’)){setMode(‘analyze’);return;}
+if(txt.includes(‘解讀最新報告’)){setMode(‘report’);return;}
+pushAI(‘在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**’,[‘查看我的貓咪’,‘新增貓咪’,‘查看紀錄’]);
 }
 async function catAddFlow(txt,u){
-  if(!catAddStep){catAddStep='name';catTemp={emoji:'🐱'};pushAI('好的！貓咪的**名字**是？',[]);return;}
-  if(catAddStep==='name'){catTemp.name=txt.trim();catAddStep='breed';pushAI('**品種**是什麼？（例：英短、米克斯）',[]);return;}
-  if(catAddStep==='breed'){catTemp.breed=txt.trim()||'未填';catAddStep='age';pushAI('**年齡**是？（例：3歲、8個月）',[]);return;}
-  if(catAddStep==='age'){catTemp.age=txt.trim()||'未填';catAddStep='gender';pushAI('**性別**？',['公（已結紮）','公（未結紮）','母（已結紮）','母（未結紮）']);return;}
-  if(catAddStep==='gender'){
-    catTemp.gender=txt.trim()||'未填';catAddStep='confirm';
-    pushAI('確認：\n\n🐱 '+catTemp.name+' / '+catTemp.breed+' / '+catTemp.age+' / '+catTemp.gender+'\n\n**確認儲存？**',['確認','重新開始']);return;
-  }
-  if(catAddStep==='confirm'){
-    if(txt.includes('確認')){
-      catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString('zh-TW');
-      u.cats.push(catTemp);saveDB();
-      var nm=catTemp.name;catAddStep=null;catTemp={};
-      selCatId=u.cats[u.cats.length-1].id;refreshCatBar();
-      pushAI('✅ **'+nm+'** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。',['切換到行為分析','查看我的貓咪']);
-    }else{catAddStep=null;catTemp={};pushAI('已取消。',['新增貓咪']);}
-    return;
-  }
+if(!catAddStep){catAddStep=‘name’;catTemp={emoji:‘🐱’};pushAI(‘好的！貓咪的**名字**是？’,[]);return;}
+if(catAddStep===‘name’){catTemp.name=txt.trim();catAddStep=‘breed’;pushAI(’**品種**是什麼？（例：英短、米克斯）’,[]);return;}
+if(catAddStep===‘breed’){catTemp.breed=txt.trim()||‘未填’;catAddStep=‘age’;pushAI(’**年齡**是？（例：3歲、8個月）’,[]);return;}
+if(catAddStep===‘age’){catTemp.age=txt.trim()||‘未填’;catAddStep=‘gender’;pushAI(’**性別**？’,[‘公（已結紮）’,‘公（未結紮）’,‘母（已結紮）’,‘母（未結紮）’]);return;}
+if(catAddStep===‘gender’){
+catTemp.gender=txt.trim()||‘未填’;catAddStep=‘confirm’;
+pushAI(‘確認：\n\n🐱 ‘+catTemp.name+’ / ‘+catTemp.breed+’ / ‘+catTemp.age+’ / ‘+catTemp.gender+’\n\n**確認儲存？**’,[‘確認’,‘重新開始’]);return;
+}
+if(catAddStep===‘confirm’){
+if(txt.includes(‘確認’)){
+catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString(‘zh-TW’);
+u.cats.push(catTemp);saveDB();
+var nm=catTemp.name;catAddStep=null;catTemp={};
+selCatId=u.cats[u.cats.length-1].id;refreshCatBar();
+pushAI(‘✅ **’+nm+’** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。’,[‘切換到行為分析’,‘查看我的貓咪’]);
+}else{catAddStep=null;catTemp={};pushAI(‘已取消。’,[‘新增貓咪’]);}
+return;
+}
 }
 function pushAI(content,qr){
-  chatHist.push({role:'assistant',content:content});
-  var msg={role:'assistant',content:content,qr:qr||[]};
-  sessMsgs.push(msg);appendMsgEl(msg,true);saveSess(null);
+chatHist.push({role:‘assistant’,content:content});
+var msg={role:‘assistant’,content:content,qr:qr||[]};
+sessMsgs.push(msg);appendMsgEl(msg,true);saveSess(null);
 }
 function removeEl(id){var e=document.getElementById(id);if(e)e.remove();}
 function rateRes(id,score){
-  var u=curU();if(!u)return;
-  var rec=u.records.find(function(r){return r.id==id;});if(rec){rec.rating=score;saveDB();}
-  var el=document.getElementById('rs-'+id);if(!el)return;
-  el.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('on',i<score);});
+var u=curU();if(!u)return;
+var rec=u.records.find(function(r){return r.id==id;});if(rec){rec.rating=score;saveDB();}
+var el=document.getElementById(‘rs-’+id);if(!el)return;
+el.querySelectorAll(’.star’).forEach(function(s,i){s.classList.toggle(‘on’,i<score);});
 }
+// ══ LANGUAGE ══
+var curLang=‘zh’;
+var T={
+zh:{
+appName:‘PawSense AI’,
+newChat:‘新對話’,
+history:‘對話紀錄’,
+clearData:‘清除資料’,
+hint:‘PawSense AI · 分析結果僅供參考’,
+placeholder:‘輸入訊息…’,
+modeLabel:{general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’},
+langSheetTitle:‘切換語言’,
+welcome:‘有什麼關於貓咪的問題嗎？’,
+suggests:[
+{ic:‘🔍’,t:‘行為分析’,d:‘描述行為，取得評估’,q:‘我想分析貓咪的行為’},
+{ic:‘🐈’,t:‘新增貓咪’,d:‘建立貓咪資料’,q:‘幫我新增一隻貓咪’},
+{ic:‘💊’,t:‘健康問題’,d:‘詢問健康建議’,q:‘我的貓咪最近食慾不振’},
+{ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
+],
+modes:[
+{id:‘general’,ic:‘🐱’,nm:‘貓咪問答’,ds:‘問任何關於貓咪的問題’},
+{id:‘analyze’,ic:‘🔍’,nm:‘行為分析’,ds:‘AI 搜尋獸醫文獻，評估壓力與風險’},
+{id:‘report’,ic:‘📋’,nm:‘報告解讀’,ds:‘解讀過往的分析報告’},
+{id:‘cat’,ic:‘🐈’,nm:‘貓咪管理’,ds:‘新增 / 查看貓咪資料’}
+]
+},
+en:{
+appName:‘PawSense AI’,
+newChat:‘New Chat’,
+history:‘History’,
+clearData:‘Clear Data’,
+hint:‘PawSense AI · For reference only’,
+placeholder:‘Ask anything…’,
+modeLabel:{general:‘🐱 Chat’,analyze:‘🔍 Analyze’,report:‘📋 Report’,cat:‘🐈 Cats’},
+langSheetTitle:‘Language’,
+welcome:‘What would you like to know about your cat?’,
+suggests:[
+{ic:‘🔍’,t:‘Behavior Analysis’,d:‘Describe behavior, get insight’,q:‘I want to analyze my cat's behavior’},
+{ic:‘🐈’,t:‘Add a Cat’,d:‘Create a cat profile’,q:‘Help me add a cat’},
+{ic:‘💊’,t:‘Health Question’,d:‘Get health advice’,q:‘My cat has been eating less lately’},
+{ic:‘📊’,t:‘View Records’,d:‘Browse past analyses’,q:‘Show me recent analysis results’}
+],
+modes:[
+{id:‘general’,ic:‘🐱’,nm:‘Cat Chat’,ds:‘Ask anything about cats’},
+{id:‘analyze’,ic:‘🔍’,nm:‘Behavior Analysis’,ds:‘AI searches vet literature to assess stress & risk’},
+{id:‘report’,ic:‘📋’,nm:‘Report Review’,ds:‘Interpret past analysis reports’},
+{id:‘cat’,ic:‘🐈’,nm:‘Cat Manager’,ds:‘Add / view cat profiles’}
+]
+}
+};
+
+function openLangSheet(){
+document.getElementById(‘lang-sheet’).classList.add(‘open’);
+document.getElementById(‘lang-sh-ov’).classList.add(‘show’);
+}
+function closeLangSheet(){
+document.getElementById(‘lang-sheet’).classList.remove(‘open’);
+document.getElementById(‘lang-sh-ov’).classList.remove(‘show’);
+}
+function setLang(lang){
+curLang=lang;
+document.body.classList.toggle(‘lang-en’, lang===‘en’);
+document.getElementById(‘lang-flag’).textContent=lang===‘zh’?‘中’:‘EN’;
+document.getElementById(‘lc-zh’).style.opacity=lang===‘zh’?‘1’:‘0’;
+document.getElementById(‘lc-en’).style.opacity=lang===‘en’?‘1’:‘0’;
+var t=T[lang];
+// Update static UI text
+document.getElementById(‘lang-sh-title’).textContent=t.langSheetTitle;
+document.getElementById(‘inp-tx’).placeholder=t.placeholder;
+document.querySelector(’.inp-hint’).textContent=t.hint;
+document.querySelector(’.sb-new’).childNodes[1].textContent=’ ‘+t.newChat;
+document.querySelector(’.sb-sec’).textContent=t.history;
+document.querySelector(’.sb-logout’).textContent=t.clearData;
+// Update mode sheet items
+t.modes.forEach(function(m){
+var el=document.getElementById(‘sm-’+m.id);
+if(!el)return;
+el.querySelector(’.sh-nm’).textContent=m.nm;
+el.querySelector(’.sh-ds’).textContent=m.ds;
+});
+// Update mode chip label
+modeLabel=t.modeLabel;
+document.getElementById(‘mode-chip’).textContent=modeLabel[chatMode]||modeLabel.general;
+// Redraw welcome if showing
+var msgs=document.getElementById(‘msgs’);
+if(msgs.querySelector(’.welcome’)){msgs.innerHTML=’’;msgs.appendChild(buildWelcome());}
+closeLangSheet();
+}
+
 // ══ BOOT ══
-function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent('general');}
+function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent(‘general’);}
 (function boot(){
-  if(!DB.cur||!DB.users.length){
-    if(!DB.users.find(function(u){return u.email==='local';})){
-      DB.users.push({name:'我',email:'local',pw:'',cats:[],records:[],sessions:[],favs:[]});
-    }
-    DB.cur='local';saveDB();
-  }
-  initApp();
+if(!DB.cur||!DB.users.length){
+if(!DB.users.find(function(u){return u.email===‘local’;})){
+DB.users.push({name:‘我’,email:‘local’,pw:’’,cats:[],records:[],sessions:[],favs:[]});
+}
+DB.cur=‘local’;saveDB();
+}
+initApp();
 })();
 </script>
+
 </body>
 </html>
