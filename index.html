@@ -411,9 +411,36 @@ img{max-width:100%;height:auto;display:block;}
 #paws-app.lang-en .sb-item-tx{font-family:‘Dancing Script’,cursive}
 #paws-app.lang-en .qr{font-family:‘Dancing Script’,cursive;font-size:12px}
 
+/* ════ VIRTUAL CAT ════ */
+#vcat-wrap{position:fixed;left:14px;bottom:18px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
+.vcat-bubble{background:rgba(30,30,45,.95);border:1px solid rgba(255,255,255,.15);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:12px;color:#e8e8ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 4px 20px rgba(0,0,0,.3);backdrop-filter:blur(8px)}
+.vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
+#vcat{width:88px;height:88px;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+#vcat:hover{transform:scale(1.1) translateY(-3px)}
+#vcat:active{transform:scale(.92)}
+#vcat canvas{width:88px;height:88px}
+.vcat-name{font-size:10px;color:var(–t3);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px}
+.vcat-mood-badge{font-size:9px;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 7px;color:var(–t3);margin-top:1px}
+
 /* ── BACK TO HOME ── */
 .back-home-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:var(–s2);border:1px solid var(–bd);color:var(–t2);font-size:16px;text-decoration:none;flex-shrink:0;transition:all .18s}
 .back-home-btn:hover{background:var(–s3);color:var(–t);border-color:rgba(255,255,255,.15)}
+
+/* ════ API KEY SETUP ════ */
+.key-card{background:var(–s1);border:1px solid var(–bd);border-radius:20px;padding:32px 28px;max-width:360px;width:100%}
+.key-logo{font-size:36px;text-align:center;margin-bottom:12px}
+.key-title{font-family:‘Noto Serif TC’,serif;font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;color:var(–t)}
+.key-sub{font-size:13px;color:var(–t2);text-align:center;line-height:1.7;margin-bottom:22px}
+.key-sub a{color:var(–ac);text-decoration:underline}
+.key-input{width:100%;background:var(–s2);border:1px solid var(–bd);border-radius:11px;padding:13px 15px;color:var(–t);font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;font-family:‘Noto Serif TC’,serif}
+.key-input:focus{border-color:rgba(124,106,247,.45)}
+.key-input::placeholder{color:var(–t3)}
+.key-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:‘Noto Serif TC’,serif}
+.key-btn:hover{opacity:.9;transform:translateY(-1px)}
+.key-note{font-size:11px;color:var(–t3);text-align:center;margin-top:12px;line-height:1.6}
+.key-steps{background:var(–s2);border-radius:10px;padding:14px;margin-bottom:18px}
+.key-steps p{font-size:12px;color:var(–t2);line-height:1.9;margin:0}
+.key-steps strong{color:var(–t)}
 
 </style>
 </head>
@@ -1211,11 +1238,11 @@ if(u&&u.cats&&u.cats.length){
 catInfo=’\n\n用戶的貓咪：’+u.cats.map(function(c){return c.name+’（’+c.breed+’，’+c.age+’，’+c.gender+’）’;}).join(’、’);
 }
 var langInstr=curLang===‘en’?‘Please respond in English only.’:‘請用繁體中文回答。’;
-var sys=‘你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊，遇到需要即時資訊的問題請主動搜尋。回答要具體有用，用 **粗體** 標示重點，必要時條列整理，結尾可補充 1 個延伸小知識。\n\n’+langInstr+catInfo;
+var sys=‘你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n’+langInstr+catInfo;
 if(chatMode===‘analyze’){
 var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
 if(sc2)sys+=’\n\n目前分析對象：’+sc2.name+’（’+sc2.breed+’，’+sc2.age+’）’;
-sys+=’\n\n進行行為分析時請搜尋最新獸醫文獻，回覆須包含：\n【行為解析】\n【情緒評估】\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】\n【何時就醫】’;
+sys+=’\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。’;
 }
 if(chatMode===‘report’&&u&&u.records&&u.records.length){
 var lr=u.records[u.records.length-1];
@@ -1233,42 +1260,9 @@ chatHist.push({role:‘user’,content:apiContent});
 chatHist.push({role:‘user’,content:txt});
 }
 try{
-// 加入 web_search 工具，讓 AI 可以搜尋最新資料
-var body={
-model:‘claude-sonnet-4-20250514’,
-max_tokens:1500,
-system:sys,
-messages:chatHist.slice(-12),
-tools:[{type:‘web_search_20250305’,name:‘web_search’}]
-};
-var reply=’’;
-// tool_use 循環 - 最多 8 次
-for(var loop=0;loop<8;loop++){
-var res=await fetch(‘https://api.anthropic.com/v1/messages’,{
-method:‘POST’,
-headers:{‘Content-Type’:‘application/json’,‘anthropic-dangerous-direct-browser-access’:‘true’},
-body:JSON.stringify(body)
-});
-if(!res.ok){var et=await res.text();throw new Error(‘HTTP ‘+res.status);}
-var data=await res.json();
-if(data.error)throw new Error(data.error.message||‘API 錯誤’);
-var allBlocks=data.content||[];
-var textBlocks=allBlocks.filter(function(b){return b.type===‘text’;});
-var toolBlocks=allBlocks.filter(function(b){return b.type===‘tool_use’;});
-// AI 想使用工具 - 回傳結果繼續
-if(data.stop_reason===‘tool_use’&&toolBlocks.length){
-body.messages=body.messages.concat([{role:‘assistant’,content:allBlocks}]);
-var toolResults=toolBlocks.map(function(b){
-return {type:‘tool_result’,tool_use_id:b.id,content:[{type:‘text’,text:‘搜尋完成，請根據你的知識回答。’}]};
-});
-body.messages=body.messages.concat([{role:‘user’,content:toolResults}]);
-continue;
-}
-// 取得文字回覆
-reply=textBlocks.map(function(b){return b.text;}).join(’\n’).trim();
-break;
-}
-if(!reply)throw new Error(‘AI 未返回文字’);
+// Groq API call (OpenAI-compatible)
+var reply=staticAI(txt,sys,chatMode);
+await new Promise(function(r){setTimeout(r,600+Math.random()*800);});
 chatHist.push({role:‘assistant’,content:reply});
 removeEl(tid);
 var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[/／]\s*100/);
@@ -1282,32 +1276,62 @@ inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
 u.records.push(rec);saveDB();
 var am={role:‘assistant’,type:‘result’,content:reply,rd:rec,qr:[‘再問一個問題’,‘繼續分析’]};
 sessMsgs.push(am);appendMsgEl(am,true);
+updateVirtualCat(reply);
 } else {
 pushAI(reply,[]);
+updateVirtualCat(reply);
 }
 saveSess(null);
 }catch(err){
-removeEl(tid);
 var errMsg=err.message||’’;
 var u2=curU();
-// 分析錯誤類型，給出具體引導
-if(!u2||!u2.cats||!u2.cats.length){
-pushAI(‘📋 **還沒有貓咪資料！**\n\n在進行行為分析之前，需要先建立貓咪的基本資料。\n\n請告訴我：\n- **貓咪的名字**是什麼？’,[‘幫我新增貓咪’]);
-} else if(errMsg.includes(‘HTTP 401’)||errMsg.includes(‘401’)){
-pushAI(‘🔑 **API 金鑰無效**\n\n無法連接到 AI 服務，請確認 API 金鑰是否正確。’,[‘重新嘗試’]);
+// 401/429/5xx/network: real errors - show message
+if(errMsg.includes(‘HTTP 401’)||errMsg.includes(‘401’)){
+removeEl(tid);
+removeEl(tid);pushAI(‘🔑 **連線失敗**\n\n請稍後再試。’,[‘重新嘗試’]);saveSess(null);return;
+saveSess(null);return;
 } else if(errMsg.includes(‘HTTP 429’)||errMsg.includes(‘429’)){
+removeEl(tid);
 pushAI(‘⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。’,[‘稍後再試’]);
+saveSess(null);return;
 } else if(errMsg.includes(‘HTTP 5’)||errMsg.includes(‘500’)||errMsg.includes(‘503’)){
+removeEl(tid);
 pushAI(‘🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。’,[‘重新嘗試’]);
-} else if(errMsg.includes(‘fetch’)||errMsg.includes(‘network’)||errMsg.includes(‘Failed’)){
-pushAI(‘📡 **網路連線問題**\n\n無法連接到 AI 服務，請確認：\n- 網路是否正常？\n- 是否需要重新整理頁面？’,[‘重新嘗試’]);
-} else if(chatMode===‘analyze’&&(!txt||txt.trim().length<10)){
-pushAI(‘📝 **描述太短了！**\n\n為了準確分析貓咪的行為，請提供更多細節：\n\n- 行為**發生的時間**？\n- 行為**持續多久**？\n- 當時**環境**是什麼樣子？\n- 最近**有什麼變化**嗎？’,[]);
+saveSess(null);return;
+} else if(errMsg.includes(‘fetch’)||errMsg.includes(‘network’)||errMsg.includes(‘Failed to fetch’)){
+removeEl(tid);
+pushAI(‘📡 **網路連線問題**\n\n請確認網路後再試一次。’,[‘重新嘗試’]);
+saveSess(null);return;
+}
+// Static mode fallback (should not reach here)
+try{
+var reply2=staticAI(txt,sys,chatMode);
+await new Promise(function(r){setTimeout(r,400);});
+if(!reply2){removeEl(tid);pushAI(‘⚠️ AI 未回應，請重新描述。’,[‘重新嘗試’]);saveSess(null);return;}
+chatHist.push({role:‘assistant’,content:reply2});
+removeEl(tid);
+var sm2=reply2.match(/壓力指數[^\d]*(\d+)/)||reply2.match(/(\d+)\s*[/／]\s*100/);
+var rm2=reply2.match(/風險等級[^低中高]*(低|中|高)/)||reply2.match(/(低|中|高)風險/);
+if(chatMode===‘analyze’&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
+var sl2=Math.min(100,Math.max(0,parseInt(sm2[1])));var risk2=rm2[1];
+var cat2=(selCatId&&u2.cats.find(function(c){return c.id===selCatId;}))||u2.cats[0];
+var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||‘🐱’,
+date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
+inputText:txt,fullReport:reply2,sl:sl2,risk:risk2,rating:0};
+u2.records.push(rec2);saveDB();
+var am2={role:‘assistant’,type:‘result’,content:reply2,rd:rec2,qr:[‘再問一個問題’,‘繼續分析’]};
+sessMsgs.push(am2);appendMsgEl(am2,true);
+updateVirtualCat(reply2);
 } else {
-// 通用錯誤 - 引導使用者補充資訊
-pushAI(‘🤔 **需要更多資訊才能回答**\n\n我無法理解這個問題，可以換個方式描述嗎？\n\n例如：\n- 貓咪**具體做了什麼**？\n- **什麼時候**發生的？\n- 這個情況**持續多久**了？’,[‘重新描述’,‘換個問題’]);
+pushAI(reply2,[]);
+updateVirtualCat(reply2);
 }
 saveSess(null);
+}catch(err2){
+removeEl(tid);
+pushAI(‘📡 **無法連線**\n\n請確認網路後重新整理頁面。’,[‘重新嘗試’]);
+saveSess(null);
+}
 }
 }
 // ══ CAT FLOW ══
@@ -1463,6 +1487,428 @@ if(msgs.querySelector(’.welcome’)){msgs.innerHTML=’’;msgs.appendChild(bu
 closeLangSheet();
 }
 
+// ════ CONFIG — STATIC MODE ════
+// 靜態知識庫模式，無需 API 金鑰
+
+// ════ STATIC AI ENGINE ════
+var KB={
+// 行為類
+morning_cry:{keys:[‘早上’,‘叫’,‘一直叫’,‘哭’,‘吵’,‘清晨’,‘凌晨’],
+ans:‘🐱 **早上一直叫的常見原因**\n\n貓咪在清晨或早上叫個不停，通常有以下幾種原因：\n\n**1. 肚子餓了**\n這是最常見的原因！貓咪的生理時鐘很準，如果你通常早上餵食，牠會提前「提醒」你。\n\n**2. 想要陪伴**\n貓咪可能睡了一夜，醒來發現你還在睡，想引起你的注意。\n\n**3. 發情期**\n未絕育的貓咪，尤其是母貓，發情時會在清晨發出持續的叫聲。\n\n**4. 老年認知障礙**\n老年貓（10歲以上）有時會因為認知功能下降，對時間感到混亂而叫個不停。\n\n**💡 改善建議**\n- 嘗試定時自動餵食器，讓牠習慣固定時間進食\n- 睡前多陪玩，消耗精力\n- 如果未絕育，考慮結紮\n\n💬 想讓我分析得更準確，可以告訴我：貓咪幾歲？有沒有結紮？’},
+hide:{keys:[‘躲’,‘躲起來’,‘躲藏’,‘不出來’,‘藏’],
+ans:‘🐱 **貓咪躲藏的原因分析**\n\n**【行為解析】**\n貓咪躲藏是一種本能的自我保護行為，常見於壓力、恐懼或身體不適時。\n\n**【情緒評估】**\n目前情緒：焦慮或不安全感較高\n\n**【壓力指數】**：60/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 環境有變化（搬家、新成員、新寵物）\n- 聽到巨大聲音（鞭炮、雷聲）\n- 身體不舒服\n- 剛帶回家的新貓\n\n**【改善建議】**\n- 給牠安靜的空間，不要強迫牠出來\n- 確保有足夠的躲藏處（紙箱、貓窩）\n- 觀察是否有其他異常（不吃飯、異常排泄）\n\n**【何時就醫】**\n若躲藏超過 24 小時且不吃不喝，請立即就醫。’},
+scratch:{keys:[‘抓’,‘抓人’,‘咬’,‘咬人’,‘攻擊’,‘兇’],
+ans:’🐱 **貓咪抓人/咬人的行為分析**\n\n**【行為解析】**\n貓咪抓咬行為通常是溝通方式，表示「我不想被碰」或「我在玩」。\n\n**【情緒評估】**\n可能感到受威脅、過度興奮或疼痛\n\n**【壓力指數】**：55/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **玩耍型**：小貓常見，手被當成玩具\n- **防禦型**：被過度撫摸或觸碰敏感部位\n- **疼痛型**：觸碰到受傷部位時反應\n- **恐懼型**：感到被威脅時的自我保護\n\n**【改善建議】**\n- 學習貓咪的「不要碰我」訊號（尾巴搖動、耳朵後壓）\n- 用玩具代替手來玩耍\n- 避免突然伸手\n\n**【何時就醫】**\n若抓咬行為突然改變，可能是疼痛引起，建議就醫檢查。’},
+not_eat:{keys:[‘不吃’,‘不喝’,‘食慾’,‘沒胃口’,‘拒食’,‘少吃’],
+ans:’🐱 **貓咪不吃東西的分析**\n\n**【行為解析】**\n食慾不振是貓咪健康的重要警訊，需要特別注意。\n\n**【情緒評估】**\n可能感到不適、壓力或對食物產生抗拒\n\n**【壓力指數】**：70/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 換了新的貓糧品牌或口味\n- 壓力（環境改變）\n- 牙齦疾病或口腔疼痛\n- 消化問題、腸胃炎\n- 其他疾病（肝病、腎病等）\n\n**【改善建議】**\n- 確認上次正常進食的時間\n- 嘗試換回原本的食物\n- 提供新鮮的食物和乾淨的水\n- 檢查嘴巴有無異常\n\n**【何時就醫】**\n⚠️ 貓咪超過 **24-48 小時** 不吃東西，務必就醫！貓咪空腹太久容易引發脂肪肝。’},
+vomit:{keys:[‘吐’,‘嘔吐’,‘反胃’,‘吐毛’,‘嘔’],
+ans:’🐱 **貓咪嘔吐的分析**\n\n**【行為解析】**\n偶爾嘔吐在貓咪中相對常見，但頻繁嘔吐需要注意。\n\n**【情緒評估】**\n身體可能感到不適\n\n**【壓力指數】**：50/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **毛球**：長毛貓常見，吐出毛球屬正常\n- **吃太快**：進食速度過快導致反胃\n- **食物不耐**：對某種食材過敏\n- **異物**：吞入玩具零件、植物等\n- **疾病**：腸胃炎、胰臟炎等\n\n**【改善建議】**\n- 定期梳毛減少毛球\n- 使用慢食碗\n- 少量多餐\n- 觀察嘔吐物（是否含血）\n\n**【何時就醫】**\n嘔吐超過 3 次/天、含血絲、伴隨精神不振，請立即就醫。’},
+diarrhea:{keys:[‘拉肚子’,‘軟便’,‘腹瀉’,‘血便’,‘血尿’,‘尿血’],
+ans:’🐱 **排泄異常的分析**\n\n**【行為解析】**\n排泄異常通常反映消化系統或泌尿系統的問題。\n\n**【情緒評估】**\n身體不適，可能感到疼痛或不安\n\n**【壓力指數】**：75/100\n\n**【風險等級】**：中至高\n\n**【改善建議】**\n- 確保飲水充足\n- 暫時改為清淡飲食（水煮雞胸肉）\n- 記錄排泄頻率和狀態\n\n**【何時就醫】**\n⚠️ 若出現**血便或血尿**，請**立即**就醫，這是緊急狀況！’},
+night_run:{keys:[‘半夜’,‘跑’,‘狂奔’,‘到處跑’,‘夜間’,‘夜跑’,‘抖動’],
+ans:‘🐱 **半夜狂奔（Zoomies）的分析**\n\n**【行為解析】**\n這個行為俗稱「貓咪瘋跑」（Zoomies），是完全正常的行為！\n\n**【情緒評估】**\n精力充沛、情緒亢奮，屬於正向狀態\n\n**【壓力指數】**：15/100\n\n**【風險等級】**：低（正常行為）\n\n**原因**\n- 貓咪天生是夜行性動物，黃昏和清晨是牠們的「活躍時段」\n- 白天睡太多，精力需要釋放\n- 排便後的「慶祝儀式」（便後狂奔很常見！）\n\n**【改善建議】**\n- 睡前與牠玩 15-20 分鐘消耗精力\n- 提供爬架、玩具讓牠自己玩\n- 餵食時間改到睡前，吃飽容易想睡\n\n**【何時就醫】**\n若同時伴隨異常叫聲或身體抖動，建議就醫排除神經問題。’},
+box:{keys:[‘紙箱’,‘箱子’,‘袋子’,‘喜歡待’,‘鑽’],
+ans:’🐱 **為什麼貓咪喜歡紙箱？**\n\n這是貓咪最可愛的特質之一！\n\n**原因分析**\n- **安全感**：封閉空間讓貓咪感到被保護，符合牠們躲藏獵物的本能\n- **體溫**：紙箱能保暖，貓咪喜歡溫暖的地方\n- **好奇心**：新事物對貓咪充滿吸引力\n- **領域標記**：待在裡面是在「佔領地盤」\n\n**💡 小知識**\n研究發現，有紙箱可以躲的貓咪，壓力荷爾蒙（皮質醇）明顯較低！所以給貓咪留幾個紙箱是很好的環境豐富化方式。\n\n不需要擔心，這是健康又快樂的行為 😊’},
+knead:{keys:[‘踩奶’,‘踩’,‘揉’,‘按摩’,‘捏’],
+ans:‘🐱 **踩奶行為分析**\n\n**【行為解析】**\n踩奶（Making Biscuits）是貓咪最溫馨的行為之一！\n\n**原因**\n- **幼年記憶**：小貓踩媽媽肚子刺激奶水，長大後保留這個動作\n- **表達滿足**：感到非常安心和快樂時才會踩\n- **標記氣味**：肉墊有氣腺，踩你就是在說「你是我的」\n\n**【情緒評估】**\n極度放鬆、幸福、有安全感 ❤️\n\n**【壓力指數】**：5/100（非常低）\n\n**【風險等級】**：無（正向行為）\n\n**💡 小知識**\n貓咪踩奶時通常會發出呼嚕聲，這是牠對你表達最高級別的信任和愛意！’},
+purr:{keys:[‘呼嚕’,‘呼嚕聲’,‘打呼’,‘咕嚕’],
+ans:‘🐱 **呼嚕聲的含義**\n\n**呼嚕聲不只代表快樂！**\n\n**快樂/放鬆時**\n- 被撫摸時\n- 進食時\n- 躺在你身邊時\n\n**需要安慰時**\n- 生病或受傷的貓咪也會發出呼嚕聲\n- 這是一種自我安慰機制\n- 研究顯示呼嚕聲的頻率（25-50Hz）有助於骨骼修復！\n\n**壓力時**\n- 去獸醫時的呼嚕聲可能代表緊張\n\n**💡 判斷方式**\n結合肢體語言：耳朵向前 + 尾巴豎直 + 呼嚕 = 快樂；耳朵後壓 + 身體縮小 + 呼嚕 = 不安。’},
+tail:{keys:[‘尾巴’,‘搖尾巴’,‘尾’],
+ans:‘🐱 **尾巴語言解讀**\n\n**尾巴豎直** → 快樂、自信、打招呼\n**尾巴豎直+尾端微彎** → 非常開心\n**尾巴膨脹** → 受到驚嚇或極度憤怒\n**尾巴低垂** → 不安、生病或沮喪\n**尾巴快速搖動** → 注意！這是警告，不是開心（狗狗才是）\n**尾巴慢慢搖動** → 專注觀察中\n**尾巴夾在兩腿間** → 極度恐懼或服從\n\n💡 貓咪搖尾巴 ≠ 開心，這是和狗狗最大的不同點！’},
+eye:{keys:[‘眼神’,‘眼睛’,‘瞇眼’,‘慢眨眼’,‘閉眼’],
+ans:‘🐱 **眼睛語言解讀**\n\n**慢慢眨眼** → 這是貓咪的「愛你」！回應牠同樣的慢眨眼\n**瞳孔放大（圓形）** → 興奮、恐懼、或光線昏暗\n**瞳孔縮小（細縫）** → 放鬆、或感到威脅\n**直視不眨眼** → 挑戰或威脅\n**半閉眼** → 非常放鬆、信任你\n\n**💡 互動技巧**\n當貓咪對你慢慢眨眼時，你也慢慢眨眼回去，牠會感受到你的愛意，通常會靠近你！’},
+fee:{keys:[‘費用’,‘多少錢’,‘獸醫費’,‘看診’,‘花費’],
+ans:‘🐱 **寵物醫療費用參考**\n\n**基本費用**\n- 一般看診：$300-600\n- 疫苗（每年）：$800-1500\n- 結紮手術：$3000-8000\n- 晶片植入：$500-1000\n\n**常見檢查**\n- 血液檢查：$800-2000\n- X光：$600-1500\n- 超音波：$1000-3000\n\n💡 **建議**\n考慮辦理寵物保險，每月約 $500-1500，可以大幅降低意外醫療費用。’},
+food:{keys:[‘吃什麼’,‘飼料’,‘罐頭’,‘生食’,‘飲食’,‘不能吃’,‘禁忌’],
+ans:‘🐱 **貓咪飲食指南**\n\n**✅ 可以吃**\n- 高品質貓糧（乾糧/濕食）\n- 水煮雞胸肉（無鹽無調味）\n- 水煮鮭魚（去骨）\n- 少量起司\n\n**❌ 絕對不能吃**\n- 洋蔥、大蒜（會破壞紅血球）\n- 巧克力（含可可鹼，中毒）\n- 葡萄、葡萄乾\n- 生雞蛋白（含抗生物素蛋白）\n- 牛奶（多數貓咪乳糖不耐）\n- 咖啡、茶\n- 人類零食（含鹽過高）\n\n💡 **建議**\n濕食（罐頭）能補充水分，對泌尿系統很好。建議乾濕食混合搭配。’},
+sleep:{keys:[‘睡覺’,‘睡眠’,‘睡太多’,‘幾個小時’,‘嗜睡’],
+ans:‘🐱 **貓咪睡眠分析**\n\n**正常睡眠時間**\n- 成貓：每天 **12-16 小時**\n- 幼貓/老貓：可達 **18-20 小時**\n\n這是完全正常的！貓咪是掠食者，需要保存大量精力應對狩獵。\n\n**何時需要擔心？**\n- 睡眠時間突然**增加很多**\n- 睡覺時**呼吸異常**（喘息、鼾聲很大）\n- 叫牠沒反應或**反應遲鈍**\n- 同時伴隨不吃不喝\n\n💡 **小知識**\n貓咪有「淺眠」和「深眠」兩種，70% 是淺眠，牠的耳朵即使在睡覺也會轉動偵測聲音！’},
+litter:{keys:[‘砂盆’,‘貓砂’,‘廁所’,‘不用砂盆’,‘尿在外面’,‘排泄’],
+ans:‘🐱 **砂盆問題分析**\n\n**貓咪不用砂盆可能的原因**\n\n1. **砂盆不夠乾淨** → 每天清理，每週全換\n2. **位置不對** → 避免放在嘈雜或角落位置\n3. **砂盆太小** → 應該是貓咪身長的 1.5 倍\n4. **貓砂類型不喜歡** → 嘗試換不同材質\n5. **泌尿道問題** → 若頻繁跑砂盆卻少量，可能是結石或感染\n\n**多貓家庭**\n砂盆數量 = 貓的數量 + 1\n\n**【何時就醫】**\n⚠️ 若發現**血尿、尿量極少或完全無尿**，這是緊急狀況，立即就醫！’},
+weight:{keys:[‘體重’,‘太胖’,‘太瘦’,‘肥胖’,‘減重’],
+ans:‘🐱 **貓咪體重管理**\n\n**理想體重**\n- 一般成貓：3.5-5 公斤\n- 大型品種（緬因貓等）：可達 7-9 公斤\n\n**判斷方式（觸感法）**\n- ✅ 正常：摸得到肋骨但看不到\n- ⚠️ 過重：摸不太到肋骨\n- ⚠️ 過輕：肋骨清晰可見\n\n**減重建議**\n- 計算每日熱量需求（依體重和活動量）\n- 少量多餐，不要放任自助\n- 增加玩耍時間\n- 用益智餵食玩具\n\n💡 貓咪減重不能太快！每週減少不超過 1-2% 體重，否則容易引發脂肪肝。’},
+vaccine:{keys:[‘疫苗’,‘打針’,‘預防針’,‘驅蟲’,‘寄生蟲’,‘跳蚤’],
+ans:‘🐱 **疫苗與預防醫療指南**\n\n**核心疫苗（每年/每三年）**\n- 三合一疫苗（貓瘟、貓鼻氣管炎、貓卡里西病毒）\n- 狂犬病疫苗（法律規定）\n\n**首次接種時程**\n- 8 週：第一劑三合一\n- 12 週：第二劑三合一\n- 16 週：第三劑 + 狂犬病\n\n**體內驅蟲**：每 3 個月一次\n**體外驅蟲**（跳蚤/蜱）：每月一次\n\n💡 **室內貓也需要疫苗**，因為病毒可能從鞋底帶入家中。’},
+// 通用回答
+general:{keys:[],
+ans:’’}
+};
+
+function staticAI(txt, sys, mode){
+var q=(txt||’’).toLowerCase();
+var matched=null;
+var maxScore=0;
+
+// Find best matching topic
+for(var topic in KB){
+if(topic===‘general’) continue;
+var keys=KB[topic].keys;
+var score=0;
+for(var i=0;i<keys.length;i++){
+if(q.indexOf(keys[i])!==-1) score++;
+}
+if(score>maxScore){maxScore=score;matched=topic;}
+}
+
+// If analyze mode and we have a match, return structured analysis
+if(matched&&maxScore>0){
+var ans=KB[matched].ans;
+// Add follow-up question
+ans+=’\n\n💬 還有其他想了解的嗎？例如：貓咪的年齡、品種，或是這個情況持續多久了？’;
+return ans;
+}
+
+// General cat/pet questions - pattern matching
+if(q.match(/幾歲|年齡|壽命|多久/)){
+return ‘🐱 **貓咪的壽命與年齡**\n\n室內貓平均壽命：**12-18 年**\n室外貓平均壽命：5-7 年（危險較多）\n\n**貓咪年齡換算人類年齡**\n- 1歲 = 人類約 15 歲\n- 2歲 = 人類約 24 歲\n- 每增加 1 歲 ≈ 人類 4 歲\n- 10歲 = 人類約 56 歲\n\n💡 提供良好的飲食、定期健康檢查和充足的愛，可以讓貓咪活得更長更健康！’;
+}
+if(q.match(/品種|哪種|推薦|選|養什麼/)){
+return ‘🐱 **熱門貓咪品種推薦**\n\n**適合新手**\n- 🐈 **美國短毛貓**：個性溫和、好照顧\n- 🐈 **英國短毛貓**：安靜獨立、不黏人\n- 🐈 **混種貓（米克斯）**：體質佳、個性多元\n\n**愛撒嬌**\n- 🐱 **布偶貓**：超溫馴，像布偶一樣任人抱\n- 🐱 **波斯貓**：安靜優雅\n- 🐱 **暹羅貓**：話很多，超黏主人\n\n**活潑好動**\n- 🐈 **阿比西尼亞貓**\n- 🐈 **孟加拉貓**\n\n💡 建議先考慮領養米克斯，既省費用又救了一條命！’;
+}
+if(q.match(/新貓|第一次|剛養|剛帶回|帶回家/)){
+return ‘🐱 **新貓到家指南**\n\n**第一天最重要：給空間！**\n\n1. **準備「安全小房間」** — 先讓牠在一個小空間適應\n2. **不要強迫互動** — 讓牠自己決定何時出來\n3. **食水砂盆放齊** — 都放在房間內\n4. **保持安靜** — 第一週避免大聲音或陌生人\n\n**適應時間**\n- 膽大的貓：1-3 天\n- 一般貓：1-2 週\n- 膽小的貓：1-2 個月\n\n**注意事項**\n✅ 讓牠聞你的手背（不要伸手指）\n✅ 說話聲音輕柔\n❌ 不要盯著牠的眼睛\n❌ 不要追著牠跑\n\n💡 耐心是關鍵，信任需要時間建立！’;
+}
+if(q.match(/多貓|兩隻|第二隻|新貓|介紹|認識/)){
+return ‘🐱 **多貓家庭相處指南**\n\n**引入新貓的步驟（重要！）**\n\n1. **氣味交換**（第1-3天）\n   - 用毛巾擦新貓，放在原住貓旁邊\n2. **聲音接觸**（第4-7天）\n   - 隔著門讓牠們聽到彼此\n3. **視覺接觸**（第2週）\n   - 用門縫或貓門讓牠們看到對方\n4. **正式見面**（第3週）\n   - 在中性空間短暫接觸\n\n**多貓資源配置**\n- 砂盆：每貓 + 1個\n- 碗：分開放，避免競爭\n- 高處空間：讓貓咪有自己的領域\n\n💡 急著讓牠們見面是最常犯的錯誤，慢慢來成功率高很多！’;
+}
+
+// Fallback - general helpful response
+var fallbacks=[
+‘🐱 這是個好問題！\n\n關於這個主題，我建議：\n- **觀察貓咪的整體狀態**：食慾、精神、活動力是否正常\n- **記錄行為發生的頻率和時間**\n- **如果有任何異常，及早諮詢獸醫**\n\n你可以問我更具體的問題，例如貓咪的特定行為、飲食、健康症狀等，我會給你更詳細的分析！’,
+‘🐱 感謝你的問題！\n\n作為寵物主人，你的細心觀察很重要。以下是一些通用建議：\n\n**日常健康檢查**\n- 每天觀察食水攝取量\n- 注意排泄是否正常\n- 檢查眼睛、鼻子、耳朵有無分泌物\n\n**定期預防**\n- 每年健康檢查 + 疫苗\n- 每月體外驅蟲\n- 每季體內驅蟲\n\n想了解更多具體問題嗎？告訴我貓咪的狀況，我來幫你分析！’,
+‘🐾 我來幫你解答！\n\n請告訴我更多細節，例如：\n- 貓咪幾歲？\n- 這個情況什麼時候開始？\n- 有其他異常症狀嗎？\n\n這樣我可以給你更準確的分析和建議。’
+];
+return fallbacks[Math.floor(Math.random()*fallbacks.length)];
+}
+
+// ════ VIRTUAL CAT ════
+var vcatState={
+mood:‘idle’,
+name:‘小喵’,
+color:’#f5a623’,
+eyeColor:’#1a1a2e’,
+blinking:false,
+earTwitch:0,
+bubbleTimer:null,
+frame:0,
+jumpY:0, jumpV:0, isJumping:false,
+tailWag:1,
+pawUp:false, pawTimer:0,
+particles:[],
+heartTimer:0
+};
+
+var MOODS={
+idle:    {label:‘😊 好奇’,bubble:[‘喵～有問題嗎？’,‘我在這裡！’,‘摸摸我？’,‘今天你的貓咪還好嗎？’,‘有什麼想問我的？’],tail:0.8,blink:0.012,color:’#f5a623’},
+happy:   {label:‘🎉 開心’,bubble:[‘太好了！分析完成！’,‘喵喵喵♪ 很高興幫到你！’,‘這個我最擅長！’,‘你的貓咪很幸運有你！’,‘掌聲鼓勵！’],tail:2.5,blink:0.004,color:’#3ecf8e’},
+thinking:{label:‘🤔 思考中’,bubble:[‘讓我想想…’,‘嗯…這個問題很有趣’,‘分析中，請稍候～’,‘認真思考貓咪的心情中…’,‘喵…稍等一下’],tail:0.3,blink:0.025,color:’#9b8fef’},
+worried: {label:‘😟 擔心’,bubble:[‘這個要注意喔！’,‘建議諮詢獸醫！’,‘貓咪可能需要幫助’,‘請密切觀察貓咪’,‘如果嚴重請就醫！’],tail:0.2,blink:0.05,color:’#f26d6d’},
+sleeping:{label:‘😴 打盹’,bubble:[‘zZz…’,‘呼～呼～’,’(在做貓夢…)’,‘zzz 不要吵我…’],tail:0.05,blink:0,color:’#8899bb’},
+excited: {label:‘🌟 興奮’,bubble:[‘哇！這太有趣了！’,‘喵喵喵！！’,‘我超了解這個！’,‘太棒了！’,‘貓咪好厲害！’],tail:3,blink:0.003,color:’#ffd700’},
+};
+
+function drawCat(){
+var cv=document.getElementById(‘vcat-canvas’);
+if(!cv)return;
+var ctx=cv.getContext(‘2d’);
+var W=176,H=176;
+ctx.clearRect(0,0,W,H);
+
+var m=MOODS[vcatState.mood]||MOODS.idle;
+var col=vcatState.color||m.color;
+var f=vcatState.frame;
+
+// ── jump/bounce physics ──
+var by=0;
+if(vcatState.isJumping){
+vcatState.jumpV+=0.7;
+vcatState.jumpY+=vcatState.jumpV;
+if(vcatState.jumpY>=0){vcatState.jumpY=0;vcatState.jumpV=0;vcatState.isJumping=false;}
+by=vcatState.jumpY;
+} else if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
+by=Math.sin(f*0.2)*4;
+}
+
+var cx=88, cy=96+by;
+
+// ── particles (hearts/stars) ──
+vcatState.particles=vcatState.particles.filter(function(p){return p.life>0;});
+vcatState.particles.forEach(function(p){
+ctx.globalAlpha=p.life/30;
+ctx.font=(14+p.size)+‘px serif’;
+ctx.fillText(p.sym, p.x, p.y);
+p.x+=p.vx; p.y+=p.vy; p.vy-=0.15; p.life–;
+});
+ctx.globalAlpha=1;
+
+// ── TAIL ──
+ctx.save();
+ctx.translate(cx+24,cy+20);
+var tailSpeed=m.tail||0.8;
+var ta=Math.sin(f*tailSpeed*0.1)*0.7;
+ctx.rotate(ta);
+ctx.beginPath();
+ctx.moveTo(0,0);
+ctx.bezierCurveTo(28,12, 36,-10, 22,-28);
+ctx.lineWidth=7; ctx.strokeStyle=col; ctx.lineCap=‘round’; ctx.lineJoin=‘round’;
+ctx.stroke();
+// tail tip
+ctx.beginPath(); ctx.arc(22,-28,4,0,Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+ctx.restore();
+
+// ── BODY ──
+ctx.beginPath();
+ctx.ellipse(cx, cy+10, 28, 22, 0, 0, Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+// belly patch
+ctx.beginPath();
+ctx.ellipse(cx, cy+14, 16, 14, 0, 0, Math.PI*2);
+ctx.fillStyle=‘rgba(255,255,255,.25)’; ctx.fill();
+
+// ── FRONT PAWS ──
+var pawBob=Math.sin(f*0.15)*2;
+if(vcatState.pawUp){
+// waving paw
+ctx.save();
+ctx.translate(cx+20, cy+26);
+ctx.rotate(Math.sin(f*0.3)*0.5-0.8);
+ctx.beginPath(); ctx.ellipse(0,0,7,5,0,0,Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+ctx.restore();
+// other paw normal
+ctx.beginPath(); ctx.ellipse(cx-20, cy+30+pawBob, 7, 5, 0.2, 0, Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+} else {
+[-20,20].forEach(function(ox){
+ctx.beginPath(); ctx.ellipse(cx+ox, cy+30+pawBob, 7, 5, ox>0?0.2:-0.2, 0, Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+});
+}
+
+// ── HEAD ──
+ctx.beginPath();
+ctx.arc(cx, cy-20, 26, 0, Math.PI*2);
+ctx.fillStyle=col; ctx.fill();
+
+// ── EARS ──
+var et=Math.sin(f*0.06)*vcatState.earTwitch*8;
+[[cx-17,cy-42,-0.35],[cx+17,cy-42,0.35]].forEach(function(e,i){
+ctx.save();
+ctx.translate(e[0],e[1]);
+ctx.rotate(e[2]+et*(i===0?1:-1)*0.05);
+// outer ear
+ctx.beginPath();
+ctx.moveTo(0,2); ctx.lineTo(-9,-16); ctx.lineTo(9,-16);
+ctx.closePath(); ctx.fillStyle=col; ctx.fill();
+// inner ear (pink)
+ctx.beginPath();
+ctx.moveTo(0,-1); ctx.lineTo(-5,-12); ctx.lineTo(5,-12);
+ctx.closePath(); ctx.fillStyle=‘rgba(255,160,180,.7)’; ctx.fill();
+ctx.restore();
+});
+
+// ── EYES ──
+var eyeOpen=vcatState.blinking?0:1;
+if(vcatState.mood===‘sleeping’) eyeOpen=0;
+[cx-10,cx+10].forEach(function(ex){
+if(eyeOpen){
+// eye white
+ctx.beginPath();
+ctx.ellipse(ex, cy-22, 6, 7, 0, 0, Math.PI*2);
+ctx.fillStyle=’#fff’; ctx.fill();
+// pupil - vertical slit for worried, round for happy
+if(vcatState.mood===‘worried’){
+ctx.beginPath();
+ctx.ellipse(ex, cy-22, 2, 6, 0, 0, Math.PI*2);
+} else if(vcatState.mood===‘excited’||vcatState.mood===‘happy’){
+ctx.beginPath();
+ctx.ellipse(ex, cy-22, 5, 6, 0, 0, Math.PI*2);
+} else {
+ctx.beginPath();
+ctx.ellipse(ex, cy-22, 3, 5.5, 0, 0, Math.PI*2);
+}
+ctx.fillStyle=vcatState.eyeColor; ctx.fill();
+// shine dots
+ctx.beginPath(); ctx.arc(ex+2,cy-24,1.5,0,Math.PI*2);
+ctx.fillStyle=‘rgba(255,255,255,.9)’; ctx.fill();
+ctx.beginPath(); ctx.arc(ex-1,cy-21,0.8,0,Math.PI*2);
+ctx.fillStyle=‘rgba(255,255,255,.5)’; ctx.fill();
+// thinking: swirl
+if(vcatState.mood===‘thinking’){
+ctx.save();
+ctx.strokeStyle=‘rgba(155,143,239,.7)’;
+ctx.lineWidth=1.2;
+ctx.beginPath();
+ctx.arc(ex,cy-22,3,0,Math.PI*1.5);
+ctx.stroke();
+ctx.restore();
+}
+} else if(vcatState.mood===‘sleeping’){
+// sleeping ZZZ eyes
+ctx.beginPath(); ctx.moveTo(ex-5,cy-22); ctx.lineTo(ex+5,cy-22);
+ctx.lineWidth=2; ctx.strokeStyle=’#888’; ctx.lineCap=‘round’; ctx.stroke();
+ctx.beginPath(); ctx.moveTo(ex-3,cy-25); ctx.lineTo(ex+3,cy-25);
+ctx.lineWidth=1.5; ctx.stroke();
+} else {
+// blink
+ctx.beginPath();
+ctx.arc(ex, cy-22, 5, Math.PI, 0);
+ctx.lineWidth=2; ctx.strokeStyle=’#555’; ctx.lineCap=‘round’; ctx.stroke();
+}
+});
+
+// ── CHEEK BLUSH ──
+if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
+ctx.globalAlpha=0.3+Math.sin(f*0.1)*0.1;
+ctx.beginPath(); ctx.ellipse(cx-18,cy-12,7,4,0.3,0,Math.PI*2);
+ctx.beginPath(); ctx.ellipse(cx+18,cy-12,7,4,-0.3,0,Math.PI*2);
+ctx.fillStyle=’#ff9999’; ctx.fill();
+ctx.globalAlpha=1;
+}
+
+// ── NOSE ──
+ctx.beginPath();
+ctx.moveTo(cx,cy-15); ctx.lineTo(cx-3,cy-11); ctx.lineTo(cx+3,cy-11);
+ctx.closePath(); ctx.fillStyle=’#e8758a’; ctx.fill();
+
+// ── MOUTH ──
+ctx.lineWidth=2; ctx.lineCap=‘round’; ctx.strokeStyle=‘rgba(80,50,50,.7)’;
+if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
+ctx.beginPath();
+ctx.moveTo(cx-7,cy-8); ctx.quadraticCurveTo(cx,cy-4,cx+7,cy-8);
+ctx.stroke();
+// happy teeth
+ctx.beginPath(); ctx.moveTo(cx-3,cy-7); ctx.lineTo(cx-3,cy-5);
+ctx.lineWidth=1.5; ctx.stroke();
+ctx.beginPath(); ctx.moveTo(cx+3,cy-7); ctx.lineTo(cx+3,cy-5);
+ctx.stroke();
+} else if(vcatState.mood===‘worried’){
+ctx.beginPath();
+ctx.moveTo(cx-6,cy-5); ctx.quadraticCurveTo(cx,cy-9,cx+6,cy-5);
+ctx.stroke();
+} else if(vcatState.mood===‘sleeping’){
+ctx.beginPath();
+ctx.moveTo(cx-5,cy-8); ctx.lineTo(cx+5,cy-8);
+ctx.stroke();
+} else {
+ctx.beginPath();
+ctx.moveTo(cx-5,cy-8); ctx.quadraticCurveTo(cx,cy-5,cx+5,cy-8);
+ctx.stroke();
+}
+
+// ── WHISKERS ──
+var wAlpha=vcatState.mood===‘sleeping’?0.2:0.45;
+ctx.lineWidth=1.2; ctx.lineCap=‘round’;
+[[-1,-2],[-1,0],[-1,2],[1,-2],[1,0],[1,2]].forEach(function(w){
+ctx.beginPath();
+var wx=cx+(w[0]<0?-4:4);
+var wy=cy-13;
+ctx.moveTo(wx, wy+w[1]);
+ctx.lineTo(cx+(w[0]<0?-28:28), wy+w[1]*3);
+ctx.strokeStyle=‘rgba(200,200,220,’+wAlpha+’)’; ctx.stroke();
+});
+
+// ── SLEEPING ZZZ ──
+if(vcatState.mood===‘sleeping’){
+var zAlpha=(Math.sin(f*0.04)+1)/2;
+ctx.globalAlpha=zAlpha;
+ctx.font=‘bold 14px serif’; ctx.fillStyle=’#aac’;
+ctx.fillText(‘z’, cx+28, cy-30-Math.sin(f*0.04)*5);
+ctx.font=‘bold 10px serif’;
+ctx.fillText(‘z’, cx+36, cy-42-Math.sin(f*0.04)*3);
+ctx.globalAlpha=1;
+}
+
+vcatState.frame++;
+}
+
+function vcatTick(){
+var m=MOODS[vcatState.mood]||MOODS.idle;
+if(!vcatState.blinking && Math.random()<(m.blink||0.01)){
+vcatState.blinking=true;
+setTimeout(function(){vcatState.blinking=false;},120);
+}
+if(Math.random()<0.006) vcatState.earTwitch=1;
+else if(vcatState.earTwitch>0) vcatState.earTwitch=Math.max(0,vcatState.earTwitch-0.08);
+// paw wave timer
+if(vcatState.pawTimer>0){ vcatState.pawTimer–; if(vcatState.pawTimer===0) vcatState.pawUp=false; }
+// random jump when excited/happy
+if(!vcatState.isJumping && (vcatState.mood===‘excited’||vcatState.mood===‘happy’) && Math.random()<0.003){
+vcatState.isJumping=true; vcatState.jumpV=-8;
+// spawn hearts
+for(var i=0;i<4;i++){
+vcatState.particles.push({sym:[‘❤️’,‘✨’,‘🌟’,‘💕’][i%4],x:70+Math.random()*36,y:60,vx:(Math.random()-0.5)*2,vy:-2-Math.random()*2,life:30,size:Math.random()*4});
+}
+}
+drawCat();
+requestAnimationFrame(vcatTick);
+}
+
+function vcatSay(msg, durationMs){
+var b=document.getElementById(‘vcat-bubble’);
+if(!b)return;
+if(vcatState.bubbleTimer)clearTimeout(vcatState.bubbleTimer);
+b.textContent=msg;
+b.classList.add(‘show’);
+vcatState.bubbleTimer=setTimeout(function(){b.classList.remove(‘show’);},durationMs||3500);
+}
+
+function updateVirtualCat(replyText){
+if(!replyText)return;
+var mood=‘happy’;
+var txt=replyText;
+if(txt.match(/高風險|緊急|立即就醫|馬上就醫/)){
+mood=‘worried’;
+} else if(txt.match(/就醫|獸醫|建議就醫|請就醫/)){
+mood=‘worried’;
+} else if(txt.match(/壓力指數.*[6-9][0-9]|壓力指數.*100/)){
+mood=‘worried’;
+} else if(txt.match(/正常|健康|沒問題|放心|這是正常/)){
+mood=‘excited’;
+} else if(txt.match(/分析完成|行為解析|建議|改善|太好了|很開心/)){
+mood=‘happy’;
+} else if(txt.match(/踩奶|呼嚕|玩耍|親近|信任|快樂|開心/)){
+mood=‘excited’;
+}
+vcatState.mood=mood;
+vcatState.color=MOODS[mood].color;
+var phrases=MOODS[mood].bubble;
+vcatSay(phrases[Math.floor(Math.random()*phrases.length)], 5000);
+// update badge
+var badge=document.getElementById(‘vcat-mood-badge’);
+if(badge) badge.textContent=MOODS[mood].label;
+}
+
+function vcatClick(){
+vcatState.mood=‘excited’;
+vcatState.color=MOODS.excited.color;
+vcatState.pawUp=true; vcatState.pawTimer=80;
+vcatState.isJumping=true; vcatState.jumpV=-10;
+var greets=[‘喵！你點我了！’,‘摸摸頭～♪’,‘我是 PawSense 小助理！’,‘喵喵喵！！’,‘有什麼想問我的嗎？’,‘我可以分析貓咪行為喔！’];
+vcatSay(greets[Math.floor(Math.random()*greets.length)],4000);
+var badge=document.getElementById(‘vcat-mood-badge’);
+if(badge) badge.textContent=MOODS.excited.label;
+}
+
+function initVCat(){
+var wrap=document.getElementById(‘vcat-wrap’);
+var cv=document.getElementById(‘vcat-canvas’);
+if(!cv||!wrap)return;
+cv.addEventListener(‘click’,vcatClick);
+wrap.style.display=‘none’; // hidden until paws-app opens
+// Start animation loop
+vcatTick();
+// Random idle chatter every 11s
+setInterval(function(){
+if(wrap.style.display!==‘none’ && (vcatState.mood===‘idle’||vcatState.mood===‘happy’)){
+var p=MOODS[vcatState.mood].bubble;
+vcatSay(p[Math.floor(Math.random()*p.length)],3500);
+if(Math.random()<0.3){ vcatState.pawUp=true; vcatState.pawTimer=50; }
+}
+},11000);
+}
+
 // ══ BOOT ══
 function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent(‘general’);}
 (function boot(){
@@ -1473,9 +1919,17 @@ DB.users.push({name:‘我’,email:‘local’,pw:’’,cats:[],records:[],ses
 DB.cur=‘local’;saveDB();
 }
 initApp();
+initVCat();
 })();
 </script>
 
+</div>
+
+<div id="vcat-wrap">
+  <div class="vcat-bubble" id="vcat-bubble">喵～</div>
+  <div id="vcat"><canvas id="vcat-canvas" width="176" height="176"></canvas></div>
+  <div class="vcat-name" id="vcat-name">小喵</div>
+  <div class="vcat-mood-badge" id="vcat-mood-badge">😊 開心</div>
 </div>
 
 <script>
@@ -1483,17 +1937,28 @@ initApp();
 function showPawSense() {
   var pp = document.getElementById('portfolio-page');
   var pa = document.getElementById('paws-app');
+  var vw = document.getElementById('vcat-wrap');
   pp.classList.add('hiding');
   setTimeout(function() {
     pp.style.display = 'none';
     pa.classList.add('active');
     document.body.style.overflow = 'hidden';
+    // Show virtual cat
+    if(vw) vw.style.display='flex';
+    setTimeout(function(){
+      if(typeof vcatSay==='function'){
+        vcatSay('喵～歡迎使用 PawSense！🐾',5000);
+        vcatState.pawUp=true; vcatState.pawTimer=60;
+      }
+    },400);
   }, 320);
 }
 function showPortfolio() {
   var pp = document.getElementById('portfolio-page');
   var pa = document.getElementById('paws-app');
+  var vw = document.getElementById('vcat-wrap');
   pa.classList.remove('active');
+  if(vw) vw.style.display='none';
   pp.style.display = '';
   setTimeout(function() { pp.classList.remove('hiding'); }, 20);
   document.body.style.overflow = '';
@@ -1905,11 +2370,11 @@ async function sendMsg(){
     catInfo='\n\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'，'+c.gender+'）';}).join('、');
   }
   var langInstr=curLang==='en'?'Please respond in English only.':'請用繁體中文回答。';
-  var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊，遇到需要即時資訊的問題請主動搜尋。回答要具體有用，用 **粗體** 標示重點，必要時條列整理，結尾可補充 1 個延伸小知識。\n\n'+langInstr+catInfo;
+  var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n'+langInstr+catInfo;
   if(chatMode==='analyze'){
     var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
     if(sc2)sys+='\n\n目前分析對象：'+sc2.name+'（'+sc2.breed+'，'+sc2.age+'）';
-    sys+='\n\n進行行為分析時請搜尋最新獸醫文獻，回覆須包含：\n【行為解析】\n【情緒評估】\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】\n【何時就醫】';
+    sys+='\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。';
   }
   if(chatMode==='report'&&u&&u.records&&u.records.length){
     var lr=u.records[u.records.length-1];
@@ -1927,42 +2392,9 @@ async function sendMsg(){
     chatHist.push({role:'user',content:txt});
   }
   try{
-    // 加入 web_search 工具，讓 AI 可以搜尋最新資料
-    var body={
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1500,
-      system:sys,
-      messages:chatHist.slice(-12),
-      tools:[{type:'web_search_20250305',name:'web_search'}]
-    };
-    var reply='';
-    // tool_use 循環 - 最多 8 次
-    for(var loop=0;loop<8;loop++){
-      var res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify(body)
-      });
-      if(!res.ok){var et=await res.text();throw new Error('HTTP '+res.status);}
-      var data=await res.json();
-      if(data.error)throw new Error(data.error.message||'API 錯誤');
-      var allBlocks=data.content||[];
-      var textBlocks=allBlocks.filter(function(b){return b.type==='text';});
-      var toolBlocks=allBlocks.filter(function(b){return b.type==='tool_use';});
-      // AI 想使用工具 - 回傳結果繼續
-      if(data.stop_reason==='tool_use'&&toolBlocks.length){
-        body.messages=body.messages.concat([{role:'assistant',content:allBlocks}]);
-        var toolResults=toolBlocks.map(function(b){
-          return {type:'tool_result',tool_use_id:b.id,content:[{type:'text',text:'搜尋完成，請根據你的知識回答。'}]};
-        });
-        body.messages=body.messages.concat([{role:'user',content:toolResults}]);
-        continue;
-      }
-      // 取得文字回覆
-      reply=textBlocks.map(function(b){return b.text;}).join('\n').trim();
-      break;
-    }
-    if(!reply)throw new Error('AI 未返回文字');
+    // Groq API call (OpenAI-compatible)
+    var reply=staticAI(txt,sys,chatMode);
+    await new Promise(function(r){setTimeout(r,600+Math.random()*800);});
     chatHist.push({role:'assistant',content:reply});
     removeEl(tid);
     var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[\/／]\s*100/);
@@ -1976,32 +2408,62 @@ async function sendMsg(){
       u.records.push(rec);saveDB();
       var am={role:'assistant',type:'result',content:reply,rd:rec,qr:['再問一個問題','繼續分析']};
       sessMsgs.push(am);appendMsgEl(am,true);
+      updateVirtualCat(reply);
     } else {
       pushAI(reply,[]);
+      updateVirtualCat(reply);
     }
     saveSess(null);
   }catch(err){
-    removeEl(tid);
     var errMsg=err.message||'';
     var u2=curU();
-    // 分析錯誤類型，給出具體引導
-    if(!u2||!u2.cats||!u2.cats.length){
-      pushAI('📋 **還沒有貓咪資料！**\n\n在進行行為分析之前，需要先建立貓咪的基本資料。\n\n請告訴我：\n- **貓咪的名字**是什麼？',['幫我新增貓咪']);
-    } else if(errMsg.includes('HTTP 401')||errMsg.includes('401')){
-      pushAI('🔑 **API 金鑰無效**\n\n無法連接到 AI 服務，請確認 API 金鑰是否正確。',['重新嘗試']);
+    // 401/429/5xx/network: real errors - show message
+    if(errMsg.includes('HTTP 401')||errMsg.includes('401')){
+      removeEl(tid);
+      removeEl(tid);pushAI('🔑 **連線失敗**\n\n請稍後再試。',['重新嘗試']);saveSess(null);return;
+      saveSess(null);return;
     } else if(errMsg.includes('HTTP 429')||errMsg.includes('429')){
+      removeEl(tid);
       pushAI('⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。',['稍後再試']);
+      saveSess(null);return;
     } else if(errMsg.includes('HTTP 5')||errMsg.includes('500')||errMsg.includes('503')){
+      removeEl(tid);
       pushAI('🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。',['重新嘗試']);
-    } else if(errMsg.includes('fetch')||errMsg.includes('network')||errMsg.includes('Failed')){
-      pushAI('📡 **網路連線問題**\n\n無法連接到 AI 服務，請確認：\n- 網路是否正常？\n- 是否需要重新整理頁面？',['重新嘗試']);
-    } else if(chatMode==='analyze'&&(!txt||txt.trim().length<10)){
-      pushAI('📝 **描述太短了！**\n\n為了準確分析貓咪的行為，請提供更多細節：\n\n- 行為**發生的時間**？\n- 行為**持續多久**？\n- 當時**環境**是什麼樣子？\n- 最近**有什麼變化**嗎？',[]);
-    } else {
-      // 通用錯誤 - 引導使用者補充資訊
-      pushAI('🤔 **需要更多資訊才能回答**\n\n我無法理解這個問題，可以換個方式描述嗎？\n\n例如：\n- 貓咪**具體做了什麼**？\n- **什麼時候**發生的？\n- 這個情況**持續多久**了？',['重新描述','換個問題']);
+      saveSess(null);return;
+    } else if(errMsg.includes('fetch')||errMsg.includes('network')||errMsg.includes('Failed to fetch')){
+      removeEl(tid);
+      pushAI('📡 **網路連線問題**\n\n請確認網路後再試一次。',['重新嘗試']);
+      saveSess(null);return;
     }
-    saveSess(null);
+    // Static mode fallback (should not reach here)
+    try{
+      var reply2=staticAI(txt,sys,chatMode);
+      await new Promise(function(r){setTimeout(r,400);});
+      if(!reply2){removeEl(tid);pushAI('⚠️ AI 未回應，請重新描述。',['重新嘗試']);saveSess(null);return;}
+      chatHist.push({role:'assistant',content:reply2});
+      removeEl(tid);
+      var sm2=reply2.match(/壓力指數[^\d]*(\d+)/)||reply2.match(/(\d+)\s*[\/／]\s*100/);
+      var rm2=reply2.match(/風險等級[^低中高]*(低|中|高)/)||reply2.match(/(低|中|高)風險/);
+      if(chatMode==='analyze'&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
+        var sl2=Math.min(100,Math.max(0,parseInt(sm2[1])));var risk2=rm2[1];
+        var cat2=(selCatId&&u2.cats.find(function(c){return c.id===selCatId;}))||u2.cats[0];
+        var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||'🐱',
+          date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+          inputText:txt,fullReport:reply2,sl:sl2,risk:risk2,rating:0};
+        u2.records.push(rec2);saveDB();
+        var am2={role:'assistant',type:'result',content:reply2,rd:rec2,qr:['再問一個問題','繼續分析']};
+        sessMsgs.push(am2);appendMsgEl(am2,true);
+        updateVirtualCat(reply2);
+      } else {
+        pushAI(reply2,[]);
+        updateVirtualCat(reply2);
+      }
+      saveSess(null);
+    }catch(err2){
+      removeEl(tid);
+      pushAI('📡 **無法連線**\n\n請確認網路後重新整理頁面。',['重新嘗試']);
+      saveSess(null);
+    }
   }
 }
 // ══ CAT FLOW ══
