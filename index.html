@@ -442,50 +442,38 @@ img{max-width:100%;height:auto;display:block;}
 .key-steps p{font-size:12px;color:var(–t2);line-height:1.9;margin:0}
 .key-steps strong{color:var(–t)}
 
-/* ════ CSS CAT ════ */
-#vcat{width:80px;cursor:pointer;transition:transform .2s;position:relative;user-select:none}
-#vcat:hover{transform:scale(1.1) translateY(-3px)}
-#vcat:active{transform:scale(.93)}
+/* ════ PHOTO CAT ════ */
+#vcat-wrap{position:fixed;right:14px;top:70px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
+#vcat{width:90px;cursor:pointer;transition:transform .25s cubic-bezier(.34,1.56,.64,1);position:relative;user-select:none}
+#vcat:hover{transform:scale(1.1) translateY(-4px)}
+#vcat:active{transform:scale(.92)}
 .vcat-body{display:flex;flex-direction:column;align-items:center;position:relative}
-.vcat-ears{display:flex;justify-content:space-between;width:56px;margin-bottom:-8px;position:relative;z-index:2}
-.vcat-ear{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:22px solid #f5a623;position:relative}
-.vcat-ear::after{content:’’;position:absolute;bottom:-18px;left:-7px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:14px solid rgba(255,160,180,.6)}
-.vcat-ear-l{transform:rotate(-10deg)}
-.vcat-ear-r{transform:rotate(10deg)}
-.vcat-head{width:60px;height:54px;background:#f5a623;border-radius:50% 50% 45% 45%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.3)}
-.vcat-eyes{display:flex;gap:14px;margin-top:4px}
-.vcat-eye{width:10px;height:12px;background:#1a1a2e;border-radius:50%;position:relative;transition:all .15s}
-.vcat-eye::after{content:’’;position:absolute;top:2px;right:2px;width:3px;height:3px;background:rgba(255,255,255,.9);border-radius:50%}
-.vcat-eye.blink{height:2px;border-radius:2px;margin-top:5px}
-.vcat-nose{width:8px;height:6px;background:#e8758a;border-radius:50% 50% 40% 40%;margin-top:3px}
-.vcat-mouth{font-size:14px;color:#333;margin-top:1px;line-height:1;transition:all .2s}
-.vcat-cheek{width:14px;height:8px;background:rgba(255,150,150,.35);border-radius:50%;position:absolute;top:30px}
-.vcat-cheek-l{left:4px}
-.vcat-cheek-r{right:4px}
-.vcat-torso{width:52px;height:38px;background:#f5a623;border-radius:40% 40% 50% 50%;margin-top:-4px;position:relative;box-shadow:0 3px 8px rgba(0,0,0,.2)}
-.vcat-torso::after{content:’’;position:absolute;inset:6px 10px;background:rgba(255,255,255,.18);border-radius:50%}
-.vcat-paw{font-size:12px;position:absolute;bottom:-6px;transition:all .3s}
-.vcat-paw-l{left:-4px;transform:rotate(-15deg)}
-.vcat-paw-r{right:-4px;transform:rotate(15deg)}
-.vcat-tail{width:8px;height:36px;background:#f5a623;border-radius:4px 4px 8px 8px;position:absolute;bottom:-30px;right:-14px;transform-origin:top center;animation:tailWag 1.5s ease-in-out infinite;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-@keyframes tailWag{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
-.vcat-body.mood-happy .vcat-tail{animation:tailWagFast .6s ease-in-out infinite}
-.vcat-body.mood-excited .vcat-tail{animation:tailWagFast .4s ease-in-out infinite}
-.vcat-body.mood-worried .vcat-tail{animation:tailWagSlow 3s ease-in-out infinite}
-.vcat-body.mood-sleeping .vcat-tail{animation:tailWagSlow 4s ease-in-out infinite;opacity:.6}
-@keyframes tailWagFast{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
-@keyframes tailWagSlow{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
-.vcat-body.mood-happy{animation:catBounce .5s ease-in-out infinite alternate}
+#vcat-photo{width:88px;height:88px;object-fit:cover;border-radius:50%;border:3px solid rgba(255,200,80,.6);box-shadow:0 4px 18px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);transition:all .3s}
+.vcat-body.mood-happy #vcat-photo,.vcat-body.mood-excited #vcat-photo{border-color:rgba(80,220,140,.7);box-shadow:0 4px 18px rgba(0,0,0,.45),0 0 14px rgba(80,220,140,.3)}
+.vcat-body.mood-worried #vcat-photo{border-color:rgba(240,100,100,.7);box-shadow:0 4px 18px rgba(0,0,0,.45),0 0 14px rgba(240,100,100,.3)}
+.vcat-body.mood-thinking #vcat-photo{border-color:rgba(155,143,239,.7);box-shadow:0 4px 18px rgba(0,0,0,.45),0 0 14px rgba(155,143,239,.3);animation:thinkSpin 3s linear infinite}
+.vcat-body.mood-sleeping #vcat-photo{opacity:.7;filter:saturate(.5)}
+.vcat-body.mood-happy{animation:catBounce .55s ease-in-out infinite alternate}
 .vcat-body.mood-excited{animation:catBounce .35s ease-in-out infinite alternate}
-@keyframes catBounce{from{transform:translateY(0)}to{transform:translateY(-5px)}}
-.vcat-body.mood-worried .vcat-eye{border-radius:50%;transform:scaleX(.6)}
-.vcat-body.mood-sleeping .vcat-eye{height:2px;border-radius:2px;margin-top:5px}
-.vcat-body.mood-thinking .vcat-eye{animation:eyeSpin 2s linear infinite}
-@keyframes eyeSpin{0%,100%{transform:scale(1)}50%{transform:scale(.7)}}
-#vcat-heart{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:18px;opacity:0;transition:all .5s;pointer-events:none}
-#vcat-heart.show{opacity:1;top:-30px}
+@keyframes catBounce{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@keyframes thinkSpin{0%,100%{border-radius:50%}50%{border-radius:46% 54% 52% 48%}}
+.vcat-zzz{position:absolute;top:-5px;right:-5px;font-size:13px;color:#aac;opacity:0;font-weight:bold;pointer-events:none}
+.vcat-body.mood-sleeping .vcat-zzz{animation:floatZzz 2.2s ease-in-out infinite}
+@keyframes floatZzz{0%{opacity:0;transform:translateY(0) scale(.7)}40%{opacity:1}100%{opacity:0;transform:translateY(-16px) scale(1.1)}}
+.vcat-heart{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:16px;opacity:0;transition:all .5s;pointer-events:none}
+.vcat-heart.show{opacity:1;top:-24px}
+.vcat-bubble{background:rgba(20,20,32,.96);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 16px 5px;padding:10px 14px;font-size:12px;color:#e8e8ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
+.vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
+.vcat-name{font-size:10px;color:rgba(255,255,255,.38);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px;margin-top:2px}
+.vcat-mood-badge{font-size:9px;background:rgba(255,255,255,.07);border-radius:8px;padding:2px 8px;color:rgba(255,255,255,.38);margin-top:1px}
 
+/* ════ VCAT UPLOAD ════ */
+#vcat-upload-input{display:none}
+
+#vcat-upload-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:‘Space Mono’,monospace;margin-top:2px;transition:all .2s}
+#vcat-upload-btn:hover{background:rgba(255,255,255,.18);color:rgba(255,255,255,.8)}
 </style>
+
 </head>
 <body>
 
@@ -1641,43 +1629,13 @@ sleeping:{label:‘😴 打盹’,  color:’#8899bb’,mouth:’_’, bubble:[�
 function setVcatMood(mood){
 vcatMood=mood;
 var m=MOODS[mood]||MOODS.idle;
-// update body class
-var body=document.querySelector(’.vcat-body’);
-if(body){
-body.className=‘vcat-body mood-’+mood;
-// update colors
-var head=body.querySelector(’.vcat-head’);
-var torso=body.querySelector(’.vcat-torso’);
-var tail=body.querySelector(’.vcat-tail’);
-var ears=body.querySelectorAll(’.vcat-ear’);
-[head,torso,tail].forEach(function(el){if(el)el.style.background=m.color;});
-ears.forEach(function(el){el.style.borderBottomColor=m.color;});
-// update mouth
-var mouth=document.getElementById(‘vcat-mouth’);
-if(mouth) mouth.textContent=m.mouth;
-// cheeks visible when happy/excited
-var cheeks=body.querySelectorAll(’.vcat-cheek’);
-cheeks.forEach(function(c){c.style.opacity=(mood===‘happy’||mood===‘excited’)?‘1’:‘0’;});
-// eyes
-var eyes=body.querySelectorAll(’.vcat-eye’);
-eyes.forEach(function(e){
-e.classList.remove(‘blink’);
-if(mood===‘sleeping’) e.classList.add(‘blink’);
-});
-}
-// update badge
+var body=document.getElementById(‘vcat-body-el’);
+if(body) body.className=‘vcat-body mood-’+mood;
 var badge=document.getElementById(‘vcat-mood-badge’);
 if(badge) badge.textContent=m.label;
 }
 
-function vcatBlink(){
-var eyes=document.querySelectorAll(’.vcat-eye’);
-eyes.forEach(function(e){e.classList.add(‘blink’);});
-setTimeout(function(){
-eyes.forEach(function(e){e.classList.remove(‘blink’);});
-if(vcatMood===‘sleeping’) eyes.forEach(function(e){e.classList.add(‘blink’);});
-},130);
-}
+function vcatBlink(){}
 
 function vcatSay(msg, durationMs){
 var b=document.getElementById(‘vcat-bubble’);
@@ -1689,14 +1647,11 @@ vcatBubbleTimer=setTimeout(function(){b.classList.remove(‘show’);},durationM
 }
 
 function vcatWave(){
-var paw=document.getElementById(‘vcat-paw-r’);
-if(!paw)return;
-paw.style.transform=‘rotate(-60deg) translateY(-8px)’;
-paw.style.fontSize=‘16px’;
-setTimeout(function(){
-paw.style.transform=‘rotate(15deg)’;
-paw.style.fontSize=‘12px’;
-},800);
+var heart=document.getElementById(‘vcat-heart-el’);
+if(!heart)return;
+heart.textContent=[‘❤️’,‘✨’,‘🌟’,‘😸’][Math.floor(Math.random()*4)];
+heart.classList.add(‘show’);
+setTimeout(function(){heart.classList.remove(‘show’);},800);
 }
 
 function updateVirtualCat(replyText){
@@ -1720,6 +1675,9 @@ vcatWave();
 var greets=[‘喵！你點我了！’,‘摸摸頭～♪’,‘我是 PawSense 小助理！’,‘喵喵喵！！’,‘有什麼想問我的嗎？’];
 vcatSay(greets[Math.floor(Math.random()*greets.length)],4000);
 }
+function vcatUploadPhoto(){
+document.getElementById(‘vcat-upload-input’).click();
+}
 
 function initVCat(){
 var wrap=document.getElementById(‘vcat-wrap’);
@@ -1740,6 +1698,58 @@ vcatSay(p[Math.floor(Math.random()*p.length)],3500);
 if(Math.random()<0.4) vcatWave();
 }
 },11000);
+
+// Photo upload logic
+var uploadInput=document.getElementById(‘vcat-upload-input’);
+var vcatPhoto=document.getElementById(‘vcat-photo’);
+if(uploadInput && vcatPhoto){
+uploadInput.addEventListener(‘change’,function(e){
+var file=e.target.files[0];
+if(!file)return;
+var reader=new FileReader();
+reader.onload=function(ev){
+var img=new Image();
+img.onload=function(){
+// Smart face crop: detect face-like region (upper-center of image)
+var canvas=document.createElement(‘canvas’);
+var size=300;
+canvas.width=size; canvas.height=size;
+var ctx=canvas.getContext(‘2d’);
+var sw=img.width, sh=img.height;
+// Crop: take upper 60% of image, center horizontally
+var cropH=sh*0.62;
+var cropW=Math.min(sw, cropH);
+var cropX=(sw-cropW)/2;
+var cropY=0;
+ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, size, size);
+var src=canvas.toDataURL(‘image/jpeg’,0.82);
+try{localStorage.setItem(‘vcat_custom_photo’,src);}catch(err){}
+vcatPhoto.src=src;
+setVcatMood(‘excited’);
+vcatWave();
+vcatSay(‘好可愛！換成你的貓咪了！🐱’,5000);
+var nameEl=document.getElementById(‘vcat-name’);
+if(nameEl) nameEl.textContent=‘我的貓咪’;
+};
+img.src=ev.target.result;
+};
+reader.readAsDataURL(file);
+uploadInput.value=’’;
+});
+
+```
+// Load saved photo on boot
+try{
+  var saved=localStorage.getItem('vcat_custom_photo');
+  if(saved){
+    vcatPhoto.src=saved;
+    var nameEl=document.getElementById('vcat-name');
+    if(nameEl) nameEl.textContent='我的貓咪';
+  }
+}catch(err){}
+```
+
+}
 }
 
 // ══ BOOT ══
@@ -1761,30 +1771,16 @@ initVCat();
 <div id="vcat-wrap">
   <div class="vcat-bubble" id="vcat-bubble">喵～</div>
   <div id="vcat" onclick="vcatClick()">
-    <div class="vcat-body">
-      <div class="vcat-ears">
-        <div class="vcat-ear vcat-ear-l"></div>
-        <div class="vcat-ear vcat-ear-r"></div>
-      </div>
-      <div class="vcat-head">
-        <div class="vcat-eyes">
-          <div class="vcat-eye" id="vcat-eye-l"></div>
-          <div class="vcat-eye" id="vcat-eye-r"></div>
-        </div>
-        <div class="vcat-nose"></div>
-        <div class="vcat-mouth" id="vcat-mouth">ω</div>
-        <div class="vcat-cheek vcat-cheek-l"></div>
-        <div class="vcat-cheek vcat-cheek-r"></div>
-      </div>
-      <div class="vcat-torso">
-        <div class="vcat-paw vcat-paw-l" id="vcat-paw-l">🐾</div>
-        <div class="vcat-paw vcat-paw-r" id="vcat-paw-r">🐾</div>
-      </div>
-      <div class="vcat-tail" id="vcat-tail"></div>
+    <div class="vcat-body" id="vcat-body-el">
+      <img id="vcat-photo" src="data:image/jpeg;base64,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" alt="小喵">
+      <div class="vcat-zzz" id="vcat-zzz-el">z</div>
+      <div class="vcat-heart" id="vcat-heart-el"></div>
     </div>
   </div>
   <div class="vcat-name" id="vcat-name">小喵</div>
   <div class="vcat-mood-badge" id="vcat-mood-badge">😊 開心</div>
+  <button id="vcat-upload-btn" onclick="vcatUploadPhoto()">📷 換貓咪</button>
+  <input type="file" id="vcat-upload-input" accept="image/*">
 </div>
 
 <script>
