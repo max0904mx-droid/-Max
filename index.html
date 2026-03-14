@@ -1314,26 +1314,7 @@ updateVirtualCat(reply);
 }
 saveSess(null);
 }catch(err){
-var errMsg=err.message||’’;
 var u2=curU();
-// 401/429/5xx/network: real errors - show message
-if(errMsg.includes(‘HTTP 401’)||errMsg.includes(‘401’)){
-removeEl(tid);
-removeEl(tid);pushAI(‘🔑 **連線失敗**\n\n請稍後再試。’,[‘重新嘗試’]);saveSess(null);return;
-saveSess(null);return;
-} else if(errMsg.includes(‘HTTP 429’)||errMsg.includes(‘429’)){
-removeEl(tid);
-pushAI(‘⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。’,[‘稍後再試’]);
-saveSess(null);return;
-} else if(errMsg.includes(‘HTTP 5’)||errMsg.includes(‘500’)||errMsg.includes(‘503’)){
-removeEl(tid);
-pushAI(‘🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。’,[‘重新嘗試’]);
-saveSess(null);return;
-} else if(errMsg.includes(‘fetch’)||errMsg.includes(‘network’)||errMsg.includes(‘Failed to fetch’)){
-removeEl(tid);
-pushAI(‘📡 **網路連線問題**\n\n請確認網路後再試一次。’,[‘重新嘗試’]);
-saveSess(null);return;
-}
 // Static mode fallback (should not reach here)
 try{
 var reply2=staticAI(txt,sys,chatMode);
@@ -1360,7 +1341,12 @@ updateVirtualCat(reply2);
 saveSess(null);
 }catch(err2){
 removeEl(tid);
-pushAI(‘📡 **無法連線**\n\n請確認網路後重新整理頁面。’,[‘重新嘗試’]);
+// Last resort: try staticAI directly
+try{
+var r3=staticAI(txt,sys,chatMode);
+if(r3){pushAI(r3,[]);updateVirtualCat(r3);}
+else{pushAI(‘⚠️ 請重新描述你的問題。’,[‘重新嘗試’]);}
+}catch(e){pushAI(‘⚠️ 請重新描述你的問題。’,[‘重新嘗試’]);}
 saveSess(null);
 }
 }
@@ -2266,26 +2252,7 @@ async function sendMsg(){
     }
     saveSess(null);
   }catch(err){
-    var errMsg=err.message||'';
     var u2=curU();
-    // 401/429/5xx/network: real errors - show message
-    if(errMsg.includes('HTTP 401')||errMsg.includes('401')){
-      removeEl(tid);
-      removeEl(tid);pushAI('🔑 **連線失敗**\n\n請稍後再試。',['重新嘗試']);saveSess(null);return;
-      saveSess(null);return;
-    } else if(errMsg.includes('HTTP 429')||errMsg.includes('429')){
-      removeEl(tid);
-      pushAI('⏳ **請求太頻繁**\n\n請稍等幾秒後再試一次。',['稍後再試']);
-      saveSess(null);return;
-    } else if(errMsg.includes('HTTP 5')||errMsg.includes('500')||errMsg.includes('503')){
-      removeEl(tid);
-      pushAI('🔧 **伺服器暫時異常**\n\n服務端出現問題，請稍後再試。',['重新嘗試']);
-      saveSess(null);return;
-    } else if(errMsg.includes('fetch')||errMsg.includes('network')||errMsg.includes('Failed to fetch')){
-      removeEl(tid);
-      pushAI('📡 **網路連線問題**\n\n請確認網路後再試一次。',['重新嘗試']);
-      saveSess(null);return;
-    }
     // Static mode fallback (should not reach here)
     try{
       var reply2=staticAI(txt,sys,chatMode);
@@ -2312,7 +2279,12 @@ async function sendMsg(){
       saveSess(null);
     }catch(err2){
       removeEl(tid);
-      pushAI('📡 **無法連線**\n\n請確認網路後重新整理頁面。',['重新嘗試']);
+      // Last resort: try staticAI directly
+      try{
+        var r3=staticAI(txt,sys,chatMode);
+        if(r3){pushAI(r3,[]);updateVirtualCat(r3);}
+        else{pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
+      }catch(e){pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
       saveSess(null);
     }
   }
