@@ -412,13 +412,13 @@ img{max-width:100%;height:auto;display:block;}
 #paws-app.lang-en .qr{font-family:‘Dancing Script’,cursive;font-size:12px}
 
 /* ════ VIRTUAL CAT ════ */
-#vcat-wrap{position:fixed;left:14px;bottom:18px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
+#vcat-wrap{position:fixed;right:14px;top:70px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
 .vcat-bubble{background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:12px;color:#e0e0ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 4px 20px rgba(0,0,0,.3);backdrop-filter:blur(8px)}
 .vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
-#vcat{width:88px;height:88px;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 3px 8px rgba(60,100,200,.3))}
+#vcat{width:88px;height:88px;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 3px 8px rgba(60,100,200,.3));overflow:visible}
 #vcat:hover{transform:scale(1.1) translateY(-3px)}
 #vcat:active{transform:scale(.92)}
-#vcat canvas{width:88px;height:88px}
+#vcat canvas{width:88px;height:88px;display:block;border-radius:8px}
 .vcat-name{font-size:10px;color:rgba(255,255,255,.4);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px}
 .vcat-mood-badge{font-size:9px;background:rgba(255,255,255,.07);border-radius:8px;padding:2px 7px;color:rgba(255,255,255,.4);margin-top:1px}
 
@@ -1611,8 +1611,11 @@ function drawCat(){
 var cv=document.getElementById(‘vcat-canvas’);
 if(!cv)return;
 var ctx=cv.getContext(‘2d’);
-var W=176,H=176;
+var W=88,H=88;
 ctx.clearRect(0,0,W,H);
+// Debug: fill canvas background so we know it’s rendering
+ctx.fillStyle=‘rgba(255,200,100,.08)’;
+ctx.fillRect(0,0,W,H);
 
 var m=MOODS[vcatState.mood]||MOODS.idle;
 var col=vcatState.color||m.color;
@@ -1621,15 +1624,15 @@ var f=vcatState.frame;
 // ── jump/bounce physics ──
 var by=0;
 if(vcatState.isJumping){
-vcatState.jumpV+=0.7;
+vcatState.jumpV+=0.35;
 vcatState.jumpY+=vcatState.jumpV;
 if(vcatState.jumpY>=0){vcatState.jumpY=0;vcatState.jumpV=0;vcatState.isJumping=false;}
 by=vcatState.jumpY;
 } else if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
-by=Math.sin(f*0.2)*4;
+by=Math.sin(f*0.2)*2;
 }
 
-var cx=88, cy=96+by;
+var cx=44, cy=48+by;
 
 // ── particles (hearts/stars) ──
 vcatState.particles=vcatState.particles.filter(function(p){return p.life>0;});
@@ -1643,67 +1646,61 @@ ctx.globalAlpha=1;
 
 // ── TAIL ──
 ctx.save();
-ctx.translate(cx+24,cy+20);
+ctx.translate(cx+12,cy+10);
 var tailSpeed=m.tail||0.8;
 var ta=Math.sin(f*tailSpeed*0.1)*0.7;
 ctx.rotate(ta);
 ctx.beginPath();
 ctx.moveTo(0,0);
-ctx.bezierCurveTo(28,12, 36,-10, 22,-28);
-ctx.lineWidth=7; ctx.strokeStyle=col; ctx.lineCap=‘round’; ctx.lineJoin=‘round’;
+ctx.bezierCurveTo(14,6, 18,-5, 11,-14);
+ctx.lineWidth=3.5; ctx.strokeStyle=col; ctx.lineCap=‘round’; ctx.lineJoin=‘round’;
 ctx.stroke();
-// tail tip
-ctx.beginPath(); ctx.arc(22,-28,4,0,Math.PI*2);
+ctx.beginPath(); ctx.arc(11,-14,2,0,Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
 ctx.restore();
 
 // ── BODY ──
 ctx.beginPath();
-ctx.ellipse(cx, cy+10, 28, 22, 0, 0, Math.PI*2);
+ctx.ellipse(cx, cy+5, 14, 11, 0, 0, Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
-// belly patch
 ctx.beginPath();
-ctx.ellipse(cx, cy+14, 16, 14, 0, 0, Math.PI*2);
+ctx.ellipse(cx, cy+7, 8, 7, 0, 0, Math.PI*2);
 ctx.fillStyle=‘rgba(255,255,255,.25)’; ctx.fill();
 
 // ── FRONT PAWS ──
-var pawBob=Math.sin(f*0.15)*2;
+var pawBob=Math.sin(f*0.15)*1;
 if(vcatState.pawUp){
-// waving paw
 ctx.save();
-ctx.translate(cx+20, cy+26);
+ctx.translate(cx+10, cy+13);
 ctx.rotate(Math.sin(f*0.3)*0.5-0.8);
-ctx.beginPath(); ctx.ellipse(0,0,7,5,0,0,Math.PI*2);
+ctx.beginPath(); ctx.ellipse(0,0,3.5,2.5,0,0,Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
 ctx.restore();
-// other paw normal
-ctx.beginPath(); ctx.ellipse(cx-20, cy+30+pawBob, 7, 5, 0.2, 0, Math.PI*2);
+ctx.beginPath(); ctx.ellipse(cx-10, cy+15+pawBob, 3.5, 2.5, 0.2, 0, Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
 } else {
-[-20,20].forEach(function(ox){
-ctx.beginPath(); ctx.ellipse(cx+ox, cy+30+pawBob, 7, 5, ox>0?0.2:-0.2, 0, Math.PI*2);
+[-10,10].forEach(function(ox){
+ctx.beginPath(); ctx.ellipse(cx+ox, cy+15+pawBob, 3.5, 2.5, ox>0?0.2:-0.2, 0, Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
 });
 }
 
 // ── HEAD ──
 ctx.beginPath();
-ctx.arc(cx, cy-20, 26, 0, Math.PI*2);
+ctx.arc(cx, cy-10, 13, 0, Math.PI*2);
 ctx.fillStyle=col; ctx.fill();
 
 // ── EARS ──
 var et=Math.sin(f*0.06)*vcatState.earTwitch*8;
-[[cx-17,cy-42,-0.35],[cx+17,cy-42,0.35]].forEach(function(e,i){
+[[cx-8,cy-21,-0.35],[cx+8,cy-21,0.35]].forEach(function(e,i){
 ctx.save();
 ctx.translate(e[0],e[1]);
 ctx.rotate(e[2]+et*(i===0?1:-1)*0.05);
-// outer ear
 ctx.beginPath();
-ctx.moveTo(0,2); ctx.lineTo(-9,-16); ctx.lineTo(9,-16);
+ctx.moveTo(0,1); ctx.lineTo(-4,-8); ctx.lineTo(4,-8);
 ctx.closePath(); ctx.fillStyle=col; ctx.fill();
-// inner ear (pink)
 ctx.beginPath();
-ctx.moveTo(0,-1); ctx.lineTo(-5,-12); ctx.lineTo(5,-12);
+ctx.moveTo(0,0); ctx.lineTo(-2,-6); ctx.lineTo(2,-6);
 ctx.closePath(); ctx.fillStyle=‘rgba(255,160,180,.7)’; ctx.fill();
 ctx.restore();
 });
@@ -1711,101 +1708,74 @@ ctx.restore();
 // ── EYES ──
 var eyeOpen=vcatState.blinking?0:1;
 if(vcatState.mood===‘sleeping’) eyeOpen=0;
-[cx-10,cx+10].forEach(function(ex){
+[cx-5,cx+5].forEach(function(ex){
 if(eyeOpen){
-// eye white
 ctx.beginPath();
-ctx.ellipse(ex, cy-22, 6, 7, 0, 0, Math.PI*2);
+ctx.ellipse(ex, cy-11, 3, 3.5, 0, 0, Math.PI*2);
 ctx.fillStyle=’#fff’; ctx.fill();
-// pupil - vertical slit for worried, round for happy
 if(vcatState.mood===‘worried’){
-ctx.beginPath();
-ctx.ellipse(ex, cy-22, 2, 6, 0, 0, Math.PI*2);
+ctx.beginPath(); ctx.ellipse(ex, cy-11, 1, 3, 0, 0, Math.PI*2);
 } else if(vcatState.mood===‘excited’||vcatState.mood===‘happy’){
-ctx.beginPath();
-ctx.ellipse(ex, cy-22, 5, 6, 0, 0, Math.PI*2);
+ctx.beginPath(); ctx.ellipse(ex, cy-11, 2.5, 3, 0, 0, Math.PI*2);
 } else {
-ctx.beginPath();
-ctx.ellipse(ex, cy-22, 3, 5.5, 0, 0, Math.PI*2);
+ctx.beginPath(); ctx.ellipse(ex, cy-11, 1.5, 2.8, 0, 0, Math.PI*2);
 }
 ctx.fillStyle=vcatState.eyeColor; ctx.fill();
-// shine dots
-ctx.beginPath(); ctx.arc(ex+2,cy-24,1.5,0,Math.PI*2);
+ctx.beginPath(); ctx.arc(ex+1,cy-12,0.8,0,Math.PI*2);
 ctx.fillStyle=‘rgba(255,255,255,.9)’; ctx.fill();
-ctx.beginPath(); ctx.arc(ex-1,cy-21,0.8,0,Math.PI*2);
-ctx.fillStyle=‘rgba(255,255,255,.5)’; ctx.fill();
-// thinking: swirl
-if(vcatState.mood===‘thinking’){
-ctx.save();
-ctx.strokeStyle=‘rgba(155,143,239,.7)’;
-ctx.lineWidth=1.2;
-ctx.beginPath();
-ctx.arc(ex,cy-22,3,0,Math.PI*1.5);
-ctx.stroke();
-ctx.restore();
-}
 } else if(vcatState.mood===‘sleeping’){
-// sleeping ZZZ eyes
-ctx.beginPath(); ctx.moveTo(ex-5,cy-22); ctx.lineTo(ex+5,cy-22);
-ctx.lineWidth=2; ctx.strokeStyle=’#888’; ctx.lineCap=‘round’; ctx.stroke();
-ctx.beginPath(); ctx.moveTo(ex-3,cy-25); ctx.lineTo(ex+3,cy-25);
-ctx.lineWidth=1.5; ctx.stroke();
+ctx.beginPath(); ctx.moveTo(ex-3,cy-11); ctx.lineTo(ex+3,cy-11);
+ctx.lineWidth=1.5; ctx.strokeStyle=’#888’; ctx.lineCap=‘round’; ctx.stroke();
 } else {
-// blink
-ctx.beginPath();
-ctx.arc(ex, cy-22, 5, Math.PI, 0);
-ctx.lineWidth=2; ctx.strokeStyle=’#555’; ctx.lineCap=‘round’; ctx.stroke();
+ctx.beginPath(); ctx.arc(ex, cy-11, 2.5, Math.PI, 0);
+ctx.lineWidth=1.5; ctx.strokeStyle=’#555’; ctx.lineCap=‘round’; ctx.stroke();
 }
 });
 
 // ── CHEEK BLUSH ──
 if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
 ctx.globalAlpha=0.3+Math.sin(f*0.1)*0.1;
-ctx.beginPath(); ctx.ellipse(cx-18,cy-12,7,4,0.3,0,Math.PI*2);
-ctx.beginPath(); ctx.ellipse(cx+18,cy-12,7,4,-0.3,0,Math.PI*2);
+ctx.beginPath(); ctx.ellipse(cx-9,cy-6,3.5,2,0.3,0,Math.PI*2);
+ctx.fillStyle=’#ff9999’; ctx.fill();
+ctx.beginPath(); ctx.ellipse(cx+9,cy-6,3.5,2,-0.3,0,Math.PI*2);
 ctx.fillStyle=’#ff9999’; ctx.fill();
 ctx.globalAlpha=1;
 }
 
 // ── NOSE ──
 ctx.beginPath();
-ctx.moveTo(cx,cy-15); ctx.lineTo(cx-3,cy-11); ctx.lineTo(cx+3,cy-11);
+ctx.moveTo(cx,cy-7); ctx.lineTo(cx-1.5,cy-5); ctx.lineTo(cx+1.5,cy-5);
 ctx.closePath(); ctx.fillStyle=’#e8758a’; ctx.fill();
 
 // ── MOUTH ──
-ctx.lineWidth=2; ctx.lineCap=‘round’; ctx.strokeStyle=‘rgba(80,50,50,.7)’;
+ctx.lineWidth=1.2; ctx.lineCap=‘round’; ctx.strokeStyle=‘rgba(80,50,50,.7)’;
 if(vcatState.mood===‘happy’||vcatState.mood===‘excited’){
 ctx.beginPath();
-ctx.moveTo(cx-7,cy-8); ctx.quadraticCurveTo(cx,cy-4,cx+7,cy-8);
-ctx.stroke();
-// happy teeth
-ctx.beginPath(); ctx.moveTo(cx-3,cy-7); ctx.lineTo(cx-3,cy-5);
-ctx.lineWidth=1.5; ctx.stroke();
-ctx.beginPath(); ctx.moveTo(cx+3,cy-7); ctx.lineTo(cx+3,cy-5);
+ctx.moveTo(cx-3.5,cy-4); ctx.quadraticCurveTo(cx,cy-2,cx+3.5,cy-4);
 ctx.stroke();
 } else if(vcatState.mood===‘worried’){
 ctx.beginPath();
-ctx.moveTo(cx-6,cy-5); ctx.quadraticCurveTo(cx,cy-9,cx+6,cy-5);
+ctx.moveTo(cx-3,cy-2); ctx.quadraticCurveTo(cx,cy-5,cx+3,cy-2);
 ctx.stroke();
 } else if(vcatState.mood===‘sleeping’){
 ctx.beginPath();
-ctx.moveTo(cx-5,cy-8); ctx.lineTo(cx+5,cy-8);
+ctx.moveTo(cx-3,cy-4); ctx.lineTo(cx+3,cy-4);
 ctx.stroke();
 } else {
 ctx.beginPath();
-ctx.moveTo(cx-5,cy-8); ctx.quadraticCurveTo(cx,cy-5,cx+5,cy-8);
+ctx.moveTo(cx-3,cy-4); ctx.quadraticCurveTo(cx,cy-2,cx+3,cy-4);
 ctx.stroke();
 }
 
 // ── WHISKERS ──
 var wAlpha=vcatState.mood===‘sleeping’?0.2:0.45;
-ctx.lineWidth=1.2; ctx.lineCap=‘round’;
-[[-1,-2],[-1,0],[-1,2],[1,-2],[1,0],[1,2]].forEach(function(w){
+ctx.lineWidth=0.8; ctx.lineCap=‘round’;
+[[-1,-1],[-1,0],[-1,1],[1,-1],[1,0],[1,1]].forEach(function(w){
 ctx.beginPath();
-var wx=cx+(w[0]<0?-4:4);
-var wy=cy-13;
+var wx=cx+(w[0]<0?-2:2);
+var wy=cy-7;
 ctx.moveTo(wx, wy+w[1]);
-ctx.lineTo(cx+(w[0]<0?-28:28), wy+w[1]*3);
+ctx.lineTo(cx+(w[0]<0?-14:14), wy+w[1]*2);
 ctx.strokeStyle=‘rgba(200,200,220,’+wAlpha+’)’; ctx.stroke();
 });
 
@@ -1813,10 +1783,10 @@ ctx.strokeStyle=‘rgba(200,200,220,’+wAlpha+’)’; ctx.stroke();
 if(vcatState.mood===‘sleeping’){
 var zAlpha=(Math.sin(f*0.04)+1)/2;
 ctx.globalAlpha=zAlpha;
-ctx.font=‘bold 14px serif’; ctx.fillStyle=’#aac’;
-ctx.fillText(‘z’, cx+28, cy-30-Math.sin(f*0.04)*5);
-ctx.font=‘bold 10px serif’;
-ctx.fillText(‘z’, cx+36, cy-42-Math.sin(f*0.04)*3);
+ctx.font=‘bold 8px serif’; ctx.fillStyle=’#aac’;
+ctx.fillText(‘z’, cx+14, cy-18-Math.sin(f*0.04)*3);
+ctx.font=‘bold 6px serif’;
+ctx.fillText(‘z’, cx+18, cy-24-Math.sin(f*0.04)*2);
 ctx.globalAlpha=1;
 }
 
@@ -1838,7 +1808,7 @@ if(!vcatState.isJumping && (vcatState.mood===‘excited’||vcatState.mood===‘
 vcatState.isJumping=true; vcatState.jumpV=-8;
 // spawn hearts
 for(var i=0;i<4;i++){
-vcatState.particles.push({sym:[‘❤️’,‘✨’,‘🌟’,‘💕’][i%4],x:70+Math.random()*36,y:60,vx:(Math.random()-0.5)*2,vy:-2-Math.random()*2,life:30,size:Math.random()*4});
+vcatState.particles.push({sym:[‘❤️’,‘✨’,‘🌟’,‘💕’][i%4],x:30+Math.random()*28,y:30,vx:(Math.random()-0.5)*1.5,vy:-1.5-Math.random()*1.5,life:30,size:Math.random()*2});
 }
 }
 drawCat();
@@ -1884,7 +1854,7 @@ function vcatClick(){
 vcatState.mood=‘excited’;
 vcatState.color=MOODS.excited.color;
 vcatState.pawUp=true; vcatState.pawTimer=80;
-vcatState.isJumping=true; vcatState.jumpV=-10;
+vcatState.isJumping=true; vcatState.jumpV=-5;
 var greets=[‘喵！你點我了！’,‘摸摸頭～♪’,‘我是 PawSense 小助理！’,‘喵喵喵！！’,‘有什麼想問我的嗎？’,‘我可以分析貓咪行為喔！’];
 vcatSay(greets[Math.floor(Math.random()*greets.length)],4000);
 var badge=document.getElementById(‘vcat-mood-badge’);
@@ -1927,7 +1897,7 @@ initVCat();
 
 <div id="vcat-wrap">
   <div class="vcat-bubble" id="vcat-bubble">喵～</div>
-  <div id="vcat"><canvas id="vcat-canvas" width="176" height="176"></canvas></div>
+  <div id="vcat"><canvas id="vcat-canvas" width="88" height="88"></canvas></div>
   <div class="vcat-name" id="vcat-name">小喵</div>
   <div class="vcat-mood-badge" id="vcat-mood-badge">😊 開心</div>
 </div>
