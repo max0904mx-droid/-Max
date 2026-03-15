@@ -1230,7 +1230,7 @@ function tutStart(){
 closeSB();
 tutStep=-1;
 if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
-var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='9003';
+var vcw=document.getElementById('vcat-wrap');if(vcw){vcw.style.display='flex';vcw.style.zIndex='9003';}
 document.getElementById('tut-overlay').classList.add('show');
 document.getElementById('tut-bar').classList.add('show');
 tutRenderDots();
