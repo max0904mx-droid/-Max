@@ -58,10 +58,10 @@
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
 .chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:var(–bg);backdrop-filter:blur(14px);position:relative;z-index:10}
-.menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
+.menu-btn{width:34px;height:34px;background:var(–s1);border:1px solid var(–bd);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
 .menu-btn:hover{background:var(–s2)}
 .menu-ic{display:flex;flex-direction:column;gap:4px;pointer-events:none}
-.menu-ic span{display:block;width:17px;height:1.5px;background:var(–t2);border-radius:1px}
+.menu-ic span{display:block;width:17px;height:2px;background:var(–t);border-radius:1px}
 .hd-title{flex:1;font-size:13px;font-weight:500;color:var(–t2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mode-chip{background:var(–s2);border:1px solid var(–bd);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;color:var(–t2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px;flex-shrink:0;user-select:none}
 .mode-chip:hover{background:var(–s3);color:var(–t)}
@@ -138,7 +138,7 @@
 .inp-wrap:focus-within{border-color:rgba(91,143,249,.32)}
 .inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
 .inp-tx::placeholder{color:var(–t3)}
-.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–s3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:1;pointer-events:none;flex-shrink:0;user-select:none}
+.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:1;pointer-events:none;flex-shrink:0;user-select:none}
 .send-btn.on{opacity:1;pointer-events:all;background:var(–ac);transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
 .send-btn:hover{background:var(–acb)}
 .send-btn:active{transform:scale(.9)}
@@ -354,7 +354,7 @@ img{max-width:100%;height:auto;display:block;}
       <button class="plus-btn" onclick="triggerPhoto()" aria-label="上傳照片" title="上傳照片">＋</button>
       <textarea class="inp-tx" id="inp-tx" placeholder="輸入訊息..." rows="1"
         oninput="onInp()" onkeydown="onKey(event)"></textarea>
-      <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息">↑</button>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button>
     </div>
     <input type="file" id="photo-input" accept="image/*" multiple onchange="onPhotoSelect(event)">
     <div class="inp-hint">PawSense AI · 分析結果僅供參考</div>
