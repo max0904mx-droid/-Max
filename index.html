@@ -12,211 +12,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Dancing+Script:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-/* ════ PORTFOLIO STYLES ════ */
-
-/* ── RESET & VARS ── */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-–bg:#ffffff;–s1:#f5f5f7;–s2:#eeeeef;–s3:#e5e5e8;–s4:#dddde0;
-–t:#000000;–t2:#333333;–t3:#888888;
-–ac:#3a7bd5;–ac2:#5b9aec;–acg:linear-gradient(135deg,#3a7bd5,#5b9aec);
-–gr:#1a9a60;–ye:#c5980a;–re:#e05555;–or:#d06830;
-–bd:rgba(0,0,0,.1);–bd2:rgba(0,0,0,.06);
-–glow:rgba(58,123,213,.15);
-–font-body:‘Noto Serif TC’,serif;
-–font-mono:‘Space Mono’,monospace;
-–font-display:‘Syne’,sans-serif;
-–nav-h:64px;
-–tr:.3s cubic-bezier(.16,1,.3,1);
-}
-body.light{
-–bg:#f5f4f0;–s1:#eeecea;–s2:#e5e3df;–s3:#d8d5cf;–s4:#ccc8c0;
-–t:#1a1a1f;–t2:#55555f;–t3:#99998a;
-–bd:rgba(0,0,0,.08);–bd2:rgba(0,0,0,.04);
-–glow:rgba(124,106,247,.1);
-}
-html{scroll-behavior:smooth;font-size:16px}
-body{background:var(–bg);color:var(–t);font-family:var(–font-body);transition:background var(–tr),color var(–tr);overflow-x:hidden}
-::selection{background:var(–ac);color:#fff}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;height:auto}
-
-/* ── GRAIN OVERLAY ── */
-body::before{content:’’;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);pointer-events:none;z-index:9999;opacity:.4}
-
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;height:var(–nav-h);display:flex;align-items:center;padding:0 5%;z-index:100;background:rgba(13,13,15,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(–bd);transition:background var(–tr)}
-body.light nav{background:rgba(245,244,240,.85)}
-.nav-logo{font-family:var(–font-display);font-size:20px;font-weight:800;letter-spacing:-.5px;background:var(–acg);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;align-items:center;gap:6px;margin-left:auto;margin-right:16px}
-.nav-links a{padding:7px 14px;font-family:var(–font-mono);font-size:12px;color:var(–t2);border-radius:8px;transition:all .2s;letter-spacing:.3px}
-.nav-links a:hover{color:var(–t);background:var(–s3)}
-.nav-links a.active{color:var(–ac)}
-.nav-actions{display:flex;align-items:center;gap:8px}
-.theme-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s;color:var(–t2)}
-.theme-btn:hover{background:var(–s3);color:var(–t)}
-.hamburger{display:none;width:38px;height:38px;border-radius:10px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px;padding:10px}
-.hamburger span{display:block;width:100%;height:1.5px;background:var(–t2);transition:all .3s;border-radius:2px}
-.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-
-/* Mobile nav */
-.mobile-nav{position:fixed;top:var(–nav-h);left:0;right:0;background:var(–s1);border-bottom:1px solid var(–bd);z-index:99;transform:translateY(-110%);transition:transform var(–tr);padding:12px 5% 20px;display:flex;flex-direction:column;gap:4px}
-.mobile-nav.open{transform:translateY(0)}
-.mobile-nav a{padding:12px 16px;font-family:var(–font-mono);font-size:13px;color:var(–t2);border-radius:10px;transition:all .2s}
-.mobile-nav a:hover{background:var(–s3);color:var(–t)}
-
-/* ── SECTIONS ── */
-section{padding:100px 5%;max-width:1100px;margin:0 auto;scroll-margin-top:var(–nav-h)}
-.sec-tag{font-family:var(–font-mono);font-size:11px;letter-spacing:2px;color:var(–ac);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sec-tag::before{content:’’;width:24px;height:1px;background:var(–ac);display:block}
-.sec-title{font-family:var(–font-display);font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:16px}
-.sec-sub{font-size:15px;color:var(–t2);line-height:1.8;max-width:540px}
-
-/* ── HERO ── */
-#home{min-height:100vh;display:flex;align-items:center;padding-top:calc(var(–nav-h) + 40px);position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.25;animation:pulse 6s ease-in-out infinite alternate}
-.hero-orb.a{width:500px;height:500px;background:var(–ac);top:-100px;right:-100px;animation-delay:0s}
-.hero-orb.b{width:300px;height:300px;background:#3ecf8e;bottom:100px;left:-50px;animation-delay:-3s}
-@keyframes pulse{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.15) translate(20px,-20px)}}
-.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 5%;width:100%}
-.hero-eyebrow{font-family:var(–font-mono);font-size:13px;color:var(–ac);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;opacity:0;animation:fadeUp .6s .1s forwards}
-.hero-eyebrow::before{content:’’;width:32px;height:1px;background:var(–ac)}
-.hero-name{font-family:var(–font-display);font-size:clamp(52px,12vw,110px);font-weight:800;line-height:.9;letter-spacing:-4px;margin-bottom:8px;opacity:0;animation:fadeUp .6s .2s forwards}
-.hero-name span{display:block}
-.hero-name .accent{background:var(–acg);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-desc{font-size:16px;color:var(–t2);line-height:1.8;max-width:480px;margin:24px 0 40px;opacity:0;animation:fadeUp .6s .4s forwards}
-.hero-desc strong{color:var(–t)}
-.hero-cta{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fadeUp .6s .5s forwards}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:12px;font-family:var(–font-mono);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:none;letter-spacing:.3px}
-.btn-primary{background:var(–acg);color:#fff;box-shadow:0 0 24px var(–glow)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 32px var(–glow)}
-.btn-ghost{background:transparent;color:var(–t2);border:1px solid var(–bd)}
-.btn-ghost:hover{background:var(–s3);color:var(–t);border-color:rgba(255,255,255,.15)}
-.hero-intro-box{margin-top:60px;padding:20px 24px;background:var(–s1);border:1px solid var(–bd);border-radius:16px;border-left:3px solid var(–ac);max-width:600px;opacity:0;animation:fadeUp .6s .65s forwards}
-.hero-intro-box p{font-size:14px;color:var(–t2);line-height:1.8}
-.hero-intro-box strong{color:var(–t);font-weight:500}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── ABOUT ── */
-#about{padding-top:80px}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:40px}
-.about-text p{font-size:15px;color:var(–t2);line-height:1.9;margin-bottom:16px}
-.about-text p strong{color:var(–t)}
-.about-cards{display:flex;flex-direction:column;gap:12px}
-.about-card{padding:20px;background:var(–s1);border:1px solid var(–bd);border-radius:14px;transition:all .25s;cursor:default}
-.about-card:hover{background:var(–s2);border-color:rgba(124,106,247,.25);transform:translateX(4px)}
-.about-card-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.about-card-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.about-card-nm{font-family:var(–font-display);font-size:14px;font-weight:700}
-.about-card p{font-size:13px;color:var(–t2);line-height:1.7}
-.contact-list{margin-top:8px;display:flex;flex-direction:column;gap:8px}
-.contact-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(–t2);padding:10px 14px;background:var(–s2);border-radius:10px;border:1px solid var(–bd);transition:all .2s}
-.contact-item:hover{background:var(–s3);color:var(–t)}
-.contact-item span:first-child{font-size:16px;width:20px;text-align:center}
-
-/* ── PROJECTS ── */
-#projects{padding-top:80px}
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:40px}
-.proj-card{background:var(–s1);border:1px solid var(–bd);border-radius:18px;padding:26px;transition:all .3s;position:relative;overflow:hidden;display:flex;flex-direction:column}
-.proj-card::before{content:’’;position:absolute;inset:0;background:var(–acg);opacity:0;transition:opacity .3s;border-radius:inherit}
-.proj-card:hover{border-color:rgba(124,106,247,.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.proj-card:hover::before{opacity:.04}
-.proj-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:relative}
-.proj-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.proj-status{font-family:var(–font-mono);font-size:10px;padding:4px 9px;border-radius:20px;letter-spacing:.5px}
-.proj-status.live{background:rgba(62,207,142,.12);color:var(–gr)}
-.proj-status.wip{background:rgba(245,200,66,.12);color:var(–ye)}
-.proj-name{font-family:var(–font-display);font-size:18px;font-weight:800;margin-bottom:8px;position:relative}
-.proj-desc{font-size:13px;color:var(–t2);line-height:1.75;flex:1;position:relative;margin-bottom:20px}
-.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;position:relative}
-.tag{font-family:var(–font-mono);font-size:10px;padding:4px 9px;background:var(–s3);border:1px solid var(–bd);border-radius:6px;color:var(–t3);letter-spacing:.3px}
-.proj-actions{display:flex;gap:8px;position:relative}
-.proj-btn{flex:1;padding:10px;border-radius:10px;border:none;font-family:var(–font-mono);font-size:12px;cursor:pointer;transition:all .2s;font-weight:700;text-align:center}
-.proj-btn.primary{background:var(–ac);color:#fff}
-.proj-btn.primary:hover{background:var(–ac2)}
-.proj-btn.ghost{background:var(–s3);color:var(–t2);border:1px solid var(–bd)}
-.proj-btn.ghost:hover{color:var(–t);background:var(–s4)}
-
-/* ── TOOLS (nav placeholder) ── */
-#tools{padding-top:80px}
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:40px}
-.tool-card{padding:20px;background:var(–s1);border:1px solid var(–bd);border-radius:14px;transition:all .25s;text-align:center;cursor:default}
-.tool-card:hover{background:var(–s2);border-color:rgba(124,106,247,.2);transform:translateY(-3px)}
-.tool-ic{font-size:28px;margin-bottom:10px}
-.tool-nm{font-family:var(–font-display);font-size:14px;font-weight:700;margin-bottom:4px}
-.tool-ds{font-size:12px;color:var(–t2);line-height:1.6}
-
-/* ── UPDATE LOG ── */
-#log{padding-top:80px}
-.log-list{margin-top:40px;position:relative;padding-left:24px}
-.log-list::before{content:’’;position:absolute;left:0;top:8px;bottom:8px;width:1px;background:var(–bd)}
-.log-item{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-12px);transition:all .5s}
-.log-item.visible{opacity:1;transform:translateX(0)}
-.log-dot{position:absolute;left:-28px;top:6px;width:9px;height:9px;border-radius:50%;background:var(–ac);box-shadow:0 0 10px var(–glow);flex-shrink:0}
-.log-ver{font-family:var(–font-mono);font-size:12px;color:var(–ac);margin-bottom:4px;letter-spacing:.5px}
-.log-title{font-family:var(–font-display);font-size:15px;font-weight:700;margin-bottom:4px}
-.log-date{font-family:var(–font-mono);font-size:11px;color:var(–t3);margin-bottom:6px}
-.log-body{font-size:13px;color:var(–t2);line-height:1.7}
-
-/* ── CONTACT FORM ── */
-#contact{padding-top:80px;padding-bottom:120px}
-.form-wrap{background:var(–s1);border:1px solid var(–bd);border-radius:20px;padding:36px;max-width:560px;margin-top:40px}
-.form-row{margin-bottom:18px}
-.form-row label{display:block;font-family:var(–font-mono);font-size:11px;color:var(–t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.form-input{width:100%;background:var(–s2);border:1px solid var(–bd);border-radius:11px;padding:13px 16px;color:var(–t);font-family:var(–font-body);font-size:14px;outline:none;transition:border-color .2s}
-.form-input:focus{border-color:rgba(124,106,247,.4)}
-.form-input::placeholder{color:var(–t3)}
-textarea.form-input{resize:vertical;min-height:110px}
-.form-submit{width:100%;padding:14px;border-radius:12px;border:none;background:var(–acg);color:#fff;font-family:var(–font-mono);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px;margin-top:8px}
-.form-submit:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(–glow)}
-.form-note{font-size:12px;color:var(–t3);text-align:center;margin-top:14px;font-family:var(–font-mono)}
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(–gr);color:#0d0d0f;padding:12px 24px;border-radius:12px;font-family:var(–font-mono);font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:all .4s;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── FOOTER ── */
-footer{border-top:1px solid var(–bd);padding:28px 5%;text-align:center}
-footer p{font-family:var(–font-mono);font-size:11px;color:var(–t3);letter-spacing:.5px}
-footer span{color:var(–ac)}
-
-/* ── SCROLL REVEAL ── */
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
-
-/* ── RWD ── */
-@media(max-width:768px){
-.nav-links{display:none}
-.hamburger{display:flex}
-.about-grid{grid-template-columns:1fr}
-.hero-name{letter-spacing:-2px}
-section{padding:80px 5%}
-.form-wrap{padding:24px}
-.about-grid{gap:28px}
-}
-@media(max-width:480px){
-.projects-grid{grid-template-columns:1fr}
-.tools-grid{grid-template-columns:1fr 1fr}
-}
-
-/* ════ PAGE TRANSITION ════ */
-#portfolio-page { transition: opacity .35s ease, transform .35s ease; }
-#portfolio-page.hiding { opacity:0; transform:scale(.97); pointer-events:none; }
-#paws-app { animation: none; }
-#paws-app.active { animation: pawsIn .35s cubic-bezier(.16,1,.3,1) forwards; }
-@keyframes pawsIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-
 /* ════ PAWSENSE STYLES (scoped) ════ */
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-–bg:#0d0d0f;–s1:#131316;–s2:#1a1a1f;–s3:#222228;–s4:#2a2a32;
-–bd:rgba(255,255,255,.07);–bd2:rgba(255,255,255,.04);
-–t:#f0f0f0;–t2:#aaaaaa;–t3:#666666;–mu:#2a2a2a;
+–bg:#d0e8ff;–s1:#b8d8f8;–s2:#c8e0fc;–s3:#a8ccf0;–s4:#98bce8;
+–bd:rgba(30,80,160,.15);–bd2:rgba(30,80,160,.08);
+–t:#0a2040;–t2:#2a4a70;–t3:#6a8aaa;–mu:#c0d8f0;
 –ac:#5b8ff9;–acs:rgba(91,143,249,.12);–acb:#3d6fe0;
 –gr:#3ecf8e;–ye:#f5a623;–re:#f26d6d;–pu:#9b8fef;
 }
@@ -462,357 +264,33 @@ img{max-width:100%;height:auto;display:block;}
 @keyframes floatZzz{0%{opacity:0;transform:translateY(0) scale(.7)}40%{opacity:1}100%{opacity:0;transform:translateY(-16px) scale(1.1)}}
 .vcat-heart{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:16px;opacity:0;transition:all .5s;pointer-events:none}
 .vcat-heart.show{opacity:1;top:-24px}
-.vcat-bubble{background:rgba(20,20,32,.96);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 16px 5px;padding:10px 14px;font-size:12px;color:#e8e8ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
+.vcat-bubble{background:rgba(255,255,255,.92);border:1px solid rgba(30,80,160,.2);border-radius:16px 16px 16px 5px;padding:10px 14px;font-size:12px;color:#0a2040;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
 .vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
-.vcat-name{font-size:10px;color:rgba(255,255,255,.38);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px;margin-top:2px}
-.vcat-mood-badge{font-size:9px;background:rgba(255,255,255,.07);border-radius:8px;padding:2px 8px;color:rgba(255,255,255,.38);margin-top:1px}
+.vcat-name{font-size:10px;color:rgba(10,32,64,.5);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px;margin-top:2px}
+.vcat-mood-badge{font-size:9px;background:rgba(30,80,160,.1);border-radius:8px;padding:2px 8px;color:rgba(10,32,64,.5);margin-top:1px}
 
 /* ════ VCAT UPLOAD ════ */
 #vcat-upload-input{display:none}
 
-#vcat-upload-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:‘Space Mono’,monospace;margin-top:2px;transition:all .2s}
+#vcat-upload-btn{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:‘Space Mono’,monospace;margin-top:2px;transition:all .2s;-webkit-user-select:none;user-select:none}
 #vcat-upload-btn:hover{background:rgba(255,255,255,.18);color:rgba(255,255,255,.8)}
+
+/* ── Feature intro cards ── */
+.feat-wrap{width:100%;display:flex;flex-direction:column;gap:8px;margin:16px 0 4px}
+.feat-card{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:11px 14px;text-align:left}
+.feat-ic{font-size:22px;flex-shrink:0;width:32px;text-align:center}
+.feat-info{flex:1}
+.feat-t{font-size:13px;font-weight:700;color:var(–t);margin-bottom:2px}
+.feat-d{font-size:11px;color:var(–t2);line-height:1.5}
+.feat-divider{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(–t3);text-align:center;margin:14px 0 6px;position:relative}
+.feat-divider::before,.feat-divider::after{content:’’;position:absolute;top:50%;width:28%;height:1px;background:var(–bd)}
+.feat-divider::before{left:0}.feat-divider::after{right:0}
 </style>
 
 </head>
 <body>
 
 <!-- ══ PORTFOLIO PAGE ══ -->
-
-<div id="portfolio-page">
-
-<!-- TOAST -->
-
-<div class="toast" id="toast">✓ 訊息已送出！</div>
-
-<!-- NAV -->
-
-<nav id="nav">
-  <a class="nav-logo" href="#home">Yu Chen AI.</a>
-  <div class="nav-links">
-    <a href="#home" class="active">Home</a>
-    <a href="#about">About</a>
-    <a href="#projects">Projects</a>
-    <a href="#tools">Tools</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <div class="nav-actions">
-    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="切換深/淺色模式">🌙</button>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- MOBILE NAV -->
-
-<div class="mobile-nav" id="mobile-nav">
-  <a href="#home" onclick="closeMobileNav()">Home</a>
-  <a href="#about" onclick="closeMobileNav()">About</a>
-  <a href="#projects" onclick="closeMobileNav()">Projects</a>
-  <a href="#tools" onclick="closeMobileNav()">Tools</a>
-  <a href="#contact" onclick="closeMobileNav()">Contact</a>
-</div>
-
-<!-- ① HERO + INTRO -->
-
-<div id="home">
-  <div class="hero-bg">
-    <div class="hero-orb a"></div>
-    <div class="hero-orb b"></div>
-  </div>
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Developer &amp; Builder</div>
-    <div class="hero-name">
-      <span>Hi, I'm</span>
-      <span class="accent">Yu Chen AI.</span>
-    </div>
-    <p class="hero-desc">
-      這是一個<strong>展示程式專案與開發工具</strong>的個人平台。<br>
-      熱愛打造有用的產品、探索 AI 應用，把想法變成真正可以用的東西。
-    </p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="#" onclick="showPawSense();return false;">🐾 開始使用 PawSense AI</a>
-      <a class="btn btn-ghost" href="#projects">查看專案</a>
-      <a class="btn btn-ghost" href="#contact">聯絡我</a>
-    </div>
-    <div class="hero-intro-box">
-      <p>🚀 <strong>目前專注於：</strong>PawSense AI — 一個用 AI 分析貓咪行為與情緒的 SaaS 平台，整合 Claude API 提供即時寵物行為解析。</p>
-      <a href="#" onclick="showPawSense();return false;" style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:9px 18px;background:var(--acg);border-radius:10px;font-family:var(--font-mono);font-size:12px;font-weight:700;color:#fff;text-decoration:none;transition:all .2s;box-shadow:0 0 18px var(--glow)">🐾 立即體驗 PawSense AI →</a>
-    </div>
-  </div>
-</div>
-
-<!-- ② ABOUT -->
-
-<section id="about">
-  <div class="sec-tag">About</div>
-  <h2 class="sec-title reveal">關於我</h2>
-  <div class="about-contact reveal reveal-delay-1">
-    <div class="about-card">
-      <div class="about-card-top">
-        <div class="about-card-ic" style="background:rgba(245,200,66,.12)">📬</div>
-        <div class="about-card-nm">聯絡方式</div>
-      </div>
-      <div class="contact-list">
-        <div class="contact-item"><span>🐙</span><span>github.com/max0904mx-droid</span></div>
-        <div class="contact-item"><span>🌐</span><span>max0904mx-droid.github.io/-Max</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ③ PROJECTS -->
-
-<section id="projects">
-  <div class="sec-tag">Projects</div>
-  <h2 class="sec-title reveal">作品展示</h2>
-  <p class="sec-sub reveal reveal-delay-1">每個專案都是一次完整的產品思考——從問題出發，到可以真正使用的成品。</p>
-  <div class="projects-grid">
-
-```
-<div class="proj-card reveal reveal-delay-1">
-  <div class="proj-card-top">
-    <div class="proj-ic" style="background:rgba(124,106,247,.12)">🐾</div>
-    <span class="proj-status live">LIVE</span>
-  </div>
-  <div class="proj-name">PawSense AI</div>
-  <p class="proj-desc">AI 驅動的貓咪行為與情緒分析平台。整合 Claude API 進行即時行為解讀，包含壓力指數評估、風險分級、個人化貓咪資料管理，以及中英雙語切換。</p>
-  <div class="proj-tags">
-    <span class="tag">Claude API</span>
-    <span class="tag">JavaScript</span>
-    <span class="tag">Mobile-first</span>
-    <span class="tag">AI</span>
-  </div>
-  <div class="proj-actions">
-    <a class="proj-btn primary" href="#" onclick="showPawSense();return false;">🚀 開始使用</a>
-    <button class="proj-btn primary" onclick="window.open('https://max0904mx-droid.github.io/-Max/','_blank')" style="flex:0.6;font-size:10px">Live →</button>
-    <button class="proj-btn ghost" onclick="window.open('https://github.com/max0904mx-droid/-Max','_blank')">GitHub</button>
-  </div>
-</div>
-
-<div class="proj-card reveal reveal-delay-2">
-  <div class="proj-card-top">
-    <div class="proj-ic" style="background:rgba(62,207,142,.12)">🌐</div>
-    <span class="proj-status live">LIVE</span>
-  </div>
-  <div class="proj-name">個人作品集</div>
-  <p class="proj-desc">你現在看到的這個網站。包含響應式設計、深色/淺色模式切換、動畫效果、多語言等完整功能，部署於 GitHub Pages。</p>
-  <div class="proj-tags">
-    <span class="tag">HTML</span>
-    <span class="tag">CSS</span>
-    <span class="tag">JavaScript</span>
-    <span class="tag">RWD</span>
-  </div>
-  <div class="proj-actions">
-    <button class="proj-btn primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">你在這裡 ↑</button>
-    <button class="proj-btn ghost" onclick="window.open('https://github.com/max0904mx-droid/-Max','_blank')">GitHub</button>
-  </div>
-</div>
-
-<div class="proj-card reveal reveal-delay-3">
-  <div class="proj-card-top">
-    <div class="proj-ic" style="background:rgba(240,131,77,.12)">🔧</div>
-    <span class="proj-status wip">WIP</span>
-  </div>
-  <div class="proj-name">Coming Soon</div>
-  <p class="proj-desc">下一個專案正在規劃中。如果你有有趣的想法或合作提案，歡迎聯絡！</p>
-  <div class="proj-tags">
-    <span class="tag">TBD</span>
-  </div>
-  <div class="proj-actions">
-    <button class="proj-btn ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">聯絡討論</button>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<!-- ④ TOOLS -->
-
-<section id="tools">
-  <div class="sec-tag">Tools</div>
-  <h2 class="sec-title reveal">常用工具</h2>
-  <p class="sec-sub reveal reveal-delay-1">日常開發與設計中依賴的技術與工具。</p>
-  <div class="tools-grid">
-    <div class="tool-card reveal reveal-delay-1">
-      <div class="tool-ic">🤖</div>
-      <div class="tool-nm">Claude API</div>
-      <p class="tool-ds">Anthropic 的 AI 模型，核心 AI 功能來源</p>
-    </div>
-    <div class="tool-card reveal reveal-delay-1">
-      <div class="tool-ic">📄</div>
-      <div class="tool-nm">HTML / CSS</div>
-      <p class="tool-ds">語意化結構與精細樣式設計</p>
-    </div>
-    <div class="tool-card reveal reveal-delay-2">
-      <div class="tool-ic">⚡</div>
-      <div class="tool-nm">JavaScript</div>
-      <p class="tool-ds">互動邏輯、API 整合、狀態管理</p>
-    </div>
-    <div class="tool-card reveal reveal-delay-2">
-      <div class="tool-ic">🐙</div>
-      <div class="tool-nm">GitHub Pages</div>
-      <p class="tool-ds">靜態網站免費部署平台</p>
-    </div>
-    <div class="tool-card reveal reveal-delay-3">
-      <div class="tool-ic">📱</div>
-      <div class="tool-nm">Mobile-first</div>
-      <p class="tool-ds">手機優先的響應式設計理念</p>
-    </div>
-    <div class="tool-card reveal reveal-delay-3">
-      <div class="tool-ic">🎨</div>
-      <div class="tool-nm">Google Fonts</div>
-      <p class="tool-ds">Noto Serif TC、Dancing Script 等字型</p>
-    </div>
-  </div>
-</section>
-
-<!-- ⑩ UPDATE LOG -->
-
-<section id="log" style="max-width:1100px;margin:0 auto;padding:80px 5%">
-  <div class="sec-tag">Changelog</div>
-  <h2 class="sec-title reveal">更新紀錄</h2>
-  <div class="log-list">
-    <div class="log-item">
-      <div class="log-dot"></div>
-      <div class="log-ver">v1.4 — 最新</div>
-      <div class="log-title">個人作品集上線 + 多項功能</div>
-      <div class="log-date">2025年3月</div>
-      <div class="log-body">新增作品集首頁、About 頁面、深色/淺色模式、Hamburger Menu、動畫效果、回饋表單、Update Log</div>
-    </div>
-    <div class="log-item">
-      <div class="log-dot"></div>
-      <div class="log-ver">v1.3</div>
-      <div class="log-title">PawSense AI — 語言切換 + 字體優化</div>
-      <div class="log-date">2025年3月</div>
-      <div class="log-body">新增中英文切換、標楷體字型、白色文字主題、英文書寫體（Dancing Script）</div>
-    </div>
-    <div class="log-item">
-      <div class="log-dot"></div>
-      <div class="log-ver">v1.2</div>
-      <div class="log-title">PawSense AI — 照片上傳 + 錯誤引導</div>
-      <div class="log-date">2025年3月</div>
-      <div class="log-body">新增 ＋ 按鈕上傳照片、智能錯誤引導、SEO 優化、無障礙 aria 標籤</div>
-    </div>
-    <div class="log-item">
-      <div class="log-dot"></div>
-      <div class="log-ver">v1.1</div>
-      <div class="log-title">PawSense AI — ChatGPT 風格介面重構</div>
-      <div class="log-date">2025年3月</div>
-      <div class="log-body">完整重建為 v5 架構：側邊欄歷史紀錄、四種聊天模式、貓咪管理流程、分析結果卡片</div>
-    </div>
-    <div class="log-item">
-      <div class="log-dot"></div>
-      <div class="log-ver">v1.0</div>
-      <div class="log-title">PawSense AI 初始版本</div>
-      <div class="log-date">2025年3月</div>
-      <div class="log-body">建立網站，PawSense AI 首次部署至 GitHub Pages</div>
-    </div>
-  </div>
-</section>
-
-<!-- ⑦ CONTACT FORM -->
-
-<section id="contact">
-  <div class="sec-tag">Contact</div>
-  <h2 class="sec-title reveal">聯絡我</h2>
-  <p class="sec-sub reveal reveal-delay-1">有專案合作、功能建議，或只是想聊聊——都歡迎！</p>
-  <div class="form-wrap reveal reveal-delay-2">
-    <div class="form-row">
-      <label>名字 / Name</label>
-      <input class="form-input" id="f-name" type="text" placeholder="你的名字">
-    </div>
-    <div class="form-row">
-      <label>Email</label>
-      <input class="form-input" id="f-email" type="email" placeholder="your@email.com">
-    </div>
-    <div class="form-row">
-      <label>建議或留言 / Message</label>
-      <textarea class="form-input" id="f-msg" placeholder="說說你的想法..."></textarea>
-    </div>
-    <button class="form-submit" onclick="submitForm()">送出訊息 →</button>
-    <p class="form-note">※ 表單資料僅作聯絡使用，不會儲存至伺服器</p>
-  </div>
-</section>
-
-<!-- FOOTER -->
-
-<footer>
-  <p>© 2025 <span>Yu Chen AI</span> · Built with ❤️ &amp; Claude API · Hosted on GitHub Pages</p>
-</footer>
-
-<script>
-// ── THEME ──
-var isDark=true;
-function toggleTheme(){
-  isDark=!isDark;
-  document.body.classList.toggle('light',!isDark);
-  document.getElementById('theme-btn').textContent=isDark?'🌙':'☀️';
-}
-
-// ── MOBILE NAV ──
-function toggleMobileNav(){
-  var mn=document.getElementById('mobile-nav');
-  var hb=document.getElementById('hamburger');
-  var open=mn.classList.toggle('open');
-  hb.classList.toggle('open',open);
-}
-function closeMobileNav(){
-  document.getElementById('mobile-nav').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-}
-
-// ── ACTIVE NAV LINK ──
-var sections=['home','about','projects','tools','log','contact'];
-function updateNav(){
-  var scrollY=window.scrollY+100;
-  sections.forEach(function(id){
-    var el=document.getElementById(id);
-    if(!el)return;
-    var a=document.querySelector('.nav-links a[href="#'+id+'"]');
-    if(!a)return;
-    var top=el.offsetTop,bottom=top+el.offsetHeight;
-    a.classList.toggle('active',scrollY>=top&&scrollY<bottom);
-  });
-}
-
-// ── SCROLL REVEAL ──
-var observer=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-    }
-  });
-},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-
-document.querySelectorAll('.reveal,.log-item').forEach(function(el){observer.observe(el);});
-
-// ── FORM ──
-function submitForm(){
-  var name=document.getElementById('f-name').value.trim();
-  var email=document.getElementById('f-email').value.trim();
-  var msg=document.getElementById('f-msg').value.trim();
-  if(!name||!email||!msg){alert('請填寫所有欄位！');return;}
-  // Store locally as feedback
-  var fb=JSON.parse(localStorage.getItem('max_feedback')||'[]');
-  fb.push({name:name,email:email,msg:msg,time:new Date().toLocaleString()});
-  localStorage.setItem('max_feedback',JSON.stringify(fb));
-  document.getElementById('f-name').value='';
-  document.getElementById('f-email').value='';
-  document.getElementById('f-msg').value='';
-  var t=document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},3000);
-}
-
-// ── SCROLL EVENTS ──
-window.addEventListener('scroll',updateNav,{passive:true});
-updateNav();
-</script>
-
-</div>
 
 <!-- ══ PAWSENSE PAGE ══ -->
 
@@ -851,12 +329,15 @@ updateNav();
     <button class="menu-btn" onclick="toggleSB()">
       <div class="menu-ic"><span></span><span></span><span></span></div>
     </button>
-    <a href="#" onclick="showPortfolio();return false;" class="back-home-btn" title="回首頁">←</a>
-    <div class="hd-title" id="hd-title">PawSense AI</div>
-    <button class="lang-btn" id="lang-btn" onclick="openLangSheet()" aria-label="切換語言">
-      <span id="lang-flag">中</span>
-    </button>
-    <div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
+
+```
+<div class="hd-title" id="hd-title">PawSense AI</div>
+<button class="lang-btn" id="lang-btn" onclick="openLangSheet()" aria-label="切換語言">
+  <span id="lang-flag">中</span>
+</button>
+<div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
+```
+
   </div>
   <div class="cat-bar" id="cat-bar"></div>
   <div class="msgs" id="msgs"></div>
@@ -999,201 +480,233 @@ function renderMsgs(msgs){
 }
 function buildWelcome(){
   var div=document.createElement('div');div.className='welcome';
-  var logo=document.createElement('div');logo.className='wl-logo';logo.textContent='🐾';
-  var title=document.createElement('div');title.className='wl-title';title.innerHTML='Paw<em>Sense</em> AI';
-  var sub=document.createElement('div');sub.className='wl-sub';sub.textContent='有什麼關於貓咪的問題嗎？';
-  var grid=document.createElement('div');grid.className='sg-grid';
-  var suggests=[
-    {ic:'🔍',t:'行為分析',d:'描述行為，搜尋並分析',q:'我想分析貓咪的行為'},
-    {ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-    {ic:'💊',t:'健康問題',d:'搜尋症狀與建議',q:'我的貓咪最近食慾不振'},
-    {ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
-  ];
-  suggests.forEach(function(s){
-    var card=document.createElement('div');card.className='sg-card';
-    var ic=document.createElement('div');ic.className='sg-ic';ic.textContent=s.ic;
-    var t=document.createElement('div');t.className='sg-t';t.textContent=s.t;
-    var d=document.createElement('div');d.className='sg-d';d.textContent=s.d;
-    card.appendChild(ic);card.appendChild(t);card.appendChild(d);
-    card.onclick=(function(q){return function(){tapQ(q);};})(s.q);
-    grid.appendChild(card);
-  });
-  div.appendChild(logo);div.appendChild(title);div.appendChild(sub);div.appendChild(grid);
-  return div;
+
+// ── Logo & Title ──
+var logo=document.createElement(‘div’);logo.className=‘wl-logo’;logo.textContent=‘🐾’;
+var title=document.createElement(‘div’);title.className=‘wl-title’;title.innerHTML=‘Paw<em>Sense</em> AI’;
+var sub=document.createElement(‘div’);sub.className=‘wl-sub’;sub.textContent=‘你的 AI 貓咪健康助理’;
+
+// ── Feature intro cards ──
+var featWrap=document.createElement(‘div’);featWrap.className=‘feat-wrap’;
+var features=[
+{ic:‘🔍’,t:‘行為分析’,d:‘描述貓咪行為，AI 即時分析壓力指數與風險等級’},
+{ic:‘💊’,t:‘健康問題’,d:‘輸入症狀，獲得建議與就醫時機評估’},
+{ic:‘📋’,t:‘分析紀錄’,d:‘所有分析結果自動儲存，隨時查閱歷史報告’},
+{ic:‘🐈’,t:‘貓咪管理’,d:‘建立多隻貓咪檔案，追蹤每隻貓的健康狀況’},
+];
+features.forEach(function(f){
+var card=document.createElement(‘div’);card.className=‘feat-card’;
+var ic=document.createElement(‘div’);ic.className=‘feat-ic’;ic.textContent=f.ic;
+var info=document.createElement(‘div’);info.className=‘feat-info’;
+var t=document.createElement(‘div’);t.className=‘feat-t’;t.textContent=f.t;
+var d=document.createElement(‘div’);d.className=‘feat-d’;d.textContent=f.d;
+info.appendChild(t);info.appendChild(d);
+card.appendChild(ic);card.appendChild(info);
+featWrap.appendChild(card);
+});
+
+// ── Divider ──
+var divider=document.createElement(‘div’);divider.className=‘feat-divider’;divider.textContent=‘立即開始’;
+
+// ── Quick start grid ──
+var grid=document.createElement(‘div’);grid.className=‘sg-grid’;
+var suggests=[
+{ic:‘🔍’,t:‘行為分析’,d:‘描述行為，分析壓力’,q:‘我想分析貓咪的行為’},
+{ic:‘🐈’,t:‘新增貓咪’,d:‘建立貓咪資料’,q:‘幫我新增一隻貓咪’},
+{ic:‘💊’,t:‘健康問題’,d:‘搜尋症狀與建議’,q:‘我的貓咪最近食慾不振’},
+{ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
+];
+suggests.forEach(function(s){
+var card=document.createElement(‘div’);card.className=‘sg-card’;
+var ic=document.createElement(‘div’);ic.className=‘sg-ic’;ic.textContent=s.ic;
+var t=document.createElement(‘div’);t.className=‘sg-t’;t.textContent=s.t;
+var d=document.createElement(‘div’);d.className=‘sg-d’;d.textContent=s.d;
+card.appendChild(ic);card.appendChild(t);card.appendChild(d);
+card.onclick=(function(q){return function(){tapQ(q);};})(s.q);
+grid.appendChild(card);
+});
+
+div.appendChild(logo);
+div.appendChild(title);
+div.appendChild(sub);
+div.appendChild(featWrap);
+div.appendChild(divider);
+div.appendChild(grid);
+return div;
 }
 function appendMsgEl(m,anim){
-  var el=document.getElementById('msgs');
-  var w=el.querySelector('.welcome');if(w)w.remove();
-  if(m.role==='user'){
-    var g=document.createElement('div');g.className='mg user';
-    var b=document.createElement('div');b.className='bb user';
-    if(!anim)b.style.animation='none';
-    b.textContent=m.content;g.appendChild(b);el.appendChild(g);
-  } else {
-    var g=document.createElement('div');g.className='mg ai';
-    var av=document.createElement('div');av.className='ai-av';av.textContent='🐾';
-    var b=document.createElement('div');b.className='bb ai';
-    if(!anim)b.style.animation='none';
-    if(m.type==='result'&&m.rd){b.appendChild(buildResCard(m.rd));}
-    else{
-      b.innerHTML=fmtAI(m.content);
-      if(m.qr&&m.qr.length){
-        var qrRow=document.createElement('div');qrRow.className='qr-row';
-        m.qr.forEach(function(q){
-          var btn=document.createElement('button');btn.className='qr';btn.textContent=q;
-          btn.onclick=(function(qq){return function(){tapQ(qq);};})(q);
-          qrRow.appendChild(btn);
-        });
-        b.appendChild(qrRow);
-      }
-    }
-    g.appendChild(av);g.appendChild(b);el.appendChild(g);
-  }
-  if(anim)scrollBot();
+var el=document.getElementById(‘msgs’);
+var w=el.querySelector(’.welcome’);if(w)w.remove();
+if(m.role===‘user’){
+var g=document.createElement(‘div’);g.className=‘mg user’;
+var b=document.createElement(‘div’);b.className=‘bb user’;
+if(!anim)b.style.animation=‘none’;
+b.textContent=m.content;g.appendChild(b);el.appendChild(g);
+} else {
+var g=document.createElement(‘div’);g.className=‘mg ai’;
+var av=document.createElement(‘div’);av.className=‘ai-av’;av.textContent=‘🐾’;
+var b=document.createElement(‘div’);b.className=‘bb ai’;
+if(!anim)b.style.animation=‘none’;
+if(m.type===‘result’&&m.rd){b.appendChild(buildResCard(m.rd));}
+else{
+b.innerHTML=fmtAI(m.content);
+if(m.qr&&m.qr.length){
+var qrRow=document.createElement(‘div’);qrRow.className=‘qr-row’;
+m.qr.forEach(function(q){
+var btn=document.createElement(‘button’);btn.className=‘qr’;btn.textContent=q;
+btn.onclick=(function(qq){return function(){tapQ(qq);};})(q);
+qrRow.appendChild(btn);
+});
+b.appendChild(qrRow);
+}
+}
+g.appendChild(av);g.appendChild(b);el.appendChild(g);
+}
+if(anim)scrollBot();
 }
 function buildResCard(r){
-  var sc=r.sl>=60?'var(--re)':r.sl>=35?'var(--ye)':'var(--gr)';
-  var rl=r.risk==='高'?'高風險':r.risk==='低'?'低風險':'中風險';
-  var rc=r.risk==='高'?'rgba(242,109,109,.13)':r.risk==='低'?'rgba(62,207,142,.13)':'rgba(245,166,35,.13)';
-  var rt=r.risk==='高'?'var(--re)':r.risk==='低'?'var(--gr)':'var(--ye)';
-  var c=document.createElement('div');c.className='res-card';c.id='rc-'+r.id;
-  var hd=document.createElement('div');hd.className='res-hd';
-  var cat=document.createElement('div');cat.className='res-cat';cat.textContent=(r.catEmoji||'🐱')+' '+(r.catName||'貓咪')+'・'+r.date;
-  var badge=document.createElement('div');badge.className='res-badge';badge.textContent=rl;
-  badge.style.cssText='background:'+rc+';color:'+rt;
-  hd.appendChild(cat);hd.appendChild(badge);
-  var sbw=document.createElement('div');sbw.className='sb-wrap';
-  var lbl=document.createElement('div');lbl.className='sb-label';
-  lbl.innerHTML='<span>壓力指數</span><span style="color:'+sc+';font-weight:600">'+r.sl+' / 100</span>';
-  var trk=document.createElement('div');trk.className='sb-track';
-  var fill=document.createElement('div');fill.className='sb-fill';fill.id='sf-'+r.id;
-  fill.style.cssText='width:0%;background:'+sc;
-  trk.appendChild(fill);sbw.appendChild(lbl);sbw.appendChild(trk);
-  var txt=document.createElement('div');txt.className='res-txt';txt.textContent=r.fullReport;
-  var ratRow=document.createElement('div');ratRow.className='rat-row';
-  var ratLbl=document.createElement('div');ratLbl.className='rat-lbl';ratLbl.textContent='這份分析有幫助嗎？';
-  var stars=document.createElement('div');stars.className='stars';stars.id='rs-'+r.id;
-  for(var i=1;i<=5;i++){
-    var star=document.createElement('div');star.className='star'+(i<=(r.rating||0)?' on':'');
-    star.textContent='★';
-    star.onclick=(function(score,rid){return function(){rateRes(rid,score);};})(i,r.id);
-    stars.appendChild(star);
-  }
-  ratRow.appendChild(ratLbl);ratRow.appendChild(stars);
-  c.appendChild(hd);c.appendChild(sbw);c.appendChild(txt);c.appendChild(ratRow);
-  setTimeout(function(){var f=document.getElementById('sf-'+r.id);if(f)f.style.width=r.sl+'%';},80);
-  return c;
+var sc=r.sl>=60?‘var(–re)’:r.sl>=35?‘var(–ye)’:‘var(–gr)’;
+var rl=r.risk===‘高’?‘高風險’:r.risk===‘低’?‘低風險’:‘中風險’;
+var rc=r.risk===‘高’?‘rgba(242,109,109,.13)’:r.risk===‘低’?‘rgba(62,207,142,.13)’:‘rgba(245,166,35,.13)’;
+var rt=r.risk===‘高’?‘var(–re)’:r.risk===‘低’?‘var(–gr)’:‘var(–ye)’;
+var c=document.createElement(‘div’);c.className=‘res-card’;c.id=‘rc-’+r.id;
+var hd=document.createElement(‘div’);hd.className=‘res-hd’;
+var cat=document.createElement(‘div’);cat.className=‘res-cat’;cat.textContent=(r.catEmoji||‘🐱’)+’ ‘+(r.catName||‘貓咪’)+’・’+r.date;
+var badge=document.createElement(‘div’);badge.className=‘res-badge’;badge.textContent=rl;
+badge.style.cssText=‘background:’+rc+’;color:’+rt;
+hd.appendChild(cat);hd.appendChild(badge);
+var sbw=document.createElement(‘div’);sbw.className=‘sb-wrap’;
+var lbl=document.createElement(‘div’);lbl.className=‘sb-label’;
+lbl.innerHTML=’<span>壓力指數</span><span style="color:'+sc+';font-weight:600">’+r.sl+’ / 100</span>’;
+var trk=document.createElement(‘div’);trk.className=‘sb-track’;
+var fill=document.createElement(‘div’);fill.className=‘sb-fill’;fill.id=‘sf-’+r.id;
+fill.style.cssText=‘width:0%;background:’+sc;
+trk.appendChild(fill);sbw.appendChild(lbl);sbw.appendChild(trk);
+var txt=document.createElement(‘div’);txt.className=‘res-txt’;txt.textContent=r.fullReport;
+var ratRow=document.createElement(‘div’);ratRow.className=‘rat-row’;
+var ratLbl=document.createElement(‘div’);ratLbl.className=‘rat-lbl’;ratLbl.textContent=‘這份分析有幫助嗎？’;
+var stars=document.createElement(‘div’);stars.className=‘stars’;stars.id=‘rs-’+r.id;
+for(var i=1;i<=5;i++){
+var star=document.createElement(‘div’);star.className=‘star’+(i<=(r.rating||0)?’ on’:’’);
+star.textContent=‘★’;
+star.onclick=(function(score,rid){return function(){rateRes(rid,score);};})(i,r.id);
+stars.appendChild(star);
+}
+ratRow.appendChild(ratLbl);ratRow.appendChild(stars);
+c.appendChild(hd);c.appendChild(sbw);c.appendChild(txt);c.appendChild(ratRow);
+setTimeout(function(){var f=document.getElementById(‘sf-’+r.id);if(f)f.style.width=r.sl+’%’;},80);
+return c;
 }
 function fmtAI(text){
-  if(!text)return'';
-  var o=esc(text)
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^#{1,3} (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^[•\-] (.+)$/gm,'<li>$1</li>');
-  var lines=o.split('\n');var out=[];var ul=false;
-  lines.forEach(function(l){
-    if(l.startsWith('<li>')){if(!ul){out.push('<ul>');ul=true;}out.push(l);}
-    else{if(ul){out.push('</ul>');ul=false;}if(l.trim())out.push(l.startsWith('<h3>')?l:'<p>'+l+'</p>');}
-  });
-  if(ul)out.push('</ul>');
-  return out.join('');
+if(!text)return’’;
+var o=esc(text)
+.replace(/**(.+?)**/g,’<strong>$1</strong>’)
+.replace(/^#{1,3} (.+)$/gm,’<h3>$1</h3>’)
+.replace(/^[•-] (.+)$/gm,’<li>$1</li>’);
+var lines=o.split(’\n’);var out=[];var ul=false;
+lines.forEach(function(l){
+if(l.startsWith(’<li>’)){if(!ul){out.push(’<ul>’);ul=true;}out.push(l);}
+else{if(ul){out.push(’</ul>’);ul=false;}if(l.trim())out.push(l.startsWith(’<h3>’)?l:’<p>’+l+’</p>’);}
+});
+if(ul)out.push(’</ul>’);
+return out.join(’’);
 }
-function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function scrollBot(){var m=document.getElementById('msgs');if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
-function tapQ(q){document.getElementById('inp-tx').value=q;onInp();sendMsg();}
+function esc(t){return(t||’’).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’);}
+function scrollBot(){var m=document.getElementById(‘msgs’);if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
+function tapQ(q){document.getElementById(‘inp-tx’).value=q;onInp();sendMsg();}
 // ══ MODE ══
-var chatMode='general';
-var modeLabel={general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'};
+var chatMode=‘general’;
+var modeLabel={general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’};
 var selCatId=null;
 function setModeSilent(m){
-  chatMode=m;
-  document.getElementById('mode-chip').textContent=modeLabel[m]||'🐱 問答';
-  ['general','analyze','report','cat'].forEach(function(k){
-    var el=document.getElementById('sm-'+k);if(el)el.classList.toggle('act',k===m);
-  });
-  var ph={general:'有什麼想問的？',analyze:'描述貓咪的行為...',report:'問我關於分析報告...',cat:'說「新增貓咪」或「查看貓咪」...'};
-  document.getElementById('inp-tx').placeholder=ph[m]||'輸入訊息...';
-  refreshCatBar();
+chatMode=m;
+document.getElementById(‘mode-chip’).textContent=modeLabel[m]||‘🐱 問答’;
+[‘general’,‘analyze’,‘report’,‘cat’].forEach(function(k){
+var el=document.getElementById(‘sm-’+k);if(el)el.classList.toggle(‘act’,k===m);
+});
+var ph={general:‘有什麼想問的？’,analyze:‘描述貓咪的行為…’,report:‘問我關於分析報告…’,cat:‘說「新增貓咪」或「查看貓咪」…’};
+document.getElementById(‘inp-tx’).placeholder=ph[m]||‘輸入訊息…’;
+refreshCatBar();
 }
 function setMode(m){
-  setModeSilent(m);closeSheet();
-  var intro={
-    general:'已切換到 **貓咪問答** 模式。有什麼問題嗎？',
-    analyze:'已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。',
-    report:'已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。',
-    cat:'已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。'
-  };
-  if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
+setModeSilent(m);closeSheet();
+var intro={
+general:‘已切換到 **貓咪問答** 模式。有什麼問題嗎？’,
+analyze:‘已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。’,
+report:‘已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。’,
+cat:‘已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。’
+};
+if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
 }
 function refreshCatBar(){
-  var bar=document.getElementById('cat-bar');if(!bar)return;
-  var u=curU();
-  if(chatMode!=='analyze'||!u||!u.cats||!u.cats.length){bar.classList.remove('show');return;}
-  bar.classList.add('show');
-  bar.innerHTML='';
-  var lbl=document.createElement('span');
-  lbl.style.cssText='font-size:11px;color:var(--t3);white-space:nowrap;flex-shrink:0;padding-top:2px';
-  lbl.textContent='分析對象：';bar.appendChild(lbl);
-  u.cats.forEach(function(c){
-    var chip=document.createElement('div');
-    chip.className='cat-chip'+(selCatId===c.id?' sel':'');
-    chip.dataset.id=c.id;
-    chip.textContent=c.emoji+' '+c.name;
-    chip.onclick=(function(id){return function(){selCat(id);};})(c.id);
-    bar.appendChild(chip);
-  });
-  var add=document.createElement('div');add.className='cat-chip';
-  add.style.borderStyle='dashed';add.textContent='＋ 新增';
-  add.onclick=function(){setModeSilent('cat');setMode('cat');};
-  bar.appendChild(add);
-  if(!selCatId&&u.cats.length)selCat(u.cats[0].id);
+var bar=document.getElementById(‘cat-bar’);if(!bar)return;
+var u=curU();
+if(chatMode!==‘analyze’||!u||!u.cats||!u.cats.length){bar.classList.remove(‘show’);return;}
+bar.classList.add(‘show’);
+bar.innerHTML=’’;
+var lbl=document.createElement(‘span’);
+lbl.style.cssText=‘font-size:11px;color:var(–t3);white-space:nowrap;flex-shrink:0;padding-top:2px’;
+lbl.textContent=‘分析對象：’;bar.appendChild(lbl);
+u.cats.forEach(function(c){
+var chip=document.createElement(‘div’);
+chip.className=‘cat-chip’+(selCatId===c.id?’ sel’:’’);
+chip.dataset.id=c.id;
+chip.textContent=c.emoji+’ ‘+c.name;
+chip.onclick=(function(id){return function(){selCat(id);};})(c.id);
+bar.appendChild(chip);
+});
+var add=document.createElement(‘div’);add.className=‘cat-chip’;
+add.style.borderStyle=‘dashed’;add.textContent=‘＋ 新增’;
+add.onclick=function(){setModeSilent(‘cat’);setMode(‘cat’);};
+bar.appendChild(add);
+if(!selCatId&&u.cats.length)selCat(u.cats[0].id);
 }
 function selCat(id){
-  selCatId=id;
-  document.querySelectorAll('.cat-chip[data-id]').forEach(function(c){
-    c.classList.toggle('sel',parseInt(c.dataset.id)===id);
-  });
+selCatId=id;
+document.querySelectorAll(’.cat-chip[data-id]’).forEach(function(c){
+c.classList.toggle(‘sel’,parseInt(c.dataset.id)===id);
+});
 }
 // ══ INPUT ══
 function onInp(){
-  var t=document.getElementById('inp-tx');
-  t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';
-  document.getElementById('send-btn').classList.toggle('on',t.value.trim().length>0);
+var t=document.getElementById(‘inp-tx’);
+t.style.height=‘auto’;t.style.height=Math.min(t.scrollHeight,110)+‘px’;
+document.getElementById(‘send-btn’).classList.toggle(‘on’,t.value.trim().length>0);
 }
-function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function onKey(e){if(e.key===‘Enter’&&!e.shiftKey){e.preventDefault();sendMsg();}}
 // ══ SEND ══
 // ══ PHOTO UPLOAD ══
 var pendingPhotos=[]; // [{dataUrl, base64, mediaType}]
-function triggerPhoto(){document.getElementById('photo-input').click();}
+function triggerPhoto(){document.getElementById(‘photo-input’).click();}
 function onPhotoSelect(e){
-  var files=Array.from(e.target.files);
-  e.target.value=''; // reset so same file can be selected again
-  files.slice(0,4).forEach(function(file){
-    if(!file.type.startsWith('image/'))return;
-    var reader=new FileReader();
-    reader.onload=function(ev){
-      var dataUrl=ev.target.result;
-      var base64=dataUrl.split(',')[1];
-      var mediaType=file.type;
-      pendingPhotos.push({dataUrl:dataUrl,base64:base64,mediaType:mediaType,name:file.name});
-      renderPhotoBar();
-    };
-    reader.readAsDataURL(file);
-  });
+var files=Array.from(e.target.files);
+e.target.value=’’; // reset so same file can be selected again
+files.slice(0,4).forEach(function(file){
+if(!file.type.startsWith(‘image/’))return;
+var reader=new FileReader();
+reader.onload=function(ev){
+var dataUrl=ev.target.result;
+var base64=dataUrl.split(’,’)[1];
+var mediaType=file.type;
+pendingPhotos.push({dataUrl:dataUrl,base64:base64,mediaType:mediaType,name:file.name});
+renderPhotoBar();
+};
+reader.readAsDataURL(file);
+});
 }
 function renderPhotoBar(){
-  var bar=document.getElementById('photo-bar');
-  if(!pendingPhotos.length){bar.classList.remove('show');bar.innerHTML='';return;}
-  bar.classList.add('show');bar.innerHTML='';
-  pendingPhotos.forEach(function(p,i){
-    var thumb=document.createElement('div');thumb.className='photo-thumb';
-    var img=document.createElement('img');img.src=p.dataUrl;img.alt='照片'+(i+1);
-    var del=document.createElement('button');del.className='photo-del';del.textContent='×';del.title='移除';
-    del.onclick=(function(idx){return function(){pendingPhotos.splice(idx,1);renderPhotoBar();};})(i);
-    thumb.appendChild(img);thumb.appendChild(del);bar.appendChild(thumb);
-  });
-  // Update send button
-  document.getElementById('send-btn').classList.toggle('on', pendingPhotos.length>0||document.getElementById('inp-tx').value.trim().length>0);
+var bar=document.getElementById(‘photo-bar’);
+if(!pendingPhotos.length){bar.classList.remove(‘show’);bar.innerHTML=’’;return;}
+bar.classList.add(‘show’);bar.innerHTML=’’;
+pendingPhotos.forEach(function(p,i){
+var thumb=document.createElement(‘div’);thumb.className=‘photo-thumb’;
+var img=document.createElement(‘img’);img.src=p.dataUrl;img.alt=‘照片’+(i+1);
+var del=document.createElement(‘button’);del.className=‘photo-del’;del.textContent=‘×’;del.title=‘移除’;
+del.onclick=(function(idx){return function(){pendingPhotos.splice(idx,1);renderPhotoBar();};})(i);
+thumb.appendChild(img);thumb.appendChild(del);bar.appendChild(thumb);
+});
+// Update send button
+document.getElementById(‘send-btn’).classList.toggle(‘on’, pendingPhotos.length>0||document.getElementById(‘inp-tx’).value.trim().length>0);
 }
 
 var chatHist=[];
@@ -1643,6 +1156,36 @@ vcatSay(greets[Math.floor(Math.random()*greets.length)],4000);
 function vcatUploadPhoto(){
 document.getElementById(‘vcat-upload-input’).click();
 }
+function vcatHandleUpload(input){
+var file=input.files&&input.files[0];
+if(!file)return;
+var reader=new FileReader();
+reader.onload=function(ev){
+var tmpImg=new Image();
+tmpImg.onload=function(){
+var canvas=document.createElement(‘canvas’);
+canvas.width=300; canvas.height=300;
+var ctx=canvas.getContext(‘2d’);
+var sw=tmpImg.width, sh=tmpImg.height;
+var cropH=sh*0.65;
+var cropW=Math.min(sw,cropH);
+var cropX=(sw-cropW)/2;
+ctx.drawImage(tmpImg,cropX,0,cropW,cropH,0,0,300,300);
+var src=canvas.toDataURL(‘image/jpeg’,0.85);
+try{localStorage.setItem(‘vcat_custom_photo’,src);}catch(e){}
+var photo=document.getElementById(‘vcat-photo’);
+if(photo)photo.src=src;
+var nameEl=document.getElementById(‘vcat-name’);
+if(nameEl)nameEl.textContent=‘我的貓咪’;
+setVcatMood(‘excited’);
+vcatWave();
+vcatSay(‘好可愛！換成你的貓咪了！🐱’,5000);
+setTimeout(function(){input.value=’’;},200);
+};
+tmpImg.src=ev.target.result;
+};
+reader.readAsDataURL(file);
+}
 
 function initVCat(){
 var wrap=document.getElementById(‘vcat-wrap’);
@@ -1663,46 +1206,6 @@ vcatSay(p[Math.floor(Math.random()*p.length)],3500);
 if(Math.random()<0.4) vcatWave();
 }
 },11000);
-
-// Photo upload - bind lazily so element is always fresh
-var uploadInput=document.getElementById(‘vcat-upload-input’);
-if(uploadInput){
-uploadInput.addEventListener(‘change’,function(e){
-var file=e.target.files&&e.target.files[0];
-if(!file) return;
-var reader=new FileReader();
-reader.onload=function(ev){
-var tmpImg=new Image();
-tmpImg.onload=function(){
-var canvas=document.createElement(‘canvas’);
-var size=300;
-canvas.width=size; canvas.height=size;
-var ctx=canvas.getContext(‘2d’);
-var sw=tmpImg.width, sh=tmpImg.height;
-// Crop upper-center square for face
-var cropH=sh*0.65;
-var cropW=Math.min(sw, cropH);
-var cropX=(sw-cropW)/2;
-ctx.drawImage(tmpImg, cropX, 0, cropW, cropH, 0, 0, size, size);
-var src=canvas.toDataURL(‘image/jpeg’, 0.85);
-// Save
-try{localStorage.setItem(‘vcat_custom_photo’,src);}catch(err){}
-// Apply to photo element (get fresh reference)
-var photo=document.getElementById(‘vcat-photo’);
-if(photo) photo.src=src;
-var nameEl=document.getElementById(‘vcat-name’);
-if(nameEl) nameEl.textContent=‘我的貓咪’;
-setVcatMood(‘excited’);
-vcatWave();
-vcatSay(‘好可愛！換成你的貓咪了！🐱’,5000);
-// Clear input AFTER processing
-setTimeout(function(){uploadInput.value=’’;},100);
-};
-tmpImg.src=ev.target.result;
-};
-reader.readAsDataURL(file);
-});
-}
 
 // Load saved photo on boot
 try{
@@ -1727,6 +1230,19 @@ DB.cur=‘local’;saveDB();
 }
 initApp();
 initVCat();
+// Auto-activate paws on load
+var pa=document.getElementById(‘paws-app’);
+var vw=document.getElementById(‘vcat-wrap’);
+if(pa) pa.classList.add(‘active’);
+if(vw) vw.style.display=‘flex’;
+document.body.style.overflow=‘hidden’;
+setTimeout(function(){
+if(typeof vcatSay===‘function’){
+setVcatMood(‘happy’);
+vcatSay(‘喵～歡迎使用 PawSense！🐾’,5000);
+vcatWave();
+}
+},600);
 })();
 </script>
 
@@ -1743,695 +1259,14 @@ initVCat();
   </div>
   <div class="vcat-name" id="vcat-name">小喵</div>
   <div class="vcat-mood-badge" id="vcat-mood-badge">😊 開心</div>
-  <button id="vcat-upload-btn" onclick="vcatUploadPhoto()">📷 換貓咪</button>
-  <input type="file" id="vcat-upload-input" accept="image/*">
+  <label id="vcat-upload-btn" for="vcat-upload-input">📷 換貓咪</label>
+  <input type="file" id="vcat-upload-input" accept="image/*" onchange="vcatHandleUpload(this)">
 </div>
 
 <script>
 // ════ PAGE SWITCHER ════
-function showPawSense() {
-  var pp = document.getElementById('portfolio-page');
-  var pa = document.getElementById('paws-app');
-  var vw = document.getElementById('vcat-wrap');
-  pp.classList.add('hiding');
-  setTimeout(function() {
-    pp.style.display = 'none';
-    pa.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    // Show virtual cat
-    if(vw) vw.style.display='flex';
-    setTimeout(function(){
-      if(typeof vcatSay==='function'){
-        setVcatMood('happy');
-        vcatSay('喵～歡迎使用 PawSense！🐾',5000);
-        vcatWave();
-      }
-    },400);
-  }, 320);
-}
-function showPortfolio() {
-  var pp = document.getElementById('portfolio-page');
-  var pa = document.getElementById('paws-app');
-  var vw = document.getElementById('vcat-wrap');
-  pa.classList.remove('active');
-  if(vw) vw.style.display='none';
-  pp.style.display = '';
-  setTimeout(function() { pp.classList.remove('hiding'); }, 20);
-  document.body.style.overflow = '';
-  window.scrollTo(0, 0);
-}
-
-// ════ PORTFOLIO JS ════
-
-// ── THEME ──
-var isDark=true;
-function toggleTheme(){
-  isDark=!isDark;
-  document.body.classList.toggle('light',!isDark);
-  document.getElementById('theme-btn').textContent=isDark?'🌙':'☀️';
-}
-
-// ── MOBILE NAV ──
-function toggleMobileNav(){
-  var mn=document.getElementById('mobile-nav');
-  var hb=document.getElementById('hamburger');
-  var open=mn.classList.toggle('open');
-  hb.classList.toggle('open',open);
-}
-function closeMobileNav(){
-  document.getElementById('mobile-nav').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-}
-
-// ── ACTIVE NAV LINK ──
-var sections=['home','about','projects','tools','log','contact'];
-function updateNav(){
-  var scrollY=window.scrollY+100;
-  sections.forEach(function(id){
-    var el=document.getElementById(id);
-    if(!el)return;
-    var a=document.querySelector('.nav-links a[href="#'+id+'"]');
-    if(!a)return;
-    var top=el.offsetTop,bottom=top+el.offsetHeight;
-    a.classList.toggle('active',scrollY>=top&&scrollY<bottom);
-  });
-}
-
-// ── SCROLL REVEAL ──
-var observer=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-    }
-  });
-},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-
-document.querySelectorAll('.reveal,.log-item').forEach(function(el){observer.observe(el);});
-
-// ── FORM ──
-function submitForm(){
-  var name=document.getElementById('f-name').value.trim();
-  var email=document.getElementById('f-email').value.trim();
-  var msg=document.getElementById('f-msg').value.trim();
-  if(!name||!email||!msg){alert('請填寫所有欄位！');return;}
-  // Store locally as feedback
-  var fb=JSON.parse(localStorage.getItem('max_feedback')||'[]');
-  fb.push({name:name,email:email,msg:msg,time:new Date().toLocaleString()});
-  localStorage.setItem('max_feedback',JSON.stringify(fb));
-  document.getElementById('f-name').value='';
-  document.getElementById('f-email').value='';
-  document.getElementById('f-msg').value='';
-  var t=document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},3000);
-}
-
-// ── SCROLL EVENTS ──
-window.addEventListener('scroll',updateNav,{passive:true});
-updateNav();
-
-
-// ════ PAWSENSE JS ════
-
-// ══ STORAGE ══
-var DB_KEY='pawsense_v5';
-function loadDB(){try{var r=localStorage.getItem(DB_KEY);return r?JSON.parse(r):{users:[],cur:null};}catch(e){return{users:[],cur:null};}}
-function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
-var DB=loadDB();
-function curU(){
-  if(!DB.cur)return null;
-  var u=DB.users.find(function(u){return u.email===DB.cur;})||null;
-  if(!u)return null;
-  if(!u.cats)u.cats=[];if(!u.records)u.records=[];if(!u.sessions)u.sessions=[];if(!u.favs)u.favs=[];
-  return u;
-}
-function clearData(){
-  if(!confirm('確定要清除所有資料嗎？'))return;
-  localStorage.removeItem(DB_KEY);
-  DB={users:[{name:'我',email:'local',pw:'',cats:[],records:[],sessions:[],favs:[]}],cur:'local'};
-  saveDB();curSessId=null;sessMsgs=[];chatHist=[];selCatId=null;catAddStep=null;catTemp={};
-  closeSB();renderSB();renderMsgs([]);refreshCatBar();
-}
-// ══ SIDEBAR / SHEET ══
-function toggleSB(){var s=document.getElementById('sidebar'),o=document.getElementById('sb-ov');var op=s.classList.toggle('open');o.classList.toggle('show',op);}
-function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-ov').classList.remove('show');}
-function openSheet(){document.getElementById('sheet').classList.add('open');document.getElementById('sh-ov').classList.add('show');}
-function closeSheet(){document.getElementById('sheet').classList.remove('open');document.getElementById('sh-ov').classList.remove('show');}
-function renderSB(){
-  var u=curU();if(!u)return;
-  var list=document.getElementById('sb-list');list.innerHTML='';
-  if(!u.sessions||!u.sessions.length){
-    var empty=document.createElement('div');
-    empty.style.cssText='padding:10px 12px;font-size:12px;color:var(--t3)';
-    empty.textContent='還沒有對話紀錄';
-    list.appendChild(empty);return;
-  }
-  u.sessions.slice().reverse().forEach(function(s){
-    var el=document.createElement('div');
-    el.className='sb-item'+(s.id===curSessId?' act':'');
-    var ic={general:'🐱',analyze:'🔍',report:'📋',cat:'🐈'}[s.mode]||'🐱';
-    var icS=document.createElement('span');icS.className='sb-item-ic';icS.textContent=ic;
-    var txS=document.createElement('span');txS.className='sb-item-tx';txS.textContent=s.title||'新對話';
-    var del=document.createElement('button');del.className='sb-item-del';del.textContent='×';
-    del.onclick=function(e){e.stopPropagation();delSess(s.id);};
-    el.appendChild(icS);el.appendChild(txS);el.appendChild(del);
-    el.onclick=function(e){if(e.target===del)return;loadSess(s.id);closeSB();};
-    list.appendChild(el);
-  });
-}
-function delSess(id){var u=curU();if(!u)return;u.sessions=u.sessions.filter(function(s){return s.id!==id;});saveDB();if(curSessId===id)newChat();else renderSB();}
-// ══ SESSIONS ══
-var curSessId=null,sessMsgs=[];
-function newChat(){
-  curSessId=null;chatHist=[];sessMsgs=[];catAddStep=null;catTemp={};
-  document.getElementById('hd-title').textContent='PawSense AI';
-  renderMsgs([]);renderSB();closeSB();
-}
-function loadSess(id){
-  var u=curU();if(!u)return;
-  var s=u.sessions.find(function(s){return s.id===id;});if(!s)return;
-  curSessId=id;sessMsgs=s.messages||[];chatHist=s.history||[];
-  setModeSilent(s.mode||'general');
-  document.getElementById('hd-title').textContent=s.title||'對話';
-  renderMsgs(sessMsgs);
-}
-function saveSess(title){
-  var u=curU();if(!u)return;
-  if(!u.sessions)u.sessions=[];
-  if(curSessId){
-    var s=u.sessions.find(function(s){return s.id===curSessId;});
-    if(s){s.messages=sessMsgs;s.history=chatHist;if(title)s.title=title;saveDB();renderSB();return;}
-  }
-  var id='s'+Date.now();curSessId=id;
-  u.sessions.push({id:id,title:title||'新對話',mode:chatMode,messages:sessMsgs,history:chatHist});
-  saveDB();renderSB();
-  if(title)document.getElementById('hd-title').textContent=title;
-}
-// ══ RENDER MESSAGES ══
-function renderMsgs(msgs){
-  sessMsgs=msgs;
-  var el=document.getElementById('msgs');el.innerHTML='';
-  if(!msgs||!msgs.length){el.appendChild(buildWelcome());return;}
-  msgs.forEach(function(m){appendMsgEl(m,false);});
-  scrollBot();
-}
-function buildWelcome(){
-  var div=document.createElement('div');div.className='welcome';
-  var logo=document.createElement('div');logo.className='wl-logo';logo.textContent='🐾';
-  var title=document.createElement('div');title.className='wl-title';title.innerHTML='Paw<em>Sense</em> AI';
-  var sub=document.createElement('div');sub.className='wl-sub';sub.textContent='有什麼關於貓咪的問題嗎？';
-  var grid=document.createElement('div');grid.className='sg-grid';
-  var suggests=[
-    {ic:'🔍',t:'行為分析',d:'描述行為，搜尋並分析',q:'我想分析貓咪的行為'},
-    {ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-    {ic:'💊',t:'健康問題',d:'搜尋症狀與建議',q:'我的貓咪最近食慾不振'},
-    {ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
-  ];
-  suggests.forEach(function(s){
-    var card=document.createElement('div');card.className='sg-card';
-    var ic=document.createElement('div');ic.className='sg-ic';ic.textContent=s.ic;
-    var t=document.createElement('div');t.className='sg-t';t.textContent=s.t;
-    var d=document.createElement('div');d.className='sg-d';d.textContent=s.d;
-    card.appendChild(ic);card.appendChild(t);card.appendChild(d);
-    card.onclick=(function(q){return function(){tapQ(q);};})(s.q);
-    grid.appendChild(card);
-  });
-  div.appendChild(logo);div.appendChild(title);div.appendChild(sub);div.appendChild(grid);
-  return div;
-}
-function appendMsgEl(m,anim){
-  var el=document.getElementById('msgs');
-  var w=el.querySelector('.welcome');if(w)w.remove();
-  if(m.role==='user'){
-    var g=document.createElement('div');g.className='mg user';
-    var b=document.createElement('div');b.className='bb user';
-    if(!anim)b.style.animation='none';
-    b.textContent=m.content;g.appendChild(b);el.appendChild(g);
-  } else {
-    var g=document.createElement('div');g.className='mg ai';
-    var av=document.createElement('div');av.className='ai-av';av.textContent='🐾';
-    var b=document.createElement('div');b.className='bb ai';
-    if(!anim)b.style.animation='none';
-    if(m.type==='result'&&m.rd){b.appendChild(buildResCard(m.rd));}
-    else{
-      b.innerHTML=fmtAI(m.content);
-      if(m.qr&&m.qr.length){
-        var qrRow=document.createElement('div');qrRow.className='qr-row';
-        m.qr.forEach(function(q){
-          var btn=document.createElement('button');btn.className='qr';btn.textContent=q;
-          btn.onclick=(function(qq){return function(){tapQ(qq);};})(q);
-          qrRow.appendChild(btn);
-        });
-        b.appendChild(qrRow);
-      }
-    }
-    g.appendChild(av);g.appendChild(b);el.appendChild(g);
-  }
-  if(anim)scrollBot();
-}
-function buildResCard(r){
-  var sc=r.sl>=60?'var(--re)':r.sl>=35?'var(--ye)':'var(--gr)';
-  var rl=r.risk==='高'?'高風險':r.risk==='低'?'低風險':'中風險';
-  var rc=r.risk==='高'?'rgba(242,109,109,.13)':r.risk==='低'?'rgba(62,207,142,.13)':'rgba(245,166,35,.13)';
-  var rt=r.risk==='高'?'var(--re)':r.risk==='低'?'var(--gr)':'var(--ye)';
-  var c=document.createElement('div');c.className='res-card';c.id='rc-'+r.id;
-  var hd=document.createElement('div');hd.className='res-hd';
-  var cat=document.createElement('div');cat.className='res-cat';cat.textContent=(r.catEmoji||'🐱')+' '+(r.catName||'貓咪')+'・'+r.date;
-  var badge=document.createElement('div');badge.className='res-badge';badge.textContent=rl;
-  badge.style.cssText='background:'+rc+';color:'+rt;
-  hd.appendChild(cat);hd.appendChild(badge);
-  var sbw=document.createElement('div');sbw.className='sb-wrap';
-  var lbl=document.createElement('div');lbl.className='sb-label';
-  lbl.innerHTML='<span>壓力指數</span><span style="color:'+sc+';font-weight:600">'+r.sl+' / 100</span>';
-  var trk=document.createElement('div');trk.className='sb-track';
-  var fill=document.createElement('div');fill.className='sb-fill';fill.id='sf-'+r.id;
-  fill.style.cssText='width:0%;background:'+sc;
-  trk.appendChild(fill);sbw.appendChild(lbl);sbw.appendChild(trk);
-  var txt=document.createElement('div');txt.className='res-txt';txt.textContent=r.fullReport;
-  var ratRow=document.createElement('div');ratRow.className='rat-row';
-  var ratLbl=document.createElement('div');ratLbl.className='rat-lbl';ratLbl.textContent='這份分析有幫助嗎？';
-  var stars=document.createElement('div');stars.className='stars';stars.id='rs-'+r.id;
-  for(var i=1;i<=5;i++){
-    var star=document.createElement('div');star.className='star'+(i<=(r.rating||0)?' on':'');
-    star.textContent='★';
-    star.onclick=(function(score,rid){return function(){rateRes(rid,score);};})(i,r.id);
-    stars.appendChild(star);
-  }
-  ratRow.appendChild(ratLbl);ratRow.appendChild(stars);
-  c.appendChild(hd);c.appendChild(sbw);c.appendChild(txt);c.appendChild(ratRow);
-  setTimeout(function(){var f=document.getElementById('sf-'+r.id);if(f)f.style.width=r.sl+'%';},80);
-  return c;
-}
-function fmtAI(text){
-  if(!text)return'';
-  var o=esc(text)
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^#{1,3} (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^[•\-] (.+)$/gm,'<li>$1</li>');
-  var lines=o.split('\n');var out=[];var ul=false;
-  lines.forEach(function(l){
-    if(l.startsWith('<li>')){if(!ul){out.push('<ul>');ul=true;}out.push(l);}
-    else{if(ul){out.push('</ul>');ul=false;}if(l.trim())out.push(l.startsWith('<h3>')?l:'<p>'+l+'</p>');}
-  });
-  if(ul)out.push('</ul>');
-  return out.join('');
-}
-function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function scrollBot(){var m=document.getElementById('msgs');if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
-function tapQ(q){document.getElementById('inp-tx').value=q;onInp();sendMsg();}
-// ══ MODE ══
-var chatMode='general';
-var modeLabel={general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'};
-var selCatId=null;
-function setModeSilent(m){
-  chatMode=m;
-  document.getElementById('mode-chip').textContent=modeLabel[m]||'🐱 問答';
-  ['general','analyze','report','cat'].forEach(function(k){
-    var el=document.getElementById('sm-'+k);if(el)el.classList.toggle('act',k===m);
-  });
-  var ph={general:'有什麼想問的？',analyze:'描述貓咪的行為...',report:'問我關於分析報告...',cat:'說「新增貓咪」或「查看貓咪」...'};
-  document.getElementById('inp-tx').placeholder=ph[m]||'輸入訊息...';
-  refreshCatBar();
-}
-function setMode(m){
-  setModeSilent(m);closeSheet();
-  var intro={
-    general:'已切換到 **貓咪問答** 模式。有什麼問題嗎？',
-    analyze:'已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。',
-    report:'已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。',
-    cat:'已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。'
-  };
-  if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
-}
-function refreshCatBar(){
-  var bar=document.getElementById('cat-bar');if(!bar)return;
-  var u=curU();
-  if(chatMode!=='analyze'||!u||!u.cats||!u.cats.length){bar.classList.remove('show');return;}
-  bar.classList.add('show');
-  bar.innerHTML='';
-  var lbl=document.createElement('span');
-  lbl.style.cssText='font-size:11px;color:var(--t3);white-space:nowrap;flex-shrink:0;padding-top:2px';
-  lbl.textContent='分析對象：';bar.appendChild(lbl);
-  u.cats.forEach(function(c){
-    var chip=document.createElement('div');
-    chip.className='cat-chip'+(selCatId===c.id?' sel':'');
-    chip.dataset.id=c.id;
-    chip.textContent=c.emoji+' '+c.name;
-    chip.onclick=(function(id){return function(){selCat(id);};})(c.id);
-    bar.appendChild(chip);
-  });
-  var add=document.createElement('div');add.className='cat-chip';
-  add.style.borderStyle='dashed';add.textContent='＋ 新增';
-  add.onclick=function(){setModeSilent('cat');setMode('cat');};
-  bar.appendChild(add);
-  if(!selCatId&&u.cats.length)selCat(u.cats[0].id);
-}
-function selCat(id){
-  selCatId=id;
-  document.querySelectorAll('.cat-chip[data-id]').forEach(function(c){
-    c.classList.toggle('sel',parseInt(c.dataset.id)===id);
-  });
-}
-// ══ INPUT ══
-function onInp(){
-  var t=document.getElementById('inp-tx');
-  t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';
-  document.getElementById('send-btn').classList.toggle('on',t.value.trim().length>0);
-}
-function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
-// ══ SEND ══
-// ══ PHOTO UPLOAD ══
-var pendingPhotos=[]; // [{dataUrl, base64, mediaType}]
-function triggerPhoto(){document.getElementById('photo-input').click();}
-function onPhotoSelect(e){
-  var files=Array.from(e.target.files);
-  e.target.value=''; // reset so same file can be selected again
-  files.slice(0,4).forEach(function(file){
-    if(!file.type.startsWith('image/'))return;
-    var reader=new FileReader();
-    reader.onload=function(ev){
-      var dataUrl=ev.target.result;
-      var base64=dataUrl.split(',')[1];
-      var mediaType=file.type;
-      pendingPhotos.push({dataUrl:dataUrl,base64:base64,mediaType:mediaType,name:file.name});
-      renderPhotoBar();
-    };
-    reader.readAsDataURL(file);
-  });
-}
-function renderPhotoBar(){
-  var bar=document.getElementById('photo-bar');
-  if(!pendingPhotos.length){bar.classList.remove('show');bar.innerHTML='';return;}
-  bar.classList.add('show');bar.innerHTML='';
-  pendingPhotos.forEach(function(p,i){
-    var thumb=document.createElement('div');thumb.className='photo-thumb';
-    var img=document.createElement('img');img.src=p.dataUrl;img.alt='照片'+(i+1);
-    var del=document.createElement('button');del.className='photo-del';del.textContent='×';del.title='移除';
-    del.onclick=(function(idx){return function(){pendingPhotos.splice(idx,1);renderPhotoBar();};})(i);
-    thumb.appendChild(img);thumb.appendChild(del);bar.appendChild(thumb);
-  });
-  // Update send button
-  document.getElementById('send-btn').classList.toggle('on', pendingPhotos.length>0||document.getElementById('inp-tx').value.trim().length>0);
-}
-
-var chatHist=[];
-async function sendMsg(){
-  var t=document.getElementById('inp-tx');var txt=t.value.trim();if(!txt)return;
-  t.value='';t.style.height='auto';document.getElementById('send-btn').classList.remove('on');
-  var u=curU();
-  // Build user message with optional images
-  var photos=pendingPhotos.slice();pendingPhotos=[];renderPhotoBar();
-  var um;
-  if(photos.length){
-    var msgContent=[];
-    photos.forEach(function(p){msgContent.push({type:'image',source:{type:'base64',media_type:p.mediaType,data:p.base64}});});
-    if(txt)msgContent.push({type:'text',text:txt});
-    um={role:'user',content:msgContent,_photos:photos.map(function(p){return p.dataUrl;})};
-  } else {
-    um={role:'user',content:txt};
-  }
-  sessMsgs.push(um);
-  // Render user bubble with photos
-  var msgs_el=document.getElementById('msgs');
-  var w=msgs_el.querySelector('.welcome');if(w)w.remove();
-  var ug=document.createElement('div');ug.className='mg user';
-  var ub=document.createElement('div');ub.className='bb user';ub.style.animation='none';
-  if(photos.length){
-    photos.forEach(function(p){var i=document.createElement('img');i.src=p.dataUrl;i.className='msg-img';i.alt='上傳的照片';ub.appendChild(i);});
-  }
-  if(txt){var sp=document.createElement('p');sp.style.cssText='margin:0;'+(photos.length?'margin-top:6px':'');sp.textContent=txt;ub.appendChild(sp);}
-  ug.appendChild(ub);msgs_el.appendChild(ug);scrollBot();
-  if(!curSessId)saveSess(txt.substring(0,22));else saveSess(null);
-  var tid='ty'+Date.now();
-  var tg=document.createElement('div');tg.className='ty-wrap';tg.id=tid;
-  var tav=document.createElement('div');tav.className='ai-av';tav.textContent='🐾';
-  var tdots=document.createElement('div');tdots.className='ty-dots';
-  tdots.innerHTML='<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>';
-  tg.appendChild(tav);tg.appendChild(tdots);
-  document.getElementById('msgs').appendChild(tg);scrollBot();
-  if(chatMode==='cat'||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
-  var low2=txt.toLowerCase();
-  if(low2.includes('新增貓咪')||low2.includes('加入貓咪')||low2.includes('新增一隻貓')){
-    removeEl(tid);setModeSilent('cat');await catFlow(txt,u);return;
-  }
-  // 分析模式但還沒有貓咪 - 提前引導
-  if(chatMode==='analyze'&&(!u||!u.cats||!u.cats.length)){
-    removeEl(tid);
-    pushAI('🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？',['幫我新增貓咪']);
-    setModeSilent('cat');catAddStep=null;
-    return;
-  }
-  var catInfo='';
-  if(u&&u.cats&&u.cats.length){
-    catInfo='\n\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'，'+c.gender+'）';}).join('、');
-  }
-  var langInstr=curLang==='en'?'Please respond in English only.':'請用繁體中文回答。';
-  var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n'+langInstr+catInfo;
-  if(chatMode==='analyze'){
-    var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
-    if(sc2)sys+='\n\n目前分析對象：'+sc2.name+'（'+sc2.breed+'，'+sc2.age+'）';
-    sys+='\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。';
-  }
-  if(chatMode==='report'&&u&&u.records&&u.records.length){
-    var lr=u.records[u.records.length-1];
-    var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:'貓咪'};
-    sys+='\n\n最近分析報告（'+lc.name+'，'+lr.date+'）：\n'+lr.fullReport;
-  }
-  // Push to chatHist - use array format if photos present
-  if(photos.length){
-    var apiContent=[];
-    photos.forEach(function(p){apiContent.push({type:'image',source:{type:'base64',media_type:p.mediaType,data:p.base64}});});
-    if(txt)apiContent.push({type:'text',text:txt});
-    else apiContent.push({type:'text',text:'請描述或分析這張照片裡的寵物。'});
-    chatHist.push({role:'user',content:apiContent});
-  } else {
-    chatHist.push({role:'user',content:txt});
-  }
-  try{
-    // Groq API call (OpenAI-compatible)
-    var reply=staticAI(txt,sys,chatMode);
-    await new Promise(function(r){setTimeout(r,600+Math.random()*800);});
-    chatHist.push({role:'assistant',content:reply});
-    removeEl(tid);
-    var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[\/／]\s*100/);
-    var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
-    if(chatMode==='analyze'&&sm&&rm&&u&&u.cats&&u.cats.length){
-      var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
-      var cat=(selCatId&&u.cats.find(function(c){return c.id===selCatId;}))||u.cats[0];
-      var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||'🐱',
-        date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
-        inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
-      u.records.push(rec);saveDB();
-      var am={role:'assistant',type:'result',content:reply,rd:rec,qr:['再問一個問題','繼續分析']};
-      sessMsgs.push(am);appendMsgEl(am,true);
-      updateVirtualCat(reply);
-    } else {
-      pushAI(reply,[]);
-      updateVirtualCat(reply);
-    }
-    saveSess(null);
-  }catch(err){
-    var u2=curU();
-    // Static mode fallback (should not reach here)
-    try{
-      var reply2=staticAI(txt,sys,chatMode);
-      await new Promise(function(r){setTimeout(r,400);});
-      if(!reply2){removeEl(tid);pushAI('⚠️ AI 未回應，請重新描述。',['重新嘗試']);saveSess(null);return;}
-      chatHist.push({role:'assistant',content:reply2});
-      removeEl(tid);
-      var sm2=reply2.match(/壓力指數[^\d]*(\d+)/)||reply2.match(/(\d+)\s*[\/／]\s*100/);
-      var rm2=reply2.match(/風險等級[^低中高]*(低|中|高)/)||reply2.match(/(低|中|高)風險/);
-      if(chatMode==='analyze'&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
-        var sl2=Math.min(100,Math.max(0,parseInt(sm2[1])));var risk2=rm2[1];
-        var cat2=(selCatId&&u2.cats.find(function(c){return c.id===selCatId;}))||u2.cats[0];
-        var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||'🐱',
-          date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
-          inputText:txt,fullReport:reply2,sl:sl2,risk:risk2,rating:0};
-        u2.records.push(rec2);saveDB();
-        var am2={role:'assistant',type:'result',content:reply2,rd:rec2,qr:['再問一個問題','繼續分析']};
-        sessMsgs.push(am2);appendMsgEl(am2,true);
-        updateVirtualCat(reply2);
-      } else {
-        pushAI(reply2,[]);
-        updateVirtualCat(reply2);
-      }
-      saveSess(null);
-    }catch(err2){
-      removeEl(tid);
-      // Last resort: try staticAI directly
-      try{
-        var r3=staticAI(txt,sys,chatMode);
-        if(r3){pushAI(r3,[]);updateVirtualCat(r3);}
-        else{pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
-      }catch(e){pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
-      saveSess(null);
-    }
-  }
-}
-// ══ CAT FLOW ══
-var catAddStep=null,catTemp={};
-async function catFlow(txt,u){
-  if(!u)u=curU();
-  // Handle error recovery quick replies
-  if(txt==='重新嘗試'||txt==='稍後再試'){
-    pushAI('好的，你可以重新輸入你的問題，我來幫你！',[]);return;
-  }
-  if(txt==='重新描述'||txt==='換個問題'){
-    pushAI('沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。',[]);return;
-  }
-  var low=txt.toLowerCase();
-  if(low.includes('查看')||low.includes('我的貓')||low.includes('列出')){
-    if(!u.cats.length){pushAI('你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！',['新增貓咪']);return;}
-    var listTxt=u.cats.map(function(c,i){
-      return '**'+(i+1)+'. '+c.emoji+' '+c.name+'**（'+c.breed+'，'+c.age+'，'+c.gender+'）\n分析次數：'+u.records.filter(function(r){return r.catId===c.id;}).length+'次';
-    }).join('\n\n');
-    pushAI('你的貓咪：\n\n'+listTxt,['新增貓咪','切換到行為分析']);return;
-  }
-  if(low.includes('新增')||low.includes('加入')||catAddStep){await catAddFlow(txt,u);return;}
-  if(low.includes('紀錄')||low.includes('報告')){
-    if(!u.records.length){pushAI('還沒有分析紀錄。切換到**行為分析**模式開始吧！',['切換到行為分析']);return;}
-    var recentTxt=u.records.slice(-3).reverse().map(function(r){
-      var c=u.cats.find(function(x){return x.id===r.catId;})||{name:'貓咪'};
-      return '📅 '+r.date+' — **'+c.name+'** 壓力 '+r.sl+'/100（'+r.risk+'風險）';
-    }).join('\n\n');
-    pushAI('最近'+Math.min(3,u.records.length)+'筆分析：\n\n'+recentTxt,['解讀最新報告','切換到行為分析']);return;
-  }
-  if(txt.includes('切換到行為分析')){setMode('analyze');return;}
-  if(txt.includes('解讀最新報告')){setMode('report');return;}
-  pushAI('在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**',['查看我的貓咪','新增貓咪','查看紀錄']);
-}
-async function catAddFlow(txt,u){
-  if(!catAddStep){catAddStep='name';catTemp={emoji:'🐱'};pushAI('好的！貓咪的**名字**是？',[]);return;}
-  if(catAddStep==='name'){catTemp.name=txt.trim();catAddStep='breed';pushAI('**品種**是什麼？（例：英短、米克斯）',[]);return;}
-  if(catAddStep==='breed'){catTemp.breed=txt.trim()||'未填';catAddStep='age';pushAI('**年齡**是？（例：3歲、8個月）',[]);return;}
-  if(catAddStep==='age'){catTemp.age=txt.trim()||'未填';catAddStep='gender';pushAI('**性別**？',['公（已結紮）','公（未結紮）','母（已結紮）','母（未結紮）']);return;}
-  if(catAddStep==='gender'){
-    catTemp.gender=txt.trim()||'未填';catAddStep='confirm';
-    pushAI('確認：\n\n🐱 '+catTemp.name+' / '+catTemp.breed+' / '+catTemp.age+' / '+catTemp.gender+'\n\n**確認儲存？**',['確認','重新開始']);return;
-  }
-  if(catAddStep==='confirm'){
-    if(txt.includes('確認')){
-      catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString('zh-TW');
-      u.cats.push(catTemp);saveDB();
-      var nm=catTemp.name;catAddStep=null;catTemp={};
-      selCatId=u.cats[u.cats.length-1].id;refreshCatBar();
-      pushAI('✅ **'+nm+'** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。',['切換到行為分析','查看我的貓咪']);
-    }else{catAddStep=null;catTemp={};pushAI('已取消。',['新增貓咪']);}
-    return;
-  }
-}
-function pushAI(content,qr){
-  chatHist.push({role:'assistant',content:content});
-  var msg={role:'assistant',content:content,qr:qr||[]};
-  sessMsgs.push(msg);appendMsgEl(msg,true);saveSess(null);
-}
-function removeEl(id){var e=document.getElementById(id);if(e)e.remove();}
-function rateRes(id,score){
-  var u=curU();if(!u)return;
-  var rec=u.records.find(function(r){return r.id==id;});if(rec){rec.rating=score;saveDB();}
-  var el=document.getElementById('rs-'+id);if(!el)return;
-  el.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('on',i<score);});
-}
-// ══ LANGUAGE ══
-var curLang='zh';
-var T={
-  zh:{
-    appName:'PawSense AI',
-    newChat:'新對話',
-    history:'對話紀錄',
-    clearData:'清除資料',
-    hint:'PawSense AI · 分析結果僅供參考',
-    placeholder:'輸入訊息...',
-    modeLabel:{general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'},
-    langSheetTitle:'切換語言',
-    welcome:'有什麼關於貓咪的問題嗎？',
-    suggests:[
-      {ic:'🔍',t:'行為分析',d:'描述行為，取得評估',q:'我想分析貓咪的行為'},
-      {ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-      {ic:'💊',t:'健康問題',d:'詢問健康建議',q:'我的貓咪最近食慾不振'},
-      {ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
-    ],
-    modes:[
-      {id:'general',ic:'🐱',nm:'貓咪問答',ds:'問任何關於貓咪的問題'},
-      {id:'analyze',ic:'🔍',nm:'行為分析',ds:'AI 搜尋獸醫文獻，評估壓力與風險'},
-      {id:'report',ic:'📋',nm:'報告解讀',ds:'解讀過往的分析報告'},
-      {id:'cat',ic:'🐈',nm:'貓咪管理',ds:'新增 / 查看貓咪資料'}
-    ]
-  },
-  en:{
-    appName:'PawSense AI',
-    newChat:'New Chat',
-    history:'History',
-    clearData:'Clear Data',
-    hint:'PawSense AI · For reference only',
-    placeholder:'Ask anything...',
-    modeLabel:{general:'🐱 Chat',analyze:'🔍 Analyze',report:'📋 Report',cat:'🐈 Cats'},
-    langSheetTitle:'Language',
-    welcome:'What would you like to know about your cat?',
-    suggests:[
-      {ic:'🔍',t:'Behavior Analysis',d:'Describe behavior, get insight',q:'I want to analyze my cat\'s behavior'},
-      {ic:'🐈',t:'Add a Cat',d:'Create a cat profile',q:'Help me add a cat'},
-      {ic:'💊',t:'Health Question',d:'Get health advice',q:'My cat has been eating less lately'},
-      {ic:'📊',t:'View Records',d:'Browse past analyses',q:'Show me recent analysis results'}
-    ],
-    modes:[
-      {id:'general',ic:'🐱',nm:'Cat Chat',ds:'Ask anything about cats'},
-      {id:'analyze',ic:'🔍',nm:'Behavior Analysis',ds:'AI searches vet literature to assess stress & risk'},
-      {id:'report',ic:'📋',nm:'Report Review',ds:'Interpret past analysis reports'},
-      {id:'cat',ic:'🐈',nm:'Cat Manager',ds:'Add / view cat profiles'}
-    ]
-  }
-};
-
-function openLangSheet(){
-  document.getElementById('lang-sheet').classList.add('open');
-  document.getElementById('lang-sh-ov').classList.add('show');
-}
-function closeLangSheet(){
-  document.getElementById('lang-sheet').classList.remove('open');
-  document.getElementById('lang-sh-ov').classList.remove('show');
-}
-function setLang(lang){
-  curLang=lang;
-  document.body.classList.toggle('lang-en', lang==='en');
-  document.getElementById('lang-flag').textContent=lang==='zh'?'中':'EN';
-  document.getElementById('lc-zh').style.opacity=lang==='zh'?'1':'0';
-  document.getElementById('lc-en').style.opacity=lang==='en'?'1':'0';
-  var t=T[lang];
-  // Update static UI text
-  document.getElementById('lang-sh-title').textContent=t.langSheetTitle;
-  document.getElementById('inp-tx').placeholder=t.placeholder;
-  document.querySelector('.inp-hint').textContent=t.hint;
-  document.querySelector('.sb-new').childNodes[1].textContent=' '+t.newChat;
-  document.querySelector('.sb-sec').textContent=t.history;
-  document.querySelector('.sb-logout').textContent=t.clearData;
-  // Update mode sheet items
-  t.modes.forEach(function(m){
-    var el=document.getElementById('sm-'+m.id);
-    if(!el)return;
-    el.querySelector('.sh-nm').textContent=m.nm;
-    el.querySelector('.sh-ds').textContent=m.ds;
-  });
-  // Update mode chip label
-  modeLabel=t.modeLabel;
-  document.getElementById('mode-chip').textContent=modeLabel[chatMode]||modeLabel.general;
-  // Redraw welcome if showing
-  var msgs=document.getElementById('msgs');
-  if(msgs.querySelector('.welcome')){msgs.innerHTML='';msgs.appendChild(buildWelcome());}
-  closeLangSheet();
-}
-
-// ══ BOOT ══
-function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent('general');}
-(function boot(){
-  if(!DB.cur||!DB.users.length){
-    if(!DB.users.find(function(u){return u.email==='local';})){
-      DB.users.push({name:'我',email:'local',pw:'',cats:[],records:[],sessions:[],favs:[]});
-    }
-    DB.cur='local';saveDB();
-  }
-  initApp();
-})();
+function showPawSense(){}
+function showPortfolio(){}
 
 </script>
 
