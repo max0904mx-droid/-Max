@@ -57,7 +57,7 @@
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:rgba(10,10,10,.92);backdrop-filter:blur(14px);position:relative;z-index:10}
+.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:var(--bg);backdrop-filter:blur(14px);position:relative;z-index:10}
 .menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
 .menu-btn:hover{background:var(–s2)}
 .menu-ic{display:flex;flex-direction:column;gap:4px;pointer-events:none}
@@ -138,8 +138,8 @@
 .inp-wrap:focus-within{border-color:rgba(91,143,249,.32)}
 .inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
 .inp-tx::placeholder{color:var(–t3)}
-.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–ac);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:.35;pointer-events:none;flex-shrink:0;user-select:none}
-.send-btn.on{opacity:1;pointer-events:all;transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
+.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(--s3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:1;pointer-events:none;flex-shrink:0;user-select:none}
+.send-btn.on{opacity:1;pointer-events:all;background:var(--ac);transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
 .send-btn:hover{background:var(–acb)}
 .send-btn:active{transform:scale(.9)}
 .inp-hint{font-size:10px;color:var(–t3);text-align:center;margin-top:6px}
@@ -275,21 +275,11 @@ img{max-width:100%;height:auto;display:block;}
 #vcat-upload-btn{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:'Space Mono',monospace;margin-top:2px;transition:all .2s;-webkit-user-select:none;user-select:none}
 #vcat-upload-btn:hover{background:rgba(255,255,255,.18);color:rgba(255,255,255,.8)}
 
-/* ── Feature intro cards ── */
-.feat-wrap{width:100%;display:flex;flex-direction:column;gap:8px;margin:16px 0 4px}
-.feat-card{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:11px 14px;text-align:left}
-.feat-ic{font-size:22px;flex-shrink:0;width:32px;text-align:center}
-.feat-info{flex:1}
-.feat-t{font-size:13px;font-weight:700;color:var(–t);margin-bottom:2px}
-.feat-d{font-size:11px;color:var(–t2);line-height:1.5}
-.feat-divider{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(–t3);text-align:center;margin:14px 0 6px;position:relative}
-.feat-divider::before,.feat-divider::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:var(–bd)}
-.feat-divider::before{left:0}.feat-divider::after{right:0}
 
 /* ════ TUTORIAL ════ */
-.tut-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.tut-overlay{position:fixed;inset:0;background:transparent;z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
 .tut-overlay.show{opacity:1;pointer-events:all}
-.tut-highlight{position:relative;z-index:9001!important;box-shadow:0 0 0 9999px rgba(0,0,0,.55),0 0 0 4px rgba(91,143,249,.7),0 0 20px 6px rgba(91,143,249,.3)!important;border-radius:10px;pointer-events:auto;transition:box-shadow .3s}
+.tut-highlight{position:relative;z-index:9001!important;box-shadow:0 0 0 9999px rgba(0,0,0,.45),0 0 0 4px rgba(91,143,249,.7),0 0 20px 6px rgba(91,143,249,.3)!important;border-radius:10px;pointer-events:auto;transition:box-shadow .3s}
 .tut-bar{position:fixed;left:0;right:0;bottom:0;z-index:9002;display:none;align-items:center;justify-content:space-between;padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom));background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-top:1px solid rgba(30,80,160,.12);gap:10px}
 .tut-bar.show{display:flex}
 .tut-skip{background:none;border:none;color:#6a8aaa;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:6px 10px;border-radius:8px;transition:all .18s}
@@ -349,13 +339,11 @@ img{max-width:100%;height:auto;display:block;}
       <div class="menu-ic"><span></span><span></span><span></span></div>
     </button>
 
-```
 <div class="hd-title" id="hd-title">PawSense AI</div>
 <button class="lang-btn" id="lang-btn" onclick="openLangSheet()" aria-label="切換語言">
   <span id="lang-flag">中</span>
 </button>
 <div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
-```
 
   </div>
   <div class="cat-bar" id="cat-bar"></div>
@@ -505,28 +493,6 @@ var logo=document.createElement('div');logo.className='wl-logo';logo.textContent
 var title=document.createElement('div');title.className='wl-title';title.innerHTML='Paw<em>Sense</em> AI';
 var sub=document.createElement('div');sub.className='wl-sub';sub.textContent='你的 AI 貓咪健康助理';
 
-// ── Feature intro cards ──
-var featWrap=document.createElement('div');featWrap.className='feat-wrap';
-var features=[
-{ic:'🔍',t:'行為分析',d:'描述貓咪行為，AI 即時分析壓力指數與風險等級'},
-{ic:'💊',t:'健康問題',d:'輸入症狀，獲得建議與就醫時機評估'},
-{ic:'📋',t:'分析紀錄',d:'所有分析結果自動儲存，隨時查閱歷史報告'},
-{ic:'🐈',t:'貓咪管理',d:'建立多隻貓咪檔案，追蹤每隻貓的健康狀況'},
-];
-features.forEach(function(f){
-var card=document.createElement('div');card.className='feat-card';
-var ic=document.createElement('div');ic.className='feat-ic';ic.textContent=f.ic;
-var info=document.createElement('div');info.className='feat-info';
-var t=document.createElement('div');t.className='feat-t';t.textContent=f.t;
-var d=document.createElement('div');d.className='feat-d';d.textContent=f.d;
-info.appendChild(t);info.appendChild(d);
-card.appendChild(ic);card.appendChild(info);
-featWrap.appendChild(card);
-});
-
-// ── Divider ──
-var divider=document.createElement('div');divider.className='feat-divider';divider.textContent='立即開始';
-
 // ── Quick start grid ──
 var grid=document.createElement('div');grid.className='sg-grid';
 var suggests=[
@@ -548,8 +514,6 @@ grid.appendChild(card);
 div.appendChild(logo);
 div.appendChild(title);
 div.appendChild(sub);
-div.appendChild(featWrap);
-div.appendChild(divider);
 div.appendChild(grid);
 return div;
 }
@@ -1266,6 +1230,7 @@ function tutStart(){
 closeSB();
 tutStep=-1;
 if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
+var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='9003';
 document.getElementById('tut-overlay').classList.add('show');
 document.getElementById('tut-bar').classList.add('show');
 tutRenderDots();
@@ -1295,6 +1260,7 @@ if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointe
 tutStep=-1;
 document.getElementById('tut-overlay').classList.remove('show');
 document.getElementById('tut-bar').classList.remove('show');
+var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='300';
 if(typeof vcatSay==='function') vcatSay(curLang==='en'?'See you next time! 👋':'下次見囉！👋',3000);
 }
 
@@ -1303,6 +1269,7 @@ if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointe
 tutStep=-1;
 document.getElementById('tut-overlay').classList.remove('show');
 document.getElementById('tut-bar').classList.remove('show');
+var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='300';
 if(completed){
 try{localStorage.setItem(TUT_KEY,'1');}catch(e){}
 if(typeof vcatSay==='function') vcatSay(curLang==='en'?'You\'re all set! Let\'s get started! 🎉':'教學完成！開始探索吧！🎉',5000);
