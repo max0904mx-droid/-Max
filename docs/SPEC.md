@@ -1,116 +1,29 @@
-# PawSense AI + Portfolio — 功能規格文檔
+# PawSense AI — 功能規格文檔
 
 ## 專案概覽
 
 | 項目 | 內容 |
 |------|------|
-| 專案名稱 | Yu Chen AI — Developer & Builder |
+| 專案名稱 | PawSense AI（原 Yu Chen AI — Developer & Builder） |
 | 作者 | Yu Chen AI (max0904mx-droid) |
 | 技術棧 | HTML / CSS / JavaScript（純前端，無框架） |
 | 外部資源 | Google Fonts（Noto Serif TC、Dancing Script、Space Mono、Syne、Instrument Serif、DM Sans） |
 | 資料存儲 | localStorage |
 | 部署方式 | GitHub Pages (`max0904mx-droid.github.io/-Max`) |
-| 檔案結構 | 單一 `index.html`（約 1870 行） |
+| 檔案結構 | 單一 `index.html`（約 1274 行） |
+| 配色主題 | 淺藍色系（`#d0e8ff` 背景，藍色調 UI） |
+
+**重要變更**：Portfolio 作品集頁面已移除，網站現為 PawSense AI 單頁應用，開啟即直接進入聊天介面。
 
 ---
 
-## 頁面一：Portfolio 作品集 (`#portfolio-page`)
+## PawSense AI 聊天應用 (`#paws-app`)
 
-### 1. 導航列 (`<nav>`)
+### 1. 啟動機制
 
-- **桌面版**：固定頂部、毛玻璃背景（`backdrop-filter:blur`）、Logo + 連結（Home / About / Projects / Tools / Contact）
-- **手機版**（≤768px）：隱藏 nav-links，顯示漢堡選單按鈕（`.hamburger`），點擊展開 `.mobile-nav` 下拉面板
-- **深淺色切換**：`toggleTheme()` 切換 `body.light` class，按鈕圖示 🌙/☀️
-- **相關函式**：`toggleTheme()`、`toggleMobileNav()`、`closeMobileNav()`
-
-### 2. Hero 區塊 (`#home`)
-
-- 全螢幕高度（`min-height:100vh`）
-- 背景裝飾：兩個漸層圓球（`.hero-orb.a` 藍色、`.hero-orb.b` 綠色），`pulse` 動畫
-- 內容：eyebrow 標語、大字名稱（`Hi, I'm Yu Chen AI.`）、描述段落
-- CTA 按鈕：
-  - 「🐾 開始使用 PawSense AI」→ `showPawSense()`
-  - 「查看專案」→ `#projects`
-  - 「聯絡我」→ `#contact`
-- 底部介紹卡片（`.hero-intro-box`）：目前專注的專案說明
-- 進場動畫：`fadeUp` keyframe，各元素有不同 delay
-
-### 3. About 區塊 (`#about`)
-
-- 單一「聯絡方式」卡片（`.about-card`），包含：
-  - **GitHub**：`github.com/max0904mx-droid`
-  - **網站**：`max0904mx-droid.github.io/-Max`
-- 無自我介紹文字、無雙欄 grid 佈局（`.about-contact` 取代原 `.about-grid`）
-
-### 4. Projects 區塊 (`#projects`)
-
-3 個專案卡片（`.proj-card`），各含 hover 特效：
-
-| 專案 | 狀態 | 說明 | 操作按鈕 |
-|------|------|------|---------|
-| PawSense AI | LIVE | AI 貓咪行為分析平台 | 開始使用、Live、GitHub |
-| 個人作品集 | LIVE | 目前網站本身 | 你在這裡、GitHub |
-| Coming Soon | WIP | 下一個規劃中的專案 | 聯絡討論 |
-
-### 5. Tools 區塊 (`#tools`)
-
-6 個工具卡片（`.tool-card`），展示使用的技術：
-
-| 工具 | 說明 |
-|------|------|
-| 🤖 Claude API | Anthropic 的 AI 模型 |
-| 📄 HTML / CSS | 語意化結構與樣式設計 |
-| ⚡ JavaScript | 互動邏輯、API 整合 |
-| 🐙 GitHub Pages | 靜態網站部署 |
-| 📱 Mobile-first | 響應式設計 |
-| 🎨 Google Fonts | 字型資源 |
-
-### 6. Changelog 更新紀錄 (`#log`)
-
-時間軸式呈現（左側圓點 + 連線），版本歷史：
-
-| 版本 | 日期 | 內容 |
-|------|------|------|
-| v1.4（最新）| 2025年3月 | 作品集首頁、About、深/淺色模式、漢堡選單、動畫、表單、Log |
-| v1.3 | 2025年3月 | 中英文切換、字體優化 |
-| v1.2 | 2025年3月 | 照片上傳、智能錯誤引導、SEO、無障礙 |
-| v1.1 | 2025年3月 | v5 架構重建：側邊欄、四種模式、貓咪管理、分析卡片 |
-| v1.0 | 2025年3月 | 初始版本上線 |
-
-### 7. Contact 聯絡表單 (`#contact`)
-
-- 欄位：名字、Email、留言
-- 提交行為（`submitForm()`）：
-  - 驗證三欄位皆不為空
-  - 存入 `localStorage` key `max_feedback`（JSON 陣列，含 name/email/msg/time）
-  - 清空表單、顯示 Toast 通知（「✓ 訊息已送出！」3 秒消失）
-- 注意：**未發送任何郵件，僅存本地**
-
-### 8. Footer
-
-- 版權聲明：`© 2025 Yu Chen AI · Built with ❤️ & Claude API · Hosted on GitHub Pages`
-
-### 9. 滾動動畫
-
-- IntersectionObserver 監聽 `.reveal` 和 `.log-item` 元素
-- 進入視窗時加上 `.visible` class（淡入 + 上移）
-- 支援 delay class：`.reveal-delay-1` / `.reveal-delay-2` / `.reveal-delay-3`
-- `updateNav()`：滾動時更新導航列 active 狀態
-- **相關函式**：`observer`、`updateNav()`
-
-### 10. RWD 響應式設計
-
-- `≤768px`：隱藏桌面 nav、顯示漢堡選單、About 改單欄、縮小 padding
-- `≤480px`：Projects 改單欄、Tools 改兩欄
-
----
-
-## 頁面二：PawSense AI 聊天應用 (`#paws-app`)
-
-### 1. 頁面切換機制
-
-- `showPawSense()`：隱藏 Portfolio（淡出 + 縮小動畫）→ 顯示 PawSense（`pawsIn` 動畫）→ 鎖定 body 滾動 → 顯示虛擬貓咪
-- `showPortfolio()`：隱藏 PawSense → 顯示 Portfolio → 解除滾動鎖定 → 隱藏虛擬貓咪 → 滾動至頂部
+- 頁面載入後 `boot()` 自動執行：初始化用戶 → `initApp()` → `initVCat()` → 直接啟用 PawSense
+- `#paws-app` 自動加上 `.active` class，虛擬貓咪自動顯示，body 滾動鎖定
+- `showPawSense()` 和 `showPortfolio()` 為空函式（保留但無實作）
 - 應用容器：`.app`，最大寬度 430px，全螢幕高度（手機 app 風格）
 
 ### 2. 側邊欄 (`#sidebar`)
@@ -129,23 +42,29 @@
 ### 3. 聊天頂部欄 (`chat-hd`)
 
 - 左：漢堡選單按鈕 → 開關側邊欄
-- 回首頁按鈕（`←`）→ `showPortfolio()`
 - 中：標題（`#hd-title`，預設 "PawSense AI"）
 - 右：語言切換按鈕（`#lang-btn`）+ 模式選擇按鈕（`.mode-chip`）
+- 注：回首頁按鈕已移除
 
 ### 4. 聊天介面
 
 #### 歡迎頁（`buildWelcome()`）
 - 顯示於無訊息時
-- Logo + 標題 + 副標題
-- 4 個快速操作卡片（`.sg-grid` 2×2）：
+- Logo + 標題 + 副標題（「你的 AI 貓咪健康助理」）
+- **功能介紹卡片**（`.feat-wrap`，新增）：4 張橫向卡片介紹核心功能
+  - 🔍 行為分析 — 描述貓咪行為，AI 即時分析壓力指數與風險等級
+  - 💊 健康問題 — 輸入症狀，獲得建議與就醫時機評估
+  - 📋 分析紀錄 — 所有分析結果自動儲存，隨時查閱歷史報告
+  - 🐈 貓咪管理 — 建立多隻貓咪檔案，追蹤每隻貓的健康狀況
+- **分隔線**（`.feat-divider`）：「立即開始」文字 + 左右橫線
+- **快速操作卡片**（`.sg-grid` 2x2）：
   - 🔍 行為分析 → `我想分析貓咪的行為`
   - 🐈 新增貓咪 → `幫我新增一隻貓咪`
   - 💊 健康問題 → `我的貓咪最近食慾不振`
   - 📊 查看紀錄 → `幫我看最近的分析結果`
 
 #### 訊息氣泡
-- **用戶訊息**（`.bb.user`）：右對齊，深色背景，圓角（右下方為直角）
+- **用戶訊息**（`.bb.user`）：右對齊，淺藍背景，圓角（右下方為直角）
 - **AI 訊息**（`.bb.ai`）：左對齊，帶頭像（🐾），支援 markdown 格式化
 - `fmtAI(text)`：將 `**粗體**` → `<strong>`、`# 標題` → `<h3>`、`- 列表` → `<li>`
 - `esc(t)`：HTML 跳脫防 XSS
@@ -271,10 +190,11 @@
 - **互動**：點擊觸發 `vcatClick()`（切換興奮 + 愛心動畫 + 隨機對話）
 - **自動行為**：每 11 秒隨機說話 + 愛心
 - **心情更新**（`updateVirtualCat`）：根據 AI 回覆關鍵字自動切換心情
-- **自訂照片上傳**（`vcatUploadPhoto`）：
-  - FileReader 讀取 → Canvas 裁切上半部（臉部） → 壓縮為 JPEG
+- **自訂照片上傳**：`vcatUploadPhoto()` 觸發 → `vcatHandleUpload(input)` 處理
+  - 使用 `<label for="vcat-upload-input">` 觸發（取代舊版 `<button onclick>`）
+  - FileReader 讀取 → Canvas 裁切上半部（臉部）300×300 → 壓縮為 JPEG 0.85
   - 存入 `localStorage` key `vcat_custom_photo`
-  - 開機時自動載入已儲存的照片
+  - 開機時 `initVCat()` 自動載入已儲存的照片
 
 ### 11. 中/英語言切換
 
@@ -312,7 +232,6 @@
 ```
 
 **其他 localStorage keys**：
-- `max_feedback`：聯絡表單提交紀錄
 - `vcat_custom_photo`：虛擬貓咪自訂照片（base64）
 
 ### 13. 訊息發送流程 (`sendMsg`)
@@ -337,42 +256,39 @@
 
 ## 已知問題
 
-### 1. JavaScript 重複定義
+### 1. HTML 中的 Markdown 語法殘留
 
-以下函式/變數在 HTML 中定義了兩次：
+- **Line 333**：`` ``` `` 反引號（開始標記）
+- **Line 339**：`` ``` `` 反引號（結束標記）
 
-**Portfolio JS**（出現在 line 767-834 和 line 1805-1872）：
-- `isDark` 變數
-- `toggleTheme()`
-- `toggleMobileNav()`
-- `closeMobileNav()`
-- `sections` 陣列
-- `updateNav()`
-- `observer`（IntersectionObserver）
-- `submitForm()`
-- `scroll` 事件監聽
-
-**PawSense JS**（出現在 line 938-1751 和 line 1875-1949+）：
-- `DB_KEY` 變數
-- `loadDB()` / `saveDB()` / `curU()` / `clearData()`
-- `toggleSB()` / `closeSB()` / `openSheet()` / `closeSheet()`
-- `renderSB()` / `delSess()`
-- `curSessId` / `sessMsgs` 變數
-- `newChat()` / `loadSess()` / `saveSess()`
-
-後面的定義會覆蓋前面的，功能上不影響，但增加檔案大小且容易造成維護混亂。
-
-### 2. HTML 中的 Markdown 語法殘留
-
-- **Line 594**：`` ``` `` 反引號（開始標記）
-- **Line 648**：`` ``` `` 反引號（結束標記）
-
-這兩行出現在 `#projects` section 的 `.projects-grid` 內，包裹著 3 個 `.proj-card`。
+這兩行出現在 `.chat-hd` 內部，包裹著 `hd-title`、`lang-btn`、`mode-chip` 三個元素。
 瀏覽器會將這些反引號當作純文字渲染顯示在頁面上。
 
-### 3. CSS 重複定義
+### 2. CSS 重複定義
 
-- `:root` 變數定義了兩次（line 19-30 為 Portfolio 淺色主題，line 216-222 為 PawSense 暗色主題），後者覆蓋前者
-- `#vcat-wrap` 樣式定義了兩次（line 415 和 line 446），部分屬性不同
-- `*{margin:0;padding:0;box-sizing:border-box}` 重置出現兩次（line 18 和 line 215）
-- `.vcat-bubble` 樣式定義了兩次（line 416 和 line 465）
+- `#vcat-wrap` 樣式定義了兩次（line 217 和 line 248），部分屬性不同
+- `#vcat` 樣式定義了兩次（line 220-222 和 line 249-251）
+- `.vcat-bubble` 樣式定義了兩次（line 218 和 line 267），顏色主題不同（暗色 vs 淺色）
+- `.vcat-name` 樣式定義了兩次（line 224 和 line 269）
+- `.vcat-mood-badge` 樣式定義了兩次（line 225 和 line 270）
+
+### 3. 已移除的功能（相比前一版本）
+
+以下功能在最新版本中已被移除：
+
+- **Portfolio 作品集頁面**：整個 `#portfolio-page` div 及其內容（導航列、Hero、About、Projects、Tools、Changelog、Contact 表單、Footer）
+- **Portfolio CSS**：所有 Portfolio 相關樣式（nav、hero、about、projects、tools、log、contact、footer、scroll reveal、RWD media queries）
+- **Portfolio JS**：`toggleTheme()`、`toggleMobileNav()`、`closeMobileNav()`、`updateNav()`、IntersectionObserver、`submitForm()`、scroll 事件
+- **頁面切換動畫**：`showPawSense()` / `showPortfolio()` 現為空函式
+- **回首頁按鈕**（`.back-home-btn`）：從聊天頂部欄移除
+- **聯絡表單**：`submitForm()` 及 `max_feedback` localStorage key
+- **深淺色切換**：`toggleTheme()` 及 `body.light` 主題
+- **重複的 JS 定義**：Portfolio JS 和 PawSense JS 不再重複（已整合為單一份）
+
+### 4. 配色主題變更
+
+`:root` 變數從暗色主題改為淺藍色主題：
+- 背景：`#0d0d0f`（深黑）→ `#d0e8ff`（淺藍）
+- 文字：`#f0f0f0`（白）→ `#0a2040`（深藍）
+- 次要色：`#aaaaaa` → `#2a4a70`
+- 邊框：`rgba(255,255,255,.07)` → `rgba(30,80,160,.15)`
