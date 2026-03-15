@@ -285,6 +285,22 @@ img{max-width:100%;height:auto;display:block;}
 .feat-divider{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(–t3);text-align:center;margin:14px 0 6px;position:relative}
 .feat-divider::before,.feat-divider::after{content:’’;position:absolute;top:50%;width:28%;height:1px;background:var(–bd)}
 .feat-divider::before{left:0}.feat-divider::after{right:0}
+
+/* ════ TUTORIAL ════ */
+.tut-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
+.tut-overlay.show{opacity:1;pointer-events:all}
+.tut-highlight{position:relative;z-index:9001!important;box-shadow:0 0 0 9999px rgba(0,0,0,.55),0 0 0 4px rgba(91,143,249,.7),0 0 20px 6px rgba(91,143,249,.3)!important;border-radius:10px;pointer-events:auto;transition:box-shadow .3s}
+.tut-bar{position:fixed;left:0;right:0;bottom:0;z-index:9002;display:none;align-items:center;justify-content:space-between;padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom));background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-top:1px solid rgba(30,80,160,.12);gap:10px}
+.tut-bar.show{display:flex}
+.tut-skip{background:none;border:none;color:#6a8aaa;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:6px 10px;border-radius:8px;transition:all .18s}
+.tut-skip:hover{background:rgba(0,0,0,.06);color:#2a4a70}
+.tut-dots{display:flex;gap:6px;align-items:center}
+.tut-dot{width:8px;height:8px;border-radius:50%;background:rgba(30,80,160,.15);transition:all .25s}
+.tut-dot.active{background:#5b8ff9;transform:scale(1.3)}
+.tut-dot.done{background:#3ecf8e}
+.tut-next{background:#5b8ff9;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s}
+.tut-next:hover{background:#3d6fe0;transform:translateY(-1px)}
+.tut-next:active{transform:scale(.96)}
 </style>
 
 </head>
@@ -313,6 +329,9 @@ img{max-width:100%;height:auto;display:block;}
   <div class="sb-sec">對話紀錄</div>
   <div class="sb-list" id="sb-list"></div>
   <div class="sb-bottom">
+    <button class="sb-new" onclick="tutStart()" style="margin-bottom:8px">
+      <span style="font-size:15px">📖</span> <span id="tut-sb-text">新手教學</span>
+    </button>
     <div class="sb-user">
       <div class="sb-av">🐾</div>
       <div class="sb-uname">PawSense AI</div>
@@ -930,8 +949,9 @@ modes:[
 {id:‘general’,ic:‘🐱’,nm:‘貓咪問答’,ds:‘問任何關於貓咪的問題’},
 {id:‘analyze’,ic:‘🔍’,nm:‘行為分析’,ds:‘AI 搜尋獸醫文獻，評估壓力與風險’},
 {id:‘report’,ic:‘📋’,nm:‘報告解讀’,ds:‘解讀過往的分析報告’},
-{id:‘cat’,ic:‘🐈’,nm:‘貓咪管理’,ds:‘新增 / 查看貓咪資料’}
-]
+{id:’cat’,ic:’🐈’,nm:’貓咪管理’,ds:’新增 / 查看貓咪資料’}
+],
+tutBtn:’新手教學’,tutCancel:’取消教學’,tutNext:’下一步 →’,tutDone:’完成！🎉’
 },
 en:{
 appName:‘PawSense AI’,
@@ -953,8 +973,9 @@ modes:[
 {id:‘general’,ic:‘🐱’,nm:‘Cat Chat’,ds:‘Ask anything about cats’},
 {id:‘analyze’,ic:‘🔍’,nm:‘Behavior Analysis’,ds:‘AI searches vet literature to assess stress & risk’},
 {id:‘report’,ic:‘📋’,nm:‘Report Review’,ds:‘Interpret past analysis reports’},
-{id:‘cat’,ic:‘🐈’,nm:‘Cat Manager’,ds:‘Add / view cat profiles’}
-]
+{id:’cat’,ic:’🐈’,nm:’Cat Manager’,ds:’Add / view cat profiles’}
+],
+tutBtn:’Tutorial’,tutCancel:’Cancel’,tutNext:’Next →’,tutDone:’Done! 🎉’
 }
 };
 
@@ -990,9 +1011,17 @@ el.querySelector(’.sh-ds’).textContent=m.ds;
 // Update mode chip label
 modeLabel=t.modeLabel;
 document.getElementById(‘mode-chip’).textContent=modeLabel[chatMode]||modeLabel.general;
+// Update tutorial UI text
+var tutSbText=document.getElementById(‘tut-sb-text’);if(tutSbText) tutSbText.textContent=t.tutBtn;
+var tutCancelBtn=document.getElementById(‘tut-cancel-btn’);if(tutCancelBtn) tutCancelBtn.textContent=t.tutCancel;
+var tutNextBtn=document.getElementById(‘tut-next’);
+if(tutNextBtn){
+  if(tutStep>=0 && tutStep===TUT_STEPS.length-1) tutNextBtn.textContent=t.tutDone;
+  else tutNextBtn.textContent=t.tutNext;
+}
 // Redraw welcome if showing
 var msgs=document.getElementById(‘msgs’);
-if(msgs.querySelector(’.welcome’)){msgs.innerHTML=’’;msgs.appendChild(buildWelcome());}
+if(msgs.querySelector(‘.welcome’)){msgs.innerHTML=’’;msgs.appendChild(buildWelcome());}
 closeLangSheet();
 }
 
@@ -1219,6 +1248,88 @@ if(nameEl) nameEl.textContent=‘我的貓咪’;
 }catch(err){}
 }
 
+// ══ TUTORIAL ══
+var TUT_KEY=’pawsense_onboarding_done’;
+var TUT_STEPS=[
+{sel:’.menu-btn’,zh:’點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話、清除資料喔！’,en:’Tap here to open the sidebar 📂\nView chat history, start new chats, or clear data!’,mood:’happy’},
+{sel:’.mode-chip’,zh:’這是模式切換 🎯\n有 4 種模式：問答、分析、解讀、管理，試試看！’,en:’This is the mode switcher 🎯\n4 modes: Chat, Analyze, Report, Cats — try them!’,mood:’excited’},
+{sel:’#lang-btn’,zh:’按這裡切換語言 🌐\n支援中文和英文喔～’,en:’Tap here to switch language 🌐\nSupports Chinese and English!’,mood:’happy’},
+{sel:’.inp-wrap’,zh:’在這裡輸入訊息 💬\n問我任何關於貓咪的問題吧！’,en:’Type your message here 💬\nAsk me anything about cats!’,mood:’happy’},
+{sel:’.plus-btn’,zh:’按這裡上傳照片 📸\n拍貓咪的照片讓我看看～’,en:’Tap here to upload photos 📸\nShow me your cat pics!’,mood:’excited’},
+{sel:’.sg-grid’,zh:’這些是快速操作卡片 ⚡\n點一下就能快速開始對話！’,en:’These are quick action cards ⚡\nTap one to start chatting right away!’,mood:’happy’},
+{sel:’#vcat-wrap’,zh:’這是我！你的虛擬貓咪 🐱\n點我可以互動，還能換照片喔！’,en:’That\’s me! Your virtual cat 🐱\nTap me to interact, or change my photo!’,mood:’excited’}
+];
+var tutStep=-1;
+var tutPrevEl=null;
+
+function tutStart(){
+closeSB();
+tutStep=-1;
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+document.getElementById(‘tut-overlay’).classList.add(‘show’);
+document.getElementById(‘tut-bar’).classList.add(‘show’);
+tutRenderDots();
+tutNext();
+}
+
+function tutNext(){
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutStep++;
+if(tutStep>=TUT_STEPS.length){tutEnd(true);return;}
+var step=TUT_STEPS[tutStep];
+var el=document.querySelector(step.sel);
+if(!el||el.offsetParent===null){tutNext();return;}
+el.classList.add(‘tut-highlight’);
+el.style.pointerEvents=’auto’;
+tutPrevEl=el;
+el.scrollIntoView({behavior:’smooth’,block:’nearest’});
+var msg=curLang===’en’?step.en:step.zh;
+if(typeof vcatSay===’function’) vcatSay(msg,30000);
+if(typeof setVcatMood===’function’) setVcatMood(step.mood||’happy’);
+tutRenderDots();
+tutUpdateBtn();
+}
+
+function tutCancel(){
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutStep=-1;
+document.getElementById(‘tut-overlay’).classList.remove(‘show’);
+document.getElementById(‘tut-bar’).classList.remove(‘show’);
+if(typeof vcatSay===’function’) vcatSay(curLang===’en’?’See you next time! 👋’:’下次見囉！👋’,3000);
+}
+
+function tutEnd(completed){
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutStep=-1;
+document.getElementById(‘tut-overlay’).classList.remove(‘show’);
+document.getElementById(‘tut-bar’).classList.remove(‘show’);
+if(completed){
+try{localStorage.setItem(TUT_KEY,’1’);}catch(e){}
+if(typeof vcatSay===’function’) vcatSay(curLang===’en’?’You\’re all set! Let\’s get started! 🎉’:’教學完成！開始探索吧！🎉’,5000);
+if(typeof setVcatMood===’function’) setVcatMood(‘excited’);
+if(typeof vcatWave===’function’) vcatWave();
+}
+}
+
+function tutRenderDots(){
+var container=document.getElementById(‘tut-dots’);
+container.innerHTML=’’;
+for(var i=0;i<TUT_STEPS.length;i++){
+var dot=document.createElement(‘div’);
+dot.className=’tut-dot’;
+if(i===tutStep) dot.classList.add(‘active’);
+else if(i<tutStep) dot.classList.add(‘done’);
+container.appendChild(dot);
+}
+}
+
+function tutUpdateBtn(){
+var btn=document.getElementById(‘tut-next’);
+var t=T[curLang];
+if(tutStep>=TUT_STEPS.length-1) btn.textContent=t.tutDone;
+else btn.textContent=t.tutNext;
+}
+
 // ══ BOOT ══
 function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent(‘general’);}
 (function boot(){
@@ -1237,14 +1348,27 @@ if(pa) pa.classList.add(‘active’);
 if(vw) vw.style.display=‘flex’;
 document.body.style.overflow=‘hidden’;
 setTimeout(function(){
-if(typeof vcatSay===‘function’){
+if(typeof vcatSay===’function’){
+var tutDone=false;
+try{tutDone=localStorage.getItem(TUT_KEY)===’1’;}catch(e){}
+if(!tutDone){
+tutStart();
+}else{
 setVcatMood(‘happy’);
-vcatSay(‘喵～歡迎使用 PawSense！🐾’,5000);
+vcatSay(curLang===’en’?’Meow~ Welcome back to PawSense! 🐾’:’喵～歡迎使用 PawSense！🐾’,5000);
 vcatWave();
 }
-},600);
+}
+},800);
 })();
 </script>
+
+<div class="tut-overlay" id="tut-overlay"></div>
+<div class="tut-bar" id="tut-bar">
+  <button class="tut-skip" id="tut-cancel-btn" onclick="tutCancel()">取消教學</button>
+  <div class="tut-dots" id="tut-dots"></div>
+  <button class="tut-next" id="tut-next" onclick="tutNext()">下一步 →</button>
+</div>
 
 </div>
 
