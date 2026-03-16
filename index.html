@@ -16,178 +16,178 @@
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
---bg:#d0e8ff;--s1:#b8d8f8;--s2:#c8e0fc;--s3:#a8ccf0;--s4:#98bce8;
---bd:rgba(30,80,160,.15);--bd2:rgba(30,80,160,.08);
---t:#0a2040;--t2:#2a4a70;--t3:#6a8aaa;--mu:#c0d8f0;
---ac:#5b8ff9;--acs:rgba(91,143,249,.12);--acb:#3d6fe0;
---gr:#3ecf8e;--ye:#f5a623;--re:#f26d6d;--pu:#9b8fef;
+–bg:#d0e8ff;–s1:#b8d8f8;–s2:#c8e0fc;–s3:#a8ccf0;–s4:#98bce8;
+–bd:rgba(30,80,160,.15);–bd2:rgba(30,80,160,.08);
+–t:#0a2040;–t2:#2a4a70;–t3:#6a8aaa;–mu:#c0d8f0;
+–ac:#5b8ff9;–acs:rgba(91,143,249,.12);–acb:#3d6fe0;
+–gr:#3ecf8e;–ye:#f5a623;–re:#f26d6d;–pu:#9b8fef;
 }
-#paws-app { height:100%; overflow:hidden; font-family:'Noto Serif TC',serif; -webkit-font-smoothing:antialiased; }
-#paws-app .app{width:100%;max-width:430px;height:100vh;height:100svh;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
+#paws-app { height:100%; overflow:hidden; font-family:‘Noto Serif TC’,serif; -webkit-font-smoothing:antialiased; }
+#paws-app .app{width:100%;max-width:430px;height:100vh;height:100svh;margin:0 auto;background:var(–bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
 
 /* ── SIDEBAR ── */
-.sidebar{position:absolute;top:0;left:0;bottom:0;width:272px;background:var(--s1);border-right:1px solid var(--bd);z-index:100;transform:translateX(-100%);transition:transform .28s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
+.sidebar{position:absolute;top:0;left:0;bottom:0;width:272px;background:var(–s1);border-right:1px solid var(–bd);z-index:100;transform:translateX(-100%);transition:transform .28s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column}
 .sidebar.open{transform:translateX(0)}
 .sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:99;opacity:0;pointer-events:none;transition:opacity .28s}
 .sb-overlay.show{opacity:1;pointer-events:all}
 .sb-top{padding:54px 14px 10px;flex-shrink:0}
 .sb-logo{display:flex;align-items:center;gap:8px;padding:0 4px;margin-bottom:14px}
-.sb-logo-ic{width:30px;height:30px;background:linear-gradient(135deg,var(--ac),var(--pu));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.sb-logo-tx{font-family:'Instrument Serif',serif;font-size:17px;font-style:italic}
-.sb-logo-tx em{color:var(--ac);font-style:normal}
-.sb-new{width:100%;display:flex;align-items:center;gap:9px;background:transparent;border:1px solid var(--bd);border-radius:9px;padding:9px 12px;color:var(--t2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
-.sb-new:hover{background:var(--s2);color:var(--t);border-color:rgba(255,255,255,.13)}
-.sb-sec{padding:14px 16px 5px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
+.sb-logo-ic{width:30px;height:30px;background:linear-gradient(135deg,var(–ac),var(–pu));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-logo-tx{font-family:‘Instrument Serif’,serif;font-size:17px;font-style:italic}
+.sb-logo-tx em{color:var(–ac);font-style:normal}
+.sb-new{width:100%;display:flex;align-items:center;gap:9px;background:transparent;border:1px solid var(–bd);border-radius:9px;padding:9px 12px;color:var(–t2);font-family:‘DM Sans’,sans-serif;font-size:13px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
+.sb-new:hover{background:var(–s2);color:var(–t);border-color:rgba(255,255,255,.13)}
+.sb-sec{padding:14px 16px 5px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(–t3)}
 .sb-list{flex:1;overflow-y:auto;padding:0 6px}
 .sb-list::-webkit-scrollbar{display:none}
-.sb-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:background .14s;font-size:13px;color:var(--t2);user-select:none}
-.sb-item:hover{background:var(--s2);color:var(--t)}
-.sb-item.act{background:var(--s3);color:var(--t)}
+.sb-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:background .14s;font-size:13px;color:var(–t2);user-select:none}
+.sb-item:hover{background:var(–s2);color:var(–t)}
+.sb-item.act{background:var(–s3);color:var(–t)}
 .sb-item-ic{font-size:14px;flex-shrink:0}
 .sb-item-tx{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-item-del{opacity:0;font-size:15px;padding:2px 5px;background:none;border:none;color:var(--t3);cursor:pointer;flex-shrink:0;transition:opacity .14s;line-height:1}
+.sb-item-del{opacity:0;font-size:15px;padding:2px 5px;background:none;border:none;color:var(–t3);cursor:pointer;flex-shrink:0;transition:opacity .14s;line-height:1}
 .sb-item:hover .sb-item-del{opacity:1}
-.sb-bottom{padding:10px 6px;border-top:1px solid var(--bd);flex-shrink:0}
+.sb-bottom{padding:10px 6px;border-top:1px solid var(–bd);flex-shrink:0}
 .sb-user{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:background .14s}
-.sb-user:hover{background:var(--s2)}
-.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--pu));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sb-user:hover{background:var(–s2)}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(–ac),var(–pu));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .sb-uname{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-logout{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:4px;font-family:'DM Sans',sans-serif;transition:color .18s;flex-shrink:0}
-.sb-logout:hover{color:var(--re)}
+.sb-logout{font-size:12px;color:var(–t3);background:none;border:none;cursor:pointer;padding:4px;font-family:‘DM Sans’,sans-serif;transition:color .18s;flex-shrink:0}
+.sb-logout:hover{color:var(–re)}
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(--bd2);background:var(--bg);backdrop-filter:blur(14px);position:relative;z-index:10}
-.menu-btn{width:34px;height:34px;background:var(--s1);border:1px solid var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
-.menu-btn:hover{background:var(--s2)}
+.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:rgba(10,10,10,.92);backdrop-filter:blur(14px);position:relative;z-index:10}
+.menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
+.menu-btn:hover{background:var(–s2)}
 .menu-ic{display:flex;flex-direction:column;gap:4px;pointer-events:none}
-.menu-ic span{display:block;width:17px;height:2px;background:var(--t);border-radius:1px}
-.hd-title{flex:1;font-size:13px;font-weight:500;color:var(--t2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mode-chip{background:var(--s2);border:1px solid var(--bd);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px;flex-shrink:0;user-select:none}
-.mode-chip:hover{background:var(--s3);color:var(--t)}
+.menu-ic span{display:block;width:17px;height:1.5px;background:var(–t2);border-radius:1px}
+.hd-title{flex:1;font-size:13px;font-weight:500;color:var(–t2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mode-chip{background:var(–s2);border:1px solid var(–bd);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;color:var(–t2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px;flex-shrink:0;user-select:none}
+.mode-chip:hover{background:var(–s3);color:var(–t)}
 
 /* ── MESSAGES ── */
 .msgs{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 12px;min-height:0;height:0}
 .msgs::-webkit-scrollbar{width:2px}
-.msgs::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+.msgs::-webkit-scrollbar-thumb{background:var(–s3);border-radius:2px}
 
 /* Welcome */
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px 32px;text-align:center}
-.wl-logo{width:52px;height:52px;background:linear-gradient(135deg,var(--ac),var(--pu));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;box-shadow:0 6px 28px rgba(91,143,249,.28)}
-.wl-title{font-family:'Instrument Serif',serif;font-size:24px;font-style:italic;margin-bottom:7px}
-.wl-title em{color:var(--ac);font-style:normal}
-.wl-sub{font-size:13px;color:var(--t2);line-height:1.6;max-width:260px;margin-bottom:24px}
+.wl-logo{width:52px;height:52px;background:linear-gradient(135deg,var(–ac),var(–pu));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;box-shadow:0 6px 28px rgba(91,143,249,.28)}
+.wl-title{font-family:‘Instrument Serif’,serif;font-size:24px;font-style:italic;margin-bottom:7px}
+.wl-title em{color:var(–ac);font-style:normal}
+.wl-sub{font-size:13px;color:var(–t2);line-height:1.6;max-width:260px;margin-bottom:24px}
 .sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:310px}
-.sg-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:13px 12px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
-.sg-card:hover{background:var(--s2);border-color:rgba(91,143,249,.22);transform:translateY(-1px)}
+.sg-card{background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:13px 12px;cursor:pointer;transition:all .18s;text-align:left;user-select:none}
+.sg-card:hover{background:var(–s2);border-color:rgba(91,143,249,.22);transform:translateY(-1px)}
 .sg-card:active{transform:scale(.97)}
 .sg-ic{font-size:18px;margin-bottom:6px}
 .sg-t{font-size:12px;font-weight:600;margin-bottom:2px}
-.sg-d{font-size:11px;color:var(--t2);line-height:1.4}
+.sg-d{font-size:11px;color:var(–t2);line-height:1.4}
 
 /* Bubbles */
 .mg{padding:16px 14px 0;display:flex}
 .mg.user{justify-content:flex-end}
 .mg.ai{align-items:flex-start;gap:9px}
-.ai-av{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--ac),var(--pu));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:3px}
+.ai-av{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(–ac),var(–pu));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:3px}
 .bb{font-size:14px;line-height:1.72;animation:bup .22s ease both}
 @keyframes bup{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.bb.user{max-width:80%;padding:11px 15px;background:var(--s2);border:1px solid var(--bd);border-radius:17px 17px 4px 17px;color:var(--t)}
-.bb.ai{max-width:calc(100% - 35px);color:var(--t);padding:2px 0 0}
-.bb.ai p{margin-bottom:9px;color:var(--t2)}
+.bb.user{max-width:80%;padding:11px 15px;background:var(–s2);border:1px solid var(–bd);border-radius:17px 17px 4px 17px;color:var(–t)}
+.bb.ai{max-width:calc(100% - 35px);color:var(–t);padding:2px 0 0}
+.bb.ai p{margin-bottom:9px;color:var(–t2)}
 .bb.ai p:last-child{margin-bottom:0}
-.bb.ai h3{font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;margin-bottom:7px;color:var(--t)}
-.bb.ai strong{color:var(--t);font-weight:600}
+.bb.ai h3{font-family:‘Instrument Serif’,serif;font-size:16px;font-style:italic;margin-bottom:7px;color:var(–t)}
+.bb.ai strong{color:var(–t);font-weight:600}
 .bb.ai ul{list-style:none;margin:5px 0;display:flex;flex-direction:column;gap:4px}
-.bb.ai ul li{padding-left:13px;position:relative;font-size:13px;line-height:1.65;color:var(--t2)}
-.bb.ai ul li::before{content:'·';position:absolute;left:0;color:var(--ac);font-weight:800;font-size:16px;line-height:1.2}
+.bb.ai ul li{padding-left:13px;position:relative;font-size:13px;line-height:1.65;color:var(–t2)}
+.bb.ai ul li::before{content:’·’;position:absolute;left:0;color:var(–ac);font-weight:800;font-size:16px;line-height:1.2}
 .qr-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.qr{background:transparent;border:1px solid var(--bd);border-radius:18px;padding:6px 12px;font-size:12px;color:var(--t2);cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;user-select:none}
-.qr:hover{border-color:var(--ac);color:var(--ac);background:var(--acs)}
+.qr{background:transparent;border:1px solid var(–bd);border-radius:18px;padding:6px 12px;font-size:12px;color:var(–t2);cursor:pointer;transition:all .18s;font-family:‘DM Sans’,sans-serif;user-select:none}
+.qr:hover{border-color:var(–ac);color:var(–ac);background:var(–acs)}
 .qr:active{transform:scale(.95)}
 
 /* Result card */
-.res-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:15px;margin-top:6px;max-width:min(82%,320px)}
+.res-card{background:var(–s1);border:1px solid var(–bd);border-radius:14px;padding:15px;margin-top:6px;max-width:min(82%,320px)}
 .res-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
-.res-cat{font-size:11px;color:var(--t2)}
+.res-cat{font-size:11px;color:var(–t2)}
 .res-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600}
 .sb-wrap{margin-bottom:11px}
-.sb-label{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px}
-.sb-track{height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.sb-label{display:flex;justify-content:space-between;font-size:11px;color:var(–t2);margin-bottom:4px}
+.sb-track{height:5px;background:var(–s3);border-radius:3px;overflow:hidden}
 .sb-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.16,1,.3,1)}
-.res-txt{font-size:12px;color:var(--t2);line-height:1.72;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto}
+.res-txt{font-size:12px;color:var(–t2);line-height:1.72;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto}
 .res-txt::-webkit-scrollbar{width:2px}
-.res-txt::-webkit-scrollbar-thumb{background:var(--s3)}
-.rat-row{display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(--bd2)}
-.rat-lbl{font-size:11px;color:var(--t3);flex:1}
+.res-txt::-webkit-scrollbar-thumb{background:var(–s3)}
+.rat-row{display:flex;align-items:center;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(–bd2)}
+.rat-lbl{font-size:11px;color:var(–t3);flex:1}
 .stars{display:flex;gap:2px}
-.star{font-size:17px;cursor:pointer;opacity:.22;color:var(--ye);transition:all .14s;user-select:none}
+.star{font-size:17px;cursor:pointer;opacity:.22;color:var(–ye);transition:all .14s;user-select:none}
 .star.on{opacity:1}
 .star:hover{transform:scale(1.18);opacity:.7}
 
 /* Typing */
 .ty-wrap{padding:16px 14px 0;display:flex;align-items:flex-start;gap:9px}
-.ty-dots{display:inline-flex;gap:4px;padding:10px 13px;background:var(--s1);border:1px solid var(--bd);border-radius:4px 13px 13px 13px}
-.ty-d{width:5px;height:5px;border-radius:50%;background:var(--t3);animation:td 1.2s ease infinite}
+.ty-dots{display:inline-flex;gap:4px;padding:10px 13px;background:var(–s1);border:1px solid var(–bd);border-radius:4px 13px 13px 13px}
+.ty-d{width:5px;height:5px;border-radius:50%;background:var(–t3);animation:td 1.2s ease infinite}
 .ty-d:nth-child(2){animation-delay:.16s}.ty-d:nth-child(3){animation-delay:.32s}
 @keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 
 /* ── INPUT ── */
-.inp-area{flex-shrink:0;padding:8px 12px 12px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--bg)}
-.inp-wrap{display:flex;align-items:flex-end;gap:7px;background:var(--s1);border:1px solid var(--bd);border-radius:15px;padding:7px 7px 7px 15px;transition:border-color .2s}
+.inp-area{flex-shrink:0;padding:8px 12px 12px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(–bg)}
+.inp-wrap{display:flex;align-items:flex-end;gap:7px;background:var(–s1);border:1px solid var(–bd);border-radius:15px;padding:7px 7px 7px 15px;transition:border-color .2s}
 .inp-wrap:focus-within{border-color:rgba(91,143,249,.32)}
-.inp-tx{flex:1;background:none;border:none;outline:none;color:var(--t);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(--ac);padding:2px 0}
-.inp-tx::placeholder{color:var(--t3)}
-.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:1;pointer-events:none;flex-shrink:0;user-select:none}
-.send-btn.on{opacity:1;pointer-events:all;background:var(--ac);transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
-.send-btn:hover{background:var(--acb)}
+.inp-tx{flex:1;background:none;border:none;outline:none;color:var(–t);font-family:‘DM Sans’,sans-serif;font-size:15px;line-height:1.5;resize:none;max-height:110px;min-height:24px;caret-color:var(–ac);padding:2px 0}
+.inp-tx::placeholder{color:var(–t3)}
+.send-btn{width:32px;height:32px;border-radius:8px;border:none;background:var(–ac);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:all .18s;opacity:.35;pointer-events:none;flex-shrink:0;user-select:none}
+.send-btn.on{opacity:1;pointer-events:all;transition:transform .1s}.send-btn.on:active{transform:scale(.92)}
+.send-btn:hover{background:var(–acb)}
 .send-btn:active{transform:scale(.9)}
-.inp-hint{font-size:10px;color:var(--t3);text-align:center;margin-top:6px}
+.inp-hint{font-size:10px;color:var(–t3);text-align:center;margin-top:6px}
 
 /* ── CAT SELECTOR BAR ── */
 .cat-bar{display:none;align-items:center;gap:8px;padding:8px 12px 0;overflow-x:auto;flex-shrink:0}
 .cat-bar::-webkit-scrollbar{display:none}
 .cat-bar.show{display:flex}
-.cat-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:20px;cursor:pointer;transition:all .18s;font-size:12px;font-weight:500;color:var(--t2);white-space:nowrap;user-select:none;flex-shrink:0}
-.cat-chip:hover{border-color:var(--ac);color:var(--t)}
-.cat-chip.sel{background:var(--acs);border-color:var(--ac);color:var(--ac)}
+.cat-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(–s1);border:1px solid var(–bd);border-radius:20px;cursor:pointer;transition:all .18s;font-size:12px;font-weight:500;color:var(–t2);white-space:nowrap;user-select:none;flex-shrink:0}
+.cat-chip:hover{border-color:var(–ac);color:var(–t)}
+.cat-chip.sel{background:var(–acs);border-color:var(–ac);color:var(–ac)}
 .cat-chip-av{font-size:15px}
 
 /* ── MODE SHEET ── */
 .sh-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:149;opacity:0;pointer-events:none;transition:opacity .25s}
 .sh-overlay.show{opacity:1;pointer-events:all}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--s1);border-top:1px solid var(--bd);border-radius:18px 18px 0 0;z-index:150;transform:translateY(100%);transition:transform .28s cubic-bezier(.16,1,.3,1);padding-bottom:28px}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(–s1);border-top:1px solid var(–bd);border-radius:18px 18px 0 0;z-index:150;transform:translateY(100%);transition:transform .28s cubic-bezier(.16,1,.3,1);padding-bottom:28px}
 .sheet.open{transform:translateY(0)}
-.sh-handle{width:32px;height:3px;background:var(--s4);border-radius:2px;margin:11px auto 14px}
-.sh-title{font-size:12px;font-weight:600;color:var(--t3);padding:0 18px 11px;border-bottom:1px solid var(--bd2);letter-spacing:.5px;text-transform:uppercase}
+.sh-handle{width:32px;height:3px;background:var(–s4);border-radius:2px;margin:11px auto 14px}
+.sh-title{font-size:12px;font-weight:600;color:var(–t3);padding:0 18px 11px;border-bottom:1px solid var(–bd2);letter-spacing:.5px;text-transform:uppercase}
 .sh-item{display:flex;align-items:center;gap:13px;padding:15px 18px;cursor:pointer;transition:background .14s;user-select:none}
-.sh-item:hover{background:var(--s2)}
-.sh-item:active{background:var(--s3)}
+.sh-item:hover{background:var(–s2)}
+.sh-item:active{background:var(–s3)}
 .sh-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .sh-body{}
 .sh-nm{font-size:14px;font-weight:600;margin-bottom:2px}
-.sh-ds{font-size:12px;color:var(--t2)}
-.sh-item.act .sh-nm{color:var(--ac)}
+.sh-ds{font-size:12px;color:var(–t2)}
+.sh-item.act .sh-nm{color:var(–ac)}
 
 /* ── RESPONSIVE & ACCESSIBILITY ── */
 img{max-width:100%;height:auto;display:block;}
-*:focus-visible{outline:2px solid var(--ac);outline-offset:2px;}
+*:focus-visible{outline:2px solid var(–ac);outline-offset:2px;}
 
 /* ── TYPOGRAPHY SCALE ── */
-.bb.ai h3{font-size:15px;font-weight:600;margin:10px 0 4px;color:var(--t)}
-.bb.ai p{font-size:14px;line-height:1.65;margin:3px 0;color:var(--t)}
+.bb.ai h3{font-size:15px;font-weight:600;margin:10px 0 4px;color:var(–t)}
+.bb.ai p{font-size:14px;line-height:1.65;margin:3px 0;color:var(–t)}
 .bb.ai ul{padding-left:16px;margin:4px 0}
-.bb.ai li{font-size:14px;line-height:1.65;color:var(--t);margin:2px 0}
-.bb.ai strong{color:var(--t);font-weight:600}
+.bb.ai li{font-size:14px;line-height:1.65;color:var(–t);margin:2px 0}
+.bb.ai strong{color:var(–t);font-weight:600}
 
 /* ── PHOTO UPLOAD ── */
-.plus-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--t2);flex-shrink:0;transition:all .18s;user-select:none}
-.plus-btn:hover{background:var(--s3);border-color:rgba(255,255,255,.15);color:var(--t)}
+.plus-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(–t2);flex-shrink:0;transition:all .18s;user-select:none}
+.plus-btn:hover{background:var(–s3);border-color:rgba(255,255,255,.15);color:var(–t)}
 .plus-btn:active{transform:scale(.92)}
 .photo-bar{display:none;gap:8px;padding:8px 0 4px;overflow-x:auto;flex-shrink:0}
 .photo-bar::-webkit-scrollbar{display:none}
 .photo-bar.show{display:flex}
-.photo-thumb{position:relative;width:60px;height:60px;flex-shrink:0;border-radius:9px;overflow:hidden;border:1px solid var(--bd)}
+.photo-thumb{position:relative;width:60px;height:60px;flex-shrink:0;border-radius:9px;overflow:hidden;border:1px solid var(–bd)}
 .photo-thumb img{width:100%;height:100%;object-fit:cover}
 .photo-del{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.65);border:none;color:#fff;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 #photo-input{display:none}
@@ -195,54 +195,54 @@ img{max-width:100%;height:auto;display:block;}
 .msg-img{max-width:200px;max-height:180px;border-radius:10px;margin-top:6px;display:block;object-fit:cover}
 
 /* ── LANGUAGE ── */
-.lang-btn{width:34px;height:28px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--t2);flex-shrink:0;transition:all .18s;font-family:'Noto Serif TC',serif;user-select:none}
-.lang-btn:hover{background:var(--s3);color:var(--t);border-color:rgba(255,255,255,.15)}
+.lang-btn{width:34px;height:28px;border-radius:8px;border:1px solid var(–bd);background:var(–s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(–t2);flex-shrink:0;transition:all .18s;font-family:‘Noto Serif TC’,serif;user-select:none}
+.lang-btn:hover{background:var(–s3);color:var(–t);border-color:rgba(255,255,255,.15)}
 .lang-btn:active{transform:scale(.92)}
-.lang-check{font-size:14px;color:var(--ac);font-weight:700;flex-shrink:0;transition:opacity .18s}
+.lang-check{font-size:14px;color:var(–ac);font-weight:700;flex-shrink:0;transition:opacity .18s}
 /* English mode overrides */
-#paws-app.lang-en{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .inp-tx{font-family:'Dancing Script',cursive;font-size:16px}
-#paws-app.lang-en .bb.ai{font-family:'Dancing Script',cursive;font-size:15px;line-height:1.8}
-#paws-app.lang-en .bb.user{font-family:'Dancing Script',cursive;font-size:15px}
-#paws-app.lang-en .hd-title{font-family:'Dancing Script',cursive;font-size:18px}
-#paws-app.lang-en .wl-title{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .sg-t{font-family:'Dancing Script',cursive;font-size:13px}
-#paws-app.lang-en .sg-d{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .sh-nm{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .sh-ds{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .sb-item-tx{font-family:'Dancing Script',cursive}
-#paws-app.lang-en .qr{font-family:'Dancing Script',cursive;font-size:12px}
+#paws-app.lang-en{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .inp-tx{font-family:‘Dancing Script’,cursive;font-size:16px}
+#paws-app.lang-en .bb.ai{font-family:‘Dancing Script’,cursive;font-size:15px;line-height:1.8}
+#paws-app.lang-en .bb.user{font-family:‘Dancing Script’,cursive;font-size:15px}
+#paws-app.lang-en .hd-title{font-family:‘Dancing Script’,cursive;font-size:18px}
+#paws-app.lang-en .wl-title{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .sg-t{font-family:‘Dancing Script’,cursive;font-size:13px}
+#paws-app.lang-en .sg-d{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .sh-nm{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .sh-ds{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .sb-item-tx{font-family:‘Dancing Script’,cursive}
+#paws-app.lang-en .qr{font-family:‘Dancing Script’,cursive;font-size:12px}
 
 /* ════ VIRTUAL CAT ════ */
 #vcat-wrap{position:fixed;right:14px;top:70px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
-.vcat-bubble{background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:12px;color:#e0e0ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:'Noto Serif TC',serif;box-shadow:0 4px 20px rgba(0,0,0,.3);backdrop-filter:blur(8px)}
+.vcat-bubble{background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:12px;color:#e0e0ff;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 4px 20px rgba(0,0,0,.3);backdrop-filter:blur(8px)}
 .vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
 #vcat{width:88px;height:88px;cursor:pointer;transition:transform .2s;filter:drop-shadow(0 3px 8px rgba(60,100,200,.3));overflow:visible}
 #vcat:hover{transform:scale(1.1) translateY(-3px)}
 #vcat:active{transform:scale(.92)}
 #vcat canvas{width:88px;height:88px;display:block;border-radius:8px}
-.vcat-name{font-size:10px;color:rgba(255,255,255,.4);font-family:'Space Mono',monospace;text-align:center;letter-spacing:.5px}
+.vcat-name{font-size:10px;color:rgba(255,255,255,.4);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px}
 .vcat-mood-badge{font-size:9px;background:rgba(255,255,255,.07);border-radius:8px;padding:2px 7px;color:rgba(255,255,255,.4);margin-top:1px}
 
 /* ── BACK TO HOME ── */
-.back-home-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:var(--s2);border:1px solid var(--bd);color:var(--t2);font-size:16px;text-decoration:none;flex-shrink:0;transition:all .18s}
-.back-home-btn:hover{background:var(--s3);color:var(--t);border-color:rgba(255,255,255,.15)}
+.back-home-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;background:var(–s2);border:1px solid var(–bd);color:var(–t2);font-size:16px;text-decoration:none;flex-shrink:0;transition:all .18s}
+.back-home-btn:hover{background:var(–s3);color:var(–t);border-color:rgba(255,255,255,.15)}
 
 /* ════ API KEY SETUP ════ */
-.key-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:32px 28px;max-width:360px;width:100%}
+.key-card{background:var(–s1);border:1px solid var(–bd);border-radius:20px;padding:32px 28px;max-width:360px;width:100%}
 .key-logo{font-size:36px;text-align:center;margin-bottom:12px}
-.key-title{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;color:var(--t)}
-.key-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.7;margin-bottom:22px}
-.key-sub a{color:var(--ac);text-decoration:underline}
-.key-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px 15px;color:var(--t);font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;font-family:'Noto Serif TC',serif}
+.key-title{font-family:‘Noto Serif TC’,serif;font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;color:var(–t)}
+.key-sub{font-size:13px;color:var(–t2);text-align:center;line-height:1.7;margin-bottom:22px}
+.key-sub a{color:var(–ac);text-decoration:underline}
+.key-input{width:100%;background:var(–s2);border:1px solid var(–bd);border-radius:11px;padding:13px 15px;color:var(–t);font-size:14px;outline:none;margin-bottom:12px;transition:border-color .2s;font-family:‘Noto Serif TC’,serif}
 .key-input:focus{border-color:rgba(124,106,247,.45)}
-.key-input::placeholder{color:var(--t3)}
-.key-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Noto Serif TC',serif}
+.key-input::placeholder{color:var(–t3)}
+.key-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,#4285f4,#34a853);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:‘Noto Serif TC’,serif}
 .key-btn:hover{opacity:.9;transform:translateY(-1px)}
-.key-note{font-size:11px;color:var(--t3);text-align:center;margin-top:12px;line-height:1.6}
-.key-steps{background:var(--s2);border-radius:10px;padding:14px;margin-bottom:18px}
-.key-steps p{font-size:12px;color:var(--t2);line-height:1.9;margin:0}
-.key-steps strong{color:var(--t)}
+.key-note{font-size:11px;color:var(–t3);text-align:center;margin-top:12px;line-height:1.6}
+.key-steps{background:var(–s2);border-radius:10px;padding:14px;margin-bottom:18px}
+.key-steps p{font-size:12px;color:var(–t2);line-height:1.9;margin:0}
+.key-steps strong{color:var(–t)}
 
 /* ════ PHOTO CAT ════ */
 #vcat-wrap{position:fixed;right:14px;top:70px;z-index:300;display:none;flex-direction:column;align-items:center;gap:4px;user-select:none}
@@ -264,35 +264,46 @@ img{max-width:100%;height:auto;display:block;}
 @keyframes floatZzz{0%{opacity:0;transform:translateY(0) scale(.7)}40%{opacity:1}100%{opacity:0;transform:translateY(-16px) scale(1.1)}}
 .vcat-heart{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:16px;opacity:0;transition:all .5s;pointer-events:none}
 .vcat-heart.show{opacity:1;top:-24px}
-.vcat-bubble{background:rgba(255,255,255,.92);border:1px solid rgba(30,80,160,.2);border-radius:16px 16px 16px 5px;padding:10px 14px;font-size:12px;color:#0a2040;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:'Noto Serif TC',serif;box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
+.vcat-bubble{background:rgba(255,255,255,.92);border:1px solid rgba(30,80,160,.2);border-radius:16px 16px 16px 5px;padding:10px 14px;font-size:12px;color:#0a2040;max-width:180px;line-height:1.6;opacity:0;transform:translateY(8px) scale(.95);transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;font-family:‘Noto Serif TC’,serif;box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
 .vcat-bubble.show{opacity:1;transform:translateY(0) scale(1)}
-.vcat-name{font-size:10px;color:rgba(10,32,64,.5);font-family:'Space Mono',monospace;text-align:center;letter-spacing:.5px;margin-top:2px}
+.vcat-name{font-size:10px;color:rgba(10,32,64,.5);font-family:‘Space Mono’,monospace;text-align:center;letter-spacing:.5px;margin-top:2px}
 .vcat-mood-badge{font-size:9px;background:rgba(30,80,160,.1);border-radius:8px;padding:2px 8px;color:rgba(10,32,64,.5);margin-top:1px}
 
 /* ════ VCAT UPLOAD ════ */
 #vcat-upload-input{display:none}
 
-#vcat-upload-btn{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:'Space Mono',monospace;margin-top:2px;transition:all .2s;-webkit-user-select:none;user-select:none}
+#vcat-upload-btn{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);font-size:9px;border-radius:8px;padding:3px 8px;cursor:pointer;font-family:‘Space Mono’,monospace;margin-top:2px;transition:all .2s;-webkit-user-select:none;user-select:none}
 #vcat-upload-btn:hover{background:rgba(255,255,255,.18);color:rgba(255,255,255,.8)}
 
+/* ── Feature intro cards ── */
+.feat-wrap{width:100%;display:flex;flex-direction:column;gap:8px;margin:16px 0 4px}
+.feat-card{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:11px 14px;text-align:left}
+.feat-ic{font-size:22px;flex-shrink:0;width:32px;text-align:center}
+.feat-info{flex:1}
+.feat-t{font-size:13px;font-weight:700;color:var(–t);margin-bottom:2px}
+.feat-d{font-size:11px;color:var(–t2);line-height:1.5}
+.feat-divider{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(–t3);text-align:center;margin:14px 0 6px;position:relative}
+.feat-divider::before,.feat-divider::after{content:’’;position:absolute;top:50%;width:28%;height:1px;background:var(–bd)}
+.feat-divider::before{left:0}.feat-divider::after{right:0}
 
 /* ════ TUTORIAL ════ */
-.tut-overlay{position:fixed;inset:0;background:transparent;z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s}
-.tut-overlay.show{opacity:1;pointer-events:all}
-.tut-highlight{position:relative;z-index:9001!important;box-shadow:0 0 0 9999px rgba(0,0,0,.45),0 0 0 4px rgba(91,143,249,.7),0 0 20px 6px rgba(91,143,249,.3)!important;border-radius:10px;pointer-events:auto;transition:box-shadow .3s}
-.tut-bar{position:fixed;left:0;right:0;bottom:0;z-index:9002;display:none;align-items:center;justify-content:space-between;padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom));background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-top:1px solid rgba(30,80,160,.12);gap:10px}
+.tut-overlay{display:none}
+.tut-highlight{position:relative;z-index:9001!important;box-shadow:0 0 0 3px rgba(91,143,249,.8),0 0 16px 4px rgba(91,143,249,.25)!important;border-radius:10px;pointer-events:auto;transition:box-shadow .3s}
+.tut-tooltip{position:fixed;z-index:9100;background:#fff;border:1px solid rgba(30,80,160,.15);border-radius:14px;padding:12px 16px;max-width:220px;font-size:13px;color:#0a2040;line-height:1.6;box-shadow:0 6px 24px rgba(0,0,0,.12);font-family:‘Noto Serif TC’,serif;opacity:0;transform:scale(.92);transition:all .25s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.tut-tooltip.show{opacity:1;transform:scale(1)}
+.tut-bar{position:fixed;left:0;right:0;bottom:0;z-index:9002;display:none;align-items:center;justify-content:space-between;padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom));background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(30,80,160,.12);gap:10px}
 .tut-bar.show{display:flex}
-.tut-skip{background:none;border:none;color:#6a8aaa;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:6px 10px;border-radius:8px;transition:all .18s}
+.tut-skip{background:none;border:none;color:#6a8aaa;font-size:13px;cursor:pointer;font-family:‘DM Sans’,sans-serif;padding:6px 10px;border-radius:8px;transition:all .18s}
 .tut-skip:hover{background:rgba(0,0,0,.06);color:#2a4a70}
 .tut-dots{display:flex;gap:6px;align-items:center}
 .tut-dot{width:8px;height:8px;border-radius:50%;background:rgba(30,80,160,.15);transition:all .25s}
 .tut-dot.active{background:#5b8ff9;transform:scale(1.3)}
 .tut-dot.done{background:#3ecf8e}
-.tut-next{background:#5b8ff9;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s}
+.tut-next{background:#5b8ff9;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all .18s}
 .tut-next:hover{background:#3d6fe0;transform:translateY(-1px)}
 .tut-next:active{transform:scale(.96)}
-</style>
 
+</style>
 </head>
 <body>
 
@@ -339,11 +350,13 @@ img{max-width:100%;height:auto;display:block;}
       <div class="menu-ic"><span></span><span></span><span></span></div>
     </button>
 
+```
 <div class="hd-title" id="hd-title">PawSense AI</div>
 <button class="lang-btn" id="lang-btn" onclick="openLangSheet()" aria-label="切換語言">
   <span id="lang-flag">中</span>
 </button>
 <div class="mode-chip" id="mode-chip" onclick="openSheet()" role="button" aria-label="切換模式" tabindex="0">🐱 問答</div>
+```
 
   </div>
   <div class="cat-bar" id="cat-bar"></div>
@@ -354,7 +367,7 @@ img{max-width:100%;height:auto;display:block;}
       <button class="plus-btn" onclick="triggerPhoto()" aria-label="上傳照片" title="上傳照片">＋</button>
       <textarea class="inp-tx" id="inp-tx" placeholder="輸入訊息..." rows="1"
         oninput="onInp()" onkeydown="onKey(event)"></textarea>
-      <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button>
+      <button class="send-btn" id="send-btn" onclick="sendMsg()" aria-label="傳送訊息">↑</button>
     </div>
     <input type="file" id="photo-input" accept="image/*" multiple onchange="onPhotoSelect(event)">
     <div class="inp-hint">PawSense AI · 分析結果僅供參考</div>
@@ -489,23 +502,45 @@ function buildWelcome(){
   var div=document.createElement('div');div.className='welcome';
 
 // ── Logo & Title ──
-var logo=document.createElement('div');logo.className='wl-logo';logo.textContent='🐾';
-var title=document.createElement('div');title.className='wl-title';title.innerHTML='Paw<em>Sense</em> AI';
-var sub=document.createElement('div');sub.className='wl-sub';sub.textContent='你的 AI 貓咪健康助理';
+var logo=document.createElement(‘div’);logo.className=‘wl-logo’;logo.textContent=‘🐾’;
+var title=document.createElement(‘div’);title.className=‘wl-title’;title.innerHTML=‘Paw<em>Sense</em> AI’;
+var sub=document.createElement(‘div’);sub.className=‘wl-sub’;sub.textContent=‘你的 AI 貓咪健康助理’;
+
+// ── Feature intro cards ──
+var featWrap=document.createElement(‘div’);featWrap.className=‘feat-wrap’;
+var features=[
+{ic:‘🔍’,t:‘行為分析’,d:‘描述貓咪行為，AI 即時分析壓力指數與風險等級’},
+{ic:‘💊’,t:‘健康問題’,d:‘輸入症狀，獲得建議與就醫時機評估’},
+{ic:‘📋’,t:‘分析紀錄’,d:‘所有分析結果自動儲存，隨時查閱歷史報告’},
+{ic:‘🐈’,t:‘貓咪管理’,d:‘建立多隻貓咪檔案，追蹤每隻貓的健康狀況’},
+];
+features.forEach(function(f){
+var card=document.createElement(‘div’);card.className=‘feat-card’;
+var ic=document.createElement(‘div’);ic.className=‘feat-ic’;ic.textContent=f.ic;
+var info=document.createElement(‘div’);info.className=‘feat-info’;
+var t=document.createElement(‘div’);t.className=‘feat-t’;t.textContent=f.t;
+var d=document.createElement(‘div’);d.className=‘feat-d’;d.textContent=f.d;
+info.appendChild(t);info.appendChild(d);
+card.appendChild(ic);card.appendChild(info);
+featWrap.appendChild(card);
+});
+
+// ── Divider ──
+var divider=document.createElement(‘div’);divider.className=‘feat-divider’;divider.textContent=‘立即開始’;
 
 // ── Quick start grid ──
-var grid=document.createElement('div');grid.className='sg-grid';
+var grid=document.createElement(‘div’);grid.className=‘sg-grid’;
 var suggests=[
-{ic:'🔍',t:'行為分析',d:'描述行為，分析壓力',q:'我想分析貓咪的行為'},
-{ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-{ic:'💊',t:'健康問題',d:'搜尋症狀與建議',q:'我的貓咪最近食慾不振'},
-{ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
+{ic:‘🔍’,t:‘行為分析’,d:‘描述行為，分析壓力’,q:‘我想分析貓咪的行為’},
+{ic:‘🐈’,t:‘新增貓咪’,d:‘建立貓咪資料’,q:‘幫我新增一隻貓咪’},
+{ic:‘💊’,t:‘健康問題’,d:‘搜尋症狀與建議’,q:‘我的貓咪最近食慾不振’},
+{ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
 ];
 suggests.forEach(function(s){
-var card=document.createElement('div');card.className='sg-card';
-var ic=document.createElement('div');ic.className='sg-ic';ic.textContent=s.ic;
-var t=document.createElement('div');t.className='sg-t';t.textContent=s.t;
-var d=document.createElement('div');d.className='sg-d';d.textContent=s.d;
+var card=document.createElement(‘div’);card.className=‘sg-card’;
+var ic=document.createElement(‘div’);ic.className=‘sg-ic’;ic.textContent=s.ic;
+var t=document.createElement(‘div’);t.className=‘sg-t’;t.textContent=s.t;
+var d=document.createElement(‘div’);d.className=‘sg-d’;d.textContent=s.d;
 card.appendChild(ic);card.appendChild(t);card.appendChild(d);
 card.onclick=(function(q){return function(){tapQ(q);};})(s.q);
 grid.appendChild(card);
@@ -514,29 +549,31 @@ grid.appendChild(card);
 div.appendChild(logo);
 div.appendChild(title);
 div.appendChild(sub);
+div.appendChild(featWrap);
+div.appendChild(divider);
 div.appendChild(grid);
 return div;
 }
 function appendMsgEl(m,anim){
-var el=document.getElementById('msgs');
-var w=el.querySelector('.welcome');if(w)w.remove();
-if(m.role==='user'){
-var g=document.createElement('div');g.className='mg user';
-var b=document.createElement('div');b.className='bb user';
-if(!anim)b.style.animation='none';
+var el=document.getElementById(‘msgs’);
+var w=el.querySelector(’.welcome’);if(w)w.remove();
+if(m.role===‘user’){
+var g=document.createElement(‘div’);g.className=‘mg user’;
+var b=document.createElement(‘div’);b.className=‘bb user’;
+if(!anim)b.style.animation=‘none’;
 b.textContent=m.content;g.appendChild(b);el.appendChild(g);
 } else {
-var g=document.createElement('div');g.className='mg ai';
-var av=document.createElement('div');av.className='ai-av';av.textContent='🐾';
-var b=document.createElement('div');b.className='bb ai';
-if(!anim)b.style.animation='none';
-if(m.type==='result'&&m.rd){b.appendChild(buildResCard(m.rd));}
+var g=document.createElement(‘div’);g.className=‘mg ai’;
+var av=document.createElement(‘div’);av.className=‘ai-av’;av.textContent=‘🐾’;
+var b=document.createElement(‘div’);b.className=‘bb ai’;
+if(!anim)b.style.animation=‘none’;
+if(m.type===‘result’&&m.rd){b.appendChild(buildResCard(m.rd));}
 else{
 b.innerHTML=fmtAI(m.content);
 if(m.qr&&m.qr.length){
-var qrRow=document.createElement('div');qrRow.className='qr-row';
+var qrRow=document.createElement(‘div’);qrRow.className=‘qr-row’;
 m.qr.forEach(function(q){
-var btn=document.createElement('button');btn.className='qr';btn.textContent=q;
+var btn=document.createElement(‘button’);btn.className=‘qr’;btn.textContent=q;
 btn.onclick=(function(qq){return function(){tapQ(qq);};})(q);
 qrRow.appendChild(btn);
 });
@@ -548,128 +585,128 @@ g.appendChild(av);g.appendChild(b);el.appendChild(g);
 if(anim)scrollBot();
 }
 function buildResCard(r){
-var sc=r.sl>=60?'var(--re)':r.sl>=35?'var(--ye)':'var(--gr)';
-var rl=r.risk==='高'?'高風險':r.risk==='低'?'低風險':'中風險';
-var rc=r.risk==='高'?'rgba(242,109,109,.13)':r.risk==='低'?'rgba(62,207,142,.13)':'rgba(245,166,35,.13)';
-var rt=r.risk==='高'?'var(--re)':r.risk==='低'?'var(--gr)':'var(--ye)';
-var c=document.createElement('div');c.className='res-card';c.id='rc-'+r.id;
-var hd=document.createElement('div');hd.className='res-hd';
-var cat=document.createElement('div');cat.className='res-cat';cat.textContent=(r.catEmoji||'🐱')+' '+(r.catName||'貓咪')+'・'+r.date;
-var badge=document.createElement('div');badge.className='res-badge';badge.textContent=rl;
-badge.style.cssText='background:'+rc+';color:'+rt;
+var sc=r.sl>=60?‘var(–re)’:r.sl>=35?‘var(–ye)’:‘var(–gr)’;
+var rl=r.risk===‘高’?‘高風險’:r.risk===‘低’?‘低風險’:‘中風險’;
+var rc=r.risk===‘高’?‘rgba(242,109,109,.13)’:r.risk===‘低’?‘rgba(62,207,142,.13)’:‘rgba(245,166,35,.13)’;
+var rt=r.risk===‘高’?‘var(–re)’:r.risk===‘低’?‘var(–gr)’:‘var(–ye)’;
+var c=document.createElement(‘div’);c.className=‘res-card’;c.id=‘rc-’+r.id;
+var hd=document.createElement(‘div’);hd.className=‘res-hd’;
+var cat=document.createElement(‘div’);cat.className=‘res-cat’;cat.textContent=(r.catEmoji||‘🐱’)+’ ‘+(r.catName||‘貓咪’)+’・’+r.date;
+var badge=document.createElement(‘div’);badge.className=‘res-badge’;badge.textContent=rl;
+badge.style.cssText=‘background:’+rc+’;color:’+rt;
 hd.appendChild(cat);hd.appendChild(badge);
-var sbw=document.createElement('div');sbw.className='sb-wrap';
-var lbl=document.createElement('div');lbl.className='sb-label';
-lbl.innerHTML='<span>壓力指數</span><span style="color:'+sc+';font-weight:600">'+r.sl+' / 100</span>';
-var trk=document.createElement('div');trk.className='sb-track';
-var fill=document.createElement('div');fill.className='sb-fill';fill.id='sf-'+r.id;
-fill.style.cssText='width:0%;background:'+sc;
+var sbw=document.createElement(‘div’);sbw.className=‘sb-wrap’;
+var lbl=document.createElement(‘div’);lbl.className=‘sb-label’;
+lbl.innerHTML=’<span>壓力指數</span><span style="color:'+sc+';font-weight:600">’+r.sl+’ / 100</span>’;
+var trk=document.createElement(‘div’);trk.className=‘sb-track’;
+var fill=document.createElement(‘div’);fill.className=‘sb-fill’;fill.id=‘sf-’+r.id;
+fill.style.cssText=‘width:0%;background:’+sc;
 trk.appendChild(fill);sbw.appendChild(lbl);sbw.appendChild(trk);
-var txt=document.createElement('div');txt.className='res-txt';txt.textContent=r.fullReport;
-var ratRow=document.createElement('div');ratRow.className='rat-row';
-var ratLbl=document.createElement('div');ratLbl.className='rat-lbl';ratLbl.textContent='這份分析有幫助嗎？';
-var stars=document.createElement('div');stars.className='stars';stars.id='rs-'+r.id;
+var txt=document.createElement(‘div’);txt.className=‘res-txt’;txt.textContent=r.fullReport;
+var ratRow=document.createElement(‘div’);ratRow.className=‘rat-row’;
+var ratLbl=document.createElement(‘div’);ratLbl.className=‘rat-lbl’;ratLbl.textContent=‘這份分析有幫助嗎？’;
+var stars=document.createElement(‘div’);stars.className=‘stars’;stars.id=‘rs-’+r.id;
 for(var i=1;i<=5;i++){
-var star=document.createElement('div');star.className='star'+(i<=(r.rating||0)?' on':'');
-star.textContent='★';
+var star=document.createElement(‘div’);star.className=‘star’+(i<=(r.rating||0)?’ on’:’’);
+star.textContent=‘★’;
 star.onclick=(function(score,rid){return function(){rateRes(rid,score);};})(i,r.id);
 stars.appendChild(star);
 }
 ratRow.appendChild(ratLbl);ratRow.appendChild(stars);
 c.appendChild(hd);c.appendChild(sbw);c.appendChild(txt);c.appendChild(ratRow);
-setTimeout(function(){var f=document.getElementById('sf-'+r.id);if(f)f.style.width=r.sl+'%';},80);
+setTimeout(function(){var f=document.getElementById(‘sf-’+r.id);if(f)f.style.width=r.sl+’%’;},80);
 return c;
 }
 function fmtAI(text){
-if(!text)return'';
+if(!text)return’’;
 var o=esc(text)
-.replace(/**(.+?)**/g,'<strong>$1</strong>')
-.replace(/^#{1,3} (.+)$/gm,'<h3>$1</h3>')
-.replace(/^[•-] (.+)$/gm,'<li>$1</li>');
-var lines=o.split('\n');var out=[];var ul=false;
+.replace(/**(.+?)**/g,’<strong>$1</strong>’)
+.replace(/^#{1,3} (.+)$/gm,’<h3>$1</h3>’)
+.replace(/^[•-] (.+)$/gm,’<li>$1</li>’);
+var lines=o.split(’\n’);var out=[];var ul=false;
 lines.forEach(function(l){
-if(l.startsWith('<li>')){if(!ul){out.push('<ul>');ul=true;}out.push(l);}
-else{if(ul){out.push('</ul>');ul=false;}if(l.trim())out.push(l.startsWith('<h3>')?l:'<p>'+l+'</p>');}
+if(l.startsWith(’<li>’)){if(!ul){out.push(’<ul>’);ul=true;}out.push(l);}
+else{if(ul){out.push(’</ul>’);ul=false;}if(l.trim())out.push(l.startsWith(’<h3>’)?l:’<p>’+l+’</p>’);}
 });
-if(ul)out.push('</ul>');
-return out.join('');
+if(ul)out.push(’</ul>’);
+return out.join(’’);
 }
-function esc(t){return(t||'').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');}
-function scrollBot(){var m=document.getElementById('msgs');if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
-function tapQ(q){document.getElementById('inp-tx').value=q;onInp();sendMsg();}
+function esc(t){return(t||’’).replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’);}
+function scrollBot(){var m=document.getElementById(‘msgs’);if(m)setTimeout(function(){m.scrollTop=m.scrollHeight;},40);}
+function tapQ(q){document.getElementById(‘inp-tx’).value=q;onInp();sendMsg();}
 // ══ MODE ══
-var chatMode='general';
-var modeLabel={general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'};
+var chatMode=‘general’;
+var modeLabel={general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’};
 var selCatId=null;
 function setModeSilent(m){
 chatMode=m;
-document.getElementById('mode-chip').textContent=modeLabel[m]||'🐱 問答';
-['general','analyze','report','cat'].forEach(function(k){
-var el=document.getElementById('sm-'+k);if(el)el.classList.toggle('act',k===m);
+document.getElementById(‘mode-chip’).textContent=modeLabel[m]||‘🐱 問答’;
+[‘general’,‘analyze’,‘report’,‘cat’].forEach(function(k){
+var el=document.getElementById(‘sm-’+k);if(el)el.classList.toggle(‘act’,k===m);
 });
-var ph={general:'有什麼想問的？',analyze:'描述貓咪的行為…',report:'問我關於分析報告…',cat:'說「新增貓咪」或「查看貓咪」…'};
-document.getElementById('inp-tx').placeholder=ph[m]||'輸入訊息…';
+var ph={general:‘有什麼想問的？’,analyze:‘描述貓咪的行為…’,report:‘問我關於分析報告…’,cat:‘說「新增貓咪」或「查看貓咪」…’};
+document.getElementById(‘inp-tx’).placeholder=ph[m]||‘輸入訊息…’;
 refreshCatBar();
 }
 function setMode(m){
 setModeSilent(m);closeSheet();
 var intro={
-general:'已切換到 **貓咪問答** 模式。有什麼問題嗎？',
-analyze:'已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。',
-report:'已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。',
-cat:'已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。'
+general:‘已切換到 **貓咪問答** 模式。有什麼問題嗎？’,
+analyze:‘已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。’,
+report:‘已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。’,
+cat:‘已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。’
 };
 if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
 }
 function refreshCatBar(){
-var bar=document.getElementById('cat-bar');if(!bar)return;
+var bar=document.getElementById(‘cat-bar’);if(!bar)return;
 var u=curU();
-if(chatMode!=='analyze'||!u||!u.cats||!u.cats.length){bar.classList.remove('show');return;}
-bar.classList.add('show');
-bar.innerHTML='';
-var lbl=document.createElement('span');
-lbl.style.cssText='font-size:11px;color:var(--t3);white-space:nowrap;flex-shrink:0;padding-top:2px';
-lbl.textContent='分析對象：';bar.appendChild(lbl);
+if(chatMode!==‘analyze’||!u||!u.cats||!u.cats.length){bar.classList.remove(‘show’);return;}
+bar.classList.add(‘show’);
+bar.innerHTML=’’;
+var lbl=document.createElement(‘span’);
+lbl.style.cssText=‘font-size:11px;color:var(–t3);white-space:nowrap;flex-shrink:0;padding-top:2px’;
+lbl.textContent=‘分析對象：’;bar.appendChild(lbl);
 u.cats.forEach(function(c){
-var chip=document.createElement('div');
-chip.className='cat-chip'+(selCatId===c.id?' sel':'');
+var chip=document.createElement(‘div’);
+chip.className=‘cat-chip’+(selCatId===c.id?’ sel’:’’);
 chip.dataset.id=c.id;
-chip.textContent=c.emoji+' '+c.name;
+chip.textContent=c.emoji+’ ‘+c.name;
 chip.onclick=(function(id){return function(){selCat(id);};})(c.id);
 bar.appendChild(chip);
 });
-var add=document.createElement('div');add.className='cat-chip';
-add.style.borderStyle='dashed';add.textContent='＋ 新增';
-add.onclick=function(){setModeSilent('cat');setMode('cat');};
+var add=document.createElement(‘div’);add.className=‘cat-chip’;
+add.style.borderStyle=‘dashed’;add.textContent=‘＋ 新增’;
+add.onclick=function(){setModeSilent(‘cat’);setMode(‘cat’);};
 bar.appendChild(add);
 if(!selCatId&&u.cats.length)selCat(u.cats[0].id);
 }
 function selCat(id){
 selCatId=id;
-document.querySelectorAll('.cat-chip[data-id]').forEach(function(c){
-c.classList.toggle('sel',parseInt(c.dataset.id)===id);
+document.querySelectorAll(’.cat-chip[data-id]’).forEach(function(c){
+c.classList.toggle(‘sel’,parseInt(c.dataset.id)===id);
 });
 }
 // ══ INPUT ══
 function onInp(){
-var t=document.getElementById('inp-tx');
-t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';
-document.getElementById('send-btn').classList.toggle('on',t.value.trim().length>0);
+var t=document.getElementById(‘inp-tx’);
+t.style.height=‘auto’;t.style.height=Math.min(t.scrollHeight,110)+‘px’;
+document.getElementById(‘send-btn’).classList.toggle(‘on’,t.value.trim().length>0);
 }
-function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function onKey(e){if(e.key===‘Enter’&&!e.shiftKey){e.preventDefault();sendMsg();}}
 // ══ SEND ══
 // ══ PHOTO UPLOAD ══
 var pendingPhotos=[]; // [{dataUrl, base64, mediaType}]
-function triggerPhoto(){document.getElementById('photo-input').click();}
+function triggerPhoto(){document.getElementById(‘photo-input’).click();}
 function onPhotoSelect(e){
 var files=Array.from(e.target.files);
-e.target.value=''; // reset so same file can be selected again
+e.target.value=’’; // reset so same file can be selected again
 files.slice(0,4).forEach(function(file){
-if(!file.type.startsWith('image/'))return;
+if(!file.type.startsWith(‘image/’))return;
 var reader=new FileReader();
 reader.onload=function(ev){
 var dataUrl=ev.target.result;
-var base64=dataUrl.split(',')[1];
+var base64=dataUrl.split(’,’)[1];
 var mediaType=file.type;
 pendingPhotos.push({dataUrl:dataUrl,base64:base64,mediaType:mediaType,name:file.name});
 renderPhotoBar();
@@ -678,109 +715,109 @@ reader.readAsDataURL(file);
 });
 }
 function renderPhotoBar(){
-var bar=document.getElementById('photo-bar');
-if(!pendingPhotos.length){bar.classList.remove('show');bar.innerHTML='';return;}
-bar.classList.add('show');bar.innerHTML='';
+var bar=document.getElementById(‘photo-bar’);
+if(!pendingPhotos.length){bar.classList.remove(‘show’);bar.innerHTML=’’;return;}
+bar.classList.add(‘show’);bar.innerHTML=’’;
 pendingPhotos.forEach(function(p,i){
-var thumb=document.createElement('div');thumb.className='photo-thumb';
-var img=document.createElement('img');img.src=p.dataUrl;img.alt='照片'+(i+1);
-var del=document.createElement('button');del.className='photo-del';del.textContent='×';del.title='移除';
+var thumb=document.createElement(‘div’);thumb.className=‘photo-thumb’;
+var img=document.createElement(‘img’);img.src=p.dataUrl;img.alt=‘照片’+(i+1);
+var del=document.createElement(‘button’);del.className=‘photo-del’;del.textContent=‘×’;del.title=‘移除’;
 del.onclick=(function(idx){return function(){pendingPhotos.splice(idx,1);renderPhotoBar();};})(i);
 thumb.appendChild(img);thumb.appendChild(del);bar.appendChild(thumb);
 });
 // Update send button
-document.getElementById('send-btn').classList.toggle('on', pendingPhotos.length>0||document.getElementById('inp-tx').value.trim().length>0);
+document.getElementById(‘send-btn’).classList.toggle(‘on’, pendingPhotos.length>0||document.getElementById(‘inp-tx’).value.trim().length>0);
 }
 
 var chatHist=[];
 async function sendMsg(){
-var t=document.getElementById('inp-tx');var txt=t.value.trim();if(!txt)return;
-t.value='';t.style.height='auto';document.getElementById('send-btn').classList.remove('on');
+var t=document.getElementById(‘inp-tx’);var txt=t.value.trim();if(!txt)return;
+t.value=’’;t.style.height=‘auto’;document.getElementById(‘send-btn’).classList.remove(‘on’);
 var u=curU();
 // Build user message with optional images
 var photos=pendingPhotos.slice();pendingPhotos=[];renderPhotoBar();
 var um;
 if(photos.length){
 var msgContent=[];
-photos.forEach(function(p){msgContent.push({type:'image',source:{type:'base64',media_type:p.mediaType,data:p.base64}});});
-if(txt)msgContent.push({type:'text',text:txt});
-um={role:'user',content:msgContent,_photos:photos.map(function(p){return p.dataUrl;})};
+photos.forEach(function(p){msgContent.push({type:‘image’,source:{type:‘base64’,media_type:p.mediaType,data:p.base64}});});
+if(txt)msgContent.push({type:‘text’,text:txt});
+um={role:‘user’,content:msgContent,_photos:photos.map(function(p){return p.dataUrl;})};
 } else {
-um={role:'user',content:txt};
+um={role:‘user’,content:txt};
 }
 sessMsgs.push(um);
 // Render user bubble with photos
-var msgs_el=document.getElementById('msgs');
-var w=msgs_el.querySelector('.welcome');if(w)w.remove();
-var ug=document.createElement('div');ug.className='mg user';
-var ub=document.createElement('div');ub.className='bb user';ub.style.animation='none';
+var msgs_el=document.getElementById(‘msgs’);
+var w=msgs_el.querySelector(’.welcome’);if(w)w.remove();
+var ug=document.createElement(‘div’);ug.className=‘mg user’;
+var ub=document.createElement(‘div’);ub.className=‘bb user’;ub.style.animation=‘none’;
 if(photos.length){
-photos.forEach(function(p){var i=document.createElement('img');i.src=p.dataUrl;i.className='msg-img';i.alt='上傳的照片';ub.appendChild(i);});
+photos.forEach(function(p){var i=document.createElement(‘img’);i.src=p.dataUrl;i.className=‘msg-img’;i.alt=‘上傳的照片’;ub.appendChild(i);});
 }
-if(txt){var sp=document.createElement('p');sp.style.cssText='margin:0;'+(photos.length?'margin-top:6px':'');sp.textContent=txt;ub.appendChild(sp);}
+if(txt){var sp=document.createElement(‘p’);sp.style.cssText=‘margin:0;’+(photos.length?‘margin-top:6px’:’’);sp.textContent=txt;ub.appendChild(sp);}
 ug.appendChild(ub);msgs_el.appendChild(ug);scrollBot();
 if(!curSessId)saveSess(txt.substring(0,22));else saveSess(null);
-var tid='ty'+Date.now();
-var tg=document.createElement('div');tg.className='ty-wrap';tg.id=tid;
-var tav=document.createElement('div');tav.className='ai-av';tav.textContent='🐾';
-var tdots=document.createElement('div');tdots.className='ty-dots';
-tdots.innerHTML='<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>';
+var tid=‘ty’+Date.now();
+var tg=document.createElement(‘div’);tg.className=‘ty-wrap’;tg.id=tid;
+var tav=document.createElement(‘div’);tav.className=‘ai-av’;tav.textContent=‘🐾’;
+var tdots=document.createElement(‘div’);tdots.className=‘ty-dots’;
+tdots.innerHTML=’<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>’;
 tg.appendChild(tav);tg.appendChild(tdots);
-document.getElementById('msgs').appendChild(tg);scrollBot();
-if(chatMode==='cat'||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
+document.getElementById(‘msgs’).appendChild(tg);scrollBot();
+if(chatMode===‘cat’||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
 var low2=txt.toLowerCase();
-if(low2.includes('新增貓咪')||low2.includes('加入貓咪')||low2.includes('新增一隻貓')){
-removeEl(tid);setModeSilent('cat');await catFlow(txt,u);return;
+if(low2.includes(‘新增貓咪’)||low2.includes(‘加入貓咪’)||low2.includes(‘新增一隻貓’)){
+removeEl(tid);setModeSilent(‘cat’);await catFlow(txt,u);return;
 }
 // 分析模式但還沒有貓咪 - 提前引導
-if(chatMode==='analyze'&&(!u||!u.cats||!u.cats.length)){
+if(chatMode===‘analyze’&&(!u||!u.cats||!u.cats.length)){
 removeEl(tid);
-pushAI('🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？',['幫我新增貓咪']);
-setModeSilent('cat');catAddStep=null;
+pushAI(‘🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？’,[‘幫我新增貓咪’]);
+setModeSilent(‘cat’);catAddStep=null;
 return;
 }
-var catInfo='';
+var catInfo=’’;
 if(u&&u.cats&&u.cats.length){
-catInfo='\n\n用戶的貓咪：'+u.cats.map(function(c){return c.name+'（'+c.breed+'，'+c.age+'，'+c.gender+'）';}).join('、');
+catInfo=’\n\n用戶的貓咪：’+u.cats.map(function(c){return c.name+’（’+c.breed+’，’+c.age+’，’+c.gender+’）’;}).join(’、’);
 }
-var langInstr=curLang==='en'?'Please respond in English only.':'請用繁體中文回答。';
-var sys='你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n'+langInstr+catInfo;
-if(chatMode==='analyze'){
+var langInstr=curLang===‘en’?‘Please respond in English only.’:‘請用繁體中文回答。’;
+var sys=‘你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n’+langInstr+catInfo;
+if(chatMode===‘analyze’){
 var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
-if(sc2)sys+='\n\n目前分析對象：'+sc2.name+'（'+sc2.breed+'，'+sc2.age+'）';
-sys+='\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。';
+if(sc2)sys+=’\n\n目前分析對象：’+sc2.name+’（’+sc2.breed+’，’+sc2.age+’）’;
+sys+=’\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。’;
 }
-if(chatMode==='report'&&u&&u.records&&u.records.length){
+if(chatMode===‘report’&&u&&u.records&&u.records.length){
 var lr=u.records[u.records.length-1];
-var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:'貓咪'};
-sys+='\n\n最近分析報告（'+lc.name+'，'+lr.date+'）：\n'+lr.fullReport;
+var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:‘貓咪’};
+sys+=’\n\n最近分析報告（’+lc.name+’，’+lr.date+’）：\n’+lr.fullReport;
 }
 // Push to chatHist - use array format if photos present
 if(photos.length){
 var apiContent=[];
-photos.forEach(function(p){apiContent.push({type:'image',source:{type:'base64',media_type:p.mediaType,data:p.base64}});});
-if(txt)apiContent.push({type:'text',text:txt});
-else apiContent.push({type:'text',text:'請描述或分析這張照片裡的寵物。'});
-chatHist.push({role:'user',content:apiContent});
+photos.forEach(function(p){apiContent.push({type:‘image’,source:{type:‘base64’,media_type:p.mediaType,data:p.base64}});});
+if(txt)apiContent.push({type:‘text’,text:txt});
+else apiContent.push({type:‘text’,text:‘請描述或分析這張照片裡的寵物。’});
+chatHist.push({role:‘user’,content:apiContent});
 } else {
-chatHist.push({role:'user',content:txt});
+chatHist.push({role:‘user’,content:txt});
 }
 try{
 // Groq API call (OpenAI-compatible)
 var reply=staticAI(txt,sys,chatMode);
 await new Promise(function(r){setTimeout(r,600+Math.random()*800);});
-chatHist.push({role:'assistant',content:reply});
+chatHist.push({role:‘assistant’,content:reply});
 removeEl(tid);
 var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[/／]\s*100/);
 var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
-if(chatMode==='analyze'&&sm&&rm&&u&&u.cats&&u.cats.length){
+if(chatMode===‘analyze’&&sm&&rm&&u&&u.cats&&u.cats.length){
 var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
 var cat=(selCatId&&u.cats.find(function(c){return c.id===selCatId;}))||u.cats[0];
-var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||'🐱',
-date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||‘🐱’,
+date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
 inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
 u.records.push(rec);saveDB();
-var am={role:'assistant',type:'result',content:reply,rd:rec,qr:['再問一個問題','繼續分析']};
+var am={role:‘assistant’,type:‘result’,content:reply,rd:rec,qr:[‘再問一個問題’,‘繼續分析’]};
 sessMsgs.push(am);appendMsgEl(am,true);
 updateVirtualCat(reply);
 } else {
@@ -794,19 +831,19 @@ var u2=curU();
 try{
 var reply2=staticAI(txt,sys,chatMode);
 await new Promise(function(r){setTimeout(r,400);});
-if(!reply2){removeEl(tid);pushAI('⚠️ AI 未回應，請重新描述。',['重新嘗試']);saveSess(null);return;}
-chatHist.push({role:'assistant',content:reply2});
+if(!reply2){removeEl(tid);pushAI(‘⚠️ AI 未回應，請重新描述。’,[‘重新嘗試’]);saveSess(null);return;}
+chatHist.push({role:‘assistant’,content:reply2});
 removeEl(tid);
 var sm2=reply2.match(/壓力指數[^\d]*(\d+)/)||reply2.match(/(\d+)\s*[/／]\s*100/);
 var rm2=reply2.match(/風險等級[^低中高]*(低|中|高)/)||reply2.match(/(低|中|高)風險/);
-if(chatMode==='analyze'&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
+if(chatMode===‘analyze’&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
 var sl2=Math.min(100,Math.max(0,parseInt(sm2[1])));var risk2=rm2[1];
 var cat2=(selCatId&&u2.cats.find(function(c){return c.id===selCatId;}))||u2.cats[0];
-var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||'🐱',
-date:new Date().toLocaleString('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||‘🐱’,
+date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
 inputText:txt,fullReport:reply2,sl:sl2,risk:risk2,rating:0};
 u2.records.push(rec2);saveDB();
-var am2={role:'assistant',type:'result',content:reply2,rd:rec2,qr:['再問一個問題','繼續分析']};
+var am2={role:‘assistant’,type:‘result’,content:reply2,rd:rec2,qr:[‘再問一個問題’,‘繼續分析’]};
 sessMsgs.push(am2);appendMsgEl(am2,true);
 updateVirtualCat(reply2);
 } else {
@@ -820,8 +857,8 @@ removeEl(tid);
 try{
 var r3=staticAI(txt,sys,chatMode);
 if(r3){pushAI(r3,[]);updateVirtualCat(r3);}
-else{pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
-}catch(e){pushAI('⚠️ 請重新描述你的問題。',['重新嘗試']);}
+else{pushAI(‘⚠️ 請重新描述你的問題。’,[‘重新嘗試’]);}
+}catch(e){pushAI(‘⚠️ 請重新描述你的問題。’,[‘重新嘗試’]);}
 saveSess(null);
 }
 }
@@ -831,161 +868,153 @@ var catAddStep=null,catTemp={};
 async function catFlow(txt,u){
 if(!u)u=curU();
 // Handle error recovery quick replies
-if(txt==='重新嘗試'||txt==='稍後再試'){
-pushAI('好的，你可以重新輸入你的問題，我來幫你！',[]);return;
+if(txt===‘重新嘗試’||txt===‘稍後再試’){
+pushAI(‘好的，你可以重新輸入你的問題，我來幫你！’,[]);return;
 }
-if(txt==='重新描述'||txt==='換個問題'){
-pushAI('沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。',[]);return;
+if(txt===‘重新描述’||txt===‘換個問題’){
+pushAI(‘沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。’,[]);return;
 }
 var low=txt.toLowerCase();
-if(low.includes('查看')||low.includes('我的貓')||low.includes('列出')){
-if(!u.cats.length){pushAI('你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！',['新增貓咪']);return;}
+if(low.includes(‘查看’)||low.includes(‘我的貓’)||low.includes(‘列出’)){
+if(!u.cats.length){pushAI(‘你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！’,[‘新增貓咪’]);return;}
 var listTxt=u.cats.map(function(c,i){
-return '**'+(i+1)+'. '+c.emoji+' '+c.name+'**（'+c.breed+'，'+c.age+'，'+c.gender+'）\n分析次數：'+u.records.filter(function(r){return r.catId===c.id;}).length+'次';
-}).join('\n\n');
-pushAI('你的貓咪：\n\n'+listTxt,['新增貓咪','切換到行為分析']);return;
+return ‘**’+(i+1)+’. ‘+c.emoji+’ ‘+c.name+’**（’+c.breed+’，’+c.age+’，’+c.gender+’）\n分析次數：’+u.records.filter(function(r){return r.catId===c.id;}).length+‘次’;
+}).join(’\n\n’);
+pushAI(‘你的貓咪：\n\n’+listTxt,[‘新增貓咪’,‘切換到行為分析’]);return;
 }
-if(low.includes('新增')||low.includes('加入')||catAddStep){await catAddFlow(txt,u);return;}
-if(low.includes('紀錄')||low.includes('報告')){
-if(!u.records.length){pushAI('還沒有分析紀錄。切換到**行為分析**模式開始吧！',['切換到行為分析']);return;}
+if(low.includes(‘新增’)||low.includes(‘加入’)||catAddStep){await catAddFlow(txt,u);return;}
+if(low.includes(‘紀錄’)||low.includes(‘報告’)){
+if(!u.records.length){pushAI(‘還沒有分析紀錄。切換到**行為分析**模式開始吧！’,[‘切換到行為分析’]);return;}
 var recentTxt=u.records.slice(-3).reverse().map(function(r){
-var c=u.cats.find(function(x){return x.id===r.catId;})||{name:'貓咪'};
-return '📅 '+r.date+' — **'+c.name+'** 壓力 '+r.sl+'/100（'+r.risk+'風險）';
-}).join('\n\n');
-pushAI('最近'+Math.min(3,u.records.length)+'筆分析：\n\n'+recentTxt,['解讀最新報告','切換到行為分析']);return;
+var c=u.cats.find(function(x){return x.id===r.catId;})||{name:‘貓咪’};
+return ‘📅 ‘+r.date+’ — **’+c.name+’** 壓力 ‘+r.sl+’/100（’+r.risk+‘風險）’;
+}).join(’\n\n’);
+pushAI(‘最近’+Math.min(3,u.records.length)+‘筆分析：\n\n’+recentTxt,[‘解讀最新報告’,‘切換到行為分析’]);return;
 }
-if(txt.includes('切換到行為分析')){setMode('analyze');return;}
-if(txt.includes('解讀最新報告')){setMode('report');return;}
-pushAI('在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**',['查看我的貓咪','新增貓咪','查看紀錄']);
+if(txt.includes(‘切換到行為分析’)){setMode(‘analyze’);return;}
+if(txt.includes(‘解讀最新報告’)){setMode(‘report’);return;}
+pushAI(‘在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**’,[‘查看我的貓咪’,‘新增貓咪’,‘查看紀錄’]);
 }
 async function catAddFlow(txt,u){
-if(!catAddStep){catAddStep='name';catTemp={emoji:'🐱'};pushAI('好的！貓咪的**名字**是？',[]);return;}
-if(catAddStep==='name'){catTemp.name=txt.trim();catAddStep='breed';pushAI('**品種**是什麼？（例：英短、米克斯）',[]);return;}
-if(catAddStep==='breed'){catTemp.breed=txt.trim()||'未填';catAddStep='age';pushAI('**年齡**是？（例：3歲、8個月）',[]);return;}
-if(catAddStep==='age'){catTemp.age=txt.trim()||'未填';catAddStep='gender';pushAI('**性別**？',['公（已結紮）','公（未結紮）','母（已結紮）','母（未結紮）']);return;}
-if(catAddStep==='gender'){
-catTemp.gender=txt.trim()||'未填';catAddStep='confirm';
-pushAI('確認：\n\n🐱 '+catTemp.name+' / '+catTemp.breed+' / '+catTemp.age+' / '+catTemp.gender+'\n\n**確認儲存？**',['確認','重新開始']);return;
+if(!catAddStep){catAddStep=‘name’;catTemp={emoji:‘🐱’};pushAI(‘好的！貓咪的**名字**是？’,[]);return;}
+if(catAddStep===‘name’){catTemp.name=txt.trim();catAddStep=‘breed’;pushAI(’**品種**是什麼？（例：英短、米克斯）’,[]);return;}
+if(catAddStep===‘breed’){catTemp.breed=txt.trim()||‘未填’;catAddStep=‘age’;pushAI(’**年齡**是？（例：3歲、8個月）’,[]);return;}
+if(catAddStep===‘age’){catTemp.age=txt.trim()||‘未填’;catAddStep=‘gender’;pushAI(’**性別**？’,[‘公（已結紮）’,‘公（未結紮）’,‘母（已結紮）’,‘母（未結紮）’]);return;}
+if(catAddStep===‘gender’){
+catTemp.gender=txt.trim()||‘未填’;catAddStep=‘confirm’;
+pushAI(‘確認：\n\n🐱 ‘+catTemp.name+’ / ‘+catTemp.breed+’ / ‘+catTemp.age+’ / ‘+catTemp.gender+’\n\n**確認儲存？**’,[‘確認’,‘重新開始’]);return;
 }
-if(catAddStep==='confirm'){
-if(txt.includes('確認')){
-catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString('zh-TW');
+if(catAddStep===‘confirm’){
+if(txt.includes(‘確認’)){
+catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString(‘zh-TW’);
 u.cats.push(catTemp);saveDB();
 var nm=catTemp.name;catAddStep=null;catTemp={};
 selCatId=u.cats[u.cats.length-1].id;refreshCatBar();
-pushAI('✅ **'+nm+'** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。',['切換到行為分析','查看我的貓咪']);
-}else{catAddStep=null;catTemp={};pushAI('已取消。',['新增貓咪']);}
+pushAI(‘✅ **’+nm+’** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。’,[‘切換到行為分析’,‘查看我的貓咪’]);
+}else{catAddStep=null;catTemp={};pushAI(‘已取消。’,[‘新增貓咪’]);}
 return;
 }
 }
 function pushAI(content,qr){
-chatHist.push({role:'assistant',content:content});
-var msg={role:'assistant',content:content,qr:qr||[]};
+chatHist.push({role:‘assistant’,content:content});
+var msg={role:‘assistant’,content:content,qr:qr||[]};
 sessMsgs.push(msg);appendMsgEl(msg,true);saveSess(null);
 }
 function removeEl(id){var e=document.getElementById(id);if(e)e.remove();}
 function rateRes(id,score){
 var u=curU();if(!u)return;
 var rec=u.records.find(function(r){return r.id==id;});if(rec){rec.rating=score;saveDB();}
-var el=document.getElementById('rs-'+id);if(!el)return;
-el.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('on',i<score);});
+var el=document.getElementById(‘rs-’+id);if(!el)return;
+el.querySelectorAll(’.star’).forEach(function(s,i){s.classList.toggle(‘on’,i<score);});
 }
 // ══ LANGUAGE ══
-var curLang='zh';
+var curLang=‘zh’;
 var T={
 zh:{
-appName:'PawSense AI',
-newChat:'新對話',
-history:'對話紀錄',
-clearData:'清除資料',
-hint:'PawSense AI · 分析結果僅供參考',
-placeholder:'輸入訊息…',
-modeLabel:{general:'🐱 問答',analyze:'🔍 分析',report:'📋 解讀',cat:'🐈 管理'},
-langSheetTitle:'切換語言',
-welcome:'有什麼關於貓咪的問題嗎？',
+appName:‘PawSense AI’,
+newChat:‘新對話’,
+history:‘對話紀錄’,
+clearData:‘清除資料’,
+hint:‘PawSense AI · 分析結果僅供參考’,
+placeholder:‘輸入訊息…’,
+modeLabel:{general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’},
+langSheetTitle:‘切換語言’,
+welcome:‘有什麼關於貓咪的問題嗎？’,
+tutBtn:‘新手教學’,tutCancel:‘取消教學’,tutNext:‘下一步 →’,tutDone:‘完成！🎉’,
 suggests:[
-{ic:'🔍',t:'行為分析',d:'描述行為，取得評估',q:'我想分析貓咪的行為'},
-{ic:'🐈',t:'新增貓咪',d:'建立貓咪資料',q:'幫我新增一隻貓咪'},
-{ic:'💊',t:'健康問題',d:'詢問健康建議',q:'我的貓咪最近食慾不振'},
-{ic:'📊',t:'查看紀錄',d:'查看過往分析',q:'幫我看最近的分析結果'}
+{ic:‘🔍’,t:‘行為分析’,d:‘描述行為，取得評估’,q:‘我想分析貓咪的行為’},
+{ic:‘🐈’,t:‘新增貓咪’,d:‘建立貓咪資料’,q:‘幫我新增一隻貓咪’},
+{ic:‘💊’,t:‘健康問題’,d:‘詢問健康建議’,q:‘我的貓咪最近食慾不振’},
+{ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
 ],
 modes:[
-{id:'general',ic:'🐱',nm:'貓咪問答',ds:'問任何關於貓咪的問題'},
-{id:'analyze',ic:'🔍',nm:'行為分析',ds:'AI 搜尋獸醫文獻，評估壓力與風險'},
-{id:'report',ic:'📋',nm:'報告解讀',ds:'解讀過往的分析報告'},
-{id:'cat',ic:'🐈',nm:'貓咪管理',ds:'新增 / 查看貓咪資料'}
-],
-tutBtn:'新手教學',tutCancel:'取消教學',tutNext:'下一步 →',tutDone:'完成！🎉'
+{id:‘general’,ic:‘🐱’,nm:‘貓咪問答’,ds:‘問任何關於貓咪的問題’},
+{id:‘analyze’,ic:‘🔍’,nm:‘行為分析’,ds:‘AI 搜尋獸醫文獻，評估壓力與風險’},
+{id:‘report’,ic:‘📋’,nm:‘報告解讀’,ds:‘解讀過往的分析報告’},
+{id:‘cat’,ic:‘🐈’,nm:‘貓咪管理’,ds:‘新增 / 查看貓咪資料’}
+]
 },
 en:{
-appName:'PawSense AI',
-newChat:'New Chat',
-history:'History',
-clearData:'Clear Data',
-hint:'PawSense AI · For reference only',
-placeholder:'Ask anything…',
-modeLabel:{general:'🐱 Chat',analyze:'🔍 Analyze',report:'📋 Report',cat:'🐈 Cats'},
-langSheetTitle:'Language',
-welcome:'What would you like to know about your cat?',
+appName:‘PawSense AI’,
+newChat:‘New Chat’,
+history:‘History’,
+clearData:‘Clear Data’,
+hint:‘PawSense AI · For reference only’,
+placeholder:‘Ask anything…’,
+modeLabel:{general:‘🐱 Chat’,analyze:‘🔍 Analyze’,report:‘📋 Report’,cat:‘🐈 Cats’},
+langSheetTitle:‘Language’,
+welcome:‘What would you like to know about your cat?’,
+tutBtn:‘Tutorial’,tutCancel:‘Cancel’,tutNext:‘Next →’,tutDone:‘Done! 🎉’,
 suggests:[
-{ic:'🔍',t:'Behavior Analysis',d:'Describe behavior, get insight',q:"I want to analyze my cat's behavior"},
-{ic:'🐈',t:'Add a Cat',d:'Create a cat profile',q:'Help me add a cat'},
-{ic:'💊',t:'Health Question',d:'Get health advice',q:'My cat has been eating less lately'},
-{ic:'📊',t:'View Records',d:'Browse past analyses',q:'Show me recent analysis results'}
+{ic:‘🔍’,t:‘Behavior Analysis’,d:‘Describe behavior, get insight’,q:‘I want to analyze my cat's behavior’},
+{ic:‘🐈’,t:‘Add a Cat’,d:‘Create a cat profile’,q:‘Help me add a cat’},
+{ic:‘💊’,t:‘Health Question’,d:‘Get health advice’,q:‘My cat has been eating less lately’},
+{ic:‘📊’,t:‘View Records’,d:‘Browse past analyses’,q:‘Show me recent analysis results’}
 ],
 modes:[
-{id:'general',ic:'🐱',nm:'Cat Chat',ds:'Ask anything about cats'},
-{id:'analyze',ic:'🔍',nm:'Behavior Analysis',ds:'AI searches vet literature to assess stress & risk'},
-{id:'report',ic:'📋',nm:'Report Review',ds:'Interpret past analysis reports'},
-{id:'cat',ic:'🐈',nm:'Cat Manager',ds:'Add / view cat profiles'}
-],
-tutBtn:'Tutorial',tutCancel:'Cancel',tutNext:'Next →',tutDone:'Done! 🎉'
+{id:‘general’,ic:‘🐱’,nm:‘Cat Chat’,ds:‘Ask anything about cats’},
+{id:‘analyze’,ic:‘🔍’,nm:‘Behavior Analysis’,ds:‘AI searches vet literature to assess stress & risk’},
+{id:‘report’,ic:‘📋’,nm:‘Report Review’,ds:‘Interpret past analysis reports’},
+{id:‘cat’,ic:‘🐈’,nm:‘Cat Manager’,ds:‘Add / view cat profiles’}
+]
 }
 };
 
 function openLangSheet(){
-document.getElementById('lang-sheet').classList.add('open');
-document.getElementById('lang-sh-ov').classList.add('show');
+document.getElementById(‘lang-sheet’).classList.add(‘open’);
+document.getElementById(‘lang-sh-ov’).classList.add(‘show’);
 }
 function closeLangSheet(){
-document.getElementById('lang-sheet').classList.remove('open');
-document.getElementById('lang-sh-ov').classList.remove('show');
+document.getElementById(‘lang-sheet’).classList.remove(‘open’);
+document.getElementById(‘lang-sh-ov’).classList.remove(‘show’);
 }
 function setLang(lang){
 curLang=lang;
-document.body.classList.toggle('lang-en', lang==='en');
-document.getElementById('lang-flag').textContent=lang==='zh'?'中':'EN';
-document.getElementById('lc-zh').style.opacity=lang==='zh'?'1':'0';
-document.getElementById('lc-en').style.opacity=lang==='en'?'1':'0';
+document.body.classList.toggle(‘lang-en’, lang===‘en’);
+document.getElementById(‘lang-flag’).textContent=lang===‘zh’?‘中’:‘EN’;
+document.getElementById(‘lc-zh’).style.opacity=lang===‘zh’?‘1’:‘0’;
+document.getElementById(‘lc-en’).style.opacity=lang===‘en’?‘1’:‘0’;
 var t=T[lang];
 // Update static UI text
-document.getElementById('lang-sh-title').textContent=t.langSheetTitle;
-document.getElementById('inp-tx').placeholder=t.placeholder;
-document.querySelector('.inp-hint').textContent=t.hint;
-document.querySelector('.sb-new').childNodes[1].textContent=' '+t.newChat;
-document.querySelector('.sb-sec').textContent=t.history;
-document.querySelector('.sb-logout').textContent=t.clearData;
+document.getElementById(‘lang-sh-title’).textContent=t.langSheetTitle;
+document.getElementById(‘inp-tx’).placeholder=t.placeholder;
+document.querySelector(’.inp-hint’).textContent=t.hint;
+document.querySelector(’.sb-new’).childNodes[1].textContent=’ ‘+t.newChat;
+document.querySelector(’.sb-sec’).textContent=t.history;
+document.querySelector(’.sb-logout’).textContent=t.clearData;
 // Update mode sheet items
 t.modes.forEach(function(m){
-var el=document.getElementById('sm-'+m.id);
+var el=document.getElementById(‘sm-’+m.id);
 if(!el)return;
-el.querySelector('.sh-nm').textContent=m.nm;
-el.querySelector('.sh-ds').textContent=m.ds;
+el.querySelector(’.sh-nm’).textContent=m.nm;
+el.querySelector(’.sh-ds’).textContent=m.ds;
 });
 // Update mode chip label
 modeLabel=t.modeLabel;
-document.getElementById('mode-chip').textContent=modeLabel[chatMode]||modeLabel.general;
-// Update tutorial UI text
-var tutSbText=document.getElementById('tut-sb-text');if(tutSbText) tutSbText.textContent=t.tutBtn;
-var tutCancelBtn=document.getElementById('tut-cancel-btn');if(tutCancelBtn) tutCancelBtn.textContent=t.tutCancel;
-var tutNextBtn=document.getElementById('tut-next');
-if(tutNextBtn){
-  if(tutStep>=0 && tutStep===TUT_STEPS.length-1) tutNextBtn.textContent=t.tutDone;
-  else tutNextBtn.textContent=t.tutNext;
-}
+document.getElementById(‘mode-chip’).textContent=modeLabel[chatMode]||modeLabel.general;
 // Redraw welcome if showing
-var msgs=document.getElementById('msgs');
-if(msgs.querySelector('.welcome')){msgs.innerHTML='';msgs.appendChild(buildWelcome());}
+var msgs=document.getElementById(‘msgs’);
+if(msgs.querySelector(’.welcome’)){msgs.innerHTML=’’;msgs.appendChild(buildWelcome());}
 closeLangSheet();
 }
 
@@ -995,55 +1024,55 @@ closeLangSheet();
 // ════ STATIC AI ENGINE ════
 var KB={
 // 行為類
-morning_cry:{keys:['早上','叫','一直叫','哭','吵','清晨','凌晨'],
-ans:'🐱 **早上一直叫的常見原因**\n\n貓咪在清晨或早上叫個不停，通常有以下幾種原因：\n\n**1. 肚子餓了**\n這是最常見的原因！貓咪的生理時鐘很準，如果你通常早上餵食，牠會提前「提醒」你。\n\n**2. 想要陪伴**\n貓咪可能睡了一夜，醒來發現你還在睡，想引起你的注意。\n\n**3. 發情期**\n未絕育的貓咪，尤其是母貓，發情時會在清晨發出持續的叫聲。\n\n**4. 老年認知障礙**\n老年貓（10歲以上）有時會因為認知功能下降，對時間感到混亂而叫個不停。\n\n**💡 改善建議**\n- 嘗試定時自動餵食器，讓牠習慣固定時間進食\n- 睡前多陪玩，消耗精力\n- 如果未絕育，考慮結紮\n\n💬 想讓我分析得更準確，可以告訴我：貓咪幾歲？有沒有結紮？'},
-hide:{keys:['躲','躲起來','躲藏','不出來','藏'],
-ans:'🐱 **貓咪躲藏的原因分析**\n\n**【行為解析】**\n貓咪躲藏是一種本能的自我保護行為，常見於壓力、恐懼或身體不適時。\n\n**【情緒評估】**\n目前情緒：焦慮或不安全感較高\n\n**【壓力指數】**：60/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 環境有變化（搬家、新成員、新寵物）\n- 聽到巨大聲音（鞭炮、雷聲）\n- 身體不舒服\n- 剛帶回家的新貓\n\n**【改善建議】**\n- 給牠安靜的空間，不要強迫牠出來\n- 確保有足夠的躲藏處（紙箱、貓窩）\n- 觀察是否有其他異常（不吃飯、異常排泄）\n\n**【何時就醫】**\n若躲藏超過 24 小時且不吃不喝，請立即就醫。'},
-scratch:{keys:['抓','抓人','咬','咬人','攻擊','兇'],
-ans:'🐱 **貓咪抓人/咬人的行為分析**\n\n**【行為解析】**\n貓咪抓咬行為通常是溝通方式，表示「我不想被碰」或「我在玩」。\n\n**【情緒評估】**\n可能感到受威脅、過度興奮或疼痛\n\n**【壓力指數】**：55/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **玩耍型**：小貓常見，手被當成玩具\n- **防禦型**：被過度撫摸或觸碰敏感部位\n- **疼痛型**：觸碰到受傷部位時反應\n- **恐懼型**：感到被威脅時的自我保護\n\n**【改善建議】**\n- 學習貓咪的「不要碰我」訊號（尾巴搖動、耳朵後壓）\n- 用玩具代替手來玩耍\n- 避免突然伸手\n\n**【何時就醫】**\n若抓咬行為突然改變，可能是疼痛引起，建議就醫檢查。'},
-not_eat:{keys:['不吃','不喝','食慾','沒胃口','拒食','少吃'],
-ans:'🐱 **貓咪不吃東西的分析**\n\n**【行為解析】**\n食慾不振是貓咪健康的重要警訊，需要特別注意。\n\n**【情緒評估】**\n可能感到不適、壓力或對食物產生抗拒\n\n**【壓力指數】**：70/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 換了新的貓糧品牌或口味\n- 壓力（環境改變）\n- 牙齦疾病或口腔疼痛\n- 消化問題、腸胃炎\n- 其他疾病（肝病、腎病等）\n\n**【改善建議】**\n- 確認上次正常進食的時間\n- 嘗試換回原本的食物\n- 提供新鮮的食物和乾淨的水\n- 檢查嘴巴有無異常\n\n**【何時就醫】**\n⚠️ 貓咪超過 **24-48 小時** 不吃東西，務必就醫！貓咪空腹太久容易引發脂肪肝。'},
-vomit:{keys:['吐','嘔吐','反胃','吐毛','嘔'],
-ans:'🐱 **貓咪嘔吐的分析**\n\n**【行為解析】**\n偶爾嘔吐在貓咪中相對常見，但頻繁嘔吐需要注意。\n\n**【情緒評估】**\n身體可能感到不適\n\n**【壓力指數】**：50/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **毛球**：長毛貓常見，吐出毛球屬正常\n- **吃太快**：進食速度過快導致反胃\n- **食物不耐**：對某種食材過敏\n- **異物**：吞入玩具零件、植物等\n- **疾病**：腸胃炎、胰臟炎等\n\n**【改善建議】**\n- 定期梳毛減少毛球\n- 使用慢食碗\n- 少量多餐\n- 觀察嘔吐物（是否含血）\n\n**【何時就醫】**\n嘔吐超過 3 次/天、含血絲、伴隨精神不振，請立即就醫。'},
-diarrhea:{keys:['拉肚子','軟便','腹瀉','血便','血尿','尿血'],
-ans:'🐱 **排泄異常的分析**\n\n**【行為解析】**\n排泄異常通常反映消化系統或泌尿系統的問題。\n\n**【情緒評估】**\n身體不適，可能感到疼痛或不安\n\n**【壓力指數】**：75/100\n\n**【風險等級】**：中至高\n\n**【改善建議】**\n- 確保飲水充足\n- 暫時改為清淡飲食（水煮雞胸肉）\n- 記錄排泄頻率和狀態\n\n**【何時就醫】**\n⚠️ 若出現**血便或血尿**，請**立即**就醫，這是緊急狀況！'},
-night_run:{keys:['半夜','跑','狂奔','到處跑','夜間','夜跑','抖動'],
-ans:'🐱 **半夜狂奔（Zoomies）的分析**\n\n**【行為解析】**\n這個行為俗稱「貓咪瘋跑」（Zoomies），是完全正常的行為！\n\n**【情緒評估】**\n精力充沛、情緒亢奮，屬於正向狀態\n\n**【壓力指數】**：15/100\n\n**【風險等級】**：低（正常行為）\n\n**原因**\n- 貓咪天生是夜行性動物，黃昏和清晨是牠們的「活躍時段」\n- 白天睡太多，精力需要釋放\n- 排便後的「慶祝儀式」（便後狂奔很常見！）\n\n**【改善建議】**\n- 睡前與牠玩 15-20 分鐘消耗精力\n- 提供爬架、玩具讓牠自己玩\n- 餵食時間改到睡前，吃飽容易想睡\n\n**【何時就醫】**\n若同時伴隨異常叫聲或身體抖動，建議就醫排除神經問題。'},
-box:{keys:['紙箱','箱子','袋子','喜歡待','鑽'],
-ans:'🐱 **為什麼貓咪喜歡紙箱？**\n\n這是貓咪最可愛的特質之一！\n\n**原因分析**\n- **安全感**：封閉空間讓貓咪感到被保護，符合牠們躲藏獵物的本能\n- **體溫**：紙箱能保暖，貓咪喜歡溫暖的地方\n- **好奇心**：新事物對貓咪充滿吸引力\n- **領域標記**：待在裡面是在「佔領地盤」\n\n**💡 小知識**\n研究發現，有紙箱可以躲的貓咪，壓力荷爾蒙（皮質醇）明顯較低！所以給貓咪留幾個紙箱是很好的環境豐富化方式。\n\n不需要擔心，這是健康又快樂的行為 😊'},
-knead:{keys:['踩奶','踩','揉','按摩','捏'],
-ans:'🐱 **踩奶行為分析**\n\n**【行為解析】**\n踩奶（Making Biscuits）是貓咪最溫馨的行為之一！\n\n**原因**\n- **幼年記憶**：小貓踩媽媽肚子刺激奶水，長大後保留這個動作\n- **表達滿足**：感到非常安心和快樂時才會踩\n- **標記氣味**：肉墊有氣腺，踩你就是在說「你是我的」\n\n**【情緒評估】**\n極度放鬆、幸福、有安全感 ❤️\n\n**【壓力指數】**：5/100（非常低）\n\n**【風險等級】**：無（正向行為）\n\n**💡 小知識**\n貓咪踩奶時通常會發出呼嚕聲，這是牠對你表達最高級別的信任和愛意！'},
-purr:{keys:['呼嚕','呼嚕聲','打呼','咕嚕'],
-ans:'🐱 **呼嚕聲的含義**\n\n**呼嚕聲不只代表快樂！**\n\n**快樂/放鬆時**\n- 被撫摸時\n- 進食時\n- 躺在你身邊時\n\n**需要安慰時**\n- 生病或受傷的貓咪也會發出呼嚕聲\n- 這是一種自我安慰機制\n- 研究顯示呼嚕聲的頻率（25-50Hz）有助於骨骼修復！\n\n**壓力時**\n- 去獸醫時的呼嚕聲可能代表緊張\n\n**💡 判斷方式**\n結合肢體語言：耳朵向前 + 尾巴豎直 + 呼嚕 = 快樂；耳朵後壓 + 身體縮小 + 呼嚕 = 不安。'},
-tail:{keys:['尾巴','搖尾巴','尾'],
-ans:'🐱 **尾巴語言解讀**\n\n**尾巴豎直** → 快樂、自信、打招呼\n**尾巴豎直+尾端微彎** → 非常開心\n**尾巴膨脹** → 受到驚嚇或極度憤怒\n**尾巴低垂** → 不安、生病或沮喪\n**尾巴快速搖動** → 注意！這是警告，不是開心（狗狗才是）\n**尾巴慢慢搖動** → 專注觀察中\n**尾巴夾在兩腿間** → 極度恐懼或服從\n\n💡 貓咪搖尾巴 ≠ 開心，這是和狗狗最大的不同點！'},
-eye:{keys:['眼神','眼睛','瞇眼','慢眨眼','閉眼'],
-ans:'🐱 **眼睛語言解讀**\n\n**慢慢眨眼** → 這是貓咪的「愛你」！回應牠同樣的慢眨眼\n**瞳孔放大（圓形）** → 興奮、恐懼、或光線昏暗\n**瞳孔縮小（細縫）** → 放鬆、或感到威脅\n**直視不眨眼** → 挑戰或威脅\n**半閉眼** → 非常放鬆、信任你\n\n**💡 互動技巧**\n當貓咪對你慢慢眨眼時，你也慢慢眨眼回去，牠會感受到你的愛意，通常會靠近你！'},
-fee:{keys:['費用','多少錢','獸醫費','看診','花費'],
-ans:'🐱 **寵物醫療費用參考**\n\n**基本費用**\n- 一般看診：$300-600\n- 疫苗（每年）：$800-1500\n- 結紮手術：$3000-8000\n- 晶片植入：$500-1000\n\n**常見檢查**\n- 血液檢查：$800-2000\n- X光：$600-1500\n- 超音波：$1000-3000\n\n💡 **建議**\n考慮辦理寵物保險，每月約 $500-1500，可以大幅降低意外醫療費用。'},
-food:{keys:['吃什麼','飼料','罐頭','生食','飲食','不能吃','禁忌'],
-ans:'🐱 **貓咪飲食指南**\n\n**✅ 可以吃**\n- 高品質貓糧（乾糧/濕食）\n- 水煮雞胸肉（無鹽無調味）\n- 水煮鮭魚（去骨）\n- 少量起司\n\n**❌ 絕對不能吃**\n- 洋蔥、大蒜（會破壞紅血球）\n- 巧克力（含可可鹼，中毒）\n- 葡萄、葡萄乾\n- 生雞蛋白（含抗生物素蛋白）\n- 牛奶（多數貓咪乳糖不耐）\n- 咖啡、茶\n- 人類零食（含鹽過高）\n\n💡 **建議**\n濕食（罐頭）能補充水分，對泌尿系統很好。建議乾濕食混合搭配。'},
-sleep:{keys:['睡覺','睡眠','睡太多','幾個小時','嗜睡'],
-ans:'🐱 **貓咪睡眠分析**\n\n**正常睡眠時間**\n- 成貓：每天 **12-16 小時**\n- 幼貓/老貓：可達 **18-20 小時**\n\n這是完全正常的！貓咪是掠食者，需要保存大量精力應對狩獵。\n\n**何時需要擔心？**\n- 睡眠時間突然**增加很多**\n- 睡覺時**呼吸異常**（喘息、鼾聲很大）\n- 叫牠沒反應或**反應遲鈍**\n- 同時伴隨不吃不喝\n\n💡 **小知識**\n貓咪有「淺眠」和「深眠」兩種，70% 是淺眠，牠的耳朵即使在睡覺也會轉動偵測聲音！'},
-litter:{keys:['砂盆','貓砂','廁所','不用砂盆','尿在外面','排泄'],
-ans:'🐱 **砂盆問題分析**\n\n**貓咪不用砂盆可能的原因**\n\n1. **砂盆不夠乾淨** → 每天清理，每週全換\n2. **位置不對** → 避免放在嘈雜或角落位置\n3. **砂盆太小** → 應該是貓咪身長的 1.5 倍\n4. **貓砂類型不喜歡** → 嘗試換不同材質\n5. **泌尿道問題** → 若頻繁跑砂盆卻少量，可能是結石或感染\n\n**多貓家庭**\n砂盆數量 = 貓的數量 + 1\n\n**【何時就醫】**\n⚠️ 若發現**血尿、尿量極少或完全無尿**，這是緊急狀況，立即就醫！'},
-weight:{keys:['體重','太胖','太瘦','肥胖','減重'],
-ans:'🐱 **貓咪體重管理**\n\n**理想體重**\n- 一般成貓：3.5-5 公斤\n- 大型品種（緬因貓等）：可達 7-9 公斤\n\n**判斷方式（觸感法）**\n- ✅ 正常：摸得到肋骨但看不到\n- ⚠️ 過重：摸不太到肋骨\n- ⚠️ 過輕：肋骨清晰可見\n\n**減重建議**\n- 計算每日熱量需求（依體重和活動量）\n- 少量多餐，不要放任自助\n- 增加玩耍時間\n- 用益智餵食玩具\n\n💡 貓咪減重不能太快！每週減少不超過 1-2% 體重，否則容易引發脂肪肝。'},
-vaccine:{keys:['疫苗','打針','預防針','驅蟲','寄生蟲','跳蚤'],
-ans:'🐱 **疫苗與預防醫療指南**\n\n**核心疫苗（每年/每三年）**\n- 三合一疫苗（貓瘟、貓鼻氣管炎、貓卡里西病毒）\n- 狂犬病疫苗（法律規定）\n\n**首次接種時程**\n- 8 週：第一劑三合一\n- 12 週：第二劑三合一\n- 16 週：第三劑 + 狂犬病\n\n**體內驅蟲**：每 3 個月一次\n**體外驅蟲**（跳蚤/蜱）：每月一次\n\n💡 **室內貓也需要疫苗**，因為病毒可能從鞋底帶入家中。'},
+morning_cry:{keys:[‘早上’,‘叫’,‘一直叫’,‘哭’,‘吵’,‘清晨’,‘凌晨’],
+ans:‘🐱 **早上一直叫的常見原因**\n\n貓咪在清晨或早上叫個不停，通常有以下幾種原因：\n\n**1. 肚子餓了**\n這是最常見的原因！貓咪的生理時鐘很準，如果你通常早上餵食，牠會提前「提醒」你。\n\n**2. 想要陪伴**\n貓咪可能睡了一夜，醒來發現你還在睡，想引起你的注意。\n\n**3. 發情期**\n未絕育的貓咪，尤其是母貓，發情時會在清晨發出持續的叫聲。\n\n**4. 老年認知障礙**\n老年貓（10歲以上）有時會因為認知功能下降，對時間感到混亂而叫個不停。\n\n**💡 改善建議**\n- 嘗試定時自動餵食器，讓牠習慣固定時間進食\n- 睡前多陪玩，消耗精力\n- 如果未絕育，考慮結紮\n\n💬 想讓我分析得更準確，可以告訴我：貓咪幾歲？有沒有結紮？’},
+hide:{keys:[‘躲’,‘躲起來’,‘躲藏’,‘不出來’,‘藏’],
+ans:‘🐱 **貓咪躲藏的原因分析**\n\n**【行為解析】**\n貓咪躲藏是一種本能的自我保護行為，常見於壓力、恐懼或身體不適時。\n\n**【情緒評估】**\n目前情緒：焦慮或不安全感較高\n\n**【壓力指數】**：60/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 環境有變化（搬家、新成員、新寵物）\n- 聽到巨大聲音（鞭炮、雷聲）\n- 身體不舒服\n- 剛帶回家的新貓\n\n**【改善建議】**\n- 給牠安靜的空間，不要強迫牠出來\n- 確保有足夠的躲藏處（紙箱、貓窩）\n- 觀察是否有其他異常（不吃飯、異常排泄）\n\n**【何時就醫】**\n若躲藏超過 24 小時且不吃不喝，請立即就醫。’},
+scratch:{keys:[‘抓’,‘抓人’,‘咬’,‘咬人’,‘攻擊’,‘兇’],
+ans:’🐱 **貓咪抓人/咬人的行為分析**\n\n**【行為解析】**\n貓咪抓咬行為通常是溝通方式，表示「我不想被碰」或「我在玩」。\n\n**【情緒評估】**\n可能感到受威脅、過度興奮或疼痛\n\n**【壓力指數】**：55/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **玩耍型**：小貓常見，手被當成玩具\n- **防禦型**：被過度撫摸或觸碰敏感部位\n- **疼痛型**：觸碰到受傷部位時反應\n- **恐懼型**：感到被威脅時的自我保護\n\n**【改善建議】**\n- 學習貓咪的「不要碰我」訊號（尾巴搖動、耳朵後壓）\n- 用玩具代替手來玩耍\n- 避免突然伸手\n\n**【何時就醫】**\n若抓咬行為突然改變，可能是疼痛引起，建議就醫檢查。’},
+not_eat:{keys:[‘不吃’,‘不喝’,‘食慾’,‘沒胃口’,‘拒食’,‘少吃’],
+ans:’🐱 **貓咪不吃東西的分析**\n\n**【行為解析】**\n食慾不振是貓咪健康的重要警訊，需要特別注意。\n\n**【情緒評估】**\n可能感到不適、壓力或對食物產生抗拒\n\n**【壓力指數】**：70/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 換了新的貓糧品牌或口味\n- 壓力（環境改變）\n- 牙齦疾病或口腔疼痛\n- 消化問題、腸胃炎\n- 其他疾病（肝病、腎病等）\n\n**【改善建議】**\n- 確認上次正常進食的時間\n- 嘗試換回原本的食物\n- 提供新鮮的食物和乾淨的水\n- 檢查嘴巴有無異常\n\n**【何時就醫】**\n⚠️ 貓咪超過 **24-48 小時** 不吃東西，務必就醫！貓咪空腹太久容易引發脂肪肝。’},
+vomit:{keys:[‘吐’,‘嘔吐’,‘反胃’,‘吐毛’,‘嘔’],
+ans:’🐱 **貓咪嘔吐的分析**\n\n**【行為解析】**\n偶爾嘔吐在貓咪中相對常見，但頻繁嘔吐需要注意。\n\n**【情緒評估】**\n身體可能感到不適\n\n**【壓力指數】**：50/100\n\n**【風險等級】**：低至中\n\n**原因分類**\n- **毛球**：長毛貓常見，吐出毛球屬正常\n- **吃太快**：進食速度過快導致反胃\n- **食物不耐**：對某種食材過敏\n- **異物**：吞入玩具零件、植物等\n- **疾病**：腸胃炎、胰臟炎等\n\n**【改善建議】**\n- 定期梳毛減少毛球\n- 使用慢食碗\n- 少量多餐\n- 觀察嘔吐物（是否含血）\n\n**【何時就醫】**\n嘔吐超過 3 次/天、含血絲、伴隨精神不振，請立即就醫。’},
+diarrhea:{keys:[‘拉肚子’,‘軟便’,‘腹瀉’,‘血便’,‘血尿’,‘尿血’],
+ans:’🐱 **排泄異常的分析**\n\n**【行為解析】**\n排泄異常通常反映消化系統或泌尿系統的問題。\n\n**【情緒評估】**\n身體不適，可能感到疼痛或不安\n\n**【壓力指數】**：75/100\n\n**【風險等級】**：中至高\n\n**【改善建議】**\n- 確保飲水充足\n- 暫時改為清淡飲食（水煮雞胸肉）\n- 記錄排泄頻率和狀態\n\n**【何時就醫】**\n⚠️ 若出現**血便或血尿**，請**立即**就醫，這是緊急狀況！’},
+night_run:{keys:[‘半夜’,‘跑’,‘狂奔’,‘到處跑’,‘夜間’,‘夜跑’,‘抖動’],
+ans:‘🐱 **半夜狂奔（Zoomies）的分析**\n\n**【行為解析】**\n這個行為俗稱「貓咪瘋跑」（Zoomies），是完全正常的行為！\n\n**【情緒評估】**\n精力充沛、情緒亢奮，屬於正向狀態\n\n**【壓力指數】**：15/100\n\n**【風險等級】**：低（正常行為）\n\n**原因**\n- 貓咪天生是夜行性動物，黃昏和清晨是牠們的「活躍時段」\n- 白天睡太多，精力需要釋放\n- 排便後的「慶祝儀式」（便後狂奔很常見！）\n\n**【改善建議】**\n- 睡前與牠玩 15-20 分鐘消耗精力\n- 提供爬架、玩具讓牠自己玩\n- 餵食時間改到睡前，吃飽容易想睡\n\n**【何時就醫】**\n若同時伴隨異常叫聲或身體抖動，建議就醫排除神經問題。’},
+box:{keys:[‘紙箱’,‘箱子’,‘袋子’,‘喜歡待’,‘鑽’],
+ans:’🐱 **為什麼貓咪喜歡紙箱？**\n\n這是貓咪最可愛的特質之一！\n\n**原因分析**\n- **安全感**：封閉空間讓貓咪感到被保護，符合牠們躲藏獵物的本能\n- **體溫**：紙箱能保暖，貓咪喜歡溫暖的地方\n- **好奇心**：新事物對貓咪充滿吸引力\n- **領域標記**：待在裡面是在「佔領地盤」\n\n**💡 小知識**\n研究發現，有紙箱可以躲的貓咪，壓力荷爾蒙（皮質醇）明顯較低！所以給貓咪留幾個紙箱是很好的環境豐富化方式。\n\n不需要擔心，這是健康又快樂的行為 😊’},
+knead:{keys:[‘踩奶’,‘踩’,‘揉’,‘按摩’,‘捏’],
+ans:‘🐱 **踩奶行為分析**\n\n**【行為解析】**\n踩奶（Making Biscuits）是貓咪最溫馨的行為之一！\n\n**原因**\n- **幼年記憶**：小貓踩媽媽肚子刺激奶水，長大後保留這個動作\n- **表達滿足**：感到非常安心和快樂時才會踩\n- **標記氣味**：肉墊有氣腺，踩你就是在說「你是我的」\n\n**【情緒評估】**\n極度放鬆、幸福、有安全感 ❤️\n\n**【壓力指數】**：5/100（非常低）\n\n**【風險等級】**：無（正向行為）\n\n**💡 小知識**\n貓咪踩奶時通常會發出呼嚕聲，這是牠對你表達最高級別的信任和愛意！’},
+purr:{keys:[‘呼嚕’,‘呼嚕聲’,‘打呼’,‘咕嚕’],
+ans:‘🐱 **呼嚕聲的含義**\n\n**呼嚕聲不只代表快樂！**\n\n**快樂/放鬆時**\n- 被撫摸時\n- 進食時\n- 躺在你身邊時\n\n**需要安慰時**\n- 生病或受傷的貓咪也會發出呼嚕聲\n- 這是一種自我安慰機制\n- 研究顯示呼嚕聲的頻率（25-50Hz）有助於骨骼修復！\n\n**壓力時**\n- 去獸醫時的呼嚕聲可能代表緊張\n\n**💡 判斷方式**\n結合肢體語言：耳朵向前 + 尾巴豎直 + 呼嚕 = 快樂；耳朵後壓 + 身體縮小 + 呼嚕 = 不安。’},
+tail:{keys:[‘尾巴’,‘搖尾巴’,‘尾’],
+ans:‘🐱 **尾巴語言解讀**\n\n**尾巴豎直** → 快樂、自信、打招呼\n**尾巴豎直+尾端微彎** → 非常開心\n**尾巴膨脹** → 受到驚嚇或極度憤怒\n**尾巴低垂** → 不安、生病或沮喪\n**尾巴快速搖動** → 注意！這是警告，不是開心（狗狗才是）\n**尾巴慢慢搖動** → 專注觀察中\n**尾巴夾在兩腿間** → 極度恐懼或服從\n\n💡 貓咪搖尾巴 ≠ 開心，這是和狗狗最大的不同點！’},
+eye:{keys:[‘眼神’,‘眼睛’,‘瞇眼’,‘慢眨眼’,‘閉眼’],
+ans:‘🐱 **眼睛語言解讀**\n\n**慢慢眨眼** → 這是貓咪的「愛你」！回應牠同樣的慢眨眼\n**瞳孔放大（圓形）** → 興奮、恐懼、或光線昏暗\n**瞳孔縮小（細縫）** → 放鬆、或感到威脅\n**直視不眨眼** → 挑戰或威脅\n**半閉眼** → 非常放鬆、信任你\n\n**💡 互動技巧**\n當貓咪對你慢慢眨眼時，你也慢慢眨眼回去，牠會感受到你的愛意，通常會靠近你！’},
+fee:{keys:[‘費用’,‘多少錢’,‘獸醫費’,‘看診’,‘花費’],
+ans:‘🐱 **寵物醫療費用參考**\n\n**基本費用**\n- 一般看診：$300-600\n- 疫苗（每年）：$800-1500\n- 結紮手術：$3000-8000\n- 晶片植入：$500-1000\n\n**常見檢查**\n- 血液檢查：$800-2000\n- X光：$600-1500\n- 超音波：$1000-3000\n\n💡 **建議**\n考慮辦理寵物保險，每月約 $500-1500，可以大幅降低意外醫療費用。’},
+food:{keys:[‘吃什麼’,‘飼料’,‘罐頭’,‘生食’,‘飲食’,‘不能吃’,‘禁忌’],
+ans:‘🐱 **貓咪飲食指南**\n\n**✅ 可以吃**\n- 高品質貓糧（乾糧/濕食）\n- 水煮雞胸肉（無鹽無調味）\n- 水煮鮭魚（去骨）\n- 少量起司\n\n**❌ 絕對不能吃**\n- 洋蔥、大蒜（會破壞紅血球）\n- 巧克力（含可可鹼，中毒）\n- 葡萄、葡萄乾\n- 生雞蛋白（含抗生物素蛋白）\n- 牛奶（多數貓咪乳糖不耐）\n- 咖啡、茶\n- 人類零食（含鹽過高）\n\n💡 **建議**\n濕食（罐頭）能補充水分，對泌尿系統很好。建議乾濕食混合搭配。’},
+sleep:{keys:[‘睡覺’,‘睡眠’,‘睡太多’,‘幾個小時’,‘嗜睡’],
+ans:‘🐱 **貓咪睡眠分析**\n\n**正常睡眠時間**\n- 成貓：每天 **12-16 小時**\n- 幼貓/老貓：可達 **18-20 小時**\n\n這是完全正常的！貓咪是掠食者，需要保存大量精力應對狩獵。\n\n**何時需要擔心？**\n- 睡眠時間突然**增加很多**\n- 睡覺時**呼吸異常**（喘息、鼾聲很大）\n- 叫牠沒反應或**反應遲鈍**\n- 同時伴隨不吃不喝\n\n💡 **小知識**\n貓咪有「淺眠」和「深眠」兩種，70% 是淺眠，牠的耳朵即使在睡覺也會轉動偵測聲音！’},
+litter:{keys:[‘砂盆’,‘貓砂’,‘廁所’,‘不用砂盆’,‘尿在外面’,‘排泄’],
+ans:‘🐱 **砂盆問題分析**\n\n**貓咪不用砂盆可能的原因**\n\n1. **砂盆不夠乾淨** → 每天清理，每週全換\n2. **位置不對** → 避免放在嘈雜或角落位置\n3. **砂盆太小** → 應該是貓咪身長的 1.5 倍\n4. **貓砂類型不喜歡** → 嘗試換不同材質\n5. **泌尿道問題** → 若頻繁跑砂盆卻少量，可能是結石或感染\n\n**多貓家庭**\n砂盆數量 = 貓的數量 + 1\n\n**【何時就醫】**\n⚠️ 若發現**血尿、尿量極少或完全無尿**，這是緊急狀況，立即就醫！’},
+weight:{keys:[‘體重’,‘太胖’,‘太瘦’,‘肥胖’,‘減重’],
+ans:‘🐱 **貓咪體重管理**\n\n**理想體重**\n- 一般成貓：3.5-5 公斤\n- 大型品種（緬因貓等）：可達 7-9 公斤\n\n**判斷方式（觸感法）**\n- ✅ 正常：摸得到肋骨但看不到\n- ⚠️ 過重：摸不太到肋骨\n- ⚠️ 過輕：肋骨清晰可見\n\n**減重建議**\n- 計算每日熱量需求（依體重和活動量）\n- 少量多餐，不要放任自助\n- 增加玩耍時間\n- 用益智餵食玩具\n\n💡 貓咪減重不能太快！每週減少不超過 1-2% 體重，否則容易引發脂肪肝。’},
+vaccine:{keys:[‘疫苗’,‘打針’,‘預防針’,‘驅蟲’,‘寄生蟲’,‘跳蚤’],
+ans:‘🐱 **疫苗與預防醫療指南**\n\n**核心疫苗（每年/每三年）**\n- 三合一疫苗（貓瘟、貓鼻氣管炎、貓卡里西病毒）\n- 狂犬病疫苗（法律規定）\n\n**首次接種時程**\n- 8 週：第一劑三合一\n- 12 週：第二劑三合一\n- 16 週：第三劑 + 狂犬病\n\n**體內驅蟲**：每 3 個月一次\n**體外驅蟲**（跳蚤/蜱）：每月一次\n\n💡 **室內貓也需要疫苗**，因為病毒可能從鞋底帶入家中。’},
 // 通用回答
 general:{keys:[],
-ans:''}
+ans:’’}
 };
 
 function staticAI(txt, sys, mode){
-var q=(txt||'').toLowerCase();
+var q=(txt||’’).toLowerCase();
 var matched=null;
 var maxScore=0;
 
 // Find best matching topic
 for(var topic in KB){
-if(topic==='general') continue;
+if(topic===‘general’) continue;
 var keys=KB[topic].keys;
 var score=0;
 for(var i=0;i<keys.length;i++){
@@ -1056,98 +1085,98 @@ if(score>maxScore){maxScore=score;matched=topic;}
 if(matched&&maxScore>0){
 var ans=KB[matched].ans;
 // Add follow-up question
-ans+='\n\n💬 還有其他想了解的嗎？例如：貓咪的年齡、品種，或是這個情況持續多久了？';
+ans+=’\n\n💬 還有其他想了解的嗎？例如：貓咪的年齡、品種，或是這個情況持續多久了？’;
 return ans;
 }
 
 // General cat/pet questions - pattern matching
 if(q.match(/幾歲|年齡|壽命|多久/)){
-return '🐱 **貓咪的壽命與年齡**\n\n室內貓平均壽命：**12-18 年**\n室外貓平均壽命：5-7 年（危險較多）\n\n**貓咪年齡換算人類年齡**\n- 1歲 = 人類約 15 歲\n- 2歲 = 人類約 24 歲\n- 每增加 1 歲 ≈ 人類 4 歲\n- 10歲 = 人類約 56 歲\n\n💡 提供良好的飲食、定期健康檢查和充足的愛，可以讓貓咪活得更長更健康！';
+return ‘🐱 **貓咪的壽命與年齡**\n\n室內貓平均壽命：**12-18 年**\n室外貓平均壽命：5-7 年（危險較多）\n\n**貓咪年齡換算人類年齡**\n- 1歲 = 人類約 15 歲\n- 2歲 = 人類約 24 歲\n- 每增加 1 歲 ≈ 人類 4 歲\n- 10歲 = 人類約 56 歲\n\n💡 提供良好的飲食、定期健康檢查和充足的愛，可以讓貓咪活得更長更健康！’;
 }
 if(q.match(/品種|哪種|推薦|選|養什麼/)){
-return '🐱 **熱門貓咪品種推薦**\n\n**適合新手**\n- 🐈 **美國短毛貓**：個性溫和、好照顧\n- 🐈 **英國短毛貓**：安靜獨立、不黏人\n- 🐈 **混種貓（米克斯）**：體質佳、個性多元\n\n**愛撒嬌**\n- 🐱 **布偶貓**：超溫馴，像布偶一樣任人抱\n- 🐱 **波斯貓**：安靜優雅\n- 🐱 **暹羅貓**：話很多，超黏主人\n\n**活潑好動**\n- 🐈 **阿比西尼亞貓**\n- 🐈 **孟加拉貓**\n\n💡 建議先考慮領養米克斯，既省費用又救了一條命！';
+return ‘🐱 **熱門貓咪品種推薦**\n\n**適合新手**\n- 🐈 **美國短毛貓**：個性溫和、好照顧\n- 🐈 **英國短毛貓**：安靜獨立、不黏人\n- 🐈 **混種貓（米克斯）**：體質佳、個性多元\n\n**愛撒嬌**\n- 🐱 **布偶貓**：超溫馴，像布偶一樣任人抱\n- 🐱 **波斯貓**：安靜優雅\n- 🐱 **暹羅貓**：話很多，超黏主人\n\n**活潑好動**\n- 🐈 **阿比西尼亞貓**\n- 🐈 **孟加拉貓**\n\n💡 建議先考慮領養米克斯，既省費用又救了一條命！’;
 }
 if(q.match(/新貓|第一次|剛養|剛帶回|帶回家/)){
-return '🐱 **新貓到家指南**\n\n**第一天最重要：給空間！**\n\n1. **準備「安全小房間」** — 先讓牠在一個小空間適應\n2. **不要強迫互動** — 讓牠自己決定何時出來\n3. **食水砂盆放齊** — 都放在房間內\n4. **保持安靜** — 第一週避免大聲音或陌生人\n\n**適應時間**\n- 膽大的貓：1-3 天\n- 一般貓：1-2 週\n- 膽小的貓：1-2 個月\n\n**注意事項**\n✅ 讓牠聞你的手背（不要伸手指）\n✅ 說話聲音輕柔\n❌ 不要盯著牠的眼睛\n❌ 不要追著牠跑\n\n💡 耐心是關鍵，信任需要時間建立！';
+return ‘🐱 **新貓到家指南**\n\n**第一天最重要：給空間！**\n\n1. **準備「安全小房間」** — 先讓牠在一個小空間適應\n2. **不要強迫互動** — 讓牠自己決定何時出來\n3. **食水砂盆放齊** — 都放在房間內\n4. **保持安靜** — 第一週避免大聲音或陌生人\n\n**適應時間**\n- 膽大的貓：1-3 天\n- 一般貓：1-2 週\n- 膽小的貓：1-2 個月\n\n**注意事項**\n✅ 讓牠聞你的手背（不要伸手指）\n✅ 說話聲音輕柔\n❌ 不要盯著牠的眼睛\n❌ 不要追著牠跑\n\n💡 耐心是關鍵，信任需要時間建立！’;
 }
 if(q.match(/多貓|兩隻|第二隻|新貓|介紹|認識/)){
-return '🐱 **多貓家庭相處指南**\n\n**引入新貓的步驟（重要！）**\n\n1. **氣味交換**（第1-3天）\n   - 用毛巾擦新貓，放在原住貓旁邊\n2. **聲音接觸**（第4-7天）\n   - 隔著門讓牠們聽到彼此\n3. **視覺接觸**（第2週）\n   - 用門縫或貓門讓牠們看到對方\n4. **正式見面**（第3週）\n   - 在中性空間短暫接觸\n\n**多貓資源配置**\n- 砂盆：每貓 + 1個\n- 碗：分開放，避免競爭\n- 高處空間：讓貓咪有自己的領域\n\n💡 急著讓牠們見面是最常犯的錯誤，慢慢來成功率高很多！';
+return ‘🐱 **多貓家庭相處指南**\n\n**引入新貓的步驟（重要！）**\n\n1. **氣味交換**（第1-3天）\n   - 用毛巾擦新貓，放在原住貓旁邊\n2. **聲音接觸**（第4-7天）\n   - 隔著門讓牠們聽到彼此\n3. **視覺接觸**（第2週）\n   - 用門縫或貓門讓牠們看到對方\n4. **正式見面**（第3週）\n   - 在中性空間短暫接觸\n\n**多貓資源配置**\n- 砂盆：每貓 + 1個\n- 碗：分開放，避免競爭\n- 高處空間：讓貓咪有自己的領域\n\n💡 急著讓牠們見面是最常犯的錯誤，慢慢來成功率高很多！’;
 }
 
 // Fallback - general helpful response
 var fallbacks=[
-'🐱 這是個好問題！\n\n關於這個主題，我建議：\n- **觀察貓咪的整體狀態**：食慾、精神、活動力是否正常\n- **記錄行為發生的頻率和時間**\n- **如果有任何異常，及早諮詢獸醫**\n\n你可以問我更具體的問題，例如貓咪的特定行為、飲食、健康症狀等，我會給你更詳細的分析！',
-'🐱 感謝你的問題！\n\n作為寵物主人，你的細心觀察很重要。以下是一些通用建議：\n\n**日常健康檢查**\n- 每天觀察食水攝取量\n- 注意排泄是否正常\n- 檢查眼睛、鼻子、耳朵有無分泌物\n\n**定期預防**\n- 每年健康檢查 + 疫苗\n- 每月體外驅蟲\n- 每季體內驅蟲\n\n想了解更多具體問題嗎？告訴我貓咪的狀況，我來幫你分析！',
-'🐾 我來幫你解答！\n\n請告訴我更多細節，例如：\n- 貓咪幾歲？\n- 這個情況什麼時候開始？\n- 有其他異常症狀嗎？\n\n這樣我可以給你更準確的分析和建議。'
+‘🐱 這是個好問題！\n\n關於這個主題，我建議：\n- **觀察貓咪的整體狀態**：食慾、精神、活動力是否正常\n- **記錄行為發生的頻率和時間**\n- **如果有任何異常，及早諮詢獸醫**\n\n你可以問我更具體的問題，例如貓咪的特定行為、飲食、健康症狀等，我會給你更詳細的分析！’,
+‘🐱 感謝你的問題！\n\n作為寵物主人，你的細心觀察很重要。以下是一些通用建議：\n\n**日常健康檢查**\n- 每天觀察食水攝取量\n- 注意排泄是否正常\n- 檢查眼睛、鼻子、耳朵有無分泌物\n\n**定期預防**\n- 每年健康檢查 + 疫苗\n- 每月體外驅蟲\n- 每季體內驅蟲\n\n想了解更多具體問題嗎？告訴我貓咪的狀況，我來幫你分析！’,
+‘🐾 我來幫你解答！\n\n請告訴我更多細節，例如：\n- 貓咪幾歲？\n- 這個情況什麼時候開始？\n- 有其他異常症狀嗎？\n\n這樣我可以給你更準確的分析和建議。’
 ];
 return fallbacks[Math.floor(Math.random()*fallbacks.length)];
 }
 
 // ════ VIRTUAL CAT ════
-var vcatMood='idle';
+var vcatMood=‘idle’;
 var vcatBlinkTimer=null;
 var vcatBubbleTimer=null;
 
 var MOODS={
-idle:    {label:'😊 好奇',  color:'#f5a623',mouth:'ω', bubble:['喵～有問題嗎？','我在這裡！','今天你的貓咪還好嗎？','有什麼想問我的？','摸摸我？']},
-happy:   {label:'🎉 開心',  color:'#f5a623',mouth:'▽', bubble:['太好了！','很高興幫到你！','喵喵喵♪','你的貓咪很幸運有你！','掌聲鼓勵！']},
-excited: {label:'🌟 興奮',  color:'#f5a623',mouth:'▽', bubble:['哇！太有趣了！','喵喵喵！！','我超了解這個！','太棒了！！']},
-thinking:{label:'🤔 思考中',color:'#9b8fef',mouth:'~', bubble:['讓我想想…','嗯…','分析中～','認真思考中…']},
-worried: {label:'😟 擔心',  color:'#f26d6d',mouth:'д', bubble:['這個要注意喔！','建議諮詢獸醫！','請密切觀察貓咪','如果嚴重請就醫！']},
-sleeping:{label:'😴 打盹',  color:'#8899bb',mouth:'_', bubble:['zZz…','呼～呼～','(在做貓夢…)']},
+idle:    {label:‘😊 好奇’,  color:’#f5a623’,mouth:‘ω’, bubble:[‘喵～有問題嗎？’,‘我在這裡！’,‘今天你的貓咪還好嗎？’,‘有什麼想問我的？’,‘摸摸我？’]},
+happy:   {label:‘🎉 開心’,  color:’#f5a623’,mouth:‘▽’, bubble:[‘太好了！’,‘很高興幫到你！’,‘喵喵喵♪’,‘你的貓咪很幸運有你！’,‘掌聲鼓勵！’]},
+excited: {label:‘🌟 興奮’,  color:’#f5a623’,mouth:‘▽’, bubble:[‘哇！太有趣了！’,‘喵喵喵！！’,‘我超了解這個！’,‘太棒了！！’]},
+thinking:{label:‘🤔 思考中’,color:’#9b8fef’,mouth:’~’, bubble:[‘讓我想想…’,‘嗯…’,‘分析中～’,‘認真思考中…’]},
+worried: {label:‘😟 擔心’,  color:’#f26d6d’,mouth:‘д’, bubble:[‘這個要注意喔！’,‘建議諮詢獸醫！’,‘請密切觀察貓咪’,‘如果嚴重請就醫！’]},
+sleeping:{label:‘😴 打盹’,  color:’#8899bb’,mouth:’_’, bubble:[‘zZz…’,‘呼～呼～’,’(在做貓夢…)’]},
 };
 
 function setVcatMood(mood){
 vcatMood=mood;
 var m=MOODS[mood]||MOODS.idle;
-var body=document.getElementById('vcat-body-el');
-if(body) body.className='vcat-body mood-'+mood;
-var badge=document.getElementById('vcat-mood-badge');
+var body=document.getElementById(‘vcat-body-el’);
+if(body) body.className=‘vcat-body mood-’+mood;
+var badge=document.getElementById(‘vcat-mood-badge’);
 if(badge) badge.textContent=m.label;
 }
 
 function vcatBlink(){}
 
 function vcatSay(msg, durationMs){
-var b=document.getElementById('vcat-bubble');
+var b=document.getElementById(‘vcat-bubble’);
 if(!b)return;
 if(vcatBubbleTimer)clearTimeout(vcatBubbleTimer);
 b.textContent=msg;
-b.classList.add('show');
-vcatBubbleTimer=setTimeout(function(){b.classList.remove('show');},durationMs||3500);
+b.classList.add(‘show’);
+vcatBubbleTimer=setTimeout(function(){b.classList.remove(‘show’);},durationMs||3500);
 }
 
 function vcatWave(){
-var heart=document.getElementById('vcat-heart-el');
+var heart=document.getElementById(‘vcat-heart-el’);
 if(!heart)return;
-heart.textContent=['❤️','✨','🌟','😸'][Math.floor(Math.random()*4)];
-heart.classList.add('show');
-setTimeout(function(){heart.classList.remove('show');},800);
+heart.textContent=[‘❤️’,‘✨’,‘🌟’,‘😸’][Math.floor(Math.random()*4)];
+heart.classList.add(‘show’);
+setTimeout(function(){heart.classList.remove(‘show’);},800);
 }
 
 function updateVirtualCat(replyText){
 if(!replyText)return;
 var txt=replyText;
-var mood='happy';
-if(txt.match(/高風險|緊急|立即就醫|馬上就醫/)) mood='worried';
-else if(txt.match(/就醫|獸醫|建議就醫|請就醫/)) mood='worried';
-else if(txt.match(/壓力指數.*[6-9][0-9]|壓力指數.*100/)) mood='worried';
-else if(txt.match(/正常|健康|沒問題|放心|這是正常/)) mood='excited';
-else if(txt.match(/踩奶|呼嚕|玩耍|親近|信任|快樂|開心/)) mood='excited';
+var mood=‘happy’;
+if(txt.match(/高風險|緊急|立即就醫|馬上就醫/)) mood=‘worried’;
+else if(txt.match(/就醫|獸醫|建議就醫|請就醫/)) mood=‘worried’;
+else if(txt.match(/壓力指數.*[6-9][0-9]|壓力指數.*100/)) mood=‘worried’;
+else if(txt.match(/正常|健康|沒問題|放心|這是正常/)) mood=‘excited’;
+else if(txt.match(/踩奶|呼嚕|玩耍|親近|信任|快樂|開心/)) mood=‘excited’;
 setVcatMood(mood);
 var phrases=MOODS[mood].bubble;
 vcatSay(phrases[Math.floor(Math.random()*phrases.length)],5000);
-if(mood==='happy'||mood==='excited') vcatWave();
+if(mood===‘happy’||mood===‘excited’) vcatWave();
 }
 
 function vcatClick(){
-setVcatMood('excited');
+setVcatMood(‘excited’);
 vcatWave();
-var greets=['喵！你點我了！','摸摸頭～♪','我是 PawSense 小助理！','喵喵喵！！','有什麼想問我的嗎？'];
+var greets=[‘喵！你點我了！’,‘摸摸頭～♪’,‘我是 PawSense 小助理！’,‘喵喵喵！！’,‘有什麼想問我的嗎？’];
 vcatSay(greets[Math.floor(Math.random()*greets.length)],4000);
 }
 function vcatUploadPhoto(){
-document.getElementById('vcat-upload-input').click();
+document.getElementById(‘vcat-upload-input’).click();
 }
 function vcatHandleUpload(input){
 var file=input.files&&input.files[0];
@@ -1156,24 +1185,24 @@ var reader=new FileReader();
 reader.onload=function(ev){
 var tmpImg=new Image();
 tmpImg.onload=function(){
-var canvas=document.createElement('canvas');
+var canvas=document.createElement(‘canvas’);
 canvas.width=300; canvas.height=300;
-var ctx=canvas.getContext('2d');
+var ctx=canvas.getContext(‘2d’);
 var sw=tmpImg.width, sh=tmpImg.height;
 var cropH=sh*0.65;
 var cropW=Math.min(sw,cropH);
 var cropX=(sw-cropW)/2;
 ctx.drawImage(tmpImg,cropX,0,cropW,cropH,0,0,300,300);
-var src=canvas.toDataURL('image/jpeg',0.85);
-try{localStorage.setItem('vcat_custom_photo',src);}catch(e){}
-var photo=document.getElementById('vcat-photo');
+var src=canvas.toDataURL(‘image/jpeg’,0.85);
+try{localStorage.setItem(‘vcat_custom_photo’,src);}catch(e){}
+var photo=document.getElementById(‘vcat-photo’);
 if(photo)photo.src=src;
-var nameEl=document.getElementById('vcat-name');
-if(nameEl)nameEl.textContent='我的貓咪';
-setVcatMood('excited');
+var nameEl=document.getElementById(‘vcat-name’);
+if(nameEl)nameEl.textContent=‘我的貓咪’;
+setVcatMood(‘excited’);
 vcatWave();
-vcatSay('好可愛！換成你的貓咪了！🐱',5000);
-setTimeout(function(){input.value='';},200);
+vcatSay(‘好可愛！換成你的貓咪了！🐱’,5000);
+setTimeout(function(){input.value=’’;},200);
 };
 tmpImg.src=ev.target.result;
 };
@@ -1181,19 +1210,19 @@ reader.readAsDataURL(file);
 }
 
 function initVCat(){
-var wrap=document.getElementById('vcat-wrap');
+var wrap=document.getElementById(‘vcat-wrap’);
 if(!wrap)return;
 // add click to vcat div
-var vcatDiv=document.getElementById('vcat');
-if(vcatDiv) vcatDiv.addEventListener('click',vcatClick);
-wrap.style.display='none';
+var vcatDiv=document.getElementById(‘vcat’);
+if(vcatDiv) vcatDiv.addEventListener(‘click’,vcatClick);
+wrap.style.display=‘none’;
 // random blink every 3-5s
 setInterval(function(){
-if(vcatMood!=='sleeping') vcatBlink();
+if(vcatMood!==‘sleeping’) vcatBlink();
 },3500+Math.random()*1500);
 // idle chatter
 setInterval(function(){
-if(wrap.style.display!=='none'&&(vcatMood==='idle'||vcatMood==='happy')){
+if(wrap.style.display!==‘none’&&(vcatMood===‘idle’||vcatMood===‘happy’)){
 var p=MOODS[vcatMood].bubble;
 vcatSay(p[Math.floor(Math.random()*p.length)],3500);
 if(Math.random()<0.4) vcatWave();
@@ -1202,127 +1231,143 @@ if(Math.random()<0.4) vcatWave();
 
 // Load saved photo on boot
 try{
-var saved=localStorage.getItem('vcat_custom_photo');
+var saved=localStorage.getItem(‘vcat_custom_photo’);
 if(saved){
-var photo=document.getElementById('vcat-photo');
+var photo=document.getElementById(‘vcat-photo’);
 if(photo) photo.src=saved;
-var nameEl=document.getElementById('vcat-name');
-if(nameEl) nameEl.textContent='我的貓咪';
+var nameEl=document.getElementById(‘vcat-name’);
+if(nameEl) nameEl.textContent=‘我的貓咪’;
 }
 }catch(err){}
 }
 
 // ══ TUTORIAL ══
-var TUT_KEY='pawsense_onboarding_done';
+var TUT_KEY=‘pawsense_onboarding_done’;
 var TUT_STEPS=[
-{sel:'.menu-btn',zh:'點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話、清除資料喔！',en:'Tap here to open the sidebar 📂\nView chat history, start new chats, or clear data!',mood:'happy'},
-{sel:'.mode-chip',zh:'這是模式切換 🎯\n有 4 種模式：問答、分析、解讀、管理，試試看！',en:'This is the mode switcher 🎯\n4 modes: Chat, Analyze, Report, Cats — try them!',mood:'excited'},
-{sel:'#lang-btn',zh:'按這裡切換語言 🌐\n支援中文和英文喔～',en:'Tap here to switch language 🌐\nSupports Chinese and English!',mood:'happy'},
-{sel:'.inp-wrap',zh:'在這裡輸入訊息 💬\n問我任何關於貓咪的問題吧！',en:'Type your message here 💬\nAsk me anything about cats!',mood:'happy'},
-{sel:'.plus-btn',zh:'按這裡上傳照片 📸\n拍貓咪的照片讓我看看～',en:'Tap here to upload photos 📸\nShow me your cat pics!',mood:'excited'},
-{sel:'.sg-grid',zh:'這些是快速操作卡片 ⚡\n點一下就能快速開始對話！',en:'These are quick action cards ⚡\nTap one to start chatting right away!',mood:'happy'},
-{sel:'#vcat-wrap',zh:'這是我！你的虛擬貓咪 🐱\n點我可以互動，還能換照片喔！',en:'That\'s me! Your virtual cat 🐱\nTap me to interact, or change my photo!',mood:'excited'}
+{sel:’.menu-btn’,zh:‘點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話、清除資料喔！’,en:‘Tap here to open the sidebar 📂\nView chat history, start new chats, or clear data!’,mood:‘happy’},
+{sel:’.mode-chip’,zh:‘這是模式切換 🎯\n有 4 種模式：問答、分析、解讀、管理，試試看！’,en:‘This is the mode switcher 🎯\n4 modes: Chat, Analyze, Report, Cats — try them!’,mood:‘excited’},
+{sel:’#lang-btn’,zh:‘按這裡切換語言 🌐\n支援中文和英文喔～’,en:‘Tap here to switch language 🌐\nSupports Chinese and English!’,mood:‘happy’},
+{sel:’.inp-wrap’,zh:‘在這裡輸入訊息 💬\n問我任何關於貓咪的問題吧！’,en:‘Type your message here 💬\nAsk me anything about cats!’,mood:‘happy’},
+{sel:’.plus-btn’,zh:‘按這裡上傳照片 📸\n拍貓咪的照片讓我看看～’,en:‘Tap here to upload photos 📸\nShow me your cat pics!’,mood:‘excited’},
+{sel:’.sg-grid’,zh:‘這些是快速操作卡片 ⚡\n點一下就能快速開始對話！’,en:‘These are quick action cards ⚡\nTap one to start chatting right away!’,mood:‘happy’},
+{sel:’#vcat-wrap’,zh:‘這是我！你的虛擬貓咪 🐱\n點我可以互動，還能換照片喔！’,en:“That’s me! Your virtual cat 🐱\nTap me to interact, or change my photo!”,mood:‘excited’}
 ];
 var tutStep=-1;
 var tutPrevEl=null;
 
+function tutShowTooltip(el, msg){
+var tip=document.getElementById(‘tut-tooltip’);
+if(!tip)return;
+tip.classList.remove(‘show’);
+tip.textContent=msg;
+// Position: right-below the element
+var r=el.getBoundingClientRect();
+var tipW=220, tipH=80;
+var left=r.right+10;
+var top=r.bottom+10;
+// Clamp to viewport
+var vw=window.innerWidth, vh=window.innerHeight;
+if(left+tipW>vw-10) left=Math.max(10, vw-tipW-10);
+if(top+tipH>vh-80) top=Math.max(10, r.top-tipH-10);
+tip.style.left=left+‘px’;
+tip.style.top=top+‘px’;
+// Show with animation
+requestAnimationFrame(function(){tip.classList.add(‘show’);});
+}
+function tutHideTooltip(){
+var tip=document.getElementById(‘tut-tooltip’);
+if(tip){tip.classList.remove(‘show’);}
+}
 function tutStart(){
 closeSB();
 tutStep=-1;
-if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
-var vcw=document.getElementById('vcat-wrap');if(vcw){vcw.style.display='flex';vcw.style.zIndex='9003';}
-document.getElementById('tut-overlay').classList.add('show');
-document.getElementById('tut-bar').classList.add('show');
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+var vcw=document.getElementById(‘vcat-wrap’);if(vcw){vcw.style.display=‘flex’;vcw.style.zIndex=‘9003’;}
+document.getElementById(‘tut-bar’).classList.add(‘show’);
 tutRenderDots();
 tutNext();
 }
-
 function tutNext(){
-if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutHideTooltip();
 tutStep++;
 if(tutStep>=TUT_STEPS.length){tutEnd(true);return;}
 var step=TUT_STEPS[tutStep];
 var el=document.querySelector(step.sel);
 if(!el||el.offsetParent===null){tutNext();return;}
-el.classList.add('tut-highlight');
-el.style.pointerEvents='auto';
+el.classList.add(‘tut-highlight’);
+el.style.pointerEvents=‘auto’;
 tutPrevEl=el;
-el.scrollIntoView({behavior:'smooth',block:'nearest'});
-var msg=curLang==='en'?step.en:step.zh;
-if(typeof vcatSay==='function') vcatSay(msg,30000);
-if(typeof setVcatMood==='function') setVcatMood(step.mood||'happy');
+var msg=curLang===‘en’?step.en:step.zh;
+setTimeout(function(){tutShowTooltip(el, msg);},80);
+if(typeof setVcatMood===‘function’) setVcatMood(step.mood||‘happy’);
 tutRenderDots();
 tutUpdateBtn();
 }
-
 function tutCancel(){
-if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutHideTooltip();
 tutStep=-1;
-document.getElementById('tut-overlay').classList.remove('show');
-document.getElementById('tut-bar').classList.remove('show');
-var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='300';
-if(typeof vcatSay==='function') vcatSay(curLang==='en'?'See you next time! 👋':'下次見囉！👋',3000);
+document.getElementById(‘tut-bar’).classList.remove(‘show’);
+var vcw=document.getElementById(‘vcat-wrap’);if(vcw)vcw.style.zIndex=‘300’;
+if(typeof vcatSay===‘function’) vcatSay(curLang===‘en’?‘See you next time! 👋’:‘下次見囉！👋’,3000);
 }
-
 function tutEnd(completed){
-if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
+if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
+tutHideTooltip();
 tutStep=-1;
-document.getElementById('tut-overlay').classList.remove('show');
-document.getElementById('tut-bar').classList.remove('show');
-var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='300';
+document.getElementById(‘tut-bar’).classList.remove(‘show’);
+var vcw=document.getElementById(‘vcat-wrap’);if(vcw)vcw.style.zIndex=‘300’;
 if(completed){
-try{localStorage.setItem(TUT_KEY,'1');}catch(e){}
-if(typeof vcatSay==='function') vcatSay(curLang==='en'?'You\'re all set! Let\'s get started! 🎉':'教學完成！開始探索吧！🎉',5000);
-if(typeof setVcatMood==='function') setVcatMood('excited');
-if(typeof vcatWave==='function') vcatWave();
+try{localStorage.setItem(TUT_KEY,‘1’);}catch(e){}
+if(typeof vcatSay===‘function’) vcatSay(curLang===‘en’?“You’re all set! Let’s get started! 🎉”:‘教學完成！開始探索吧！🎉’,5000);
+if(typeof setVcatMood===‘function’) setVcatMood(‘excited’);
+if(typeof vcatWave===‘function’) vcatWave();
 }
 }
-
 function tutRenderDots(){
-var container=document.getElementById('tut-dots');
-container.innerHTML='';
+var container=document.getElementById(‘tut-dots’);
+container.innerHTML=’’;
 for(var i=0;i<TUT_STEPS.length;i++){
-var dot=document.createElement('div');
-dot.className='tut-dot';
-if(i===tutStep) dot.classList.add('active');
-else if(i<tutStep) dot.classList.add('done');
+var dot=document.createElement(‘div’);dot.className=‘tut-dot’;
+if(i===tutStep) dot.classList.add(‘active’);
+else if(i<tutStep) dot.classList.add(‘done’);
 container.appendChild(dot);
 }
 }
-
 function tutUpdateBtn(){
-var btn=document.getElementById('tut-next');
+var btn=document.getElementById(‘tut-next’);
 var t=T[curLang];
-if(tutStep>=TUT_STEPS.length-1) btn.textContent=t.tutDone;
-else btn.textContent=t.tutNext;
+if(tutStep>=TUT_STEPS.length-1) btn.textContent=t?t.tutDone:‘完成！🎉’;
+else btn.textContent=t?t.tutNext:‘下一步 →’;
 }
 
 // ══ BOOT ══
-function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent('general');}
+function initApp(){var u=curU();if(!u)return;renderSB();renderMsgs([]);setModeSilent(‘general’);}
 (function boot(){
 if(!DB.cur||!DB.users.length){
-if(!DB.users.find(function(u){return u.email==='local';})){
-DB.users.push({name:'我',email:'local',pw:'',cats:[],records:[],sessions:[],favs:[]});
+if(!DB.users.find(function(u){return u.email===‘local’;})){
+DB.users.push({name:‘我’,email:‘local’,pw:’’,cats:[],records:[],sessions:[],favs:[]});
 }
-DB.cur='local';saveDB();
+DB.cur=‘local’;saveDB();
 }
 initApp();
 initVCat();
 // Auto-activate paws on load
-var pa=document.getElementById('paws-app');
-var vw=document.getElementById('vcat-wrap');
-if(pa) pa.classList.add('active');
-if(vw) vw.style.display='flex';
-document.body.style.overflow='hidden';
+var pa=document.getElementById(‘paws-app’);
+var vw=document.getElementById(‘vcat-wrap’);
+if(pa) pa.classList.add(‘active’);
+if(vw) vw.style.display=‘flex’;
+document.body.style.overflow=‘hidden’;
 setTimeout(function(){
-if(typeof vcatSay==='function'){
+if(typeof vcatSay===‘function’){
 var tutDone=false;
-try{tutDone=localStorage.getItem(TUT_KEY)==='1';}catch(e){}
+try{tutDone=localStorage.getItem(TUT_KEY)===‘1’;}catch(e){}
 if(!tutDone){
 tutStart();
 }else{
-setVcatMood('happy');
-vcatSay(curLang==='en'?'Meow~ Welcome back to PawSense! 🐾':'喵～歡迎使用 PawSense！🐾',5000);
+setVcatMood(‘happy’);
+vcatSay(curLang===‘en’?‘Meow~ Welcome back to PawSense! 🐾’:‘喵～歡迎使用 PawSense！🐾’,5000);
 vcatWave();
 }
 }
@@ -1330,7 +1375,7 @@ vcatWave();
 })();
 </script>
 
-<div class="tut-overlay" id="tut-overlay"></div>
+<div class="tut-tooltip" id="tut-tooltip"></div>
 <div class="tut-bar" id="tut-bar">
   <button class="tut-skip" id="tut-cancel-btn" onclick="tutCancel()">取消教學</button>
   <div class="tut-dots" id="tut-dots"></div>
