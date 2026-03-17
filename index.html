@@ -15,7 +15,7 @@
 /* ════ PAWSENSE STYLES (scoped) ════ */
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden}
+html,body{height:100%;overflow:hidden;background:#d0e8ff}
 :root{
 –bg:#d0e8ff;–s1:#b8d8f8;–s2:#c8e0fc;–s3:#a8ccf0;–s4:#98bce8;
 –bd:rgba(30,80,160,.15);–bd2:rgba(30,80,160,.08);
@@ -58,7 +58,7 @@ html,body{height:100%;overflow:hidden}
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:rgba(10,10,10,.92);backdrop-filter:blur(14px);position:relative;z-index:10}
+.chat-hd{flex-shrink:0;height:50px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid var(–bd2);background:var(–bg);backdrop-filter:blur(14px);position:relative;z-index:10}
 .menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px;transition:background .14s;flex-shrink:0}
 .menu-btn:hover{background:var(–s2)}
 .menu-ic{display:flex;flex-direction:column;gap:4px;pointer-events:none}
@@ -1333,7 +1333,6 @@ initVCat();
 // Auto-activate paws on load
 var pa=document.getElementById(‘paws-app’);
 var vw=document.getElementById(‘vcat-wrap’);
-if(pa) pa.classList.add(‘active’);
 if(vw) vw.style.display=‘flex’;
 document.body.style.overflow=‘hidden’;
 setTimeout(function(){
