@@ -277,7 +277,9 @@ img{max-width:100%;height:auto;display:block;}
 
 /* ── Feature intro cards ── */
 .feat-wrap{width:100%;display:flex;flex-direction:column;gap:8px;margin:16px 0 4px}
-.feat-card{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:11px 14px;text-align:left}
+.feat-card{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:11px 14px;text-align:left;cursor:pointer;transition:all .18s;user-select:none}
+.feat-card:hover{background:var(–s2);border-color:rgba(91,143,249,.3);transform:translateY(-1px)}
+.feat-card:active{transform:scale(.97)}
 .feat-ic{font-size:22px;flex-shrink:0;width:32px;text-align:center}
 .feat-info{flex:1}
 .feat-t{font-size:13px;font-weight:700;color:var(–t);margin-bottom:2px}
@@ -301,6 +303,113 @@ img{max-width:100%;height:auto;display:block;}
 .tut-next{background:#5b8ff9;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all .18s}
 .tut-next:hover{background:#3d6fe0;transform:translateY(-1px)}
 .tut-next:active{transform:scale(.96)}
+
+/* ════ VCAT WALK & PAWPRINT ════ */
+@keyframes vcatWalkOut{
+0%{transform:translateY(0);opacity:1}
+60%{transform:translateY(60px);opacity:.8}
+100%{transform:translateY(160px);opacity:0}
+}
+@keyframes vcatWalkIn{
+0%{transform:translateY(160px);opacity:0}
+40%{transform:translateY(-12px);opacity:1}
+70%{transform:translateY(6px)}
+100%{transform:translateY(0);opacity:1}
+}
+@keyframes pawAppear{
+0%{opacity:0;transform:scale(.5)}
+60%{opacity:1;transform:scale(1.2)}
+100%{opacity:1;transform:scale(1)}
+}
+#vcat-wrap.walking-out{animation:vcatWalkOut .7s cubic-bezier(.4,0,.6,1) forwards}
+#vcat-wrap.walking-in{animation:vcatWalkIn .6s cubic-bezier(.16,1,.3,1) forwards}
+#vcat-pawprint{
+position:fixed;right:14px;bottom:max(28px,env(safe-area-inset-bottom));
+z-index:300;font-size:28px;cursor:pointer;
+opacity:0;pointer-events:none;
+transition:opacity .4s;
+filter:drop-shadow(0 2px 6px rgba(91,143,249,.4));
+user-select:none;
+-webkit-tap-highlight-color:transparent;
+}
+#vcat-pawprint.show{opacity:1;pointer-events:all;animation:pawAppear .5s ease both}
+#vcat-pawprint:active{transform:scale(.88)}
+
+/* ════ HEALTH MODE ════ */
+.health-wrap{padding:16px 14px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;height:100%}
+.health-wrap::-webkit-scrollbar{width:2px}
+.health-wrap::-webkit-scrollbar-thumb{background:var(–s3);border-radius:2px}
+
+/* 選貓畫面 */
+.cat-select-grid{display:flex;flex-direction:column;gap:10px}
+.cat-select-card{display:flex;align-items:center;gap:14px;background:var(–s1);border:1px solid var(–bd);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .18s;user-select:none}
+.cat-select-card:hover{background:var(–s2);border-color:rgba(91,143,249,.3);transform:translateY(-1px)}
+.cat-select-card:active{transform:scale(.98)}
+.cat-sel-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(–bd);flex-shrink:0;background:var(–s2);display:flex;align-items:center;justify-content:center;font-size:22px}
+.cat-sel-info{flex:1}
+.cat-sel-name{font-size:15px;font-weight:700;color:var(–t);margin-bottom:3px}
+.cat-sel-sub{font-size:12px;color:var(–t2)}
+.cat-sel-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.dot-green{background:#3ecf8e}
+.dot-yellow{background:#f5a623}
+.dot-red{background:#f26d6d}
+.dot-grey{background:#aaa}
+.cat-add-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:2px dashed var(–bd);border-radius:14px;padding:16px;cursor:pointer;font-size:14px;color:var(–t2);transition:all .18s;user-select:none}
+.cat-add-btn:hover{border-color:var(–ac);color:var(–ac);background:var(–acs)}
+
+/* 儀表板 */
+.health-hd{display:flex;align-items:center;gap:12px;background:var(–s1);border:1px solid var(–bd);border-radius:14px;padding:14px 16px}
+.health-hd-back{background:none;border:none;font-size:18px;cursor:pointer;color:var(–t2);padding:0 4px;flex-shrink:0}
+.health-hd-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(–bd);flex-shrink:0;background:var(–s2);display:flex;align-items:center;justify-content:center;font-size:24px}
+.health-hd-info{flex:1}
+.health-hd-name{font-size:16px;font-weight:700;color:var(–t)}
+.health-hd-sub{font-size:12px;color:var(–t2);margin-top:2px}
+.health-hd-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+
+/* 統計卡 */
+.health-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat-card{background:var(–s1);border:1px solid var(–bd);border-radius:12px;padding:12px 10px;text-align:center}
+.stat-num{font-size:22px;font-weight:700;color:var(–t);margin-bottom:2px}
+.stat-lbl{font-size:10px;color:var(–t2)}
+
+/* 折線圖 */
+.chart-card{background:var(–s1);border:1px solid var(–bd);border-radius:14px;padding:14px}
+.chart-title{font-size:12px;font-weight:600;color:var(–t2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.chart-canvas{width:100%;height:120px;display:block}
+.chart-empty{text-align:center;font-size:13px;color:var(–t3);padding:20px 0}
+
+/* 風險分佈 */
+.risk-bars{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.risk-row{display:flex;align-items:center;gap:10px}
+.risk-lbl{font-size:12px;color:var(–t2);width:24px;flex-shrink:0}
+.risk-track{flex:1;height:8px;background:var(–s3);border-radius:4px;overflow:hidden}
+.risk-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.16,1,.3,1)}
+.risk-count{font-size:11px;color:var(–t3);width:20px;text-align:right;flex-shrink:0}
+
+/* 紀錄時間軸 */
+.record-list{display:flex;flex-direction:column;gap:8px}
+.record-item{background:var(–s1);border:1px solid var(–bd);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .18s}
+.record-item:hover{border-color:rgba(91,143,249,.3)}
+.record-hd{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.record-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.record-info{flex:1}
+.record-date{font-size:11px;color:var(–t3);margin-bottom:2px}
+.record-desc{font-size:13px;color:var(–t);line-height:1.4}
+.record-sl{font-size:12px;font-weight:600;flex-shrink:0}
+.record-body{display:none;padding:0 14px 12px;font-size:12px;color:var(–t2);line-height:1.7;border-top:1px solid var(–bd2);white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto}
+.record-body.open{display:block}
+.record-del{background:none;border:none;color:var(–t3);font-size:13px;cursor:pointer;padding:4px 6px;transition:color .14s}
+.record-del:hover{color:var(–re)}
+
+/* 底部按鈕 */
+.health-actions{display:flex;gap:8px;margin-top:4px}
+.health-action-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:‘Noto Serif TC’,serif}
+.health-action-primary{background:var(–ac);color:#fff}
+.health-action-primary:hover{background:var(–acb)}
+.health-action-secondary{background:var(–s2);color:var(–t2);border:1px solid var(–bd)}
+.health-action-secondary:hover{background:var(–s3);color:var(–t)}
+.health-action-danger{background:rgba(242,109,109,.1);color:var(–re);border:1px solid rgba(242,109,109,.2)}
+.health-action-danger:hover{background:rgba(242,109,109,.2)}
 
 </style>
 </head>
@@ -399,19 +508,11 @@ img{max-width:100%;height:auto;display:block;}
   <div class="sh-title">選擇模式</div>
   <div class="sh-item act" id="sm-general" onclick="setMode('general')">
     <div class="sh-ic" style="background:rgba(91,143,249,.1)">🐱</div>
-    <div class="sh-body"><div class="sh-nm">貓咪問答</div><div class="sh-ds">問任何關於貓咪的問題</div></div>
+    <div class="sh-body"><div class="sh-nm">貓咪問答</div><div class="sh-ds">聊天，自動記錄貓咪健康資訊</div></div>
   </div>
-  <div class="sh-item" id="sm-analyze" onclick="setMode('analyze')">
-    <div class="sh-ic" style="background:rgba(62,207,142,.1)">🔍</div>
-    <div class="sh-body"><div class="sh-nm">行為分析</div><div class="sh-ds">AI 搜尋獸醫文獻，評估壓力與風險</div></div>
-  </div>
-  <div class="sh-item" id="sm-report" onclick="setMode('report')">
-    <div class="sh-ic" style="background:rgba(155,143,239,.1)">📋</div>
-    <div class="sh-body"><div class="sh-nm">報告解讀</div><div class="sh-ds">解讀過往的分析報告</div></div>
-  </div>
-  <div class="sh-item" id="sm-cat" onclick="setMode('cat')">
-    <div class="sh-ic" style="background:rgba(245,166,35,.1)">🐈</div>
-    <div class="sh-body"><div class="sh-nm">貓咪管理</div><div class="sh-ds">新增 / 查看貓咪資料</div></div>
+  <div class="sh-item" id="sm-health" onclick="setMode('health')">
+    <div class="sh-ic" style="background:rgba(62,207,142,.1)">🐈</div>
+    <div class="sh-body"><div class="sh-nm">健康檔案</div><div class="sh-ds">查看貓咪健康狀況與歷史紀錄</div></div>
   </div>
 </div>
 <script>
@@ -508,10 +609,10 @@ var sub=document.createElement(‘div’);sub.className=‘wl-sub’;sub.textCon
 // ── Feature intro cards ──
 var featWrap=document.createElement(‘div’);featWrap.className=‘feat-wrap’;
 var features=[
-{ic:‘🔍’,t:‘行為分析’,d:‘描述貓咪行為，AI 即時分析壓力指數與風險等級’},
-{ic:‘💊’,t:‘健康問題’,d:‘輸入症狀，獲得建議與就醫時機評估’},
-{ic:‘📋’,t:‘分析紀錄’,d:‘所有分析結果自動儲存，隨時查閱歷史報告’},
-{ic:‘🐈’,t:‘貓咪管理’,d:‘建立多隻貓咪檔案，追蹤每隻貓的健康狀況’},
+{ic:‘🔍’,t:‘行為分析’,d:‘描述貓咪行為，AI 即時分析壓力指數與風險等級’,q:‘我想分析貓咪的行為’},
+{ic:‘💊’,t:‘健康問題’,d:‘輸入症狀，獲得建議與就醫時機評估’,q:‘我的貓咪最近食慾不振’},
+{ic:‘📋’,t:‘分析紀錄’,d:‘所有分析結果自動儲存，隨時查閱歷史報告’,q:‘幫我看最近的分析結果’},
+{ic:‘🐈’,t:‘貓咪管理’,d:‘建立多隻貓咪檔案，追蹤每隻貓的健康狀況’,q:‘幫我新增一隻貓咪’},
 ];
 features.forEach(function(f){
 var card=document.createElement(‘div’);card.className=‘feat-card’;
@@ -521,36 +622,14 @@ var t=document.createElement(‘div’);t.className=‘feat-t’;t.textContent=f
 var d=document.createElement(‘div’);d.className=‘feat-d’;d.textContent=f.d;
 info.appendChild(t);info.appendChild(d);
 card.appendChild(ic);card.appendChild(info);
+card.onclick=(function(q){return function(){tapQ(q);};})(f.q);
 featWrap.appendChild(card);
-});
-
-// ── Divider ──
-var divider=document.createElement(‘div’);divider.className=‘feat-divider’;divider.textContent=‘立即開始’;
-
-// ── Quick start grid ──
-var grid=document.createElement(‘div’);grid.className=‘sg-grid’;
-var suggests=[
-{ic:‘🔍’,t:‘行為分析’,d:‘描述行為，分析壓力’,q:‘我想分析貓咪的行為’},
-{ic:‘🐈’,t:‘新增貓咪’,d:‘建立貓咪資料’,q:‘幫我新增一隻貓咪’},
-{ic:‘💊’,t:‘健康問題’,d:‘搜尋症狀與建議’,q:‘我的貓咪最近食慾不振’},
-{ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
-];
-suggests.forEach(function(s){
-var card=document.createElement(‘div’);card.className=‘sg-card’;
-var ic=document.createElement(‘div’);ic.className=‘sg-ic’;ic.textContent=s.ic;
-var t=document.createElement(‘div’);t.className=‘sg-t’;t.textContent=s.t;
-var d=document.createElement(‘div’);d.className=‘sg-d’;d.textContent=s.d;
-card.appendChild(ic);card.appendChild(t);card.appendChild(d);
-card.onclick=(function(q){return function(){tapQ(q);};})(s.q);
-grid.appendChild(card);
 });
 
 div.appendChild(logo);
 div.appendChild(title);
 div.appendChild(sub);
 div.appendChild(featWrap);
-div.appendChild(divider);
-div.appendChild(grid);
 return div;
 }
 function appendMsgEl(m,anim){
@@ -635,50 +714,33 @@ function scrollBot(){var m=document.getElementById(‘msgs’);if(m)setTimeout(f
 function tapQ(q){document.getElementById(‘inp-tx’).value=q;onInp();sendMsg();}
 // ══ MODE ══
 var chatMode=‘general’;
-var modeLabel={general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’};
+var modeLabel={general:‘🐱 問答’,health:‘🐈 健康檔案’};
 var selCatId=null;
 function setModeSilent(m){
 chatMode=m;
 document.getElementById(‘mode-chip’).textContent=modeLabel[m]||‘🐱 問答’;
-[‘general’,‘analyze’,‘report’,‘cat’].forEach(function(k){
+[‘general’,‘health’].forEach(function(k){
 var el=document.getElementById(‘sm-’+k);if(el)el.classList.toggle(‘act’,k===m);
 });
-var ph={general:‘有什麼想問的？’,analyze:‘描述貓咪的行為…’,report:‘問我關於分析報告…’,cat:‘說「新增貓咪」或「查看貓咪」…’};
-document.getElementById(‘inp-tx’).placeholder=ph[m]||‘輸入訊息…’;
-refreshCatBar();
+var inpTx=document.getElementById(‘inp-tx’);
+if(inpTx)inpTx.placeholder=‘有什麼想問的？’;
+var ia=document.querySelector(’.inp-area’);
+if(ia)ia.style.display=(m===‘health’)?‘none’:’’;
+if(m===‘health’){
+renderHealthMode();
+} else {
+// 切回問答：如果沒有對話紀錄就重新顯示歡迎畫面
+var msgs=document.getElementById(‘msgs’);
+if(msgs&&!sessMsgs.length){msgs.innerHTML=’’;msgs.appendChild(buildWelcome());}
+}
 }
 function setMode(m){
 setModeSilent(m);closeSheet();
-var intro={
-general:‘已切換到 **貓咪問答** 模式。有什麼問題嗎？’,
-analyze:‘已切換到 **行為分析** 模式。描述觀察到的行為，我會搜尋獸醫文獻幫你分析。’,
-report:‘已切換到 **報告解讀** 模式。我可以幫你解讀過往分析報告。’,
-cat:‘已切換到 **貓咪管理** 模式。說「新增貓咪」或「查看我的貓咪」。’
-};
-if(sessMsgs.length){pushAI(intro[m],[]);saveSess(null);}
+if(m===‘general’&&sessMsgs.length){pushAI(‘已切換到 **貓咪問答** 模式。有什麼問題嗎？’,[]);saveSess(null);}
 }
 function refreshCatBar(){
 var bar=document.getElementById(‘cat-bar’);if(!bar)return;
-var u=curU();
-if(chatMode!==‘analyze’||!u||!u.cats||!u.cats.length){bar.classList.remove(‘show’);return;}
-bar.classList.add(‘show’);
-bar.innerHTML=’’;
-var lbl=document.createElement(‘span’);
-lbl.style.cssText=‘font-size:11px;color:var(–t3);white-space:nowrap;flex-shrink:0;padding-top:2px’;
-lbl.textContent=‘分析對象：’;bar.appendChild(lbl);
-u.cats.forEach(function(c){
-var chip=document.createElement(‘div’);
-chip.className=‘cat-chip’+(selCatId===c.id?’ sel’:’’);
-chip.dataset.id=c.id;
-chip.textContent=c.emoji+’ ‘+c.name;
-chip.onclick=(function(id){return function(){selCat(id);};})(c.id);
-bar.appendChild(chip);
-});
-var add=document.createElement(‘div’);add.className=‘cat-chip’;
-add.style.borderStyle=‘dashed’;add.textContent=‘＋ 新增’;
-add.onclick=function(){setModeSilent(‘cat’);setMode(‘cat’);};
-bar.appendChild(add);
-if(!selCatId&&u.cats.length)selCat(u.cats[0].id);
+bar.classList.remove(‘show’);
 }
 function selCat(id){
 selCatId=id;
@@ -732,6 +794,8 @@ var chatHist=[];
 async function sendMsg(){
 var t=document.getElementById(‘inp-tx’);var txt=t.value.trim();if(!txt)return;
 t.value=’’;t.style.height=‘auto’;document.getElementById(‘send-btn’).classList.remove(‘on’);
+// Walk cat away when user sends a message
+if(typeof vcatWalkOut===‘function’&&!vcatIsHidden)vcatWalkOut();
 var u=curU();
 // Build user message with optional images
 var photos=pendingPhotos.slice();pendingPhotos=[];renderPhotoBar();
@@ -807,22 +871,10 @@ var reply=staticAI(txt,sys,chatMode);
 await new Promise(function(r){setTimeout(r,600+Math.random()*800);});
 chatHist.push({role:‘assistant’,content:reply});
 removeEl(tid);
-var sm=reply.match(/壓力指數[^\d]*(\d+)/)||reply.match(/(\d+)\s*[/／]\s*100/);
-var rm=reply.match(/風險等級[^低中高]*(低|中|高)/)||reply.match(/(低|中|高)風險/);
-if(chatMode===‘analyze’&&sm&&rm&&u&&u.cats&&u.cats.length){
-var sl=Math.min(100,Math.max(0,parseInt(sm[1])));var risk=rm[1];
-var cat=(selCatId&&u.cats.find(function(c){return c.id===selCatId;}))||u.cats[0];
-var rec={id:Date.now(),catId:cat.id,catName:cat.name,catEmoji:cat.emoji||‘🐱’,
-date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
-inputText:txt,fullReport:reply,sl:sl,risk:risk,rating:0};
-u.records.push(rec);saveDB();
-var am={role:‘assistant’,type:‘result’,content:reply,rd:rec,qr:[‘再問一個問題’,‘繼續分析’]};
-sessMsgs.push(am);appendMsgEl(am,true);
-updateVirtualCat(reply);
-} else {
+// 問答模式自動記錄
+autoRecord(txt,reply);
 pushAI(reply,[]);
 updateVirtualCat(reply);
-}
 saveSess(null);
 }catch(err){
 var u2=curU();
@@ -833,22 +885,9 @@ await new Promise(function(r){setTimeout(r,400);});
 if(!reply2){removeEl(tid);pushAI(‘⚠️ AI 未回應，請重新描述。’,[‘重新嘗試’]);saveSess(null);return;}
 chatHist.push({role:‘assistant’,content:reply2});
 removeEl(tid);
-var sm2=reply2.match(/壓力指數[^\d]*(\d+)/)||reply2.match(/(\d+)\s*[/／]\s*100/);
-var rm2=reply2.match(/風險等級[^低中高]*(低|中|高)/)||reply2.match(/(低|中|高)風險/);
-if(chatMode===‘analyze’&&sm2&&rm2&&u2&&u2.cats&&u2.cats.length){
-var sl2=Math.min(100,Math.max(0,parseInt(sm2[1])));var risk2=rm2[1];
-var cat2=(selCatId&&u2.cats.find(function(c){return c.id===selCatId;}))||u2.cats[0];
-var rec2={id:Date.now(),catId:cat2.id,catName:cat2.name,catEmoji:cat2.emoji||‘🐱’,
-date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
-inputText:txt,fullReport:reply2,sl:sl2,risk:risk2,rating:0};
-u2.records.push(rec2);saveDB();
-var am2={role:‘assistant’,type:‘result’,content:reply2,rd:rec2,qr:[‘再問一個問題’,‘繼續分析’]};
-sessMsgs.push(am2);appendMsgEl(am2,true);
-updateVirtualCat(reply2);
-} else {
+autoRecord(txt,reply2);
 pushAI(reply2,[]);
 updateVirtualCat(reply2);
-}
 saveSess(null);
 }catch(err2){
 removeEl(tid);
@@ -862,6 +901,53 @@ saveSess(null);
 }
 }
 }
+
+// ══ AUTO RECORD (Step 3) ══
+function autoRecord(userTxt, replyTxt){
+if(chatMode!==‘general’) return;
+var u=curU();
+if(!u||!u.cats||!u.cats.length) return;
+
+// 偵測壓力指數和風險等級
+var sm=replyTxt.match(/壓力指數[^\d]*(\d+)/)||replyTxt.match(/(\d+)\s*[/／]\s*100/);
+var rm=replyTxt.match(/風險等級[^低中高]*(低|中|高)/)||replyTxt.match(/(低|中|高)風險/);
+if(!sm||!rm) return; // 沒有分析結果就不記錄
+
+var sl=Math.min(100,Math.max(0,parseInt(sm[1])));
+var risk=rm[1];
+
+// 偵測對話中提到的貓咪名字
+var matchedCat=null;
+var combined=(userTxt+’ ’+replyTxt).toLowerCase();
+u.cats.forEach(function(c){
+if(combined.indexOf(c.name.toLowerCase())!==-1){
+matchedCat=c;
+}
+});
+// 沒匹配到名字就用第一隻
+if(!matchedCat) matchedCat=u.cats[0];
+
+// 避免重複記錄（同一秒內）
+var now=Date.now();
+var recent=u.records.filter(function(r){return r.catId===matchedCat.id&&now-r.id<5000;});
+if(recent.length) return;
+
+var rec={
+id:now,
+catId:matchedCat.id,
+catName:matchedCat.name,
+catEmoji:matchedCat.emoji||‘🐱’,
+date:new Date().toLocaleString(‘zh-TW’,{month:‘numeric’,day:‘numeric’,hour:‘2-digit’,minute:‘2-digit’}),
+inputText:userTxt,
+fullReport:replyTxt,
+sl:sl,
+risk:risk,
+rating:0
+};
+u.records.push(rec);
+saveDB();
+}
+
 // ══ CAT FLOW ══
 var catAddStep=null,catTemp={};
 async function catFlow(txt,u){
@@ -936,7 +1022,7 @@ history:‘對話紀錄’,
 clearData:‘清除資料’,
 hint:‘PawSense AI · 分析結果僅供參考’,
 placeholder:‘輸入訊息…’,
-modeLabel:{general:‘🐱 問答’,analyze:‘🔍 分析’,report:‘📋 解讀’,cat:‘🐈 管理’},
+modeLabel:{general:‘🐱 問答’,health:‘🐈 健康檔案’},
 langSheetTitle:‘切換語言’,
 welcome:‘有什麼關於貓咪的問題嗎？’,
 tutBtn:‘新手教學’,tutCancel:‘取消教學’,tutNext:‘下一步 →’,tutDone:‘完成！🎉’,
@@ -947,10 +1033,8 @@ suggests:[
 {ic:‘📊’,t:‘查看紀錄’,d:‘查看過往分析’,q:‘幫我看最近的分析結果’}
 ],
 modes:[
-{id:‘general’,ic:‘🐱’,nm:‘貓咪問答’,ds:‘問任何關於貓咪的問題’},
-{id:‘analyze’,ic:‘🔍’,nm:‘行為分析’,ds:‘AI 搜尋獸醫文獻，評估壓力與風險’},
-{id:‘report’,ic:‘📋’,nm:‘報告解讀’,ds:‘解讀過往的分析報告’},
-{id:‘cat’,ic:‘🐈’,nm:‘貓咪管理’,ds:‘新增 / 查看貓咪資料’}
+{id:‘general’,ic:‘🐱’,nm:‘貓咪問答’,ds:‘聊天，自動記錄貓咪健康資訊’},
+{id:‘health’,ic:‘🐈’,nm:‘健康檔案’,ds:‘查看貓咪健康狀況與歷史紀錄’}
 ]
 },
 en:{
@@ -960,7 +1044,7 @@ history:‘History’,
 clearData:‘Clear Data’,
 hint:‘PawSense AI · For reference only’,
 placeholder:‘Ask anything…’,
-modeLabel:{general:‘🐱 Chat’,analyze:‘🔍 Analyze’,report:‘📋 Report’,cat:‘🐈 Cats’},
+modeLabel:{general:‘🐱 Chat’,health:‘🐈 Health’},
 langSheetTitle:‘Language’,
 welcome:‘What would you like to know about your cat?’,
 tutBtn:‘Tutorial’,tutCancel:‘Cancel’,tutNext:‘Next →’,tutDone:‘Done! 🎉’,
@@ -971,10 +1055,8 @@ suggests:[
 {ic:‘📊’,t:‘View Records’,d:‘Browse past analyses’,q:‘Show me recent analysis results’}
 ],
 modes:[
-{id:‘general’,ic:‘🐱’,nm:‘Cat Chat’,ds:‘Ask anything about cats’},
-{id:‘analyze’,ic:‘🔍’,nm:‘Behavior Analysis’,ds:‘AI searches vet literature to assess stress & risk’},
-{id:‘report’,ic:‘📋’,nm:‘Report Review’,ds:‘Interpret past analysis reports’},
-{id:‘cat’,ic:‘🐈’,nm:‘Cat Manager’,ds:‘Add / view cat profiles’}
+{id:‘general’,ic:‘🐱’,nm:‘Cat Chat’,ds:‘Chat and auto-record cat health info’},
+{id:‘health’,ic:‘🐈’,nm:‘Health Records’,ds:‘View cat health status and history’}
 ]
 }
 };
@@ -1208,6 +1290,42 @@ tmpImg.src=ev.target.result;
 reader.readAsDataURL(file);
 }
 
+var vcatIsHidden=false;
+
+function vcatWalkOut(){
+var wrap=document.getElementById(‘vcat-wrap’);
+var paw=document.getElementById(‘vcat-pawprint’);
+if(!wrap||vcatIsHidden)return;
+vcatIsHidden=true;
+// hide bubble first
+var bubble=document.getElementById(‘vcat-bubble’);
+if(bubble)bubble.classList.remove(‘show’);
+wrap.classList.remove(‘walking-in’);
+wrap.classList.add(‘walking-out’);
+setTimeout(function(){
+wrap.style.display=‘none’;
+wrap.classList.remove(‘walking-out’);
+if(paw)paw.classList.add(‘show’);
+},680);
+}
+
+function vcatWalkIn(){
+var wrap=document.getElementById(‘vcat-wrap’);
+var paw=document.getElementById(‘vcat-pawprint’);
+if(!wrap||!vcatIsHidden)return;
+vcatIsHidden=false;
+if(paw)paw.classList.remove(‘show’);
+wrap.style.display=‘flex’;
+wrap.classList.remove(‘walking-out’);
+wrap.classList.add(‘walking-in’);
+setTimeout(function(){
+wrap.classList.remove(‘walking-in’);
+setVcatMood(‘happy’);
+vcatSay(curLang===‘en’?‘Meow! You called me back! 🐾’:‘喵！你叫我回來了！🐾’,4000);
+vcatWave();
+},620);
+}
+
 function initVCat(){
 var wrap=document.getElementById(‘vcat-wrap’);
 if(!wrap)return;
@@ -1240,16 +1358,236 @@ if(nameEl) nameEl.textContent=‘我的貓咪’;
 }catch(err){}
 }
 
+// ══ HEALTH MODE ══
+var healthSelCatId=null;
+
+function renderHealthMode(){
+healthSelCatId=null;
+renderCatSelectScreen();
+}
+
+function renderCatSelectScreen(){
+var el=document.getElementById(‘msgs’);el.innerHTML=’’;
+var u=curU();
+var wrap=document.createElement(‘div’);wrap.className=‘health-wrap’;
+
+// Title
+var ttl=document.createElement(‘div’);ttl.className=‘welcome’;
+ttl.style.cssText=‘padding:24px 0 8px;’;
+ttl.innerHTML=’<div class="wl-logo">🐈</div><div class="wl-title">健康<em>檔案</em></div><div class="wl-sub">選擇貓咪查看健康狀況</div>’;
+wrap.appendChild(ttl);
+
+var grid=document.createElement(‘div’);grid.className=‘cat-select-grid’;
+
+if(u&&u.cats&&u.cats.length){
+u.cats.forEach(function(cat){
+var recs=(u.records||[]).filter(function(r){return r.catId===cat.id;});
+var lastRec=recs.length?recs[recs.length-1]:null;
+var dotClass=!lastRec?‘dot-grey’:lastRec.sl>=60?‘dot-red’:lastRec.sl>=35?‘dot-yellow’:‘dot-green’;
+
+```
+  var card=document.createElement('div');card.className='cat-select-card';
+  var av=document.createElement('div');av.className='cat-sel-av';av.textContent=cat.emoji||'🐱';
+  var info=document.createElement('div');info.className='cat-sel-info';
+  var nm=document.createElement('div');nm.className='cat-sel-name';nm.textContent=cat.name;
+  var sub=document.createElement('div');sub.className='cat-sel-sub';
+  sub.textContent=(cat.breed||'未填')+'・'+(cat.age||'未填')+(lastRec?'・最近 '+lastRec.date:'・尚無紀錄');
+  info.appendChild(nm);info.appendChild(sub);
+  var dot=document.createElement('div');dot.className='cat-sel-dot '+dotClass;
+  card.appendChild(av);card.appendChild(info);card.appendChild(dot);
+  card.onclick=(function(id){return function(){healthSelCatId=id;renderCatDashboard(id);};})(cat.id);
+  grid.appendChild(card);
+});
+```
+
+} else {
+var empty=document.createElement(‘div’);
+empty.style.cssText=‘text-align:center;padding:20px;font-size:13px;color:var(–t3)’;
+empty.textContent=‘還沒有貓咪資料，先去問答模式新增！’;
+grid.appendChild(empty);
+}
+
+// 新增按鈕
+var addBtn=document.createElement(‘div’);addBtn.className=‘cat-add-btn’;
+addBtn.innerHTML=‘＋ 新增貓咪’;
+addBtn.onclick=function(){setMode(‘general’);setTimeout(function(){tapQ(‘幫我新增一隻貓咪’);},100);};
+grid.appendChild(addBtn);
+
+wrap.appendChild(grid);
+el.appendChild(wrap);
+}
+
+function renderCatDashboard(catId){
+var el=document.getElementById(‘msgs’);el.innerHTML=’’;
+var u=curU();
+if(!u)return;
+var cat=u.cats.find(function(c){return c.id===catId;});
+if(!cat){renderCatSelectScreen();return;}
+var recs=(u.records||[]).filter(function(r){return r.catId===catId;}).sort(function(a,b){return a.id-b.id;});
+
+var wrap=document.createElement(‘div’);wrap.className=‘health-wrap’;
+
+// ── 頂部貓咪資訊 ──
+var lastRec=recs.length?recs[recs.length-1]:null;
+var dotClass=!lastRec?‘dot-grey’:lastRec.sl>=60?‘dot-red’:lastRec.sl>=35?‘dot-yellow’:‘dot-green’;
+var hd=document.createElement(‘div’);hd.className=‘health-hd’;
+var backBtn=document.createElement(‘button’);backBtn.className=‘health-hd-back’;backBtn.textContent=’‹’;
+backBtn.onclick=function(){renderCatSelectScreen();};
+var av=document.createElement(‘div’);av.className=‘health-hd-photo’;av.textContent=cat.emoji||‘🐱’;
+var info=document.createElement(‘div’);info.className=‘health-hd-info’;
+info.innerHTML=’<div class="health-hd-name">’+cat.name+’</div><div class="health-hd-sub">’+(cat.breed||‘未填’)+’・’+(cat.age||‘未填’)+’・’+(cat.gender||‘未填’)+’</div>’;
+var dot=document.createElement(‘div’);dot.className=’health-hd-dot ’+dotClass;
+hd.appendChild(backBtn);hd.appendChild(av);hd.appendChild(info);hd.appendChild(dot);
+wrap.appendChild(hd);
+
+// ── 統計卡 ──
+var lowC=recs.filter(function(r){return r.risk===‘低’;}).length;
+var midC=recs.filter(function(r){return r.risk===‘中’;}).length;
+var hiC=recs.filter(function(r){return r.risk===‘高’;}).length;
+var avgSl=recs.length?Math.round(recs.reduce(function(s,r){return s+r.sl;},0)/recs.length):0;
+var stats=document.createElement(‘div’);stats.className=‘health-stats’;
+[[recs.length,‘分析次數’],[avgSl,‘平均壓力’],[hiC,‘高風險次數’]].forEach(function(s){
+var sc=document.createElement(‘div’);sc.className=‘stat-card’;
+sc.innerHTML=’<div class="stat-num">’+s[0]+’</div><div class="stat-lbl">’+s[1]+’</div>’;
+stats.appendChild(sc);
+});
+wrap.appendChild(stats);
+
+// ── 折線圖 ──
+var chartCard=document.createElement(‘div’);chartCard.className=‘chart-card’;
+var chartTitle=document.createElement(‘div’);chartTitle.className=‘chart-title’;chartTitle.textContent=‘壓力指數趨勢’;
+chartCard.appendChild(chartTitle);
+if(recs.length<2){
+var ce=document.createElement(‘div’);ce.className=‘chart-empty’;
+ce.textContent=recs.length===0?‘尚無分析紀錄’:‘需要至少 2 筆紀錄才能顯示趨勢’;
+chartCard.appendChild(ce);
+} else {
+var canvas=document.createElement(‘canvas’);canvas.className=‘chart-canvas’;
+chartCard.appendChild(canvas);
+setTimeout(function(){drawLineChart(canvas,recs);},50);
+}
+wrap.appendChild(chartCard);
+
+// ── 風險分佈 ──
+var riskCard=document.createElement(‘div’);riskCard.className=‘chart-card’;
+var riskTitle=document.createElement(‘div’);riskTitle.className=‘chart-title’;riskTitle.textContent=‘風險分佈’;
+riskCard.appendChild(riskTitle);
+var total=recs.length||1;
+var riskBars=document.createElement(‘div’);riskBars.className=‘risk-bars’;
+[[‘低’,lowC,’#3ecf8e’],[‘中’,midC,’#f5a623’],[‘高’,hiC,’#f26d6d’]].forEach(function(r){
+var row=document.createElement(‘div’);row.className=‘risk-row’;
+var lbl=document.createElement(‘div’);lbl.className=‘risk-lbl’;lbl.textContent=r[0];
+var trk=document.createElement(‘div’);trk.className=‘risk-track’;
+var fill=document.createElement(‘div’);fill.className=‘risk-fill’;
+fill.style.background=r[2];
+var cnt=document.createElement(‘div’);cnt.className=‘risk-count’;cnt.textContent=r[1];
+trk.appendChild(fill);
+row.appendChild(lbl);row.appendChild(trk);row.appendChild(cnt);
+riskBars.appendChild(row);
+setTimeout(function(){fill.style.width=Math.round(r[1]/total*100)+’%’;},80);
+});
+riskCard.appendChild(riskBars);
+wrap.appendChild(riskCard);
+
+// ── 紀錄時間軸 ──
+if(recs.length){
+var recCard=document.createElement(‘div’);recCard.className=‘chart-card’;
+var recTitle=document.createElement(‘div’);recTitle.className=‘chart-title’;recTitle.textContent=‘分析紀錄’;
+recCard.appendChild(recTitle);
+var recList=document.createElement(‘div’);recList.className=‘record-list’;
+recs.slice().reverse().forEach(function(r){
+var dotC=r.risk===‘高’?‘dot-red’:r.risk===‘中’?‘dot-yellow’:‘dot-green’;
+var item=document.createElement(‘div’);item.className=‘record-item’;
+var rhd=document.createElement(‘div’);rhd.className=‘record-hd’;
+var rd=document.createElement(‘div’);rd.className=‘record-dot ‘+dotC;
+var ri=document.createElement(‘div’);ri.className=‘record-info’;
+ri.innerHTML=’<div class="record-date">’+r.date+’</div><div class="record-desc">’+(r.inputText||’’).substring(0,40)+(r.inputText&&r.inputText.length>40?’…’:’’)+’</div>’;
+var rsl=document.createElement(‘div’);rsl.className=‘record-sl’;
+rsl.style.color=r.sl>=60?‘var(–re)’:r.sl>=35?‘var(–ye)’:‘var(–gr)’;
+rsl.textContent=r.sl+’/100’;
+var rdel=document.createElement(‘button’);rdel.className=‘record-del’;rdel.textContent=‘🗑’;
+rdel.onclick=function(e){e.stopPropagation();if(confirm(‘刪除這筆紀錄？’)){u.records=u.records.filter(function(x){return x.id!==r.id;});saveDB();renderCatDashboard(catId);}};
+rhd.appendChild(rd);rhd.appendChild(ri);rhd.appendChild(rsl);rhd.appendChild(rdel);
+var rbody=document.createElement(‘div’);rbody.className=‘record-body’;rbody.textContent=r.fullReport||’’;
+item.appendChild(rhd);item.appendChild(rbody);
+item.onclick=function(e){if(e.target===rdel)return;rbody.classList.toggle(‘open’);};
+recList.appendChild(item);
+});
+recCard.appendChild(recList);
+wrap.appendChild(recCard);
+}
+
+// ── 底部按鈕 ──
+var actions=document.createElement(‘div’);actions.className=‘health-actions’;
+var addDataBtn=document.createElement(‘button’);addDataBtn.className=‘health-action-btn health-action-primary’;
+addDataBtn.textContent=‘＋ 新增資料’;
+addDataBtn.onclick=function(){
+setMode(‘general’);
+setTimeout(function(){
+var u2=curU();var c2=u2&&u2.cats.find(function(x){return x.id===catId;});
+if(c2)tapQ(‘我想說說關於’+c2.name+‘的狀況’);
+},100);
+};
+var editBtn=document.createElement(‘button’);editBtn.className=‘health-action-btn health-action-secondary’;
+editBtn.textContent=‘✏️ 編輯’;
+editBtn.onclick=function(){setMode(‘general’);setTimeout(function(){tapQ(‘我想編輯貓咪資料’);},100);};
+actions.appendChild(addDataBtn);actions.appendChild(editBtn);
+wrap.appendChild(actions);
+
+el.appendChild(wrap);
+}
+
+function drawLineChart(canvas,recs){
+var dpr=window.devicePixelRatio||1;
+var w=canvas.offsetWidth||280;
+var h=120;
+canvas.width=w*dpr;canvas.height=h*dpr;
+canvas.style.width=w+‘px’;canvas.style.height=h+‘px’;
+var ctx=canvas.getContext(‘2d’);
+ctx.scale(dpr,dpr);
+
+var pad={t:10,r:10,b:20,l:28};
+var cw=w-pad.l-pad.r;var ch=h-pad.t-pad.b;
+var pts=recs.map(function(r,i){return {x:pad.l+i*(cw/(recs.length-1)),y:pad.t+ch-(r.sl/100)*ch,sl:r.sl};});
+
+// Grid lines
+ctx.strokeStyle=‘rgba(30,80,160,.08)’;ctx.lineWidth=1;
+[0,25,50,75,100].forEach(function(v){
+var y=pad.t+ch-(v/100)*ch;
+ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+ctx.fillStyle=‘rgba(30,80,160,.4)’;ctx.font=‘9px sans-serif’;
+ctx.fillText(v,0,y+3);
+});
+
+// Line
+ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+pts.slice(1).forEach(function(p){ctx.lineTo(p.x,p.y);});
+ctx.strokeStyle=’#5b8ff9’;ctx.lineWidth=2;ctx.lineJoin=‘round’;ctx.stroke();
+
+// Fill
+ctx.beginPath();ctx.moveTo(pts[0].x,pad.t+ch);
+pts.forEach(function(p){ctx.lineTo(p.x,p.y);});
+ctx.lineTo(pts[pts.length-1].x,pad.t+ch);ctx.closePath();
+ctx.fillStyle=‘rgba(91,143,249,.1)’;ctx.fill();
+
+// Dots
+pts.forEach(function(p){
+var c=p.sl>=60?’#f26d6d’:p.sl>=35?’#f5a623’:’#3ecf8e’;
+ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);
+ctx.fillStyle=c;ctx.fill();
+ctx.strokeStyle=’#fff’;ctx.lineWidth=1.5;ctx.stroke();
+});
+}
+
 // ══ TUTORIAL ══
 var TUT_KEY=‘pawsense_onboarding_done’;
 var TUT_STEPS=[
-{sel:’.menu-btn’,zh:‘點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話、清除資料喔！’,en:‘Tap here to open the sidebar 📂\nView chat history, start new chats, or clear data!’,mood:‘happy’},
-{sel:’.mode-chip’,zh:‘這是模式切換 🎯\n有 4 種模式：問答、分析、解讀、管理，試試看！’,en:‘This is the mode switcher 🎯\n4 modes: Chat, Analyze, Report, Cats — try them!’,mood:‘excited’},
-{sel:’#lang-btn’,zh:‘按這裡切換語言 🌐\n支援中文和英文喔～’,en:‘Tap here to switch language 🌐\nSupports Chinese and English!’,mood:‘happy’},
-{sel:’.inp-wrap’,zh:‘在這裡輸入訊息 💬\n問我任何關於貓咪的問題吧！’,en:‘Type your message here 💬\nAsk me anything about cats!’,mood:‘happy’},
-{sel:’.plus-btn’,zh:‘按這裡上傳照片 📸\n拍貓咪的照片讓我看看～’,en:‘Tap here to upload photos 📸\nShow me your cat pics!’,mood:‘excited’},
-{sel:’.sg-grid’,zh:‘這些是快速操作卡片 ⚡\n點一下就能快速開始對話！’,en:‘These are quick action cards ⚡\nTap one to start chatting right away!’,mood:‘happy’},
-{sel:’#vcat-wrap’,zh:‘這是我！你的虛擬貓咪 🐱\n點我可以互動，還能換照片喔！’,en:“That’s me! Your virtual cat 🐱\nTap me to interact, or change my photo!”,mood:‘excited’}
+{sel:’.menu-btn’,zh:‘點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話！’,en:‘Tap here to open the sidebar 📂\nView chat history or start new chats!’,mood:‘happy’},
+{sel:’.mode-chip’,zh:‘這裡可以切換兩種模式 🔄\n🐱 問答：和我聊天，自動記錄貓咪資訊\n🐈 健康檔案：查看貓咪健康狀況與圖表’,en:‘Switch between two modes here 🔄\n🐱 Chat: Talk to me, cat info auto-saved\n🐈 Health: View health charts & history’,mood:‘excited’},
+{sel:’.inp-wrap’,zh:‘在問答模式裡輸入訊息 💬\n告訴我貓咪的名字、行為、症狀，我會自動記錄下來！’,en:‘Type messages in Chat mode 💬\nTell me your cat's name, behavior, symptoms — I'll auto-record everything!’,mood:‘happy’},
+{sel:’#lang-btn’,zh:‘按這裡切換語言 🌐\n支援中文和英文！’,en:‘Tap here to switch language 🌐\nChinese and English supported!’,mood:‘happy’},
+{sel:’.plus-btn’,zh:‘按這裡上傳照片 📸\n可以拍貓咪讓我看看狀況！’,en:‘Tap here to upload photos 📸\nShow me your cat's condition!’,mood:‘excited’},
+{sel:’#vcat-wrap’,zh:‘這是我！🐱 對話開始後我會走開，不擋你的畫面。\n點右下角 🐾 腳印可以叫我回來喔！’,en:“That’s me! 🐱 I’ll step aside when you chat.\nTap the 🐾 paw in the corner to call me back!”,mood:‘excited’}
 ];
 var tutStep=-1;
 var tutPrevEl=null;
@@ -1288,6 +1626,7 @@ document.getElementById(‘tut-overlay’).classList.remove(‘show’);
 document.getElementById(‘tut-bar’).classList.remove(‘show’);
 var vcw=document.getElementById(‘vcat-wrap’);if(vcw)vcw.style.zIndex=‘300’;
 if(typeof vcatSay===‘function’) vcatSay(curLang===‘en’?‘See you next time! 👋’:‘下次見囉！👋’,3000);
+setTimeout(function(){if(typeof vcatWalkOut===‘function’)vcatWalkOut();},2000);
 }
 function tutEnd(completed){
 if(tutPrevEl){tutPrevEl.classList.remove(‘tut-highlight’);tutPrevEl.style.pointerEvents=’’;tutPrevEl=null;}
@@ -1297,9 +1636,11 @@ document.getElementById(‘tut-bar’).classList.remove(‘show’);
 var vcw=document.getElementById(‘vcat-wrap’);if(vcw)vcw.style.zIndex=‘300’;
 if(completed){
 try{localStorage.setItem(TUT_KEY,‘1’);}catch(e){}
-if(typeof vcatSay===‘function’) vcatSay(curLang===‘en’?“You’re all set! Let’s get started! 🎉”:‘教學完成！開始探索吧！🎉’,5000);
+if(typeof vcatSay===‘function’) vcatSay(curLang===‘en’?“You’re all set! Let’s get started! 🎉 I’ll step aside when you chat, tap 🐾 to call me back!”:‘教學完成！🎉 對話時我會走開，點右下角 🐾 可以叫我回來！’,6000);
 if(typeof setVcatMood===‘function’) setVcatMood(‘excited’);
 if(typeof vcatWave===‘function’) vcatWave();
+// Walk out after showing completion message
+setTimeout(function(){if(typeof vcatWalkOut===‘function’)vcatWalkOut();},3500);
 }
 }
 function tutRenderDots(){
@@ -1376,6 +1717,8 @@ vcatWave();
 </div>
 
 </div>
+
+<div id="vcat-pawprint" onclick="vcatWalkIn()" title="叫貓咪回來">🐾</div>
 
 <script>
 // ════ PAGE SWITCHER ════
