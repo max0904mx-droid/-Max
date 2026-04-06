@@ -532,7 +532,7 @@ function clearData(){
   if(!confirm('確定要清除所有資料嗎？'))return;
   localStorage.removeItem(DB_KEY);
   DB={users:[{name:'我',email:'local',pw:'',cats:[],records:[],sessions:[],favs:[]}],cur:'local'};
-  saveDB();curSessId=null;sessMsgs=[];chatHist=[];selCatId=null;catAddStep=null;catTemp={};
+  saveDB();curSessId=null;sessMsgs=[];chatHist=[];selCatId=null;
   closeSB();renderSB();renderMsgs([]);refreshCatBar();
 }
 // ══ SIDEBAR / SHEET ══
@@ -566,7 +566,7 @@ function delSess(id){var u=curU();if(!u)return;u.sessions=u.sessions.filter(func
 // ══ SESSIONS ══
 var curSessId=null,sessMsgs=[];
 function newChat(){
-  curSessId=null;chatHist=[];sessMsgs=[];catAddStep=null;catTemp={};
+  curSessId=null;chatHist=[];sessMsgs=[];
   document.getElementById('hd-title').textContent='PawSense AI';
   renderMsgs([]);renderSB();closeSB();
 }
@@ -827,34 +827,16 @@ var tdots=document.createElement(‘div’);tdots.className=‘ty-dots’;
 tdots.innerHTML=’<div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div>’;
 tg.appendChild(tav);tg.appendChild(tdots);
 document.getElementById(‘msgs’).appendChild(tg);scrollBot();
-if(chatMode===‘cat’||catAddStep){removeEl(tid);await catFlow(txt,u);return;}
-var low2=txt.toLowerCase();
-if(low2.includes(‘新增貓咪’)||low2.includes(‘加入貓咪’)||low2.includes(‘新增一隻貓’)){
-removeEl(tid);setModeSilent(‘cat’);await catFlow(txt,u);return;
-}
-// 分析模式但還沒有貓咪 - 提前引導
-if(chatMode===‘analyze’&&(!u||!u.cats||!u.cats.length)){
-removeEl(tid);
-pushAI(‘🐱 **還沒有貓咪資料！**\n\n進行行為分析前，需要先建立貓咪的基本資料，這樣分析結果才能保存在正確的檔案裡。\n\n請先告訴我貓咪的**名字**是什麼？’,[‘幫我新增貓咪’]);
-setModeSilent(‘cat’);catAddStep=null;
-return;
-}
 var catInfo=’’;
 if(u&&u.cats&&u.cats.length){
-catInfo=’\n\n用戶的貓咪：’+u.cats.map(function(c){return c.name+’（’+c.breed+’，’+c.age+’，’+c.gender+’）’;}).join(’、’);
+catInfo=’\n\n用戶目前的貓咪檔案：’+u.cats.map(function(c){
+var recs=(u.records||[]).filter(function(r){return r.catId===c.id;});
+var lastRec=recs.length?recs[recs.length-1]:null;
+return c.name+’（’+c.breed+’，’+c.age+’）’+(lastRec?’，最近壓力指數’+lastRec.sl+’/100’:’’);
+}).join(’、’);
 }
 var langInstr=curLang===‘en’?‘Please respond in English only.’:‘請用繁體中文回答。’;
-var sys=‘你是 PawSense AI，一個懂貓咪與各種寵物的 AI 助理朋友。\n用繁體中文回答，語氣親切自然，像好友聊天一樣。\n\n【鐵則 — 必須嚴格遵守】\n第一步：立刻根據現有資訊完成完整分析或回答，無論描述多短。\n第二步：分析儲存完成後，才可以在結尾追問 1~2 個細節。\n絕對禁止：在分析之前要求更多資訊、以資訊不足為由延後分析、先問問題再分析。\n\n你擅長回答任何寵物問題，包含：\n- 行為解讀：早上一直叫、半夜狂奔、為什麼喜歡紙箱、為什麼踩奶\n- 情緒與溝通：尾巴/耳朵/眼神的含義\n- 日常照護：飲食、梳毛、剪指甲、如廁訓練\n- 健康問題：常見症狀判斷（並適時提醒就醫）\n- 生活環境：玩具選擇、睡眠空間、多貓相處\n\n你有網路搜尋工具可查詢最新資訊。回答用 **粗體** 標重點，必要時條列整理。\n\n’+langInstr+catInfo;
-if(chatMode===‘analyze’){
-var sc2=selCatId&&u&&u.cats?u.cats.find(function(c){return c.id===selCatId;}):null;
-if(sc2)sys+=’\n\n目前分析對象：’+sc2.name+’（’+sc2.breed+’，’+sc2.age+’）’;
-sys+=’\n\n【行為分析模式 — 固定流程，不可更改順序】\n步驟一（必做）：立刻對使用者的描述進行完整分析，包含以下全部項目：\n【行為解析】以現有資訊推斷可能原因\n【情緒評估】貓咪當下情緒狀態\n【壓力指數】：XX/100\n【風險等級】：低/中/高\n【改善建議】具體建議\n【何時就醫】警示條件\n步驟二（分析儲存後才執行）：在最後加一行追問，例如「💬 告訴我更多可以讓分析更準確，例如：發生時間、持續多久、最近有無變化？」，讓使用者自行決定是否補充。\n步驟三：若使用者補充資訊，則依新資訊重新進行完整分析。’;
-}
-if(chatMode===‘report’&&u&&u.records&&u.records.length){
-var lr=u.records[u.records.length-1];
-var lc=u.cats.find(function(c){return c.id===lr.catId;})||{name:‘貓咪’};
-sys+=’\n\n最近分析報告（’+lc.name+’，’+lr.date+’）：\n’+lr.fullReport;
-}
+var sys=‘你是 PawSense AI，一個懂貓咪的 AI 助理。語氣親切自然，像好友聊天。\n\n【核心功能】\n當使用者提到貓咪名字和狀況，立刻針對那隻貓分析並給建議。\n分析時必須包含：壓力指數（XX/100）、風險等級（低/中/高）、改善建議。\n不需要詢問是否建立資料，直接從對話中記住貓咪資訊。\n\n【回答原則】\n立刻完整回答，不以資訊不足為由延後分析。\n分析完才可在結尾追問 1 個細節。\n回答用 **粗體** 標重點，必要時條列整理。\n\n’+langInstr+catInfo;
 // Push to chatHist - use array format if photos present
 if(photos.length){
 var apiContent=[];
@@ -904,9 +886,8 @@ saveSess(null);
 
 // ══ AUTO RECORD (Step 3) ══
 function autoRecord(userTxt, replyTxt){
-if(chatMode!==‘general’) return;
 var u=curU();
-if(!u||!u.cats||!u.cats.length) return;
+if(!u) return;
 
 // 偵測壓力指數和風險等級
 var sm=replyTxt.match(/壓力指數[^\d]*(\d+)/)||replyTxt.match(/(\d+)\s*[/／]\s*100/);
@@ -916,19 +897,53 @@ if(!sm||!rm) return; // 沒有分析結果就不記錄
 var sl=Math.min(100,Math.max(0,parseInt(sm[1])));
 var risk=rm[1];
 
-// 偵測對話中提到的貓咪名字
+// 從對話中偵測貓咪名字
+var combined=userTxt+’ ’+replyTxt;
 var matchedCat=null;
-var combined=(userTxt+’ ’+replyTxt).toLowerCase();
+
+// 先比對現有貓咪
+if(u.cats&&u.cats.length){
 u.cats.forEach(function(c){
-if(combined.indexOf(c.name.toLowerCase())!==-1){
+if(combined.toLowerCase().indexOf(c.name.toLowerCase())!==-1){
 matchedCat=c;
 }
 });
-// 沒匹配到名字就用第一隻
-if(!matchedCat) matchedCat=u.cats[0];
+}
 
-// 避免重複記錄（同一秒內）
+// 找不到已知貓咪 → 嘗試從對話中提取名字並自動建立
+if(!matchedCat){
+var nameMatch=combined.match(/(?:我的貓|貓咪|我家的貓)[叫是名字叫]?\s*([^\s，。！？、,.]{1,6})/);
+if(!nameMatch) nameMatch=combined.match(/([^\s，。！？、,.]{1,6})(?:最近|今天|昨天|一直|突然)/);
+if(nameMatch&&nameMatch[1]){
+var newName=nameMatch[1].replace(/[的牠她他它]/g,’’).trim();
+if(newName.length>=1&&newName.length<=6){
+// 自動建立新貓咪
+if(!u.cats) u.cats=[];
+var newCat={
+id:Date.now(),
+name:newName,
+emoji:‘🐱’,
+breed:‘未填’,
+age:‘未填’,
+gender:‘未填’,
+createdAt:new Date().toLocaleDateString(‘zh-TW’)
+};
+u.cats.push(newCat);
+saveDB();
+matchedCat=newCat;
+}
+}
+}
+
+// 還是找不到 → 用第一隻，或不記錄
+if(!matchedCat){
+if(u.cats&&u.cats.length) matchedCat=u.cats[0];
+else return;
+}
+
+// 避免重複記錄（5秒內）
 var now=Date.now();
+if(!u.records) u.records=[];
 var recent=u.records.filter(function(r){return r.catId===matchedCat.id&&now-r.id<5000;});
 if(recent.length) return;
 
@@ -949,57 +964,6 @@ saveDB();
 }
 
 // ══ CAT FLOW ══
-var catAddStep=null,catTemp={};
-async function catFlow(txt,u){
-if(!u)u=curU();
-// Handle error recovery quick replies
-if(txt===‘重新嘗試’||txt===‘稍後再試’){
-pushAI(‘好的，你可以重新輸入你的問題，我來幫你！’,[]);return;
-}
-if(txt===‘重新描述’||txt===‘換個問題’){
-pushAI(‘沒問題！請重新描述你的問題，可以更具體一點，例如說明發生的時間、貓咪的行為、持續多久等。’,[]);return;
-}
-var low=txt.toLowerCase();
-if(low.includes(‘查看’)||low.includes(‘我的貓’)||low.includes(‘列出’)){
-if(!u.cats.length){pushAI(‘你還沒有新增任何貓咪。\n\n說「**新增貓咪**」來建立第一隻！’,[‘新增貓咪’]);return;}
-var listTxt=u.cats.map(function(c,i){
-return ‘**’+(i+1)+’. ‘+c.emoji+’ ‘+c.name+’**（’+c.breed+’，’+c.age+’，’+c.gender+’）\n分析次數：’+u.records.filter(function(r){return r.catId===c.id;}).length+‘次’;
-}).join(’\n\n’);
-pushAI(‘你的貓咪：\n\n’+listTxt,[‘新增貓咪’,‘切換到行為分析’]);return;
-}
-if(low.includes(‘新增’)||low.includes(‘加入’)||catAddStep){await catAddFlow(txt,u);return;}
-if(low.includes(‘紀錄’)||low.includes(‘報告’)){
-if(!u.records.length){pushAI(‘還沒有分析紀錄。切換到**行為分析**模式開始吧！’,[‘切換到行為分析’]);return;}
-var recentTxt=u.records.slice(-3).reverse().map(function(r){
-var c=u.cats.find(function(x){return x.id===r.catId;})||{name:‘貓咪’};
-return ‘📅 ‘+r.date+’ — **’+c.name+’** 壓力 ‘+r.sl+’/100（’+r.risk+‘風險）’;
-}).join(’\n\n’);
-pushAI(‘最近’+Math.min(3,u.records.length)+‘筆分析：\n\n’+recentTxt,[‘解讀最新報告’,‘切換到行為分析’]);return;
-}
-if(txt.includes(‘切換到行為分析’)){setMode(‘analyze’);return;}
-if(txt.includes(‘解讀最新報告’)){setMode(‘report’);return;}
-pushAI(‘在**貓咪管理**模式中你可以：\n\n- **查看我的貓咪**\n- **新增貓咪**\n- **查看紀錄**’,[‘查看我的貓咪’,‘新增貓咪’,‘查看紀錄’]);
-}
-async function catAddFlow(txt,u){
-if(!catAddStep){catAddStep=‘name’;catTemp={emoji:‘🐱’};pushAI(‘好的！貓咪的**名字**是？’,[]);return;}
-if(catAddStep===‘name’){catTemp.name=txt.trim();catAddStep=‘breed’;pushAI(’**品種**是什麼？（例：英短、米克斯）’,[]);return;}
-if(catAddStep===‘breed’){catTemp.breed=txt.trim()||‘未填’;catAddStep=‘age’;pushAI(’**年齡**是？（例：3歲、8個月）’,[]);return;}
-if(catAddStep===‘age’){catTemp.age=txt.trim()||‘未填’;catAddStep=‘gender’;pushAI(’**性別**？’,[‘公（已結紮）’,‘公（未結紮）’,‘母（已結紮）’,‘母（未結紮）’]);return;}
-if(catAddStep===‘gender’){
-catTemp.gender=txt.trim()||‘未填’;catAddStep=‘confirm’;
-pushAI(‘確認：\n\n🐱 ‘+catTemp.name+’ / ‘+catTemp.breed+’ / ‘+catTemp.age+’ / ‘+catTemp.gender+’\n\n**確認儲存？**’,[‘確認’,‘重新開始’]);return;
-}
-if(catAddStep===‘confirm’){
-if(txt.includes(‘確認’)){
-catTemp.id=Date.now();catTemp.createdAt=new Date().toLocaleDateString(‘zh-TW’);
-u.cats.push(catTemp);saveDB();
-var nm=catTemp.name;catAddStep=null;catTemp={};
-selCatId=u.cats[u.cats.length-1].id;refreshCatBar();
-pushAI(‘✅ **’+nm+’** 已新增！\n\n切換到**行為分析**模式可以分析牠的行為。’,[‘切換到行為分析’,‘查看我的貓咪’]);
-}else{catAddStep=null;catTemp={};pushAI(‘已取消。’,[‘新增貓咪’]);}
-return;
-}
-}
 function pushAI(content,qr){
 chatHist.push({role:‘assistant’,content:content});
 var msg={role:‘assistant’,content:content,qr:qr||[]};
