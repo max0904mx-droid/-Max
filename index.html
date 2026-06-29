@@ -402,6 +402,27 @@ img{max-width:100%;height:auto;display:block;}
 
 /* 底部按鈕 */
 .health-actions{display:flex;gap:8px;margin-top:4px}
+
+/* ── DASHBOARD TABS ── */
+.health-tabs{display:flex;gap:6px;background:var(--s2);border-radius:12px;padding:4px;margin-top:4px}
+.health-tab{flex:1;text-align:center;padding:9px 0;border-radius:9px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .18s;user-select:none;border:none;background:transparent;font-family:'Noto Serif TC',serif}
+.health-tab.active{background:var(--s1);color:var(--ac);box-shadow:0 1px 4px rgba(91,143,249,.15)}
+
+/* ── DAILY LOG ── */
+.daily-log-hint{font-size:11px;color:var(--t3);text-align:center;padding:4px 0 8px}
+.daily-item{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:8px;cursor:pointer;transition:all .18s}
+.daily-item:hover{border-color:rgba(91,143,249,.3)}
+.daily-hd{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.daily-date{font-size:11px;color:var(--t3);font-family:'Space Mono',monospace;flex-shrink:0;width:78px}
+.daily-icon{font-size:18px;flex-shrink:0}
+.daily-desc{flex:1;font-size:13px;color:var(--t);line-height:1.4}
+.daily-risk{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;flex-shrink:0}
+.daily-risk.r-low{background:rgba(62,207,142,.13);color:var(--gr)}
+.daily-risk.r-mid{background:rgba(245,166,35,.13);color:var(--ye)}
+.daily-risk.r-high{background:rgba(242,109,109,.13);color:var(--re)}
+.daily-body{display:none;padding:0 14px 12px;font-size:12px;color:var(--t2);line-height:1.7;border-top:1px solid var(--bd2);white-space:pre-wrap;word-break:break-word;max-height:240px;overflow-y:auto}
+.daily-body.open{display:block}
+.daily-empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:13px;line-height:1.8}
 .health-action-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:'Noto Serif TC',serif}
 .health-action-primary{background:var(--ac);color:#fff}
 .health-action-primary:hover{background:var(--acb)}
@@ -830,7 +851,8 @@ function renderPhotoBar(){
 
 var chatHist=[];
 async function sendMsg(){
-  var t=document.getElementById('inp-tx');var txt=t.value.trim();if(!txt)return;
+  var t=document.getElementById('inp-tx');var txt=t.value.trim();
+  if(!txt&&!pendingPhotos.length)return;
   t.value='';t.style.height='auto';document.getElementById('send-btn').classList.remove('on');
   var u=curU();
   // Build user message with optional images
@@ -1156,6 +1178,42 @@ var KB={
     ans:'🐱 **貓咪體重管理**\n\n**理想體重**\n- 一般成貓：3.5-5 公斤\n- 大型品種（緬因貓等）：可達 7-9 公斤\n\n**判斷方式（觸感法）**\n- ✅ 正常：摸得到肋骨但看不到\n- ⚠️ 過重：摸不太到肋骨\n- ⚠️ 過輕：肋骨清晰可見\n\n**減重建議**\n- 計算每日熱量需求（依體重和活動量）\n- 少量多餐，不要放任自助\n- 增加玩耍時間\n- 用益智餵食玩具\n\n💡 貓咪減重不能太快！每週減少不超過 1-2% 體重，否則容易引發脂肪肝。'},
   vaccine:{keys:['疫苗','打針','預防針','驅蟲','寄生蟲','跳蚤'],
     ans:'🐱 **疫苗與預防醫療指南**\n\n**核心疫苗（每年/每三年）**\n- 三合一疫苗（貓瘟、貓鼻氣管炎、貓卡里西病毒）\n- 狂犬病疫苗（法律規定）\n\n**首次接種時程**\n- 8 週：第一劑三合一\n- 12 週：第二劑三合一\n- 16 週：第三劑 + 狂犬病\n\n**體內驅蟲**：每 3 個月一次\n**體外驅蟲**（跳蚤/蜱）：每月一次\n\n💡 **室內貓也需要疫苗**，因為病毒可能從鞋底帶入家中。'},
+  shedding:{keys:['掉毛','脫毛','大量掉毛','毛掉很多','禿'],
+    ans:'🐱 **掉毛狀況分析**\n\n**【行為解析】**\n貓咪正常會換毛，但異常大量掉毛、出現禿斑或皮膚問題就需要留意。\n\n**【壓力指數】**：35/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 季節性換毛（春秋季正常現象）\n- 壓力或焦慮引發過度舔毛、自我拔毛\n- 跳蚤、疥癬等寄生蟲\n- 過敏（食物、環境、清潔用品）\n- 皮膚或黴菌感染\n- 甲狀腺、腎臟、肝臟等內分泌疾病\n\n**【改善建議】**\n- 每天梳毛減少脫落毛髮堆積\n- 確保飲食均衡，補充Omega-3\n- 檢查皮膚是否有紅疹、結痂或寄生蟲\n\n**【何時就醫】**\n⚠️ 若出現明顯禿斑、皮膚紅腫破皮、或掉毛伴隨食慾不振，請就醫檢查。\n\n參考來源：VCA Animal Hospitals, Chewy, Zoetis Petcare'},
+  sneeze:{keys:['打噴嚏','噴嚏','流鼻水','鼻塞','鼻涕'],
+    ans:'🐱 **打噴嚏／流鼻水分析**\n\n**【行為解析】**\n偶爾打噴嚏是正常的清潔反射，但持續性的噴嚏和鼻水通常代表上呼吸道感染。\n\n**【壓力指數】**：40/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 病毒性上呼吸道感染（貓鼻氣管炎、卡里西病毒），約80-90%的貓帶有皰疹病毒，壓力時容易復發\n- 環境刺激物（灰塵、香水、清潔劑、煙味）\n- 細菌感染（常為病毒感染後的次發感染）\n- 牙齒或牙齦問題影響鼻竇\n- 鼻腔異物或黴菌感染\n\n**【改善建議】**\n- 觀察鼻涕顏色：清澈通常較輕微，黃綠色或濃稠需注意\n- 保持環境清潔，減少粉塵與刺激性氣味\n- 使用蒸氣（如浴室開熱水）幫助鼻腔暢通\n\n**【何時就醫】**\n⚠️ 若症狀持續超過2-3天、鼻水變黃綠色或帶血、合併食慾下降或呼吸急促，請就醫。\n\n參考來源：Bond Vet, Disney Pet Hospital, Bulger Veterinary Hospital'},
+  eye_discharge:{keys:['眼屎','流眼淚','眼睛分泌物','結膜炎','眼睛紅'],
+    ans:'🐱 **眼睛分泌物分析**\n\n**【行為解析】**\n貓咪眼睛有自我清潔機制，少量清澈分泌物正常，但異常分泌物可能是感染徵兆。\n\n**【壓力指數】**：35/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 結膜炎（細菌、病毒感染或刺激物引起，會有紅腫、瞇眼）\n- 貓皰疹病毒（常合併打噴嚏、流鼻水）\n- 淚管阻塞（白色貓較常見，分泌物會沿著臉部流下）\n- 過敏反應\n\n**【改善建議】**\n- 用乾淨棉花沾溫水或生理食鹽水輕輕擦拭\n- 觀察分泌物顏色：清澈通常較輕微，黃綠色需注意\n- 保持環境清潔減少刺激\n\n**【何時就醫】**\n⚠️ 分泌物變成黃色、綠色或帶血，伴隨瞇眼、紅腫、畏光，或眼睛表面出現白霧，請立即就醫，眼睛問題延誤可能影響視力。\n\n參考來源：Berthoud Animal Hospital, VCA Animal Hospitals'},
+  bad_breath:{keys:['口臭','嘴巴臭','牙齒','牙齦','牙結石'],
+    ans:'🐱 **口臭分析**\n\n**【行為解析】**\n輕微口腔氣味正常，但明顯惡臭通常代表口腔或全身性問題。\n\n**【壓力指數】**：30/100\n\n**【風險等級】**：低至中\n\n**常見原因**\n- 牙結石堆積（幾乎都是細菌造成，最常見原因）\n- 牙齦炎、牙周病\n- 口腔潰瘍或腫瘤\n- 嚴重情況：腎臟疾病會讓口氣有氨味、糖尿病可能有特殊酮味\n\n**【改善建議】**\n- 定期幫貓咪刷牙或使用潔牙產品\n- 提供潔牙零食或專用乾糧減少牙結石\n- 觀察是否伴隨流口水、不願進食硬食\n\n**【何時就醫】**\n⚠️ 若口臭非常嚴重（如腐肉味）、合併嗜睡、食慾不振、體重下降，可能是腎臟或其他系統性疾病，請盡快就醫檢查。\n\n參考來源：VCA Animal Hospitals, JustAnswer Vet'},
+  overgrooming:{keys:['過度舔毛','一直舔','舔到禿','拔毛','過度理毛'],
+    ans:'🐱 **過度舔毛行為分析**\n\n**【行為解析】**\n適度理毛是正常行為，但過度舔到禿毛、皮膚發紅，通常代表壓力或皮膚問題。\n\n**【壓力指數】**：55/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 壓力與焦慮（環境改變、新成員、噪音）導致自我安慰性舔毛\n- 跳蚤、疥癬等寄生蟲引起搔癢\n- 食物或環境過敏\n- 疼痛（舔特定部位可能是該處不適，如關節或腹部）\n\n**【改善建議】**\n- 觀察舔毛集中的部位，可能反映該處不適\n- 增加環境豐富化（玩具、貓抓板、躲藏空間）減少壓力\n- 檢查皮膚是否有寄生蟲或皮屑\n\n**【何時就醫】**\n⚠️ 若出現明顯禿斑、皮膚破損出血、或合併其他行為改變，請就醫排除疼痛或皮膚疾病。\n\n參考來源：Zoetis Petcare, TotalVet'},
+  fever:{keys:['發燒','體溫高','發熱','體溫'],
+    ans:'🐱 **發燒症狀分析**\n\n**【行為解析】**\n貓咪正常體溫約38-39.2°C，超過39.5°C可能為發燒，常合併食慾不振、嗜睡。\n\n**【壓力指數】**：70/100\n\n**【風險等級】**：高\n\n**常見原因**\n- 病毒或細菌感染\n- 預防針注射後的短暫免疫反應\n- 發炎反應（傷口、膿瘡）\n- 中暑（高溫環境下）\n\n**【改善建議】**\n- 觸摸耳朵、腳掌是否異常溫熱（僅供初步參考，無法取代體溫計）\n- 確保飲水充足，環境涼爽通風\n- 觀察是否合併嗜睡、食慾不振、呼吸急促\n\n**【何時就醫】**\n⚠️ 貓咪發燒合併精神萎靡、不吃不喝超過24小時，或體溫持續偏高，請立即就醫，發燒本身是症狀，需找出根本原因。\n\n參考來源：VCA Animal Hospitals'},
+  inappropriate_urination:{keys:['亂尿尿','尿在床上','尿在沙發','到處尿尿','噴尿'],
+    ans:'🐱 **亂尿尿行為分析**\n\n**【行為解析】**\n貓咪在砂盆外排尿（不論是大量排尿還是噴尿標記）背後可能是醫療或行為問題，約60%因不當排尿就診的貓被發現有下泌尿道疾病(FLUTD)。\n\n**【壓力指數】**：65/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 醫療因素：膀胱炎、尿路感染、結石、糖尿病、腎臟病、關節炎導致行動不便\n- 環境壓力：新成員、搬家、噪音、改變家具擺放\n- 砂盆問題：不夠乾淨、位置不佳、數量不足（建議貓數+1個）\n- 多貓相處：貓咪間的緊張關係造成砂盆迴避\n- 噴尿標記：常見於未絕育公貓，會對著垂直表面噴尿\n\n**【改善建議】**\n- 先排除醫療問題：觀察排尿量、頻率、是否用力\n- 增加砂盆數量與清潔頻率\n- 找出環境壓力來源並改善\n\n**【何時就醫】**\n⚠️ 若發現貓咪頻繁進出砂盆卻排尿極少、用力哀叫、或完全無尿，這是泌尿道阻塞的緊急狀況，請立即就醫！\n\n參考來源：VCA Animal Hospitals, ARM & HAMMER, Royal Canin'},
+  cat_aggression:{keys:['貓咪打架','互相攻擊','貓咪不合','貓咪欺負','貓咪兇對方'],
+    ans:'🐱 **多貓攻擊行為分析**\n\n**【行為解析】**\n貓與貓之間的攻擊行為可能是玩耍、地位競爭，或真正的敵意衝突，需觀察整體情境判斷。\n\n**【壓力指數】**：60/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 領地競爭：資源（食物、砂盆、休息空間）不足引發衝突\n- 引入新貓時適應期沒有循序漸進\n- 其中一隻貓有疼痛或疾病，變得易怒（健康問題可能表現為攻擊性增加）\n- redirected aggression：因外部刺激（如看到窗外的貓）情緒轉移到同伴身上\n\n**【改善建議】**\n- 增加資源數量並分散位置：食物碗、水碗、砂盆（每貓+1個）、休息區\n- 提供充足的垂直空間（貓跳台）讓每隻貓有自己的領域\n- 若有貓咪突然變得易怒，先排除疼痛或疾病\n\n**【何時就醫】**\n⚠️ 若攻擊造成傷口、或某隻貓持續被孤立不敢吃飯喝水，請就醫並諮詢行為專家。\n\n參考來源：VCA Animal Hospitals, ASPCA'},
+  excessive_meow:{keys:['一直叫','整天叫','過度叫','吵鬧','大叫'],
+    ans:'🐱 **過度叫聲行為分析**\n\n**【行為解析】**\n貓咪叫聲是溝通方式，但頻率突然增加或音量改變，通常代表需求未被滿足或身體不適。\n\n**【壓力指數】**：45/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 需求型：肚子餓、想要陪伴、想出門\n- 發情期：未絕育貓咪會發出特殊的長叫聲\n- 老年認知功能下降：老貓對環境感到困惑而叫\n- 疼痛或不適：甲狀腺問題等疾病會讓貓咪叫聲變化\n- 分離焦慮：主人不在時持續叫\n\n**【改善建議】**\n- 記錄叫聲發生的時間點和情境\n- 確保基本需求被滿足（食物、水、清潔砂盆、陪伴）\n- 睡前充分玩耍消耗精力\n\n**【何時就醫】**\n⚠️ 若叫聲突然改變音調、伴隨其他行為改變（如食慾、活動力下降），尤其是老年貓，建議就醫排除甲狀腺或認知功能問題。\n\n參考來源：VCA Animal Hospitals'},
+  hiding_food:{keys:['藏食物','把食物叼走','藏玩具','把東西藏起來'],
+    ans:'🐱 **藏食物/物品行為分析**\n\n**【行為解析】**\n這是貓咪的本能行為，源自野外祖先「儲存食物」與「保護獵物」的習慣。\n\n**【壓力指數】**：15/100\n\n**【風險等級】**：低（多為正常行為）\n\n**常見原因**\n- 野性本能：野外貓咪會把多餘食物藏起來避免被其他動物搶走\n- 玩具當作「獵物」：把玩具叼到隱密處是模擬狩獵儲藏行為\n- 多貓家庭：擔心食物被其他貓搶走而藏起來\n- 焦慮：在感到不安全時，把重要物品（食物、玩具）移到「安全基地」\n\n**【改善建議】**\n- 通常不需要特別處理，這是正常天性\n- 若食物被藏在隱密處導致腐壞，建議固定餵食時間並及時收走\n- 多貓家庭可分開餵食減少競爭感\n\n**【何時就醫】**\n這通常是正常行為，但若同時出現過度防衛、不讓人靠近食物且伴隨攻擊性，建議觀察是否有資源焦慮問題。'},
+  tail_chasing:{keys:['追尾巴','咬自己尾巴','轉圈圈','原地打轉'],
+    ans:'🐱 **追尾巴/原地打轉行為分析**\n\n**【行為解析】**\n小貓偶爾追自己的尾巴是玩耍探索行為，但成貓頻繁或強迫性地追咬尾巴需要留意。\n\n**【壓力指數】**：40/100\n\n**【風險等級】**：低至中\n\n**常見原因**\n- 幼貓玩耍：發現尾巴會動，當作玩具追逐，隨年紀增長會減少\n- 過度興奮或精力過剩：缺乏足夠的活動量和刺激\n- 強迫行為（壓力相關）：在環境壓力大時，貓咪可能發展出重複性的自我刺激行為\n- 尾巴或脊椎疼痛：若貓咪對尾巴特定部位特別敏感或攻擊性地咬，可能是該處不適\n\n**【改善建議】**\n- 增加互動玩耍時間，提供足夠的精力釋放管道\n- 觀察行為發生的頻率與情境，是否與特定壓力源相關\n- 檢查尾巴是否有外傷、腫脹或異常反應\n\n**【何時就醫】**\n⚠️ 若貓咪對尾巴出現攻擊性咬咬到受傷、或行為變成強迫性重複且無法被打斷，建議就醫排除神經或皮膚問題，並諮詢行為專家。'},
+  excessive_thirst:{keys:['喝很多水','一直喝水','口渴','喝水量增加','多喝水'],
+    ans:'🐱 **喝水量增加分析**\n\n**【行為解析】**\n貓咪喝水量明顯增加（醫學上稱「多渴症」）常是身體在代償水分流失，是健康狀況的重要指標。\n\n**【壓力指數】**：65/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 慢性腎臟病：老年貓最常見原因，10歲以上貓約40%、15歲以上約80%有腎臟問題，腎臟過濾功能下降使尿液變多，連帶喝水量增加\n- 糖尿病：常見於過重的中年公貓，血糖過高會把水分帶入尿液，造成又喝又尿的循環，常伴隨體重下降但食慾旺盛\n- 甲狀腺機能亢進：代謝加快，常伴隨食慾大增但體重減輕、活動量變大\n- 泌尿道感染或結石：排尿不適會讓貓咪想喝更多水\n- 環境因素：天氣炎熱、活動量大、或從濕食改為乾糧也會增加飲水量\n\n**【改善建議】**\n- 記錄24小時內的飲水量變化做比較\n- 觀察是否合併其他症狀：體重變化、食慾改變、活動力、毛髮光澤\n- 若剛換成乾糧飲食，這可能是正常生理反應\n\n**【何時就醫】**\n⚠️ 喝水量持續明顯增加超過幾天，尤其是中老年貓，或合併體重下降、食慾改變，請盡快安排血液和尿液檢查，許多重要疾病（腎臟病、糖尿病、甲狀腺）的早期徵兆就是喝水變多。\n\n參考來源：International Cat Care, PetMD, MetLife Pet Insurance'},
+  limping:{keys:['跛腳','走路一拐一拐','腳受傷','瘸腿','腳痛','不敢踩地'],
+    ans:'🐱 **跛腳分析**\n\n**【行為解析】**\n跛腳對貓咪來說從來不是「正常」現象，一定代表某處感到疼痛或不適，貓咪天性會隱藏疼痛，所以一旦表現出跛腳，通常問題已存在一段時間。\n\n**【壓力指數】**：60/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 外傷：扭傷、拉傷、骨折，常因跳躍、墜落造成\n- 異物刺入：腳掌或趾間卡入玻璃碎片、刺、小石子等\n- 退化性關節炎：老年貓常見，超過22%成貓有影像學證據，但表現不明顯，可能只是不願跳上家具或減少使用某些休息點\n- 感染：被咬傷（打架傷口）引發的細菌感染、腫脹\n- 神經性問題：若合併無力、拖行、失去協調感，可能涉及神經系統\n- 緊急狀況：後肢突然完全無法行動、劇烈疼痛，可能是血栓堵塞（saddle thrombus），須立即就醫\n\n**【改善建議】**\n- 檢查腳掌、趾間是否有異物、傷口、腫脹或發熱\n- 觀察跛腳是間歇性還是持續性，與活動量的關係\n- 暫時限制貓咪活動範圍，避免跳躍\n\n**【何時就醫】**\n⚠️ 若跛腳持續超過24小時、找不到明顯原因、合併腫脹發熱，或後肢突然完全無力且劇烈疼痛（緊急狀況），請立即就醫。\n\n參考來源：Vetster, PetMD, Styllacare'},
+  coughing:{keys:['咳嗽','乾咳','咳個不停','喘氣','呼吸困難','氣喘'],
+    ans:'🐱 **咳嗽分析**\n\n**【行為解析】**\n貓咪咳嗽和吐毛球常被混淆，但兩者來自不同部位：吐毛球是腹部用力的「嗯嗯嗯-嗝」聲，來自消化道；咳嗽是胸腔短促的「咳！咳！」聲，來自呼吸道。貓咪很少無故咳嗽，幾乎都有潛在原因。\n\n**【壓力指數】**：55/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 貓氣喘：影響1-5%的貓，慢性發炎導致呼吸道腫脹收縮，每週咳嗽超過幾次且沒有吐出毛球，需特別注意\n- 過敏：對灰塵、花粉、霉菌或清潔劑等環境刺激物過敏\n- 上呼吸道感染：常合併打噴嚏、流鼻水、流眼淚\n- 心臟疾病：較少見，但中老年貓的慢性咳嗽需列入考慮\n- 異物或寄生蟲：誤吸入異物或心絲蟲感染\n\n**【改善建議】**\n- 區分「吐毛球」與「咳嗽」：吐毛球通常會帶出毛髮，咳嗽則多為乾咳不產生東西\n- 記錄咳嗽頻率：偶爾的吐毛球正常，但每週多次的乾咳需注意\n- 觀察是否合併呼吸急促、張口呼吸、牙齦發藍\n\n**【何時就醫】**\n⚠️ 若出現呼吸困難、牙齦發藍、頻繁乾咳卻沒有毛球、或合併噴嚏與喘鳴聲，請盡快就醫，氣喘和心臟問題延誤治療可能危及生命。\n\n參考來源：VCA Animal Hospitals, Trudell Animal Health, Catster'},
+  ear_scratching:{keys:['抓耳朵','耳朵癢','甩頭','耳屎','耳朵臭','搖頭'],
+    ans:'🐱 **抓耳朵/甩頭分析**\n\n**【行為解析】**\n貓咪頻繁抓耳朵或甩頭，是耳道不適最常見的表現，通常代表耳朵內有發炎、寄生蟲或感染。\n\n**【壓力指數】**：45/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 耳疥蟲（耳蟎）：高度傳染性的微小寄生蟲，會造成深色、像咖啡渣一樣的耳垢，幼貓和戶外貓特別常見\n- 細菌或酵母菌感染：耳道潮濕或耳垢堆積容易孳生，常有異味\n- 過敏：環境或食物過敏的貓咪常合併耳朵問題\n- 異物：草籽、小蟲等卡入耳道（貓咪較少見，狗較常見）\n- 耳血腫：因劇烈甩頭或抓耳造成耳翼內血管破裂腫脹\n\n**【改善建議】**\n- 檢查耳道是否有深色顆粒狀耳垢（疑似耳疥蟲）或異味分泌物\n- 不要自行用棉花棒深入耳道清潔，可能將髒污推得更深\n- 若懷疑耳疥蟲，需要就醫確診並治療所有同住貓咪（高度傳染）\n\n**【何時就醫】**\n⚠️ 若耳朵有異味分泌物、紅腫、耳翼腫脹（血腫），或甩頭抓耳造成自傷，請就醫診斷。耳蟎和感染外觀類似但治療方式不同，需專業診斷。\n\n參考來源：PetMD, Blue Cross, FirstVet, Vetster'},
+  weight_loss_appetite:{keys:['變瘦','體重下降','瘦了','吃很多卻瘦','食慾大增'],
+    ans:'🐱 **體重下降但食慾正常/增加分析**\n\n**【行為解析】**\n貓咪「吃很多卻持續變瘦」是一個重要警訊，看似矛盾的現象通常指向代謝性疾病。\n\n**【壓力指數】**：70/100\n\n**【風險等級】**：高\n\n**常見原因**\n- 甲狀腺機能亢進：8歲以上老年貓最常見的內分泌疾病之一，約95%是良性腫瘤造成甲狀腺素過量分泌，代謝過快導致體重下降，常合併食慾旺盛、活動量增加、易躁動、心跳加快、毛髮粗糙無光澤\n- 糖尿病：身體無法有效利用血糖，即使食慾正常或增加仍會消瘦，常合併喝水量和尿量增加\n- 腸胃道寄生蟲：營養被蟲體吸收導致消瘦\n- 腸胃道疾病（如發炎性腸病）：影響營養吸收\n\n**【改善建議】**\n- 記錄體重變化趨勢（建議每月固定量一次）\n- 觀察是否合併：喝水量、活動量、毛髮狀況、心跳速度的改變\n- 老年貓（8歲以上）建議定期健康檢查含甲狀腺檢測\n\n**【何時就醫】**\n⚠️ 體重持續下降合併食慾正常或增加，是需要盡快就醫做血液檢查的重要警訊，甲狀腺機能亢進和糖尿病都需要專業診斷與長期管理，早期發現預後較好。\n\n參考來源：VCA Animal Hospitals, PetMD, Texas A&M Veterinary Medicine'},
+  drooling:{keys:['流口水','口水','流涎','嘴巴濕','滴口水'],
+    ans:'🐱 **流口水分析**\n\n**【行為解析】**\n貓咪的口腔通常比狗乾燥，正常不會大量流口水。極度放鬆（呼嚕、踩奶）時偶爾少量流口水正常，但持續或大量流口水通常代表口腔不適或全身性問題。\n\n**【壓力指數】**：45/100\n\n**【風險等級】**：中\n\n**常見原因**\n- 牙齒疾病：最常見原因，牙結石、牙齦炎、牙周病、牙齒吸收病灶造成疼痛，常合併口臭、進食困難、用單側咀嚼\n- 噁心反胃：腸胃不適、毛球、暈車、吃到變質食物時的身體反應，常伴隨舔嘴唇、嘔吐\n- 口腔異物或外傷：線狀異物纏繞舌頭、被咬傷、燙傷\n- 中毒：誤食有毒植物、清潔劑、人類藥物，流口水可能是身體試圖排出毒物的反應\n- 情緒性流口水：極度放鬆（呼嚕時）或極度緊張（看獸醫、坐車）時都可能出現\n\n**【改善建議】**\n- 觀察情境：是進食時、緊張時，還是無故發生\n- 檢查口腔是否有異物纏繞、紅腫、潰瘍\n- 留意口水顏色，若帶血絲需特別注意\n\n**【何時就醫】**\n⚠️ 若流口水合併嘔吐、食慾下降、口臭、口水帶血，或懷疑誤食有毒物質，請立即就醫。情緒性流口水通常會隨情境結束而停止，若持續不停則需檢查。\n\n參考來源：PetMD, Vetster, Groveway Pet Hospital'},
+  lethargy:{keys:['沒精神','活力下降','不愛動','懶懶的','突然變懶','提不起勁'],
+    ans:'🐱 **精神不振/活力下降分析**\n\n**【行為解析】**\n貓咪天生愛睡覺，但「懶惰」和「精神不振」不同：懶惰的貓在清醒時仍對食物、玩具有反應；精神不振的貓即使醒著也對周圍事物缺乏興趣、反應遲緩。突然的精神改變是身體發出的重要警訊。\n\n**【壓力指數】**：65/100\n\n**【風險等級】**：中至高\n\n**常見原因**\n- 感染或發炎：發燒、上呼吸道感染等急性疾病常先表現為精神不振\n- 貧血：紅血球不足導致帶氧能力下降，造成持續疲倦\n- 代謝性疾病：腎臟病、肝臟疾病、糖尿病等慢性病常伴隨漸進性活力下降\n- 心臟疾病：心臟無法有效打血，全身供氧不足\n- 疼痛：關節炎、外傷等疼痛會讓貓咪減少活動以避免不適\n- 疫苗反應：接種後1-2天內輕微疲倦屬正常\n\n**【改善建議】**\n- 區分程度：輕度（不太想玩）、中度（完全不互動）、重度（不願移動、抬不起頭）\n- 觀察是否合併：食慾、飲水、排泄、呼吸的變化\n- 記錄是突然發生還是漸進式的改變\n\n**【何時就醫】**\n⚠️ 若精神不振是突然發生、合併食慾廢絕或無法站立行走，請立即就醫，這可能是低血糖、貧血或嚴重感染的緊急徵兆。漸進式的活力下降在中老年貓也應安排健康檢查排除慢性疾病。\n\n參考來源：Cats.com, PetMD, VEG ER for Pets'},
   // 通用回答
   general:{keys:[],
     ans:''}
@@ -1367,6 +1425,7 @@ var healthSelCatId=null;
 
 function renderHealthMode(){
   healthSelCatId=null;
+  healthDashTab='stats';
   renderCatSelectScreen();
 }
 
@@ -1418,6 +1477,8 @@ function renderCatSelectScreen(){
   el.appendChild(wrap);
 }
 
+var healthDashTab='stats'; // 'stats' or 'daily'
+
 function renderCatDashboard(catId){
   var el=document.getElementById('msgs');el.innerHTML='';
   var u=curU();
@@ -1441,18 +1502,64 @@ function renderCatDashboard(catId){
   hd.appendChild(backBtn);hd.appendChild(av);hd.appendChild(info);hd.appendChild(dot);
   wrap.appendChild(hd);
 
-  // ── 統計卡 ──
+  // ── 分頁籤 ──
+  var tabs=document.createElement('div');tabs.className='health-tabs';
+  var tabStats=document.createElement('button');tabStats.className='health-tab'+(healthDashTab==='stats'?' active':'');
+  tabStats.textContent='📊 健康指數';
+  tabStats.onclick=function(){healthDashTab='stats';renderCatDashboard(catId);};
+  var tabDaily=document.createElement('button');tabDaily.className='health-tab'+(healthDashTab==='daily'?' active':'');
+  tabDaily.textContent='📅 每日紀錄';
+  tabDaily.onclick=function(){healthDashTab='daily';renderCatDashboard(catId);};
+  tabs.appendChild(tabStats);tabs.appendChild(tabDaily);
+  wrap.appendChild(tabs);
+
+  if(healthDashTab==='stats'){
+    renderHealthStatsTab(wrap,cat,recs,lowC_midC_hiC_avgSl(recs));
+  } else {
+    renderDailyLogTab(wrap,cat,recs);
+  }
+
+  // ── 底部按鈕 ──
+  var actions=document.createElement('div');actions.className='health-actions';
+  var addDataBtn=document.createElement('button');addDataBtn.className='health-action-btn health-action-primary';
+  addDataBtn.textContent='＋ 新增資料';
+  addDataBtn.onclick=function(){
+    setMode('general');
+    setTimeout(function(){
+      var u2=curU();var c2=u2&&u2.cats.find(function(x){return x.id===catId;});
+      if(c2)tapQ('我想說說關於'+c2.name+'的狀況');
+    },100);
+  };
+  var editBtn=document.createElement('button');editBtn.className='health-action-btn health-action-secondary';
+  editBtn.textContent='✏️ 編輯';
+  editBtn.onclick=function(){setMode('general');setTimeout(function(){tapQ('我想編輯貓咪資料');},100);};
+  actions.appendChild(addDataBtn);actions.appendChild(editBtn);
+  wrap.appendChild(actions);
+
+  el.appendChild(wrap);
+}
+
+function lowC_midC_hiC_avgSl(recs){
   var lowC=recs.filter(function(r){return r.risk==='低';}).length;
   var midC=recs.filter(function(r){return r.risk==='中';}).length;
   var hiC=recs.filter(function(r){return r.risk==='高';}).length;
   var avgSl=recs.length?Math.round(recs.reduce(function(s,r){return s+r.sl;},0)/recs.length):0;
-  var stats=document.createElement('div');stats.className='health-stats';
+  return {lowC:lowC,midC:midC,hiC:hiC,avgSl:avgSl};
+}
+
+function renderHealthStatsTab(wrap,cat,recs,stats){
+  var catId=cat.id;
+  var u=curU();
+  var lowC=stats.lowC,midC=stats.midC,hiC=stats.hiC,avgSl=stats.avgSl;
+
+  // ── 統計卡 ──
+  var statsEl=document.createElement('div');statsEl.className='health-stats';
   [[recs.length,'分析次數'],[avgSl,'平均壓力'],[hiC,'高風險次數']].forEach(function(s){
     var sc=document.createElement('div');sc.className='stat-card';
     sc.innerHTML='<div class="stat-num">'+s[0]+'</div><div class="stat-lbl">'+s[1]+'</div>';
-    stats.appendChild(sc);
+    statsEl.appendChild(sc);
   });
-  wrap.appendChild(stats);
+  wrap.appendChild(statsEl);
 
   // ── 折線圖 ──
   var chartCard=document.createElement('div');chartCard.className='chart-card';
@@ -1490,7 +1597,7 @@ function renderCatDashboard(catId){
   riskCard.appendChild(riskBars);
   wrap.appendChild(riskCard);
 
-  // ── 紀錄時間軸 ──
+  // ── 紀錄時間軸（最近分析摘要，沿用舊版） ──
   if(recs.length){
     var recCard=document.createElement('div');recCard.className='chart-card';
     var recTitle=document.createElement('div');recTitle.className='chart-title';recTitle.textContent='分析紀錄';
@@ -1507,7 +1614,7 @@ function renderCatDashboard(catId){
       rsl.style.color=r.sl>=60?'var(--re)':r.sl>=35?'var(--ye)':'var(--gr)';
       rsl.textContent=r.sl+'/100';
       var rdel=document.createElement('button');rdel.className='record-del';rdel.textContent='🗑';
-      rdel.onclick=function(e){e.stopPropagation();if(confirm('刪除這筆紀錄？')){u.records=u.records.filter(function(x){return x.id!==r.id;});saveDB();renderCatDashboard(catId);}};
+      rdel.onclick=function(e){e.stopPropagation();if(confirm('刪除這筆紀錄？')){var uu=curU();uu.records=uu.records.filter(function(x){return x.id!==r.id;});saveDB();renderCatDashboard(cat.id);}};
       rhd.appendChild(rd);rhd.appendChild(ri);rhd.appendChild(rsl);rhd.appendChild(rdel);
       var rbody=document.createElement('div');rbody.className='record-body';rbody.textContent=r.fullReport||'';
       item.appendChild(rhd);item.appendChild(rbody);
@@ -1517,25 +1624,64 @@ function renderCatDashboard(catId){
     recCard.appendChild(recList);
     wrap.appendChild(recCard);
   }
+}
 
-  // ── 底部按鈕 ──
-  var actions=document.createElement('div');actions.className='health-actions';
-  var addDataBtn=document.createElement('button');addDataBtn.className='health-action-btn health-action-primary';
-  addDataBtn.textContent='＋ 新增資料';
-  addDataBtn.onclick=function(){
-    setMode('general');
-    setTimeout(function(){
-      var u2=curU();var c2=u2&&u2.cats.find(function(x){return x.id===catId;});
-      if(c2)tapQ('我想說說關於'+c2.name+'的狀況');
-    },100);
-  };
-  var editBtn=document.createElement('button');editBtn.className='health-action-btn health-action-secondary';
-  editBtn.textContent='✏️ 編輯';
-  editBtn.onclick=function(){setMode('general');setTimeout(function(){tapQ('我想編輯貓咪資料');},100);};
-  actions.appendChild(addDataBtn);actions.appendChild(editBtn);
-  wrap.appendChild(actions);
+function renderDailyLogTab(wrap,cat,recs){
+  var hint=document.createElement('div');hint.className='daily-log-hint';
+  hint.textContent='最新在上方，往下滑查看歷史紀錄';
+  wrap.appendChild(hint);
 
-  el.appendChild(wrap);
+  if(!recs.length){
+    var empty=document.createElement('div');empty.className='daily-empty';
+    empty.innerHTML='🐾 還沒有紀錄<br>在問答模式聊聊 '+cat.name+' 的狀況，<br>有異常時會自動記錄在這裡';
+    wrap.appendChild(empty);
+    return;
+  }
+
+  // 最新在上（reverse），每筆顯示日期、症狀摘要、風險標籤
+  recs.slice().reverse().forEach(function(r){
+    var riskClass=r.risk==='高'?'r-high':r.risk==='中'?'r-mid':'r-low';
+    var icon=dailyIconFor(r.inputText+' '+r.fullReport);
+    var item=document.createElement('div');item.className='daily-item';
+    var ihd=document.createElement('div');ihd.className='daily-hd';
+    var date=document.createElement('div');date.className='daily-date';date.textContent=r.date;
+    var ic=document.createElement('div');ic.className='daily-icon';ic.textContent=icon;
+    var desc=document.createElement('div');desc.className='daily-desc';
+    desc.textContent=(r.inputText||'').substring(0,30)+((r.inputText||'').length>30?'…':'');
+    var risk=document.createElement('div');risk.className='daily-risk '+riskClass;
+    risk.textContent=(r.risk||'低')+'風險・'+r.sl+'/100';
+    ihd.appendChild(date);ihd.appendChild(ic);ihd.appendChild(desc);ihd.appendChild(risk);
+    var body=document.createElement('div');body.className='daily-body';body.textContent=r.fullReport||'';
+    item.appendChild(ihd);item.appendChild(body);
+    item.onclick=function(){body.classList.toggle('open');};
+    wrap.appendChild(item);
+  });
+}
+
+function dailyIconFor(text){
+  text=text||'';
+  if(text.match(/掉毛|脫毛/))return '🧶';
+  if(text.match(/打噴嚏|流鼻水|鼻塞/))return '🤧';
+  if(text.match(/眼屎|流眼淚|結膜/))return '👁️';
+  if(text.match(/口臭|牙齦|牙結石/))return '🦷';
+  if(text.match(/舔毛|拔毛/))return '🪮';
+  if(text.match(/發燒|體溫/))return '🌡️';
+  if(text.match(/亂尿尿|噴尿/))return '🚽';
+  if(text.match(/打架|攻擊/))return '😾';
+  if(text.match(/一直叫|大叫/))return '📢';
+  if(text.match(/喝水|口渴/))return '💧';
+  if(text.match(/跛腳|腳痛/))return '🦵';
+  if(text.match(/咳嗽|氣喘/))return '😮‍💨';
+  if(text.match(/耳朵|甩頭/))return '👂';
+  if(text.match(/變瘦|體重/))return '⚖️';
+  if(text.match(/嘔吐|吐/))return '🤮';
+  if(text.match(/拉肚子|腹瀉|血便/))return '💩';
+  if(text.match(/不吃|食慾/))return '🍽️';
+  if(text.match(/躲|躲藏/))return '🙈';
+  if(text.match(/抓|咬人/))return '😼';
+  if(text.match(/流口水|口水|流涎/))return '🫗';
+  if(text.match(/沒精神|懶懶的|活力下降/))return '😴';
+  return '📝';
 }
 
 function drawLineChart(canvas,recs){
@@ -1584,7 +1730,7 @@ function drawLineChart(canvas,recs){
 var TUT_KEY='pawsense_onboarding_done';
 var TUT_STEPS=[
   {sel:'.menu-btn',zh:'點這裡打開側邊欄 📂\n可以查看對話紀錄、開新對話！',en:'Tap here to open the sidebar 📂\nView chat history or start new chats!',mood:'happy'},
-  {sel:'.mode-chip',zh:'這裡可以切換兩種模式 🔄\n🐱 問答：和我聊天，自動記錄貓咪資訊\n🐈 健康檔案：查看貓咪健康狀況與圖表',en:'Switch between two modes here 🔄\n🐱 Chat: Talk to me, cat info auto-saved\n🐈 Health: View health charts & history',mood:'excited'},
+  {sel:'.mode-chip',zh:'這裡可以切換兩種模式 🔄\n🐱 問答：和我聊天，自動記錄貓咪資訊\n🐈 健康檔案：選擇貓咪後可看「📊 健康指數」（趨勢圖）和「📅 每日紀錄」（異常事件時間軸）',en:'Switch between two modes here 🔄\n🐱 Chat: Talk to me, cat info auto-saved\n🐈 Health: Pick a cat to see "📊 Health Stats" (trend charts) and "📅 Daily Log" (timeline of issues)',mood:'excited'},
   {sel:'.inp-wrap',zh:'在問答模式裡輸入訊息 💬\n告訴我貓咪的名字、行為、症狀，我會自動記錄下來！',en:'Type messages in Chat mode 💬\nTell me your cat\'s name, behavior, symptoms — I\'ll auto-record everything!',mood:'happy'},
   {sel:'#lang-btn',zh:'按這裡切換語言 🌐\n支援中文和英文！',en:'Tap here to switch language 🌐\nChinese and English supported!',mood:'happy'},
   {sel:'.plus-btn',zh:'按這裡上傳照片 📸\n可以拍貓咪讓我看看狀況！',en:'Tap here to upload photos 📸\nShow me your cat\'s condition!',mood:'excited'},
@@ -1619,12 +1765,13 @@ function tutNext(){
   if(typeof setVcatMood==='function') setVcatMood(step.mood||'happy');
   tutRenderDots();
   tutUpdateBtn();
+  tutPositionBar(el);
 }
 function tutCancel(){
   if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
   tutStep=-1;
   document.getElementById('tut-overlay').classList.remove('show');
-  document.getElementById('tut-bar').classList.remove('show');
+  var bar=document.getElementById('tut-bar');bar.classList.remove('show');bar.style.bottom='0';bar.style.paddingBottom='max(14px, env(safe-area-inset-bottom))';
   var vcw2=document.getElementById('vcat-wrap');if(vcw2)vcw2.style.zIndex='300';
   if(typeof vcatSay==='function') vcatSay(curLang==='en'?'See you next time! 👋':'下次見囉！👋',3000);
 }
@@ -1632,7 +1779,7 @@ function tutEnd(completed){
   if(tutPrevEl){tutPrevEl.classList.remove('tut-highlight');tutPrevEl.style.pointerEvents='';tutPrevEl=null;}
   tutStep=-1;
   document.getElementById('tut-overlay').classList.remove('show');
-  document.getElementById('tut-bar').classList.remove('show');
+  var barEl=document.getElementById('tut-bar');barEl.classList.remove('show');barEl.style.bottom='0';barEl.style.paddingBottom='max(14px, env(safe-area-inset-bottom))';
   var vcw=document.getElementById('vcat-wrap');if(vcw)vcw.style.zIndex='300';
   if(completed){
     try{localStorage.setItem(TUT_KEY,'1');}catch(e){}
@@ -1657,6 +1804,23 @@ function tutUpdateBtn(){
   var t=T[curLang];
   if(tutStep>=TUT_STEPS.length-1) btn.textContent=t?t.tutDone:'完成！🎉';
   else btn.textContent=t?t.tutNext:'下一步 →';
+}
+function tutPositionBar(el){
+  var bar=document.getElementById('tut-bar');
+  if(!bar||!el)return;
+  var rect=el.getBoundingClientRect();
+  var vh=window.innerHeight;
+  var barH=72; // approximate bar height
+  var safeBottom=Math.max(14,parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sab')||'0'));
+  // If highlighted element bottom is in lower 40% of screen → move bar above it
+  if(rect.bottom>vh*0.6){
+    var above=vh-rect.top+12;
+    bar.style.bottom=above+'px';
+    bar.style.paddingBottom='14px';
+  } else {
+    bar.style.bottom='0';
+    bar.style.paddingBottom='max(14px, env(safe-area-inset-bottom))';
+  }
 }
 
 // ══ BOOT ══
