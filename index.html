@@ -414,7 +414,7 @@
   function move(direction){
     // direction: 'left','right','up','down'
     let workGrid = cloneGrid(grid);
-    let rotations = {left:0, up:1, right:2, down:3}[direction];
+    let rotations = {left:0, down:1, right:2, up:3}[direction];
     for(let i=0;i<rotations;i++) workGrid = rotateGridCW(workGrid);
 
     let totalGained = 0;
