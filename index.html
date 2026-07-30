@@ -192,6 +192,14 @@
     margin-bottom: 22px;
     box-shadow: 0 6px 20px rgba(0,0,0,.5);
   }
+  .overlay .btn{
+    flex: none;
+    width: auto;
+    max-width: none !important;
+    padding: 16px 56px;
+    font-size: 20px;
+    white-space: nowrap;
+  }
 
   /* Side menu */
   .side-menu{
@@ -304,18 +312,18 @@
 (function(){
   const SIZE = 4;
   const REWARDS = {
-    8: "抱抱一次",
-    16: "說一句謝謝",
-    32: "捶背一次",
-    64: "端一杯茶",
-    128: "捶背三次",
-    256: "陪聊天十分鐘",
-    512: "一起散步",
-    1024: "準備一份小禮物",
-    2048: "大擁抱＋說我愛你"
+    8: "稱讚爸爸很帥 😎",
+    16: "幫爸爸抓抓頭 😊",
+    32: "幫爸爸倒一杯水 🥤",
+    64: "幫爸爸捶背 5 分鐘 💆",
+    128: "洗一次碗 🍽️",
+    256: "倒一次垃圾 🗑️",
+    512: "手作書籤 📖",
+    1024: "手作杯墊 ☕",
+    2048: "🎁 獲得神秘大禮"
   };
 
-  let grid, score, best, undoLeft, prevState, achieved, sessionAchieved;
+  let grid, score, best, undoLeft, prevState, sessionAchieved;
   const boardWrap = document.getElementById('boardWrap');
   const bgGrid = document.getElementById('bgGrid');
   const tilesLayer = document.getElementById('tilesLayer');
@@ -349,14 +357,6 @@
   function saveBest(v){
     localStorage.setItem('photo2048_best', String(v));
   }
-  function loadAchieved(){
-    try{
-      return JSON.parse(localStorage.getItem('photo2048_achieved')||'[]');
-    }catch(e){ return []; }
-  }
-  function saveAchieved(){
-    localStorage.setItem('photo2048_achieved', JSON.stringify(achieved));
-  }
 
   function newGame(){
     grid = Array.from({length:SIZE},()=>Array(SIZE).fill(0));
@@ -369,6 +369,7 @@
     updateUndoUI();
     render();
     updateScore();
+    renderRewardList();
   }
 
   function addRandomTile(){
@@ -444,7 +445,10 @@
     let backRotations = (4 - rotations) % 4;
     for(let i=0;i<backRotations;i++) resultGrid = rotateGridCW(resultGrid);
 
-    if(!anyMoved) return;
+    if(!anyMoved){
+      checkGameOver();
+      return;
+    }
 
     saveForUndo();
     grid = resultGrid;
@@ -508,10 +512,8 @@
       if(REWARDS[v] && sessionAchieved.indexOf(v) === -1){
         sessionAchieved.push(v);
         milestoneQueue.push(v);
-        if(achieved.indexOf(v) === -1) achieved.push(v);
       }
     }
-    saveAchieved();
     renderRewardList();
     if(milestoneQueue.length>0 && !overlay.classList.contains('show')){
       showNextMilestone();
@@ -535,14 +537,14 @@
 
   function renderRewardList(){
     rewardList.innerHTML='';
-    if(achieved.length===0){
+    if(sessionAchieved.length===0){
       const li = document.createElement('div');
       li.className='empty';
-      li.textContent='目前還沒有獲得任何獎勵，繼續玩下去吧！';
+      li.textContent='這一局還沒有獲得任何獎勵，繼續玩下去吧！';
       rewardList.appendChild(li);
       return;
     }
-    const sorted = achieved.slice().sort((a,b)=>a-b);
+    const sorted = sessionAchieved.slice().sort((a,b)=>a-b);
     for(const v of sorted){
       const li = document.createElement('li');
       li.innerHTML = `<span class="val">${v}</span><span>${REWARDS[v]}</span>`;
@@ -650,10 +652,8 @@
   window.addEventListener('resize', render);
 
   // ---- init ----
-  achieved = loadAchieved();
   best = loadBest();
   bestEl.textContent = best;
-  renderRewardList();
   newGame();
 })();
 </script>
