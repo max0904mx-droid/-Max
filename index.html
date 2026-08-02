@@ -329,10 +329,11 @@
     512: "手作書籤 📖",
     1024: "手作杯墊 ☕",
     2048: "🎁 獲得神秘大禮",
-    4096: "書籤裡面有一張支票，你寫什麼，我就做什麼，想不到吧！"
+    4096: "打開杯墊看看",
+    8192: "書籤裡面有一張支票，你寫什麼，我就做什麼，想不到吧！"
   };
 
-  let grid, score, best, undoLeft, prevState, sessionAchieved;
+  let grid, score, best, undoLeft, prevState, sessionAchieved, loveShown;
   const boardWrap = document.getElementById('boardWrap');
   const bgGrid = document.getElementById('bgGrid');
   const tilesLayer = document.getElementById('tilesLayer');
@@ -373,6 +374,7 @@
     undoLeft = 1;
     prevState = null;
     sessionAchieved = [];
+    loveShown = false;
     addRandomTile();
     addRandomTile();
     updateUndoUI();
@@ -527,6 +529,7 @@
     render();
     updateScore();
     checkMilestones(mergedValues);
+    checkScoreMilestone();
     checkGameOver();
   }
 
@@ -578,7 +581,8 @@
     const uniqueVals = [...new Set(mergedValues)];
     uniqueVals.sort((a,b)=>a-b);
     for(const v of uniqueVals){
-      if(REWARDS[v] && sessionAchieved.indexOf(v) === -1){
+      // 8以上的每個數值都算一個成就，不管有沒有特別設定文字/照片
+      if(v>=8 && sessionAchieved.indexOf(v) === -1){
         sessionAchieved.push(v);
         milestoneQueue.push(v);
       }
@@ -589,10 +593,32 @@
     }
   }
 
+  const SCORE_LOVE_THRESHOLD = 52088;
+  function checkScoreMilestone(){
+    if(score >= SCORE_LOVE_THRESHOLD && !loveShown){
+      loveShown = true;
+      milestoneQueue.push('LOVE');
+      if(!overlay.classList.contains('show')){
+        showNextMilestone();
+      }
+    }
+  }
+
+  function rewardTextFor(v){
+    return REWARDS[v] || `🎉 達成 ${v} 成就！`;
+  }
+
   function showNextMilestone(){
     if(milestoneQueue.length===0) return;
     const v = milestoneQueue.shift();
-    overlayReward.textContent = "獲得：" + REWARDS[v];
+    if(v === 'LOVE'){
+      overlayReward.textContent = "我愛你爸爸";
+      overlayPhoto.className = 'photo-preview fallback';
+      overlayPhoto.style.backgroundImage = '';
+      overlay.classList.add('show');
+      return;
+    }
+    overlayReward.textContent = "獲得：" + rewardTextFor(v);
     setTileBackground(overlayPhoto, v);
     overlay.classList.add('show');
   }
@@ -616,7 +642,7 @@
     const sorted = sessionAchieved.slice().sort((a,b)=>a-b);
     for(const v of sorted){
       const li = document.createElement('li');
-      li.innerHTML = `<span class="val">${v}</span><span>${REWARDS[v]}</span>`;
+      li.innerHTML = `<span class="val">${v}</span><span>${rewardTextFor(v)}</span>`;
       rewardList.appendChild(li);
     }
   }
