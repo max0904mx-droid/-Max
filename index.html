@@ -214,6 +214,8 @@
     z-index: 60;
     padding: 20px;
     overflow-y:auto;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
   }
   .side-menu.show{ transform: translateX(0); }
   .side-menu h3{
@@ -260,9 +262,12 @@
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="獎勵清單"><span></span><span></span><span></span></button>
     <h1>照片版 2048</h1>
-    <div class="scores">
-      <div class="score-box"><div class="label">分數</div><div class="value" id="score">0</div></div>
-      <div class="score-box"><div class="label">最高</div><div class="value" id="best">0</div></div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="scores">
+        <div class="score-box"><div class="label">分數</div><div class="value" id="score">0</div></div>
+        <div class="score-box"><div class="label">最高</div><div class="value" id="best">0</div></div>
+      </div>
+      <button class="menu-btn" id="leaderboardBtn" aria-label="排行榜" style="font-size:20px;">🏆</button>
     </div>
   </header>
 
@@ -286,6 +291,12 @@
   <ul class="reward-list" id="rewardList"></ul>
 </div>
 
+<div class="side-menu" id="leaderboardPanel" style="left:auto; right:0; transform:translateX(100%);">
+  <button class="close-menu" id="closeLeaderboard">✕</button>
+  <h3>🏆 排行榜</h3>
+  <ol class="reward-list" id="leaderboardList" style="padding-left:0;"></ol>
+</div>
+
 <div class="overlay" id="overlay">
   <div class="photo-preview" id="overlayPhoto"></div>
   <h2>恭喜！</h2>
@@ -296,7 +307,15 @@
 <div class="overlay" id="gameOverOverlay">
   <h2>遊戲結束</h2>
   <div class="reward-text" id="gameOverScore">分數：0</div>
-  <button class="btn" id="playAgainBtn" style="max-width:200px;">再玩一次</button>
+  <button class="btn" id="recordScoreBtn" style="max-width:200px;">記錄成績</button>
+</div>
+
+<div class="overlay" id="nameEntryOverlay">
+  <h2>輸入你的名字</h2>
+  <input id="nameInput" type="text" maxlength="12" placeholder="你的名字"
+    style="width:80%; max-width:280px; padding:14px 16px; font-size:18px; border-radius:10px; border:none; text-align:center; margin-bottom:22px; background:var(--cell-empty); color:var(--text-light);">
+  <button class="btn" id="saveScoreBtn" style="max-width:200px;">儲存並重新開始</button>
+  <button class="btn secondary" id="skipSaveBtn" style="max-width:200px; margin-top:12px;">不儲存，重新開始</button>
 </div>
 
 <script>
@@ -348,12 +367,20 @@
   const continueBtn = document.getElementById('continueBtn');
   const gameOverOverlay = document.getElementById('gameOverOverlay');
   const gameOverScore = document.getElementById('gameOverScore');
-  const playAgainBtn = document.getElementById('playAgainBtn');
+  const recordScoreBtn = document.getElementById('recordScoreBtn');
+  const nameEntryOverlay = document.getElementById('nameEntryOverlay');
+  const nameInput = document.getElementById('nameInput');
+  const saveScoreBtn = document.getElementById('saveScoreBtn');
+  const skipSaveBtn = document.getElementById('skipSaveBtn');
   const menuBtn = document.getElementById('menuBtn');
   const closeMenu = document.getElementById('closeMenu');
   const sideMenu = document.getElementById('sideMenu');
   const scrim = document.getElementById('scrim');
   const rewardList = document.getElementById('rewardList');
+  const leaderboardBtn = document.getElementById('leaderboardBtn');
+  const closeLeaderboard = document.getElementById('closeLeaderboard');
+  const leaderboardPanel = document.getElementById('leaderboardPanel');
+  const leaderboardList = document.getElementById('leaderboardList');
 
   for(let i=0;i<16;i++){
     const c = document.createElement('div');
@@ -561,6 +588,42 @@
     return true;
   }
 
+  // ---- 排行榜（本機儲存） ----
+  const LEADERBOARD_KEY = 'photo2048_leaderboard';
+  const LEADERBOARD_MAX = 10;
+
+  function loadLeaderboard(){
+    try{
+      return JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+    }catch(e){ return []; }
+  }
+  function saveLeaderboardList(list){
+    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list));
+  }
+  function addLeaderboardEntry(name, sc){
+    const list = loadLeaderboard();
+    list.push({ name: name || '匿名', score: sc, date: new Date().toLocaleDateString('zh-TW') });
+    list.sort((a,b) => b.score - a.score);
+    const trimmed = list.slice(0, LEADERBOARD_MAX);
+    saveLeaderboardList(trimmed);
+  }
+  function renderLeaderboardList(){
+    const list = loadLeaderboard();
+    leaderboardList.innerHTML = '';
+    if(list.length===0){
+      const li = document.createElement('div');
+      li.className = 'empty';
+      li.textContent = '還沒有任何紀錄，快來挑戰第一名！';
+      leaderboardList.appendChild(li);
+      return;
+    }
+    list.forEach((entry, i)=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="val">#${i+1} ${entry.name}</span><span>${entry.score} 分（${entry.date}）</span>`;
+      leaderboardList.appendChild(li);
+    });
+  }
+
   function checkGameOver(){
     // Only end the game if there's truly no way out — if the player still
     // has an undo available, let them use it instead of forcing game over.
@@ -570,9 +633,28 @@
     }
   }
 
-  playAgainBtn.addEventListener('click', ()=>{
+  const LAST_NAME_KEY = 'photo2048_lastname';
+
+  recordScoreBtn.addEventListener('click', ()=>{
     gameOverOverlay.classList.remove('show');
+    nameInput.value = localStorage.getItem(LAST_NAME_KEY) || '';
+    nameEntryOverlay.classList.add('show');
+    setTimeout(()=>{ nameInput.focus(); nameInput.select(); }, 50);
+  });
+
+  function finishSaveFlow(save){
+    if(save){
+      const name = nameInput.value.trim();
+      addLeaderboardEntry(name, score);
+      if(name) localStorage.setItem(LAST_NAME_KEY, name);
+    }
+    nameEntryOverlay.classList.remove('show');
     newGame();
+  }
+  saveScoreBtn.addEventListener('click', ()=> finishSaveFlow(true));
+  skipSaveBtn.addEventListener('click', ()=> finishSaveFlow(false));
+  nameInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') finishSaveFlow(true);
   });
 
   // ---- milestone rewards ----
@@ -696,7 +778,7 @@
 
   // ---- input handling ----
   document.addEventListener('keydown', (e)=>{
-    if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show'))) return;
+    if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show') || nameEntryOverlay.classList.contains('show'))) return;
     const map = {ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down'};
     if(map[e.key]){
       e.preventDefault();
@@ -706,14 +788,14 @@
 
   let touchStartX=0, touchStartY=0, touchActive=false;
   boardWrap.addEventListener('touchstart', (e)=>{
-    if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show'))) return;
+    if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show') || nameEntryOverlay.classList.contains('show'))) return;
     const t = e.changedTouches[0];
     touchStartX = t.clientX; touchStartY = t.clientY;
     touchActive = true;
   }, {passive:true});
 
   boardWrap.addEventListener('touchend', (e)=>{
-    if(!touchActive || (overlay.classList.contains('show') || gameOverOverlay.classList.contains('show'))) return;
+    if(!touchActive || (overlay.classList.contains('show') || gameOverOverlay.classList.contains('show') || nameEntryOverlay.classList.contains('show'))) return;
     touchActive = false;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStartX;
@@ -737,11 +819,18 @@
     sideMenu.classList.add('show');
     scrim.classList.add('show');
   });
+  leaderboardBtn.addEventListener('click', ()=>{
+    renderLeaderboardList();
+    leaderboardPanel.classList.add('show');
+    scrim.classList.add('show');
+  });
   function closeMenuFn(){
     sideMenu.classList.remove('show');
+    leaderboardPanel.classList.remove('show');
     scrim.classList.remove('show');
   }
   closeMenu.addEventListener('click', closeMenuFn);
+  closeLeaderboard.addEventListener('click', closeMenuFn);
   scrim.addEventListener('click', closeMenuFn);
 
   window.addEventListener('resize', render);
