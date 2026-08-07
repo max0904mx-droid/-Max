@@ -218,6 +218,8 @@
     -webkit-overflow-scrolling: touch;
   }
   .side-menu.show{ transform: translateX(0); }
+  #leaderboardPanel{ left:auto; right:0; transform: translateX(100%); }
+  #leaderboardPanel.show{ transform: translateX(0); }
   .side-menu h3{
     margin-top:0;
   }
@@ -291,7 +293,7 @@
   <ul class="reward-list" id="rewardList"></ul>
 </div>
 
-<div class="side-menu" id="leaderboardPanel" style="left:auto; right:0; transform:translateX(100%);">
+<div class="side-menu" id="leaderboardPanel">
   <button class="close-menu" id="closeLeaderboard">✕</button>
   <h3>🏆 排行榜</h3>
   <ol class="reward-list" id="leaderboardList" style="padding-left:0;"></ol>
@@ -598,7 +600,11 @@
     }catch(e){ return []; }
   }
   function saveLeaderboardList(list){
-    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list));
+    try{
+      localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list));
+    }catch(e){
+      alert('排行榜儲存失敗，可能是瀏覽器的隱私/無痕模式限制了儲存功能。');
+    }
   }
   function addLeaderboardEntry(name, sc){
     const list = loadLeaderboard();
@@ -634,6 +640,7 @@
   }
 
   const LAST_NAME_KEY = 'photo2048_lastname';
+  let pendingNewGameAfterLeaderboard = false;
 
   recordScoreBtn.addEventListener('click', ()=>{
     gameOverOverlay.classList.remove('show');
@@ -643,13 +650,19 @@
   });
 
   function finishSaveFlow(save){
+    nameEntryOverlay.classList.remove('show');
     if(save){
       const name = nameInput.value.trim();
       addLeaderboardEntry(name, score);
       if(name) localStorage.setItem(LAST_NAME_KEY, name);
+      // 存檔後直接打開排行榜，讓玩家馬上看到自己被記錄進去了
+      pendingNewGameAfterLeaderboard = true;
+      renderLeaderboardList();
+      leaderboardPanel.classList.add('show');
+      scrim.classList.add('show');
+    } else {
+      newGame();
     }
-    nameEntryOverlay.classList.remove('show');
-    newGame();
   }
   saveScoreBtn.addEventListener('click', ()=> finishSaveFlow(true));
   skipSaveBtn.addEventListener('click', ()=> finishSaveFlow(false));
@@ -828,6 +841,10 @@
     sideMenu.classList.remove('show');
     leaderboardPanel.classList.remove('show');
     scrim.classList.remove('show');
+    if(pendingNewGameAfterLeaderboard){
+      pendingNewGameAfterLeaderboard = false;
+      newGame();
+    }
   }
   closeMenu.addEventListener('click', closeMenuFn);
   closeLeaderboard.addEventListener('click', closeMenuFn);
