@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
 <title>照片版 2048</title>
 <style>
   :root{
@@ -809,16 +812,23 @@
   }
 
   // ---- input handling ----
-  // 取消 iOS Safari 的「連點兩下放大」手勢
+  // 取消 iOS Safari 的「連點兩下放大」手勢，但如果目前已經是放大狀態，
+  // 就放行讓使用者可以用雙擊縮小回去
   document.addEventListener('dblclick', (e)=> e.preventDefault());
   let lastTouchEndTime = 0;
   document.addEventListener('touchend', (e)=>{
     const now = Date.now();
-    if(now - lastTouchEndTime <= 300){
+    const isZoomedIn = window.visualViewport && window.visualViewport.scale > 1.01;
+    if(now - lastTouchEndTime <= 300 && !isZoomedIn){
       e.preventDefault();
     }
     lastTouchEndTime = now;
   }, { passive:false });
+
+  // 擋掉雙指撥開縮放（pinch zoom）手勢
+  document.addEventListener('gesturestart', (e)=> e.preventDefault());
+  document.addEventListener('gesturechange', (e)=> e.preventDefault());
+  document.addEventListener('gestureend', (e)=> e.preventDefault());
 
   document.addEventListener('keydown', (e)=>{
     if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show') || nameEntryOverlay.classList.contains('show'))) return;
@@ -890,3 +900,7 @@
 </script>
 </body>
 </html>
+
+
+
+
