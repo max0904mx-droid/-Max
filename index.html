@@ -34,12 +34,15 @@
   }
   header{
     display:flex;
+    flex-wrap: wrap;
     align-items:center;
     justify-content:space-between;
+    row-gap: 8px;
     margin-bottom: 14px;
   }
   .menu-btn{
-    width:44px; height:44px;
+    width: clamp(38px, 10vw, 44px);
+    height: clamp(38px, 10vw, 44px);
     border-radius: 10px;
     background: var(--board-bg);
     border: none;
@@ -47,14 +50,16 @@
     align-items:center; justify-content:center;
     gap:4px;
     cursor:pointer;
+    flex-shrink: 0;
   }
   .menu-btn span{
     display:block; width:20px; height:2px; background: var(--text-light); border-radius:2px;
   }
   h1{
-    font-size: 22px;
+    font-size: clamp(16px, 5vw, 22px);
     margin:0;
     letter-spacing: 1px;
+    white-space: nowrap;
   }
   .scores{
     display:flex; gap:8px;
@@ -62,12 +67,21 @@
   .score-box{
     background: var(--board-bg);
     border-radius: 10px;
-    padding: 6px 12px;
+    padding: 6px 10px;
     text-align:center;
-    min-width: 64px;
+    min-width: clamp(48px, 14vw, 64px);
   }
-  .score-box .label{ font-size:11px; opacity:.65; }
-  .score-box .value{ font-size:18px; font-weight:700; }
+  .score-box .label{ font-size:11px; opacity:.65; white-space:nowrap; }
+  .score-box .value{ font-size: clamp(14px, 4vw, 18px); font-weight:700; }
+  .header-right{
+    display:flex; align-items:center; gap:8px;
+  }
+  @media (max-width: 360px){
+    .header-right{
+      flex-basis: 100%;
+      justify-content: flex-end;
+    }
+  }
 
   .toolbar{
     display:flex; gap:10px; margin-bottom: 14px;
@@ -264,7 +278,7 @@
   <header>
     <button class="menu-btn" id="menuBtn" aria-label="獎勵清單"><span></span><span></span><span></span></button>
     <h1>照片版 2048</h1>
-    <div style="display:flex; align-items:center; gap:8px;">
+    <div class="header-right">
       <div class="scores">
         <div class="score-box"><div class="label">分數</div><div class="value" id="score">0</div></div>
         <div class="score-box"><div class="label">最高</div><div class="value" id="best">0</div></div>
