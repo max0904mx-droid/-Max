@@ -807,6 +807,17 @@
   }
 
   // ---- input handling ----
+  // 取消 iOS Safari 的「連點兩下放大」手勢
+  document.addEventListener('dblclick', (e)=> e.preventDefault());
+  let lastTouchEndTime = 0;
+  document.addEventListener('touchend', (e)=>{
+    const now = Date.now();
+    if(now - lastTouchEndTime <= 300){
+      e.preventDefault();
+    }
+    lastTouchEndTime = now;
+  }, { passive:false });
+
   document.addEventListener('keydown', (e)=>{
     if((overlay.classList.contains('show') || gameOverOverlay.classList.contains('show') || nameEntryOverlay.classList.contains('show'))) return;
     const map = {ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down'};
