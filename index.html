@@ -23,6 +23,7 @@
     overscroll-behavior: none;
     touch-action: none;
     user-select: none;
+    overflow: hidden;
   }
   .app{
     max-width: 480px;
@@ -108,7 +109,8 @@
 
   .board-wrap{
     position:relative;
-    width:100%;
+    width: min(100%, calc(100vh - 220px));
+    margin: 0 auto;
     aspect-ratio: 1/1;
     background: var(--board-bg);
     border-radius: var(--radius);
