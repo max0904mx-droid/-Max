@@ -79,7 +79,8 @@ body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 1
 const N=9, NAME=['黃','綠'], COL=['var(--yellow)','var(--green)'];
 let st;
 function init(){
-  st={p:[{r:0,c:4,w:10,goal:8},{r:8,c:4,w:10,goal:0}],turn:0,mode:'move',H:new Set(),V:new Set(),over:false,note:'',shown:false};
+  st={p:[{r:0,c:4,w:10,goal:8},{r:8,c:4,w:10,goal:0}],turn:0,mode:'move',H:new Set(),V:new Set(),over:false,draw:false,warn:false,seen:{},note:'',shown:false};
+  st.seen[posKey()]=1;
   const w=document.getElementById('win');w.classList.remove('show','in');
   showIntro();
   render();
@@ -121,13 +122,21 @@ function moves(){
   return out;
 }
 // 每次行動（走一步或放隔板）結束後都呼叫：檢查勝負，否則換人
-function endTurn(action){
+function posKey(){return st.p.map(p=>p.r+','+p.c).join('|');}
+function endTurn(action,moved){
   const me=st.p[st.turn];
   if(me.r===me.goal){st.over=true;st.note=NAME[st.turn]+'方獲勝！';return;}
+  st.warn=false;
+  if(moved){
+    const k=posKey(),n=(st.seen[k]||0)+1;
+    st.seen[k]=n;
+    if(n>=5){st.over=true;st.draw=true;st.note='平局！相同位置重複了 5 次';return;}
+    if(n===4)st.warn=true;
+  }
   const prev=st.turn;
   st.turn=1-st.turn;
   st.mode='move';
-  st.note=NAME[prev]+'方'+action+'，輪到'+NAME[st.turn]+'方';
+  st.note=NAME[prev]+'方'+action+'，輪到'+NAME[st.turn]+'方'+(st.warn?'（相同位置第 4 次，再重複一次就平局！）':'');
 }
 function render(){
   const b=document.getElementById('board');
@@ -140,7 +149,7 @@ function render(){
     d.className='c';d.style.gridRow=2*r+1;d.style.gridColumn=2*c+1;
     if(mv.some(m=>m[0]===r&&m[1]===c)){
       d.classList.add('ok');
-      d.onclick=()=>{st.p[st.turn].r=r;st.p[st.turn].c=c;endTurn('走了一步');render();};
+      d.onclick=()=>{st.p[st.turn].r=r;st.p[st.turn].c=c;endTurn('走了一步',true);render();};
     }
     st.p.forEach((p,i)=>{if(p.r===r&&p.c===c){const x=document.createElement('div');x.className='pawn';x.dataset.i=i;x.style.background=COL[i];d.appendChild(x);}});
     b.appendChild(d);
@@ -179,8 +188,9 @@ function render(){
     const hint=st.mode==='move'?'點亮點移動':'點格子之間的縫隙放隔板';
     t=(t?t+'：':'輪到'+NAME[st.turn]+'方：')+hint;
   }
-  document.getElementById('msg').textContent=t;
-  if(st.over&&!st.shown){st.shown=true;showWin(st.turn);}
+  const me=document.getElementById('msg');
+  me.textContent=t;me.style.color=st.warn?'#ffb14a':'';
+  if(st.over&&!st.shown){st.shown=true;showWin(st.draw?'draw':st.turn);}
 }
 function showIntro(){
   const el=document.getElementById('intro');
@@ -191,17 +201,21 @@ function showIntro(){
 }
 function showWin(i){
   const w=document.getElementById('win'),ball=document.getElementById('wball');
-  w.style.setProperty('--wc',COL[i]);
-  document.getElementById('wtext').textContent=NAME[i]+'方獲勝！';
+  const draw=i==='draw';
+  w.style.setProperty('--wc',draw?'#e6e6e6':COL[i]);
+  ball.style.background=draw?'linear-gradient(90deg,var(--yellow) 50%,var(--green) 50%)':'';
+  document.getElementById('wtext').textContent=draw?'平局！':NAME[i]+'方獲勝！';
   w.classList.add('show');
   void w.offsetWidth;
   w.classList.add('in');
-  const pawn=document.querySelector('.pawn[data-i="'+i+'"]');
+  const pawn=draw?null:document.querySelector('.pawn[data-i="'+i+'"]');
   if(pawn&&ball.animate){
     const a=pawn.getBoundingClientRect(),b=ball.getBoundingClientRect();
     const dx=a.left+a.width/2-(b.left+b.width/2),dy=a.top+a.height/2-(b.top+b.height/2);
     ball.animate([{transform:'translate('+dx+'px,'+dy+'px) scale('+a.width/b.width+')'},{transform:'translate(0,0) scale(1)'}],
       {duration:900,easing:'cubic-bezier(.2,.9,.3,1.2)'});
+  }else if(draw&&ball.animate){
+    ball.animate([{transform:'scale(.2) rotate(-180deg)',opacity:0},{transform:'scale(1) rotate(0)',opacity:1}],{duration:800,easing:'cubic-bezier(.2,.9,.3,1.2)'});
   }
 }
 document.querySelectorAll('.panel button').forEach(btn=>{
