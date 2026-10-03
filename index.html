@@ -29,7 +29,7 @@ body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 1
 #msg{flex:1;font-size:15px;text-align:center}
 #br{font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:2px solid #333;background:#111;color:var(--ink)}
 .wrap{width:var(--bs);min-width:300px;border-top:8px solid var(--red);border-bottom:8px solid var(--blue);padding:10px 0}
-#board{display:grid;grid-template-columns:repeat(8,1fr var(--g)) 1fr;grid-template-rows:repeat(8,1fr var(--g)) 1fr;aspect-ratio:1;touch-action:manipulation}
+#board,#rboard{display:grid;grid-template-columns:repeat(8,1fr var(--g)) 1fr;grid-template-rows:repeat(8,1fr var(--g)) 1fr;aspect-ratio:1;touch-action:manipulation}
 .c{background:var(--cell);border-radius:6px;position:relative;display:flex;align-items:center;justify-content:center}
 .c.ok{background:var(--cell-hi)}
 .c.ok::after{content:"";width:28%;height:28%;border-radius:50%;background:var(--ink);opacity:.55}
@@ -60,29 +60,128 @@ body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 1
 #again{font:inherit;font-size:18px;padding:12px 22px;border-radius:12px;border:2px solid var(--wc);background:#111;color:var(--ink);opacity:0;transition:opacity .5s .9s}
 #win.in #wtext,#win.in #again{opacity:1}
 @media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01s!important;animation-delay:0s!important}#wball{animation:none}}
+
+.row{order:1}.wrap{order:2}
+#menu,#dice{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--bg);padding:20px;text-align:center}
+#menu{z-index:60}#dice{z-index:55;background:rgba(5,5,5,.97)}
+#menu.show,#dice.show{display:flex}
+#menu h1{font-size:min(14vw,64px);margin:0 0 8px}
+.mb{font:inherit;font-size:20px;padding:16px 28px;min-width:min(80vw,320px);border-radius:14px;border:2px solid #444;background:#111;color:var(--ink)}
+.mb small{display:block;font-size:13px;color:var(--dim);margin-top:4px}
+.mb.back{border-color:#2a2a2a;color:var(--dim);font-size:16px;padding:10px 20px}
+#dtitle{font-size:22px;font-weight:700}#dhint{font-size:15px;color:var(--dim)}
+#die{width:130px;height:130px;background:#f2f2f2;border-radius:22px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:16px;margin:10px}
+#die span{border-radius:50%}#die span.on{background:#111}
+#die.rolling{animation:shake .18s infinite}
+@keyframes shake{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg) translateY(-6px)}100%{transform:rotate(-8deg)}}
+#dres{font-size:30px;font-weight:800;min-height:40px}
+#tomenu{font:inherit;font-size:16px;padding:10px 18px;border-radius:12px;border:2px solid #444;background:#111;color:var(--ink);opacity:0;transition:opacity .5s .9s}
+#win.in #tomenu{opacity:1}
+#bmenu{font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:2px solid #333;background:#111;color:var(--ink)}
+#mv3 table{border-collapse:collapse;font-size:15px;margin:6px auto 14px}
+#mv3 th{color:var(--dim);font-weight:600}#mv3 th,#mv3 td{padding:7px 9px;border-bottom:1px solid #222;text-align:center;white-space:nowrap}
+#mv3 h2{font-size:18px;margin:10px 0 0}
+#rvbtn{font:inherit;font-size:16px;padding:10px 18px;border-radius:12px;border:2px solid #444;background:#111;color:var(--ink);opacity:0;transition:opacity .5s .9s}
+#win.in #rvbtn{opacity:1}
+#rv{position:fixed;inset:0;z-index:70;background:var(--bg);display:none;flex-direction:column;align-items:center;gap:8px;padding:10px;overflow-y:auto}
+#rv.show{display:flex}
+#rv .wrap{width:min(96vw,calc(100vh - 400px));min-width:250px;order:0}
+#rvtop{width:min(96vw,560px);display:flex;align-items:center;justify-content:space-between;font-size:18px}
+#rvtop button,#rvctl button{font:inherit;font-size:16px;padding:9px 14px;border-radius:10px;border:2px solid #333;background:#111;color:var(--ink)}
+#rvsum{font-size:14px;color:var(--dim);text-align:center;min-height:20px}
+#rvinfo{width:min(96vw,560px);min-height:76px;font-size:15px;line-height:1.5;text-align:center}
+#rvinfo b{font-size:17px}
+#rvdots{width:min(96vw,560px);display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+#rvdots i{width:11px;height:11px;border-radius:50%;background:#333;display:block}
+#rvdots i.good{background:#4fb36a}#rvdots i.mistake{background:#e8923a}#rvdots i.blunder{background:#e0463c}#rvdots i.cur{outline:2px solid #fff;outline-offset:1px}
+#rvctl{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.c.gh{outline:3px dashed #7fd1ff;outline-offset:-3px}
+.s.gs{background:repeating-linear-gradient(45deg,#7fd1ff 0 4px,transparent 4px 8px)}
+.s.w.lw{background:var(--lc)}
+.pawn.last{box-shadow:0 0 0 4px #fff}
+.tg{color:#4fb36a}.tm{color:#e8923a}.tb{color:#e0463c}
 </style>
 </head>
 <body>
 <div class="panel top" id="pn0" style="--pc:var(--yellow)">
-  <span class="who"><i></i>黃（往下）隔板 <b id="w0"></b></span>
+  <span class="who"><i></i>黃（往下）<small id="tag0"></small>隔板 <b id="w0"></b></span>
   <button data-p="0" data-m="move">走一步</button><button data-p="0" data-m="wall">放隔板</button>
 </div>
-<div class="row"><div id="msg"></div><button id="br">重新開始</button></div>
+<div class="row"><div id="msg"></div><button id="bmenu">選單</button><button id="br">重新開始</button></div>
 <div class="wrap"><div id="board"></div></div>
 <div class="panel" id="pn1" style="--pc:var(--green)">
-  <span class="who"><i></i>綠（往上）隔板 <b id="w1"></b></span>
+  <span class="who"><i></i>綠（往上）<small id="tag1"></small>隔板 <b id="w1"></b></span>
   <button data-p="1" data-m="move">走一步</button><button data-p="1" data-m="wall">放隔板</button>
 </div>
 <div id="intro"></div>
-<div id="win"><div id="wball"></div><div id="wtext"></div><button id="again">再玩一次</button></div>
+<div id="win"><div id="wball"></div><div id="wtext"></div><button id="again">再玩一次</button><button id="rvbtn">複盤</button><button id="tomenu">回選單</button></div>
+<div id="rv"><div id="rvtop"><b>複盤</b><button id="rvclose">關閉</button></div><div id="rvsum"></div><div class="wrap"><div id="rboard"></div></div><div id="rvinfo"></div><div id="rvdots"></div><div id="rvctl"><button data-a="first">⏮</button><button data-a="prev">◀</button><button data-a="next">▶</button><button data-a="last">⏭</button><button data-a="play">自動播放</button><button data-a="bad">下一個失誤</button></div></div>
+<div id="dice"><div id="dtitle"></div><div id="dhint"></div><div id="die"></div><div id="dres"></div></div>
+<div id="menu"><h1>隔板競速</h1><div id="mv1"><button class="mb" data-go="pvp">雙人對戰<small>同一台 iPad 面對面</small></button><br><br><button class="mb" data-go="ai">人機對戰<small>挑戰電腦</small></button><br><br><button class="mb" data-go="stats">戰績<small>勝敗、連勝、最少步數</small></button></div><div id="mv3" style="display:none"></div><div id="mv2" style="display:none"><button class="mb" data-lv="easy">簡單<small>電腦多半亂走</small></button><button class="mb" data-lv="medium">中等<small>走最短路，會擋你</small></button><button class="mb" data-lv="hard">困難<small>會預想對手的回應</small></button><button class="mb" data-lv="demon">惡魔<small>看得最深，很難贏</small></button><button class="mb back" data-go="back">返回</button></div></div>
 <script>
 const N=9, NAME=['黃','綠'], COL=['var(--yellow)','var(--green)'];
 let st;
-function init(){
-  st={p:[{r:0,c:4,w:10,goal:8},{r:8,c:4,w:10,goal:0}],turn:0,mode:'move',H:new Set(),V:new Set(),over:false,draw:false,warn:false,seen:{},note:'',shown:false};
-  st.seen[posKey()]=1;
-  const w=document.getElementById('win');w.classList.remove('show','in');
+let cfg={mode:'pvp',level:'easy'};
+const LV={easy:'簡單',medium:'中等',hard:'困難',demon:'惡魔'};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function newState(){
+  const x={p:[{r:0,c:4,w:10,goal:8},{r:8,c:4,w:10,goal:0}],turn:0,mode:'move',H:new Set(),V:new Set(),over:false,draw:false,warn:false,seen:{},note:'',shown:false,count:[0,0],hist:[],locked:true,ai:null,thinking:false};
+  return x;
+}
+function resetOverlays(){
+  document.getElementById('win').classList.remove('show','in');
+  document.getElementById('dice').classList.remove('show');
+  document.getElementById('intro').className='out';
+}
+function showMenu(){
+  st=newState();resetOverlays();
+  view(1);
+  document.getElementById('menu').classList.add('show');
+  render();
+}
+function init(){startMatch(null);}
+function startMatch(c){
+  if(c)cfg=c;
+  st=newState();st.seen[posKey()]=1;
+  resetOverlays();
+  document.getElementById('menu').classList.remove('show');
+  render();
+  sequence(st);
+}
+const FACES={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function face(v){
+  const d=document.getElementById('die');d.innerHTML='';
+  for(let i=0;i<9;i++){const x=document.createElement('span');if(FACES[v].includes(i))x.className='on';d.appendChild(x);}
+}
+async function rollDie(title,hint,res){
+  const dice=document.getElementById('dice'),die=document.getElementById('die');
+  document.getElementById('dtitle').textContent=title;
+  document.getElementById('dhint').textContent=hint;
+  document.getElementById('dres').textContent='';
+  dice.classList.add('show');die.classList.add('rolling');
+  const iv=setInterval(()=>face(1+((Math.random()*6)|0)),80);
+  await wait(1100);
+  clearInterval(iv);die.classList.remove('rolling');
+  const v=1+((Math.random()*6)|0);face(v);
+  document.getElementById('dres').textContent=res(v);
+  await wait(1300);
+  return v;
+}
+async function sequence(S){
+  if(cfg.mode==='ai'){
+    const v=await rollDie('擲骰決定你的顏色','單數：你執黃方　雙數：你執綠方',v=>v%2?'你執黃方':'你執綠方');
+    if(S!==st)return;
+    S.ai={side:v%2?1:0,level:cfg.level};
+    render();
+  }
+  const f=await rollDie('擲骰決定先手','單數：黃方先　雙數：綠方先',v=>(v%2?'黃':'綠')+'方先手');
+  if(S!==st)return;
+  S.turn=f%2?0:1;
+  document.getElementById('dice').classList.remove('show');
   showIntro();
+  await wait(2500);
+  if(S!==st)return;
+  S.locked=false;
   render();
 }
 function canStep(r,c,dr,dc,H,V){
@@ -124,21 +223,22 @@ function rawMoves(me,op,H,V){
   return out;
 }
 // 走過去之後，如果會讓對方沒有任何一步可走，這一步就不能走
-function movesFor(i){
-  const me=st.p[i],op=st.p[1-i];
-  return rawMoves(me,op,st.H,st.V).filter(([r,c])=>rawMoves(op,{r,c},st.H,st.V).length>0);
-}
+function movesFor(i){return genMoves(st,i);}
 function moves(){return movesFor(st.turn);}
 function canAct(i){
   if(movesFor(i).length>0)return true;
   if(st.p[i].w<=0)return false;
-  for(let r=0;r<N-1;r++)for(let c=0;c<N;c++)if(wallOK('H',r,c))return true;
-  for(let r=0;r<N;r++)for(let c=0;c<N-1;c++)if(wallOK('V',r,c))return true;
-  return false;
+  return !!anyWall();
+}
+function anyWall(){
+  for(let r=0;r<N-1;r++)for(let c=0;c<N;c++)if(wallOK('H',r,c))return{t:'w',type:'H',r,c};
+  for(let r=0;r<N;r++)for(let c=0;c<N-1;c++)if(wallOK('V',r,c))return{t:'w',type:'V',r,c};
+  return null;
 }
 // 每次行動（走一步或放隔板）結束後都呼叫：檢查勝負，否則換人
 function posKey(){return st.p.map(p=>p.r+','+p.c).join('|');}
 function endTurn(action,moved){
+  st.count[st.turn]++;
   const me=st.p[st.turn];
   if(me.r===me.goal){st.over=true;st.note=NAME[st.turn]+'方獲勝！';return;}
   st.warn=false;
@@ -161,16 +261,17 @@ function endTurn(action,moved){
 }
 function render(){
   const b=document.getElementById('board');
-  const wallMode=!st.over&&st.mode==='wall'&&st.p[st.turn].w>0;
+  const hum=!st.locked&&!(st.ai&&st.ai.side===st.turn);
+  const wallMode=hum&&!st.over&&st.mode==='wall'&&st.p[st.turn].w>0;
   b.className=wallMode?'wall':'';
   b.innerHTML='';
-  const mv=(!st.over&&st.mode==='move')?moves():[];
+  const mv=(hum&&!st.over&&st.mode==='move')?moves():[];
   for(let r=0;r<N;r++)for(let c=0;c<N;c++){
     const d=document.createElement('div');
     d.className='c';d.style.gridRow=2*r+1;d.style.gridColumn=2*c+1;
     if(mv.some(m=>m[0]===r&&m[1]===c)){
       d.classList.add('ok');
-      d.onclick=()=>{st.p[st.turn].r=r;st.p[st.turn].c=c;endTurn('走了一步',true);render();};
+      d.onclick=()=>{st.hist.push({side:st.turn,t:'m',r,c});st.p[st.turn].r=r;st.p[st.turn].c=c;endTurn('走了一步',true);render();};
     }
     st.p.forEach((p,i)=>{if(p.r===r&&p.c===c){const x=document.createElement('div');x.className='pawn';x.dataset.i=i;x.style.background=COL[i];d.appendChild(x);}});
     b.appendChild(d);
@@ -184,6 +285,7 @@ function render(){
     else if(wallMode&&wallOK(type,r,c)){
       s.classList.add('ok');
       s.onclick=()=>{
+        st.hist.push({side:st.turn,t:'w',type,r,c});
         (type==='H'?st.H:st.V).add(r+','+c);
         st.p[st.turn].w--;
         endTurn('放了隔板');
@@ -197,21 +299,27 @@ function render(){
   for(let i=0;i<2;i++){
     document.getElementById('w'+i).textContent=st.p[i].w;
     const active=st.turn===i&&!st.over;
-    document.getElementById('pn'+i).className='panel'+(i===0?' top':'')+(active?' on':'');
+    const pe=document.getElementById('pn'+i);
+    pe.className='panel'+(i===0&&!st.ai?' top':'')+(active?' on':'');
+    pe.style.order=(st.ai?(st.ai.side===i?0:3):(i===0?0:3));
+    document.getElementById('tag'+i).textContent=st.ai?(st.ai.side===i?'（電腦·'+LV[st.ai.level]+'）':'（你）'):'';
     document.querySelectorAll('button[data-p="'+i+'"]').forEach(btn=>{
       const m=btn.dataset.m;
-      btn.disabled=!active||(m==='wall'&&st.p[i].w===0);
-      btn.className=(active&&st.mode===m)?'sel':'';
+      btn.disabled=!active||!hum||(m==='wall'&&st.p[i].w===0);
+      btn.className=(active&&hum&&st.mode===m)?'sel':'';
     });
   }
   let t=st.note;
-  if(!st.over){
+  if(st.locked&&!st.over)t='準備開戰…';
+  else if(!st.over&&!hum)t='電腦思考中…';
+  else if(!st.over){
     const hint=st.mode==='move'?'點亮點移動':'點格子之間的縫隙放隔板';
     t=(t?t+'：':'輪到'+NAME[st.turn]+'方：')+hint;
   }
   const me=document.getElementById('msg');
   me.textContent=t;me.style.color=st.warn?'#ffb14a':'';
-  if(st.over&&!st.shown){st.shown=true;showWin(st.draw?'draw':st.turn);}
+  if(st.over&&!st.shown){st.shown=true;recordResult();showWin(st.draw?'draw':st.turn);}
+  maybeAI();
 }
 function showIntro(){
   const el=document.getElementById('intro');
@@ -225,7 +333,7 @@ function showWin(i){
   const draw=i==='draw';
   w.style.setProperty('--wc',draw?'#e6e6e6':COL[i]);
   ball.style.background=draw?'linear-gradient(90deg,var(--yellow) 50%,var(--green) 50%)':'';
-  document.getElementById('wtext').textContent=draw?'平局！':NAME[i]+'方獲勝！';
+  document.getElementById('wtext').textContent=draw?'平局！':(st.ai?(i===st.ai.side?'電腦獲勝！':'你獲勝！'):NAME[i]+'方獲勝！');
   w.classList.add('show');
   void w.offsetWidth;
   w.classList.add('in');
@@ -239,16 +347,352 @@ function showWin(i){
     ball.animate([{transform:'scale(.2) rotate(-180deg)',opacity:0},{transform:'scale(1) rotate(0)',opacity:1}],{duration:800,easing:'cubic-bezier(.2,.9,.3,1.2)'});
   }
 }
+
+
+// ================= 戰績（存在這台裝置的瀏覽器）=================
+const SKEY='wallrace.stats.v1';
+function loadStats(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(SKEY));}catch(e){}
+  d=d||{};
+  d.ai=d.ai||{};
+  for(const k of Object.keys(LV))d.ai[k]=Object.assign({w:0,l:0,d:0,cur:0,best:0,min:null},d.ai[k]);
+  d.pvp=Object.assign({y:0,g:0,d:0,min:null},d.pvp);
+  return d;
+}
+function saveStats(d){try{localStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}}
+function recordResult(){
+  const d=loadStats(),winner=st.turn,n=st.count[winner];
+  if(cfg.mode==='ai'&&st.ai){
+    const e=d.ai[st.ai.level],human=1-st.ai.side;
+    if(st.draw)e.d++;
+    else if(winner===human){e.w++;e.cur++;e.best=Math.max(e.best,e.cur);e.min=e.min===null?n:Math.min(e.min,n);}
+    else{e.l++;e.cur=0;}
+  }else{
+    const e=d.pvp;
+    if(st.draw)e.d++;
+    else{if(winner===0)e.y++;else e.g++;e.min=e.min===null?n:Math.min(e.min,n);}
+  }
+  saveStats(d);
+}
+function view(n){
+  for(let i=1;i<=3;i++)document.getElementById('mv'+i).style.display=i===n?'':'none';
+}
+function buildStats(){
+  const d=loadStats(),f=v=>v===null?'－':v;
+  let h='<h2>人機對戰</h2><table><tr><th>難度</th><th>勝</th><th>敗</th><th>平</th><th>連勝 最高（目前）</th><th>最少步數獲勝</th></tr>';
+  for(const k of Object.keys(LV)){const e=d.ai[k];h+='<tr><td>'+LV[k]+'</td><td>'+e.w+'</td><td>'+e.l+'</td><td>'+e.d+'</td><td>'+e.best+'（'+e.cur+'）</td><td>'+f(e.min)+'</td></tr>';}
+  h+='</table><h2>雙人對戰</h2><table><tr><th>黃勝</th><th>綠勝</th><th>平局</th><th>最少步數獲勝</th></tr><tr><td>'+d.pvp.y+'</td><td>'+d.pvp.g+'</td><td>'+d.pvp.d+'</td><td>'+f(d.pvp.min)+'</td></tr></table>';
+  h+='<div style="font-size:13px;color:var(--dim);margin-bottom:12px">步數＝獲勝那一方走的回合數（走一步或放隔板都算一回合）<br>平局不會中斷連勝；戰績只存在這台裝置的瀏覽器</div>';
+  h+='<button class="mb back" data-go="back">返回</button>';
+  const v=document.getElementById('mv3');v.innerHTML=h;
+  v.querySelectorAll('button').forEach(b=>{b.onclick=()=>view(1);});
+}
+
+// ================= 複盤 =================
+let RV=null;
+const AD=4,AK=8;
+function replayState(hist,k){
+  const S={p:[{r:0,c:4,w:10,goal:8},{r:8,c:4,w:10,goal:0}],H:new Set(),V:new Set()};
+  for(let i=0;i<k;i++){
+    const a=hist[i],me=S.p[a.side];
+    if(a.t==='m'){me.r=a.r;me.c=a.c;}
+    else{(a.type==='H'?S.H:S.V).add(a.r+','+a.c);me.w--;}
+  }
+  return S;
+}
+const sameAct=(x,a)=>x.t===a.t&&x.r===a.r&&x.c===a.c&&(x.type||'')===(a.type||'');
+function analyzePly(hist,i){
+  const S=replayState(hist,i),a=hist[i],side=a.side,me=S.p[side];
+  const list=genActions(S,side,AK);
+  if(!list.some(x=>sameAct(x,a)))list.push(a);
+  const vals=list.map(x=>{
+    const undo=applyAct(S,side,x);
+    const v=(x.t==='m'&&me.r===me.goal)?1000:-search(S,1-side,AD-1,-Infinity,Infinity,AK);
+    undo();return v;
+  });
+  let bi=0;vals.forEach((v,j)=>{if(v>vals[bi])bi=j;});
+  const pi=list.findIndex(x=>sameAct(x,a)),vb=vals[bi],vp=vals[pi];
+  let second=-Infinity;vals.forEach((v,j)=>{if(j!==bi&&v>second)second=v;});
+  let loss=vb-vp;if(vb>=900&&vp>=900)loss=0;
+  let label='ok';
+  if(loss>=4)label='blunder';else if(loss>=2)label='mistake';
+  else if(loss<=0.2&&(vp>=900||second<=vb-2))label='good';
+  return {label,loss,vb,vp,best:sameAct(list[bi],a)?null:list[bi]};
+}
+function describe(S,a){
+  if(a.t==='m'){
+    const me=S.p[a.side!==undefined?a.side:0];
+    return a.r>me.r?'往下走一步':a.r<me.r?'往上走一步':a.c>me.c?'往右走一步':'往左走一步';
+  }
+  return a.type==='H'?'在第'+(a.c+1)+'欄、第'+(a.r+1)+'與'+(a.r+2)+'列之間放隔板'
+                     :'在第'+(a.r+1)+'列、第'+(a.c+1)+'與'+(a.c+2)+'欄之間放隔板';
+}
+function whoR(side){
+  const c=side===0?'黃':'綠';
+  if(RV.ai)return (side===RV.ai.side?'電腦':'你')+'（'+c+'）';
+  return c+'方';
+}
+function openReview(){
+  if(!st.hist.length)return;
+  RV={hist:st.hist.slice(),ai:st.ai,k:0,res:new Array(st.hist.length).fill(null),done:0,timer:null,gen:{}};
+  const me=RV;
+  document.getElementById('rv').classList.add('show');
+  document.getElementById('rvsum').textContent='電腦分析中… 0/'+me.hist.length;
+  drawReview();
+  const step=()=>{
+    if(RV!==me)return;
+    if(me.done>=me.hist.length){summarize();drawReview();return;}
+    me.res[me.done]=analyzePly(me.hist,me.done);me.done++;
+    document.getElementById('rvsum').textContent='電腦分析中… '+me.done+'/'+me.hist.length;
+    if(me.done%4===0)drawReview();
+    setTimeout(step,0);
+  };
+  setTimeout(step,30);
+}
+function summarize(){
+  const cnt=[{good:0,mistake:0,blunder:0},{good:0,mistake:0,blunder:0}];
+  RV.res.forEach((r,i)=>{if(r&&cnt[RV.hist[i].side][r.label]!==undefined)cnt[RV.hist[i].side][r.label]++;});
+  document.getElementById('rvsum').textContent=[0,1].map(i=>whoR(i)+'：好棋 '+cnt[i].good+'、失誤 '+cnt[i].mistake+'、大失誤 '+cnt[i].blunder).join('　');
+}
+const LBL={good:['好棋','tg'],mistake:['失誤','tm'],blunder:['大失誤','tb'],ok:['普通','']};
+function drawReview(){
+  const k=RV.k,S=replayState(RV.hist,k),a=k>0?RV.hist[k-1]:null,r=k>0?RV.res[k-1]:null;
+  const before=k>0?replayState(RV.hist,k-1):null;
+  const ghost=r&&r.best?Object.assign({side:a.side},r.best):null;
+  const b=document.getElementById('rboard');b.innerHTML='';
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+    const d=document.createElement('div');d.className='c';d.style.gridRow=2*y+1;d.style.gridColumn=2*x+1;
+    if(ghost&&ghost.t==='m'&&ghost.r===y&&ghost.c===x)d.classList.add('gh');
+    S.p.forEach((p,i)=>{if(p.r===y&&p.c===x){const e=document.createElement('div');e.className='pawn'+(a&&a.t==='m'&&a.side===i?' last':'');e.style.background=COL[i];d.appendChild(e);}});
+    b.appendChild(d);
+  }
+  const slot=(type,y,x)=>{
+    const e=document.createElement('div');e.className='s';
+    if(type==='H'){e.style.gridRow=2*y+2;e.style.gridColumn=2*x+1;}else{e.style.gridRow=2*y+1;e.style.gridColumn=2*x+2;}
+    if((type==='H'?S.H:S.V).has(y+','+x)){
+      e.classList.add('w');
+      if(a&&a.t==='w'&&a.type===type&&a.r===y&&a.c===x){e.classList.add('lw');e.style.setProperty('--lc',COL[a.side]);}
+    }
+    if(ghost&&ghost.t==='w'&&ghost.type===type&&ghost.r===y&&ghost.c===x)e.classList.add('gs');
+    b.appendChild(e);
+  };
+  for(let y=0;y<N-1;y++)for(let x=0;x<N;x++)slot('H',y,x);
+  for(let y=0;y<N;y++)for(let x=0;x<N-1;x++)slot('V',y,x);
+  // info
+  let h;
+  if(k===0)h='<b>開局</b><br>用下方按鈕一步一步看這一局';
+  else{
+    h='<b>第 '+k+' 手　'+whoR(a.side)+'</b>　'+(a.t==='m'?'走了一步':'放了隔板')+(k===RV.hist.length?'　（最後一手）':'');
+    if(r){
+      const l=LBL[r.label];
+      h+='<br><span class="'+l[1]+'"><b>'+l[0]+'</b></span>';
+      if(r.best){
+        const why=(r.vb>=900&&r.vp<900)?'錯過了致勝的走法':(r.vp<=-900?'走了這步之後，電腦預測對手可以強制獲勝':'約讓出 '+r.loss.toFixed(1)+' 步優勢');
+        h+='　'+why+'<br>電腦建議：'+describe(before,Object.assign({side:a.side},r.best))+'（虛線）';
+      }
+    }else h+='<br>分析中…';
+  }
+  document.getElementById('rvinfo').innerHTML=h;
+  const dots=document.getElementById('rvdots');dots.innerHTML='';
+  RV.hist.forEach((_,i)=>{
+    const e=document.createElement('i'),rr=RV.res[i];
+    e.className=(rr&&rr.label!=='ok'?rr.label:'')+(i+1===k?' cur':'');
+    e.onclick=()=>{RV.k=i+1;drawReview();};
+    dots.appendChild(e);
+  });
+}
+function reviewStop(){
+  if(RV&&RV.timer){clearInterval(RV.timer);RV.timer=null;}
+  const pb=document.querySelector('#rvctl button[data-a="play"]');if(pb)pb.textContent='自動播放';
+}
+function reviewAct(act){
+  if(!RV)return;
+  const n=RV.hist.length;
+  if(act==='first'){reviewStop();RV.k=0;}
+  else if(act==='prev'){reviewStop();RV.k=Math.max(0,RV.k-1);}
+  else if(act==='next'){reviewStop();RV.k=Math.min(n,RV.k+1);}
+  else if(act==='last'){reviewStop();RV.k=n;}
+  else if(act==='bad'){
+    reviewStop();
+    const isBad=i=>RV.res[i]&&(RV.res[i].label==='mistake'||RV.res[i].label==='blunder');
+    let j=-1;
+    for(let i=RV.k;i<n;i++)if(isBad(i)){j=i;break;}
+    if(j<0)for(let i=0;i<RV.k;i++)if(isBad(i)){j=i;break;}
+    if(j<0){document.getElementById('rvinfo').innerHTML=RV.done<n?'分析還沒完成，稍等一下':'<b>沒有失誤</b><br>這一局雙方都沒有明顯的失誤';return;}
+    RV.k=j+1;
+  }else if(act==='play'){
+    if(RV.timer){reviewStop();return;}
+    if(RV.k>=n)RV.k=0;
+    document.querySelector('#rvctl button[data-a="play"]').textContent='暫停';
+    RV.timer=setInterval(()=>{if(RV.k>=n){reviewStop();return;}RV.k++;drawReview();},1000);
+  }
+  drawReview();
+}
+document.querySelectorAll('#rvctl button').forEach(b=>{b.onclick=()=>reviewAct(b.dataset.a);});
+document.getElementById('rvclose').onclick=()=>{reviewStop();RV=null;document.getElementById('rv').classList.remove('show');};
+document.getElementById('rvbtn').onclick=openReview;
+// ================= 電腦對手 =================
+function dist(p,H,V){
+  const seen=new Uint8Array(81);let lvl=[p.r*9+p.c],d=0;seen[lvl[0]]=1;
+  while(lvl.length){
+    const nx=[];
+    for(const k of lvl){
+      const r=(k/9)|0,c=k%9;
+      if(r===p.goal)return d;
+      for(const [dr,dc] of D){
+        if(!canStep(r,c,dr,dc,H,V))continue;
+        const n=(r+dr)*9+c+dc;
+        if(!seen[n]){seen[n]=1;nx.push(n);}
+      }
+    }
+    lvl=nx;d++;
+  }
+  return Infinity;
+}
+function pathEdges(p,H,V){
+  const par=new Int16Array(81).fill(-2),start=p.r*9+p.c;par[start]=-1;
+  const q=[start];let end=-1;
+  for(let i=0;i<q.length&&end<0;i++){
+    const k=q[i],r=(k/9)|0,c=k%9;
+    if(r===p.goal){end=k;break;}
+    for(const [dr,dc] of D){
+      if(!canStep(r,c,dr,dc,H,V))continue;
+      const n=(r+dr)*9+c+dc;
+      if(par[n]===-2){par[n]=k;q.push(n);}
+    }
+  }
+  const out=[];
+  for(let k=end;k>=0&&par[k]>=0;k=par[k]){const f=par[k];out.push([(f/9)|0,f%9,(k/9)|0,k%9]);}
+  return out;
+}
+function genMoves(S,i){
+  const me=S.p[i],op=S.p[1-i];
+  return rawMoves(me,op,S.H,S.V).filter(([r,c])=>rawMoves(op,{r,c},S.H,S.V).length>0);
+}
+function genWalls(S,side,K){
+  const me=S.p[side],op=S.p[1-side];
+  if(me.w<=0)return[];
+  const base=dist(op,S.H,S.V),out=[],done=new Set();
+  for(const [r1,c1,r2,c2] of pathEdges(op,S.H,S.V)){
+    const type=r1!==r2?'H':'V',r=r1!==r2?Math.min(r1,r2):r1,c=r1!==r2?c1:Math.min(c1,c2);
+    const k=r+','+c,set=type==='H'?S.H:S.V;
+    if(done.has(type+k)||set.has(k))continue;
+    done.add(type+k);
+    set.add(k);
+    const dO=dist(op,S.H,S.V),dM=dist(me,S.H,S.V);
+    const ok=dO<Infinity&&dM<Infinity&&dO>base&&rawMoves(me,op,S.H,S.V).length>0&&rawMoves(op,me,S.H,S.V).length>0;
+    set.delete(k);
+    if(ok)out.push({t:'w',type,r,c,score:dO-dM});
+  }
+  out.sort((x,y)=>y.score-x.score);
+  return out.slice(0,K);
+}
+function genActions(S,side,K){
+  const me=S.p[side],mv=genMoves(S,side).map(([r,c])=>({t:'m',r,c}));
+  for(const m of mv){const o=[me.r,me.c];me.r=m.r;me.c=m.c;m.d=dist(me,S.H,S.V);me.r=o[0];me.c=o[1];}
+  mv.sort((a,b)=>a.d-b.d);
+  return mv.concat(genWalls(S,side,K));
+}
+function applyAct(S,side,a){
+  const me=S.p[side];
+  if(a.t==='m'){const r=me.r,c=me.c;me.r=a.r;me.c=a.c;return()=>{me.r=r;me.c=c;};}
+  const set=a.type==='H'?S.H:S.V,k=a.r+','+a.c;
+  set.add(k);me.w--;
+  return()=>{set.delete(k);me.w++;};
+}
+function evalS(S,side){
+  const me=S.p[side],op=S.p[1-side];
+  return dist(op,S.H,S.V)-dist(me,S.H,S.V)+0.15*(me.w-op.w);
+}
+function search(S,side,depth,alpha,beta,K){
+  if(depth===0)return evalS(S,side);
+  const me=S.p[side],acts=genActions(S,side,K);
+  if(!acts.length)return evalS(S,side)-5;
+  let best=-Infinity;
+  for(const a of acts){
+    const undo=applyAct(S,side,a);
+    const v=(a.t==='m'&&me.r===me.goal)?1000+depth:-search(S,1-side,depth-1,-beta,-alpha,K);
+    undo();
+    if(v>best)best=v;
+    if(best>alpha)alpha=best;
+    if(alpha>=beta)break;
+  }
+  return best;
+}
+function chooseAction(){
+  const S=st,side=S.ai.side,lv=S.ai.level,me=S.p[side],R=Math.random;
+  const mv=genMoves(S,side);
+  const along=()=>{
+    const a=genActions(S,side,0);
+    return a[0]||genWalls(S,side,1)[0]||anyWall();
+  };
+  if(lv==='easy'){
+    const x=R();
+    if(x<0.12&&me.w>0){
+      for(let t=0;t<40;t++){
+        const type=R()<.5?'H':'V',r=(R()*(type==='H'?8:9))|0,c=(R()*(type==='H'?9:8))|0;
+        if(wallOK(type,r,c))return{t:'w',type,r,c};
+      }
+    }
+    if(x<0.45&&mv.length){const m=mv[(R()*mv.length)|0];return{t:'m',r:m[0],c:m[1]};}
+    return along();
+  }
+  const P={medium:{d:1,K:8,n:.7},hard:{d:2,K:8,n:.2},demon:{d:4,K:8,n:0}}[lv];
+  const acts=genActions(S,side,P.K);
+  if(!acts.length)return anyWall();
+  let best=null,bv=-Infinity;
+  for(const a of acts){
+    const undo=applyAct(S,side,a);
+    let v;
+    if(a.t==='m'&&me.r===me.goal)v=1000;
+    else v=-search(S,1-side,P.d-1+(P.d===1?0:0),-Infinity,P.n?Infinity:-bv+1e-9,P.K);
+    if(a.t==='m'){const n=S.seen[posKey()]||0;if(n>=3)v-=40*(n-2);}
+    undo();
+    v+=(R()-.5)*2*P.n;
+    if(v>bv){bv=v;best=a;}
+  }
+  return best;
+}
+function doAI(a){
+  const side=st.ai.side;
+  st.hist.push(a.t==='m'?{side,t:'m',r:a.r,c:a.c}:{side,t:'w',type:a.type,r:a.r,c:a.c});
+  if(a.t==='m'){st.p[side].r=a.r;st.p[side].c=a.c;endTurn('走了一步',true);}
+  else{(a.type==='H'?st.H:st.V).add(a.r+','+a.c);st.p[side].w--;endTurn('放了隔板',false);}
+}
+function maybeAI(){
+  if(st.over||st.locked||!st.ai||st.ai.side!==st.turn||st.thinking)return;
+  const S=st;S.thinking=true;
+  setTimeout(()=>{
+    if(S!==st)return;
+    const a=chooseAction();
+    S.thinking=false;
+    if(a)doAI(a);
+    render();
+  },800);
+}
 document.querySelectorAll('.panel button').forEach(btn=>{
   btn.onclick=()=>{
     const p=+btn.dataset.p;
-    if(st.over||st.turn!==p)return;
+    if(st.over||st.locked||st.turn!==p||(st.ai&&st.ai.side===p))return;
     st.mode=btn.dataset.m;render();
   };
 });
 document.getElementById('br').onclick=init;
 document.getElementById('again').onclick=init;
-init();
+document.getElementById('bmenu').onclick=showMenu;
+document.getElementById('tomenu').onclick=showMenu;
+document.querySelectorAll('#menu button').forEach(b=>{
+  b.onclick=()=>{
+    const g=b.dataset.go,l=b.dataset.lv;
+    if(g==='pvp')startMatch({mode:'pvp'});
+    else if(g==='ai')view(2);
+    else if(g==='back')view(1);
+    else if(g==='stats'){buildStats();view(3);}
+    else if(l)startMatch({mode:'ai',level:l});
+  };
+});
+st=newState();showMenu();
 </script>
 </body>
 </html>
