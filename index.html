@@ -112,14 +112,29 @@ function wallOK(type,r,c){
   if(own.has(r+','+c))return false;
   const H=new Set(st.H),V=new Set(st.V);
   (type==='H'?H:V).add(r+','+c);
-  return st.p.every(p=>hasPath(p,H,V));
+  if(!st.p.every(p=>hasPath(p,H,V)))return false;
+  // 不能把任何一方困到沒有棋子可以走（對方的球也算擋住）
+  return rawMoves(st.p[0],st.p[1],H,V).length>0&&rawMoves(st.p[1],st.p[0],H,V).length>0;
 }
-function moves(){
-  const me=st.p[st.turn],op=st.p[1-st.turn],out=[];
+function rawMoves(me,op,H,V){
+  const out=[];
   for(const [dr,dc] of D){
-    if(canStep(me.r,me.c,dr,dc,st.H,st.V)&&!(op.r===me.r+dr&&op.c===me.c+dc))out.push([me.r+dr,me.c+dc]);
+    if(canStep(me.r,me.c,dr,dc,H,V)&&!(op.r===me.r+dr&&op.c===me.c+dc))out.push([me.r+dr,me.c+dc]);
   }
   return out;
+}
+// 走過去之後，如果會讓對方沒有任何一步可走，這一步就不能走
+function movesFor(i){
+  const me=st.p[i],op=st.p[1-i];
+  return rawMoves(me,op,st.H,st.V).filter(([r,c])=>rawMoves(op,{r,c},st.H,st.V).length>0);
+}
+function moves(){return movesFor(st.turn);}
+function canAct(i){
+  if(movesFor(i).length>0)return true;
+  if(st.p[i].w<=0)return false;
+  for(let r=0;r<N-1;r++)for(let c=0;c<N;c++)if(wallOK('H',r,c))return true;
+  for(let r=0;r<N;r++)for(let c=0;c<N-1;c++)if(wallOK('V',r,c))return true;
+  return false;
 }
 // 每次行動（走一步或放隔板）結束後都呼叫：檢查勝負，否則換人
 function posKey(){return st.p.map(p=>p.r+','+p.c).join('|');}
@@ -137,6 +152,12 @@ function endTurn(action,moved){
   st.turn=1-st.turn;
   st.mode='move';
   st.note=NAME[prev]+'方'+action+'，輪到'+NAME[st.turn]+'方'+(st.warn?'（相同位置第 4 次，再重複一次就平局！）':'');
+  if(!canAct(st.turn)){
+    const stuck=st.turn;
+    st.turn=1-st.turn;
+    if(!canAct(st.turn)){st.over=true;st.draw=true;st.note='平局！雙方都無法行動';return;}
+    st.note=NAME[stuck]+'方無路可走，跳過回合，仍是'+NAME[st.turn]+'方';
+  }
 }
 function render(){
   const b=document.getElementById('board');
