@@ -100,6 +100,11 @@ body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 1
 .s.w.lw{background:var(--lc)}
 .pawn.last{box-shadow:0 0 0 4px #fff}
 .tg{color:#4fb36a}.tm{color:#e8923a}.tb{color:#e0463c}
+#menu{overflow-y:auto}
+#mv4{width:min(92vw,360px)}#mv4 .list{max-height:62vh;overflow-y:auto;margin-bottom:12px}
+#mv4 .mb{display:flex;justify-content:space-between;align-items:center;width:100%;min-width:0;margin:5px 0;padding:14px 20px}
+#mv4 .mb span{font-weight:800}
+#mv4 .rw{color:#4fb36a}#mv4 .rl{color:#e0463c}#mv4 .rd{color:var(--dim)}
 </style>
 </head>
 <body>
@@ -117,7 +122,7 @@ body{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 1
 <div id="win"><div id="wball"></div><div id="wtext"></div><button id="again">再玩一次</button><button id="rvbtn">複盤</button><button id="tomenu">回選單</button></div>
 <div id="rv"><div id="rvtop"><b>複盤</b><button id="rvclose">關閉</button></div><div id="rvsum"></div><div class="wrap"><div id="rboard"></div></div><div id="rvinfo"></div><div id="rvdots"></div><div id="rvctl"><button data-a="first">⏮</button><button data-a="prev">◀</button><button data-a="next">▶</button><button data-a="last">⏭</button><button data-a="play">自動播放</button><button data-a="bad">下一個失誤</button></div></div>
 <div id="dice"><div id="dtitle"></div><div id="dhint"></div><div id="die"></div><div id="dres"></div></div>
-<div id="menu"><h1>隔板競速</h1><div id="mv1"><button class="mb" data-go="pvp">雙人對戰<small>同一台 iPad 面對面</small></button><br><br><button class="mb" data-go="ai">人機對戰<small>挑戰電腦</small></button><br><br><button class="mb" data-go="stats">戰績<small>勝敗、連勝、最少步數</small></button></div><div id="mv3" style="display:none"></div><div id="mv2" style="display:none"><button class="mb" data-lv="easy">簡單<small>電腦多半亂走</small></button><button class="mb" data-lv="medium">中等<small>走最短路，會擋你</small></button><button class="mb" data-lv="hard">困難<small>會預想對手的回應</small></button><button class="mb" data-lv="demon">惡魔<small>看得最深，很難贏</small></button><button class="mb back" data-go="back">返回</button></div></div>
+<div id="menu"><h1>隔板競速</h1><div id="mv1"><button class="mb" data-go="pvp">雙人對戰<small>同一台 iPad 面對面</small></button><br><br><button class="mb" data-go="ai">人機對戰<small>挑戰電腦</small></button><br><br><button class="mb" data-go="stats">戰績<small>勝敗、連勝、最少步數</small></button><br><br><button class="mb" data-go="games">複盤<small>重看最近 10 局</small></button></div><div id="mv3" style="display:none"></div><div id="mv4" style="display:none"></div><div id="mv2" style="display:none"><button class="mb" data-lv="easy">簡單<small>電腦多半亂走</small></button><button class="mb" data-lv="medium">中等<small>走最短路，會擋你</small></button><button class="mb" data-lv="hard">困難<small>會預想對手的回應</small></button><button class="mb" data-lv="demon">惡魔<small>看得最深，很難贏</small></button><button class="mb back" data-go="back">返回</button></div></div>
 <script>
 const N=9, NAME=['黃','綠'], COL=['var(--yellow)','var(--green)'];
 let st;
@@ -374,9 +379,40 @@ function recordResult(){
     else{if(winner===0)e.y++;else e.g++;e.min=e.min===null?n:Math.min(e.min,n);}
   }
   saveStats(d);
+  saveGame();
+}
+const GKEY='wallrace.games.v1',GMAX=10;
+function loadGames(){try{const g=JSON.parse(localStorage.getItem(GKEY));return Array.isArray(g)?g:[];}catch(e){return[];}}
+function saveGame(){
+  if(!st.hist.length)return;
+  const g=loadGames();
+  g.unshift({ts:Date.now(),mode:cfg.mode==='ai'&&st.ai?'ai':'pvp',level:st.ai?st.ai.level:null,aiSide:st.ai?st.ai.side:null,winner:st.turn,draw:!!st.draw,hist:st.hist});
+  try{localStorage.setItem(GKEY,JSON.stringify(g.slice(0,GMAX)));}catch(e){}
+}
+function buildGames(){
+  const g=loadGames(),v=document.getElementById('mv4');
+  let h='<h2 style="font-size:20px;margin:0 0 12px">複盤</h2><div class="list">';
+  if(!g.length)h+='<div style="color:var(--dim);padding:20px">還沒有紀錄，下完一局就會出現在這裡</div>';
+  g.forEach((x,i)=>{
+    const d=new Date(x.ts);
+    let t,c;
+    if(x.draw){t=x.mode==='ai'?'平':'平局';c='rd';}
+    else if(x.mode==='ai'){const win=x.winner===1-x.aiSide;t=win?'勝':'負';c=win?'rw':'rl';}
+    else{t=x.winner===0?'黃勝':'綠勝';c='rd';}
+    h+='<button class="mb" data-i="'+i+'">'+(d.getMonth()+1)+'月'+d.getDate()+'日<span class="'+c+'">'+t+'</span></button>';
+  });
+  h+='</div><button class="mb back" data-go="back">返回</button>';
+  v.innerHTML=h;
+  v.querySelectorAll('button').forEach(b=>{
+    b.onclick=()=>{
+      if(b.dataset.go==='back'){view(1);return;}
+      const x=g[+b.dataset.i];
+      openReview({hist:x.hist,ai:x.mode==='ai'?{side:x.aiSide,level:x.level}:null});
+    };
+  });
 }
 function view(n){
-  for(let i=1;i<=3;i++)document.getElementById('mv'+i).style.display=i===n?'':'none';
+  for(let i=1;i<=4;i++)document.getElementById('mv'+i).style.display=i===n?'':'none';
 }
 function buildStats(){
   const d=loadStats(),f=v=>v===null?'－':v;
@@ -433,9 +469,10 @@ function whoR(side){
   if(RV.ai)return (side===RV.ai.side?'電腦':'你')+'（'+c+'）';
   return c+'方';
 }
-function openReview(){
-  if(!st.hist.length)return;
-  RV={hist:st.hist.slice(),ai:st.ai,k:0,res:new Array(st.hist.length).fill(null),done:0,timer:null,gen:{}};
+function openReview(src){
+  src=src||{hist:st.hist,ai:st.ai};
+  if(!src.hist.length)return;
+  RV={hist:src.hist.slice(),ai:src.ai,k:0,res:new Array(st.hist.length).fill(null),done:0,timer:null,gen:{}};
   const me=RV;
   document.getElementById('rv').classList.add('show');
   document.getElementById('rvsum').textContent='電腦分析中… 0/'+me.hist.length;
@@ -531,7 +568,7 @@ function reviewAct(act){
 }
 document.querySelectorAll('#rvctl button').forEach(b=>{b.onclick=()=>reviewAct(b.dataset.a);});
 document.getElementById('rvclose').onclick=()=>{reviewStop();RV=null;document.getElementById('rv').classList.remove('show');};
-document.getElementById('rvbtn').onclick=openReview;
+document.getElementById('rvbtn').onclick=()=>openReview();
 // ================= 電腦對手 =================
 function dist(p,H,V){
   const seen=new Uint8Array(81);let lvl=[p.r*9+p.c],d=0;seen[lvl[0]]=1;
@@ -689,6 +726,7 @@ document.querySelectorAll('#menu button').forEach(b=>{
     else if(g==='ai')view(2);
     else if(g==='back')view(1);
     else if(g==='stats'){buildStats();view(3);}
+    else if(g==='games'){buildGames();view(4);}
     else if(l)startMatch({mode:'ai',level:l});
   };
 });
