@@ -164,6 +164,7 @@
       <button id="btnAuto" class="sec" type="button">自動翻轉：關</button>
       <button id="btnNew" type="button">🔁 重新一局</button>
       <button id="btnMenu" class="sec" type="button">🏠 主選單</button>
+      <button class="sec sndBtn" type="button">🔊 音效：開</button>
     </div>
     <div class="btns" id="replayBar" hidden>
       <button id="rFirst" class="sec" type="button">⏮</button>
@@ -173,6 +174,7 @@
       <button id="rPlay" class="sec" type="button">▶▶ 自動播放</button>
       <button id="rFlip" class="sec" type="button">🔄 翻轉</button>
       <button id="rBack" class="sec" type="button">📼 返回列表</button>
+      <button class="sec sndBtn" type="button">🔊 音效：開</button>
     </div>
     <div id="log"></div>
   </div>
@@ -186,6 +188,7 @@
       <button class="big" id="mAI" type="button">🤖 人機對決</button>
       <button class="big" id="mTwo" type="button">👥 單機對決（雙人）</button>
       <button class="big sec" id="mRec" type="button">📼 複盤（最近 10 局）</button>
+      <button class="big sec sndBtn" type="button">🔊 音效：開</button>
     </div>
     <div id="mSetup" hidden>
       <div class="lab">電腦難度</div>
@@ -253,6 +256,77 @@
   var thinking = false, aiToken = 0;
   var records = [], memStore = null;
   var sts = [], ridx = 0, replayRec = null, playTimer = null;
+
+  /* ================= 音效（Web Audio 即時合成，不需外部檔案） ================= */
+  var AC = null, soundOn = true;
+  try { if (window.localStorage.getItem("chess_sound") === "0") soundOn = false; } catch (e) {}
+
+  function ac() {
+    if (!AC) {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      try { AC = new C(); } catch (e) { return null; }
+    }
+    if (AC.state === "suspended") { try { AC.resume(); } catch (e) {} }
+    return AC;
+  }
+  function tone(freq, dur, type, vol, delay, slideTo) {
+    if (!soundOn) return;
+    var a = ac(); if (!a) return;
+    var t = a.currentTime + (delay || 0);
+    var o = a.createOscillator(), g = a.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol || 0.2, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  function noise(dur, vol, delay, cutoff) {
+    if (!soundOn) return;
+    var a = ac(); if (!a) return;
+    var t = a.currentTime + (delay || 0);
+    var len = Math.max(1, Math.floor(a.sampleRate * dur));
+    var buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    var src = a.createBufferSource(); src.buffer = buf;
+    var f = a.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = cutoff || 1500;
+    var g = a.createGain();
+    g.gain.setValueAtTime(vol || 0.3, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(a.destination);
+    src.start(t);
+  }
+  var sfx = {
+    tick:    function () { tone(900, 0.04, "sine", 0.06); },
+    select:  function () { tone(620, 0.05, "sine", 0.09); tone(820, 0.05, "sine", 0.06, 0.03); },
+    deselect: function () { tone(520, 0.05, "sine", 0.07, 0, 380); },
+    move:    function () { noise(0.07, 0.5, 0, 1800); tone(190, 0.1, "sine", 0.3, 0, 90); },
+    capture: function () { noise(0.14, 0.8, 0, 1300); tone(130, 0.18, "triangle", 0.4, 0, 55); tone(300, 0.06, "square", 0.05); },
+    castle:  function () { sfx.move(); setTimeout(sfx.move, 150); },
+    promote: function () { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, 0.16, "triangle", 0.14, i * 0.07); }); },
+    check:   function () { tone(880, 0.13, "square", 0.1); tone(880, 0.13, "square", 0.1, 0.17); tone(660, 0.22, "square", 0.08, 0.34); },
+    start:   function () { [392, 523, 659, 784].forEach(function (f, i) { tone(f, 0.22, "sine", 0.14, i * 0.09); }); },
+    undo:    function () { tone(520, 0.12, "sine", 0.12, 0, 260); },
+    win:     function () {
+      [523, 659, 784, 1047, 1319].forEach(function (f, i) { tone(f, 0.28, "triangle", 0.16, i * 0.12); });
+      [523, 659, 784, 1047].forEach(function (f) { tone(f, 0.9, "sine", 0.09, 0.7); });
+    },
+    lose:    function () { [392, 349, 311, 262].forEach(function (f, i) { tone(f, 0.32, "triangle", 0.15, i * 0.2); }); },
+    draw:    function () { tone(440, 0.3, "sine", 0.13); tone(440, 0.3, "sine", 0.13, 0.35); tone(330, 0.5, "sine", 0.12, 0.7); }
+  };
+  function playMove(m, capture) {
+    if (m.castle) sfx.castle();
+    else if (m.promo) { if (capture) sfx.capture(); sfx.promote(); }
+    else if (capture) sfx.capture();
+    else sfx.move();
+  }
+  function updateSndBtns() {
+    var list = document.querySelectorAll(".sndBtn");
+    for (var i = 0; i < list.length; i++) list[i].textContent = soundOn ? "🔊 音效：開" : "🔇 音效：關";
+  }
 
   function newState() {
     var b = [];
@@ -827,6 +901,9 @@
       sub.textContent = state.result === "stalemate" ? "逼和（無子可動）" : state.result === "fifty" ? "五十步規則" : "子力不足";
       small.textContent = "共走了 " + moves + " 回合・已存入複盤";
     }
+    var endSnd = "draw";
+    if (state.result === "checkmate") endSnd = (mode === "ai" && opp(state.turn) !== human) ? "lose" : "win";
+    sfx[endSnd]();
     endOv.classList.remove("show");
     void endOv.offsetWidth;
     endOv.classList.add("show");
@@ -837,6 +914,7 @@
   function doMove(m, promoteTo) {
     history.push(clone(state));
     var prev = state;
+    var wasCapture = !!(prev.board[m.tr][m.tc] || m.enpassant);
     var next = apply(state, m, promoteTo);
     evaluate(next);
     next.log = prev.log.concat([describe(prev, m, promoteTo, next)]);
@@ -849,6 +927,8 @@
     render();
     lastDrop = null;
     var chk = inCheck(state, state.turn);
+    playMove(m, wasCapture);
+    if (chk) setTimeout(sfx.check, m.castle || m.promo ? 450 : 220);
     if (gameOver) {
       if (state.result === "checkmate") { showBanner("check", "將死！", who(opp(state.turn)) + "獲勝", false); shake(); }
       saveGame();
@@ -871,6 +951,7 @@
       // 再點一次已選的棋子 → 取消選取
       if (selected[0] === r && selected[1] === c) {
         selected = null; legalCache = [];
+        sfx.deselect();
         render();
         return;
       }
@@ -883,6 +964,7 @@
     if (p && p[0] === state.turn) {
       selected = [r, c];
       legalCache = legal(state, r, c);
+      sfx.select();
     } else { selected = null; legalCache = []; }
     render();
   });
@@ -945,6 +1027,7 @@
     render();
     var sub = mode === "ai" ? ("你執" + (human === "w" ? "白 ○" : "黑 ●") + "・" + LV[level]) : "白方先行 ○";
     showBanner("start", "對戰開始", sub, true);
+    sfx.start();
     if (mode === "ai" && aiColor === "w") maybeAI(2300);
   }
 
@@ -993,6 +1076,7 @@
     selected = null; legalCache = []; gameOver = !!state.result; pendingPromo = null;
     if (mode === "two" && autoFlip) flipped = state.turn === "b";
     render();
+    sfx.undo();
     showTurnBanner();
   });
   document.getElementById("btnFlip").addEventListener("click", function () { flipped = !flipped; render(); });
@@ -1084,9 +1168,19 @@
     render();
   }
   function rgoto(i) {
+    var prevIdx = ridx;
     ridx = Math.max(0, Math.min(sts.length - 1, i));
     state = sts[ridx];
     selected = null; legalCache = [];
+    if (ridx === prevIdx + 1) {
+      var sa = sts[prevIdx], sb = sts[ridx];
+      var grew = sb.captured.w.length + sb.captured.b.length > sa.captured.w.length + sa.captured.b.length;
+      var mvr = replayRec.moves[ridx - 1];
+      var pawnPromo = mvr.p && sa.board[mvr.fr][mvr.fc] && sa.board[mvr.fr][mvr.fc][1] === "P";
+      var castled = sa.board[mvr.fr][mvr.fc] && sa.board[mvr.fr][mvr.fc][1] === "K" && Math.abs(mvr.tc - mvr.fc) === 2;
+      playMove({ castle: castled, promo: pawnPromo }, grew);
+      if (inCheck(sb, sb.turn)) setTimeout(sfx.check, 220);
+    }
     render();
   }
   document.getElementById("rFirst").addEventListener("click", function () { stopPlay(); rgoto(0); });
@@ -1117,6 +1211,22 @@
     stopPlay();
     rgoto(+el.getAttribute("data-i") + 1);
   });
+
+  /* ----- 音效開關與解鎖 ----- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button") : null;
+    if (!b) return;
+    if (b.classList.contains("sndBtn")) {
+      soundOn = !soundOn;
+      try { window.localStorage.setItem("chess_sound", soundOn ? "1" : "0"); } catch (err) {}
+      updateSndBtns();
+      if (soundOn) sfx.tick();
+    } else sfx.tick();
+  });
+  ["pointerdown", "touchstart", "click"].forEach(function (ev) {
+    document.addEventListener(ev, function () { if (soundOn) ac(); }, { passive: true });
+  });
+  updateSndBtns();
 
   window.addEventListener("pagehide", function () { if (view === "game" && !gameOver) saveGame(); });
 
