@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>西洋棋 雙人對戰</title>
+<title>西洋棋</title>
 <style>
   :root {
     --bg: #1f2430;
@@ -21,6 +21,7 @@
     --bs: 360px;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  [hidden] { display: none !important; }
   html, body { margin: 0; background: var(--bg); color: var(--text);
     font-family: -apple-system, "PingFang TC", "Noto Sans TC", sans-serif; }
   body { min-height: 100vh; padding: 10px; user-select: none; -webkit-user-select: none; }
@@ -31,21 +32,30 @@
   #side { display: flex; flex-direction: column; align-items: center; width: var(--bs); }
   #app.land #side { width: 300px; align-items: stretch; }
   h1 { font-size: 20px; margin: 4px 0 8px; text-align: center; }
-  #status { font-size: 17px; font-weight: 600; padding: 8px 16px; border-radius: 20px; background: var(--panel); margin-bottom: 8px; min-height: 38px; text-align: center; transition: background .3s; }
+  #status { font-size: 17px; font-weight: 600; padding: 8px 16px; border-radius: 20px; background: var(--panel); margin-bottom: 8px; min-height: 38px; text-align: center; transition: background .3s; align-self: center; max-width: 100%; }
   #status.alert { background: #8a2b2b; }
   #status.end { background: #2f6b3a; }
+  #status.think { background: #3a4a78; }
 
   .cap { width: 100%; min-height: 30px; font-size: 22px; line-height: 30px; letter-spacing: 1px; }
   .cap .lbl { font-size: 12px; color: var(--muted); margin-right: 6px; letter-spacing: 0; }
 
   #boardWrap { position: relative; width: var(--bs); height: var(--bs); }
+  #boardWrap.shake { animation: shake .55s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-9px); } 30% { transform: translateX(9px); }
+    45% { transform: translateX(-7px); } 60% { transform: translateX(7px); }
+    75% { transform: translateX(-3px); } 90% { transform: translateX(3px); }
+  }
   #board { width: 100%; height: 100%; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); border: 3px solid #3b2f22; border-radius: 4px; overflow: hidden; }
   .sq { position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .sq.l { background: var(--light); }
   .sq.d { background: var(--dark); }
   .sq.last::before { content: ""; position: absolute; inset: 0; background: var(--last); }
   .sq.sel::before { content: ""; position: absolute; inset: 0; background: var(--sel); opacity: .75; }
-  .sq.chk::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, var(--check) 20%, transparent 75%); }
+  .sq.chk::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, var(--check) 20%, transparent 75%); animation: pulse 0.9s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
   .sq.hint::after { content: ""; position: absolute; width: 30%; height: 30%; border-radius: 50%; background: var(--move); }
   .sq.hintcap::after { content: ""; position: absolute; inset: 4%; border-radius: 50%; border: 5px solid var(--cap); background: transparent; }
   .pc { position: relative; z-index: 2; font-size: calc(var(--bs) * 0.092); line-height: 1; pointer-events: none; }
@@ -59,7 +69,7 @@
   .sq.l .coord { color: var(--dark); }
   .sq.d .coord { color: var(--light); }
 
-  /* ----- 橫幅動畫（輪到誰 / 對戰開始） ----- */
+  /* ----- 橫幅動畫 ----- */
   #banner { position: absolute; left: 0; right: 0; top: 50%; height: calc(var(--bs) * 0.22); margin-top: calc(var(--bs) * -0.11); z-index: 20; pointer-events: none; overflow: hidden; }
   #banner .bn { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; font-weight: 800; letter-spacing: .12em; }
   #banner .bn .t { font-size: calc(var(--bs) * 0.075); line-height: 1.15; }
@@ -67,8 +77,11 @@
   #banner .bn.w { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.96) 14%, rgba(255,255,255,.96) 86%, rgba(255,255,255,0)); color: #1b1b1b; }
   #banner .bn.b { background: linear-gradient(90deg, rgba(10,10,14,0), rgba(10,10,14,.94) 14%, rgba(10,10,14,.94) 86%, rgba(10,10,14,0)); color: #fff; }
   #banner .bn.start { background: linear-gradient(90deg, rgba(212,160,23,0), rgba(212,160,23,.96) 14%, rgba(212,160,23,.96) 86%, rgba(212,160,23,0)); color: #2b1d00; }
+  #banner .bn.check { background: linear-gradient(90deg, rgba(200,30,30,0), rgba(200,30,30,.96) 14%, rgba(200,30,30,.96) 86%, rgba(200,30,30,0)); color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.45); }
   #banner .bn.run { animation: sweep 1.4s ease both; }
   #banner .bn.run.long { animation-duration: 2.1s; }
+  #banner .bn.check.run .t { animation: zoom .5s ease-out; }
+  @keyframes zoom { 0% { transform: scale(2.2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
   @keyframes sweep {
     0%   { opacity: 0; transform: translateX(-70%) scaleY(.5); }
     16%  { opacity: 1; transform: translateX(0) scaleY(1); }
@@ -77,13 +90,16 @@
   }
 
   .btns { display: flex; gap: 8px; margin: 10px 0 6px; flex-wrap: wrap; justify-content: center; }
-  button { background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 11px 16px; font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 11px 16px; font-size: 15px; font-weight: 600; cursor: pointer; touch-action: manipulation; font-family: inherit; }
   button:active { filter: brightness(.9); }
   button.sec { background: var(--panel); border: 1px solid #44506a; }
   button:disabled { opacity: .4; }
-  #log { width: 100%; background: var(--panel); border-radius: 10px; padding: 8px 12px; font-size: 14px; max-height: 120px; overflow-y: auto; color: var(--muted); margin-top: 6px; line-height: 1.7; }
+  #log { width: 100%; background: var(--panel); border-radius: 10px; padding: 8px 12px; font-size: 14px; max-height: 120px; overflow-y: auto; color: var(--muted); margin-top: 6px; line-height: 1.9; }
   #app.land #log { max-height: calc(var(--bs) * 0.45); }
   #log b { color: var(--text); font-weight: 600; }
+  #log .mv { padding: 1px 5px; border-radius: 5px; }
+  #log .mv.cur { background: var(--accent); color: #fff; }
+  #log.click .mv { cursor: pointer; }
 
   /* ----- 彈窗 ----- */
   .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 50; }
@@ -94,6 +110,24 @@
   .modal .opt.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 3px #000; background: var(--dark); }
   .modal .opt.b { color: #111; }
 
+  /* ----- 主選單 ----- */
+  #menu { position: fixed; inset: 0; background: var(--bg); z-index: 40; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 24px 16px; }
+  .mwrap { width: 100%; max-width: 420px; text-align: center; margin: auto; }
+  .mwrap .logo { font-size: 72px; line-height: 1; color: #fff; text-shadow: 0 0 4px #000, 0 4px 14px rgba(0,0,0,.5); }
+  .mwrap h2 { font-size: 30px; letter-spacing: .2em; margin: 6px 0 22px; }
+  .big { display: block; width: 100%; font-size: 19px; padding: 16px; margin-bottom: 12px; border-radius: 14px; }
+  .lab { text-align: left; font-size: 14px; color: var(--muted); margin: 14px 2px 6px; }
+  .segs { display: flex; gap: 8px; }
+  .segs button { flex: 1; background: var(--panel); border: 2px solid #44506a; }
+  .segs button.on { background: var(--accent); border-color: #9bbcff; }
+  .hint-t { font-size: 12.5px; color: var(--muted); text-align: left; margin: 6px 2px 14px; min-height: 18px; }
+  .rec { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; text-align: left; cursor: pointer; }
+  .rec:active { filter: brightness(1.15); }
+  .rec .l1 { font-size: 13px; color: var(--muted); }
+  .rec .l2 { font-size: 16px; font-weight: 700; margin-top: 3px; }
+  .rec .go { font-size: 14px; color: #9bbcff; white-space: nowrap; }
+  .empty { color: var(--muted); padding: 26px 0; }
+
   /* ----- 結束動畫 ----- */
   #endOv { position: fixed; inset: 0; background: rgba(0,0,0,.72); display: none; align-items: center; justify-content: center; z-index: 60; overflow: hidden; }
   #endOv.show { display: flex; animation: fadeIn .4s ease; }
@@ -102,7 +136,7 @@
   @keyframes pop { 0% { transform: scale(.2) rotate(-6deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
   #endOv .crown { font-size: 54px; animation: bounce 1.1s ease-in-out infinite; }
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  #endOv .big { font-size: 40px; font-weight: 900; letter-spacing: .12em; margin: 6px 0; color: #ffd75e; text-shadow: 0 2px 10px rgba(255, 190, 40, .5); }
+  #endOv .big2 { font-size: 40px; font-weight: 900; letter-spacing: .12em; margin: 6px 0; color: #ffd75e; text-shadow: 0 2px 10px rgba(255, 190, 40, .5); }
   #endOv .sub { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   #endOv .small { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
   #endOv .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
@@ -111,6 +145,7 @@
 </style>
 </head>
 <body>
+
 <div id="app">
   <div id="main">
     <div class="cap" id="capTop"></div>
@@ -121,37 +156,82 @@
     <div class="cap" id="capBot"></div>
   </div>
   <div id="side">
-    <h1>♞ 西洋棋・雙人對戰</h1>
+    <h1>♞ 西洋棋</h1>
     <div id="status"></div>
-    <div class="btns">
+    <div class="btns" id="gameBtns">
       <button id="btnUndo" class="sec" type="button">↩ 悔棋</button>
       <button id="btnFlip" class="sec" type="button">🔄 翻轉棋盤</button>
       <button id="btnAuto" class="sec" type="button">自動翻轉：關</button>
       <button id="btnNew" type="button">🔁 重新一局</button>
+      <button id="btnMenu" class="sec" type="button">🏠 主選單</button>
+    </div>
+    <div class="btns" id="replayBar" hidden>
+      <button id="rFirst" class="sec" type="button">⏮</button>
+      <button id="rPrev" class="sec" type="button">◀ 上一步</button>
+      <button id="rNext" type="button">下一步 ▶</button>
+      <button id="rLast" class="sec" type="button">⏭</button>
+      <button id="rPlay" class="sec" type="button">▶▶ 自動播放</button>
+      <button id="rFlip" class="sec" type="button">🔄 翻轉</button>
+      <button id="rBack" class="sec" type="button">📼 返回列表</button>
     </div>
     <div id="log"></div>
+  </div>
+</div>
+
+<div id="menu">
+  <div class="mwrap">
+    <div class="logo">♞</div>
+    <h2>西洋棋</h2>
+    <div id="mMain">
+      <button class="big" id="mAI" type="button">🤖 人機對決</button>
+      <button class="big" id="mTwo" type="button">👥 單機對決（雙人）</button>
+      <button class="big sec" id="mRec" type="button">📼 複盤（最近 10 局）</button>
+    </div>
+    <div id="mSetup" hidden>
+      <div class="lab">電腦難度</div>
+      <div class="segs" id="segLevel">
+        <button data-v="easy" type="button">簡單</button>
+        <button data-v="medium" type="button" class="on">普通</button>
+        <button data-v="hard" type="button">困難</button>
+      </div>
+      <div class="hint-t" id="levelHint"></div>
+      <div class="lab">你要執</div>
+      <div class="segs" id="segColor">
+        <button data-v="w" type="button" class="on">○ 白棋（先手）</button>
+        <button data-v="b" type="button">● 黑棋</button>
+        <button data-v="r" type="button">隨機</button>
+      </div>
+      <div style="height:18px"></div>
+      <button class="big" id="mStart" type="button">開始對戰</button>
+      <button class="big sec" id="mBack1" type="button">返回</button>
+    </div>
+    <div id="mRecList" hidden>
+      <div id="recs"></div>
+      <button class="big sec" id="mBack2" type="button">返回</button>
+    </div>
   </div>
 </div>
 
 <div class="modal" id="modal"><div class="box"><div>兵升變為：</div><div class="row" id="promoRow"></div></div></div>
 
 <div class="modal" id="cfm"><div class="box">
-  <div id="cfmMsg" style="font-size:17px;font-weight:600"></div>
+  <div id="cfmMsg" style="font-size:17px;font-weight:600;line-height:1.5"></div>
   <div class="row">
     <button id="cfmNo" class="sec" type="button">取消</button>
-    <button id="cfmYes" type="button">確定重來</button>
+    <button id="cfmYes" type="button">確定</button>
   </div>
 </div></div>
 
 <div id="endOv">
   <div class="card">
     <div class="crown" id="endIcon">👑</div>
-    <div class="big" id="endBig"></div>
+    <div class="big2" id="endBig"></div>
     <div class="sub" id="endSub"></div>
     <div class="small" id="endSmall"></div>
     <div class="row">
       <button id="endNew" type="button">🔁 再來一局</button>
       <button id="endView" class="sec" type="button">查看棋盤</button>
+      <button id="endMenu" class="sec" type="button">🏠 主選單</button>
     </div>
   </div>
 </div>
@@ -162,8 +242,17 @@
   var GLYPH = { K: "♚", Q: "♛", R: "♜", B: "♝", N: "♞", P: "♟" };
   var PIECE_VALUE = { Q: 0, R: 1, B: 2, N: 3, P: 4, K: 5 };
   var NAME = { w: "白方", b: "黑方" };
+  var LV = { easy: "簡單", medium: "普通", hard: "困難" };
 
-  var state, history = [], selected = null, legalCache = [], flipped = false, autoFlip = false, gameOver = false, pendingPromo = null, lastDrop = null;
+  var state, history = [], selected = null, legalCache = [], flipped = false, autoFlip = false,
+      gameOver = false, pendingPromo = null, lastDrop = null;
+  var view = "menu";            // menu | game | replay
+  var mode = "two", level = "medium", human = "w", aiColor = "b";
+  var lastCfg = { mode: "two" };
+  var gameId = "", gameTs = 0;
+  var thinking = false, aiToken = 0;
+  var records = [], memStore = null;
+  var sts = [], ridx = 0, replayRec = null, playTimer = null;
 
   function newState() {
     var b = [];
@@ -180,7 +269,7 @@
       castle: { wK: true, wQ: true, bK: true, bQ: true },
       ep: null, half: 0,
       captured: { w: [], b: [] },
-      last: null, log: [], result: null
+      last: null, log: [], mv: [], result: null
     };
   }
 
@@ -291,7 +380,15 @@
   }
 
   function apply(s, m, promoteTo) {
-    var n = clone(s), b = n.board, p = b[m.fr][m.fc], col = p[0], t = p[1];
+    var n = {
+      board: s.board.map(function (r) { return r.slice(); }),
+      turn: s.turn,
+      castle: { wK: s.castle.wK, wQ: s.castle.wQ, bK: s.castle.bK, bQ: s.castle.bQ },
+      ep: s.ep, half: s.half,
+      captured: { w: s.captured.w.slice(), b: s.captured.b.slice() },
+      last: s.last, log: s.log, mv: s.mv, result: null
+    };
+    var b = n.board, p = b[m.fr][m.fc], col = p[0], t = p[1];
     var target = b[m.tr][m.tc];
     var capturedPiece = target;
     if (m.enpassant) {
@@ -384,7 +481,175 @@
     else s.result = null;
   }
 
-  /* ---------- 自適應版面 ---------- */
+  /* ================= 電腦 AI ================= */
+  var VAL = { P: 100, N: 320, B: 330, R: 500, Q: 900, K: 0 };
+  var MATE = 100000;
+
+  function pst(t, col, r, c, endgame) {
+    var adv = col === "w" ? 7 - r : r;
+    var cd = Math.abs(3.5 - r) + Math.abs(3.5 - c);
+    if (t === "P") return adv * 6 + ((c === 3 || c === 4) ? adv * 2 : 0);
+    if (t === "N") return (7 - cd) * 5;
+    if (t === "B") return (7 - cd) * 3;
+    if (t === "R") return adv === 6 ? 15 : 0;
+    if (t === "Q") return (7 - cd);
+    if (endgame) return (7 - cd) * 6;
+    return adv === 0 ? 12 : -adv * 8;
+  }
+
+  function evalBoard(s) {
+    var b = s.board, r, c, p, heavy = 0;
+    for (r = 0; r < 8; r++) for (c = 0; c < 8; c++) {
+      p = b[r][c];
+      if (p && p[1] !== "P" && p[1] !== "K") heavy++;
+    }
+    var endgame = heavy <= 3, sc = 0, v;
+    for (r = 0; r < 8; r++) for (c = 0; c < 8; c++) {
+      p = b[r][c];
+      if (!p) continue;
+      v = VAL[p[1]] + pst(p[1], p[0], r, c, endgame);
+      sc += p[0] === "w" ? v : -v;
+    }
+    return sc;
+  }
+
+  function children(s) {
+    var col = s.turn, res = [], r, c, p, ms, i, m, n, vic, o;
+    for (r = 0; r < 8; r++) for (c = 0; c < 8; c++) {
+      p = s.board[r][c];
+      if (!p || p[0] !== col) continue;
+      ms = pseudo(s, r, c);
+      for (i = 0; i < ms.length; i++) {
+        m = ms[i];
+        n = apply(s, m, "Q");
+        if (inCheck(n, col)) continue;
+        vic = s.board[m.tr][m.tc];
+        o = vic ? VAL[vic[1]] * 10 - VAL[p[1]] / 10 : 0;
+        if (m.promo) o += 800;
+        res.push({ m: m, n: n, o: o + Math.random() });
+      }
+    }
+    res.sort(function (a, b) { return b.o - a.o; });
+    return res;
+  }
+
+  function search(s, depth, alpha, beta, ply, ctx) {
+    if ((++ctx.nodes & 255) === 0 && ctx.deadline && Date.now() > ctx.deadline) ctx.abort = true;
+    if (ctx.abort) return 0;
+    if (depth === 0) return (s.turn === "w" ? 1 : -1) * evalBoard(s);
+    var kids = children(s);
+    if (!kids.length) return inCheck(s, s.turn) ? -(MATE - ply) : 0;
+    var best = -1e9, i, v;
+    for (i = 0; i < kids.length; i++) {
+      v = -search(kids[i].n, depth - 1, -beta, -alpha, ply + 1, ctx);
+      if (ctx.abort) return 0;
+      if (v > best) best = v;
+      if (v > alpha) alpha = v;
+      if (alpha >= beta) break;
+    }
+    return best;
+  }
+
+  function pickMove(s, lv) {
+    var kids = children(s);
+    if (!kids.length) return null;
+    var sign = s.turn === "w" ? 1 : -1, best = null, bestV = -1e9, i, v, ctx;
+    if (lv === "easy") {
+      for (i = 0; i < kids.length; i++) {
+        v = sign * evalBoard(kids[i].n) + Math.random() * 260;
+        if (v > bestV) { bestV = v; best = kids[i]; }
+      }
+    } else if (lv === "medium") {
+      ctx = { nodes: 0, deadline: Date.now() + 1800, abort: false };
+      for (i = 0; i < kids.length; i++) {
+        v = -search(kids[i].n, 2, -1e9, 1e9, 1, ctx);
+        if (ctx.abort) break;
+        v += Math.random() * 20;
+        if (v > bestV) { bestV = v; best = kids[i]; }
+      }
+      if (!best) best = kids[0];
+    } else {
+      ctx = { nodes: 0, deadline: Date.now() + 2300, abort: false };
+      best = kids[0];
+      for (var d = 1; d <= 4; d++) {
+        var alpha = -1e9, cur = null;
+        for (i = 0; i < kids.length; i++) {
+          v = -search(kids[i].n, d - 1, -1e9, -alpha, 1, ctx);
+          if (ctx.abort) break;
+          if (cur === null || v > alpha) { alpha = v; cur = kids[i]; }
+        }
+        if (ctx.abort || !cur) break;
+        best = cur;
+        kids.splice(kids.indexOf(cur), 1);
+        kids.unshift(cur);
+        if (alpha > MATE - 100) break;
+      }
+    }
+    return { m: best.m, p: best.m.promo ? "Q" : null };
+  }
+
+  function who(t) { return mode === "ai" ? (t === human ? "你" : "電腦") : NAME[t]; }
+  function label(t) { return mode === "ai" ? who(t) + "（" + NAME[t] + "）" : NAME[t]; }
+
+  function maybeAI(delay) {
+    if (view !== "game" || mode !== "ai" || gameOver || state.turn !== aiColor) return;
+    var tok = ++aiToken;
+    thinking = true;
+    renderStatus(); renderButtons();
+    setTimeout(function () {
+      if (tok !== aiToken) return;
+      var res = pickMove(state, level);
+      if (tok !== aiToken) return;
+      thinking = false;
+      if (!res) { renderStatus(); renderButtons(); return; }
+      doMove(res.m, res.p);
+    }, delay || 900);
+  }
+
+  /* ================= 紀錄（複盤） ================= */
+  var KEY = "chess_games_v1";
+  function loadRecords() {
+    try {
+      var raw = window.localStorage.getItem(KEY);
+      if (raw) { records = JSON.parse(raw) || []; return; }
+    } catch (e) {}
+    records = memStore ? memStore : [];
+  }
+  function persist() {
+    memStore = records;
+    try { window.localStorage.setItem(KEY, JSON.stringify(records)); } catch (e) {}
+  }
+  function saveGame() {
+    if (!state || !state.mv || !state.mv.length || !gameId) return;
+    var rec = {
+      id: gameId, ts: gameTs, mode: mode, level: level, human: human,
+      finished: !!state.result, result: state.result,
+      moves: state.mv, log: state.log
+    };
+    records = records.filter(function (r) { return r.id !== gameId; });
+    records.unshift(rec);
+    records = records.slice(0, 10);
+    persist();
+  }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function fmtDate(ts) {
+    var d = new Date(ts);
+    return d.getFullYear() + "/" + pad(d.getMonth() + 1) + "/" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+  function resultText(r) {
+    if (!r.finished) return "未完成";
+    if (r.result === "checkmate") {
+      var w = r.moves.length % 2 === 1 ? "w" : "b";
+      if (r.mode === "ai") return w === r.human ? "你獲勝 👑" : "電腦獲勝 🤖";
+      return NAME[w] + "獲勝 👑";
+    }
+    return "和棋 🤝";
+  }
+  function modeText(r) {
+    return r.mode === "ai" ? "🤖 人機・" + LV[r.level] + "・執" + (r.human === "w" ? "白" : "黑") : "👥 雙人對戰";
+  }
+
+  /* ================= 自適應版面 ================= */
   var appEl = document.getElementById("app");
   function layout() {
     var w = window.innerWidth, h = window.innerHeight, land = w >= 700 && w > h, bs;
@@ -398,12 +663,12 @@
   window.addEventListener("orientationchange", function () { setTimeout(layout, 150); });
   layout();
 
-  /* ---------- UI ---------- */
+  /* ================= 畫面 ================= */
   var boardEl = document.getElementById("board");
   var statusEl = document.getElementById("status");
   var logEl = document.getElementById("log");
   var bnEl = document.getElementById("bn");
-  var bannerTimer = null;
+  var wrapEl = document.getElementById("boardWrap");
 
   function glyph(p) { return GLYPH[p[1]] + VS; }
 
@@ -414,10 +679,17 @@
     void bnEl.offsetWidth;
     bnEl.className = "bn " + kind + " run" + (long ? " long" : "");
   }
+  function clearBanner() { bnEl.className = "bn"; }
+  function shake() {
+    wrapEl.classList.remove("shake");
+    void wrapEl.offsetWidth;
+    wrapEl.classList.add("shake");
+  }
 
   function showTurnBanner() {
     var t = state.turn;
-    showBanner(t, "輪到" + NAME[t], inCheck(state, t) ? "⚠ 將軍！" : (t === "w" ? "○ 白棋行動" : "● 黑棋行動"), false);
+    if (inCheck(state, t)) { showBanner("check", "將軍！", who(t) + "的王受到攻擊", false); return; }
+    showBanner(t, "輪到" + who(t), t === "w" ? "○ 白棋行動" : "● 黑棋行動", false);
   }
 
   function renderCaptured() {
@@ -462,37 +734,61 @@
     renderCaptured();
     renderStatus();
     renderLog();
-    document.getElementById("btnUndo").disabled = history.length === 0;
+    renderButtons();
+  }
+
+  function renderButtons() {
+    var undo = document.getElementById("btnUndo");
+    if (mode === "ai") {
+      undo.disabled = thinking || !history.some(function (h) { return h.turn === human; });
+    } else undo.disabled = history.length === 0;
+    document.getElementById("btnAuto").hidden = mode === "ai";
   }
 
   function renderStatus() {
     statusEl.className = "";
+    if (view === "replay") {
+      var n = replayRec.moves.length;
+      if (ridx === 0) statusEl.textContent = "複盤：開局（共 " + n + " 步）";
+      else if (ridx === n && replayRec.finished) { statusEl.textContent = resultText(replayRec); statusEl.className = "end"; }
+      else statusEl.textContent = "複盤 " + ridx + " / " + n + "　" + (ridx % 2 ? "○ " : "● ") + replayRec.log[ridx - 1];
+      return;
+    }
     var t = state.turn;
-    if (state.result === "checkmate") { statusEl.textContent = "將死！" + NAME[opp(t)] + "獲勝 🎉"; statusEl.className = "end"; }
+    if (state.result === "checkmate") { statusEl.textContent = "將死！" + label(opp(t)) + "獲勝 🎉"; statusEl.className = "end"; }
     else if (state.result === "stalemate") { statusEl.textContent = "逼和（無子可動）— 平手"; statusEl.className = "end"; }
     else if (state.result === "fifty") { statusEl.textContent = "五十步規則 — 平手"; statusEl.className = "end"; }
     else if (state.result === "insufficient") { statusEl.textContent = "子力不足 — 平手"; statusEl.className = "end"; }
-    else if (inCheck(state, t)) { statusEl.textContent = "輪到" + NAME[t] + "　⚠ 將軍！"; statusEl.className = "alert"; }
-    else statusEl.textContent = "輪到" + NAME[t] + (t === "w" ? " ○" : " ●");
+    else if (thinking) { statusEl.textContent = "🤖 電腦思考中…"; statusEl.className = "think"; }
+    else if (inCheck(state, t)) { statusEl.textContent = "輪到" + label(t) + "　⚠ 將軍！"; statusEl.className = "alert"; }
+    else statusEl.textContent = "輪到" + label(t) + (t === "w" ? " ○" : " ●");
   }
 
   function renderLog() {
+    var replay = view === "replay";
+    var list = replay ? replayRec.log : state.log;
+    var cur = replay ? ridx - 1 : list.length - 1;
     var h = "";
-    for (var i = 0; i < state.log.length; i += 2) {
-      h += "<b>" + (i / 2 + 1) + ".</b> " + state.log[i] + (state.log[i + 1] ? "　" + state.log[i + 1] : "") + "　";
+    for (var i = 0; i < list.length; i++) {
+      if (i % 2 === 0) h += "<b>" + (i / 2 + 1) + ".</b> ";
+      h += '<span class="mv' + (i === cur && replay ? " cur" : "") + '" data-i="' + i + '">' + list[i] + "</span> ";
     }
+    logEl.className = replay ? "click" : "";
     logEl.innerHTML = h || "尚未走棋";
-    logEl.scrollTop = logEl.scrollHeight;
+    if (replay) {
+      var cEl = logEl.querySelector(".cur");
+      if (cEl) logEl.scrollTop = Math.max(0, cEl.offsetTop - logEl.clientHeight / 2);
+      else logEl.scrollTop = 0;
+    } else logEl.scrollTop = logEl.scrollHeight;
   }
 
-  /* ---------- 結束畫面 ---------- */
+  /* ================= 結束畫面 ================= */
   var endOv = document.getElementById("endOv");
 
   function clearConfetti() {
     var old = endOv.querySelectorAll(".confetti");
     for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
   }
-
   function confetti() {
     var colors = ["#ffd75e", "#ff6b6b", "#4f8cff", "#5ee0a0", "#ffffff", "#c58bff"];
     for (var i = 0; i < 70; i++) {
@@ -506,55 +802,78 @@
       endOv.appendChild(s);
     }
   }
-
   function showEnd() {
+    if (!gameOver || view !== "game") return;
     clearConfetti();
     var big = document.getElementById("endBig"), sub = document.getElementById("endSub"),
         small = document.getElementById("endSmall"), icon = document.getElementById("endIcon");
     var moves = Math.ceil(state.log.length / 2);
     if (state.result === "checkmate") {
       var winner = opp(state.turn);
-      icon.textContent = "👑"; big.textContent = "將死！";
-      sub.textContent = NAME[winner] + "獲勝";
-      small.textContent = "共走了 " + moves + " 回合";
-      confetti();
+      big.textContent = "將死！";
+      if (mode === "ai") {
+        var win = winner === human;
+        icon.textContent = win ? "👑" : "🤖";
+        sub.textContent = win ? "你獲勝了！" : "電腦獲勝";
+        if (win) confetti();
+      } else {
+        icon.textContent = "👑";
+        sub.textContent = NAME[winner] + "獲勝";
+        confetti();
+      }
+      small.textContent = "共走了 " + moves + " 回合・已存入複盤";
     } else {
       icon.textContent = "🤝"; big.textContent = "和棋";
       sub.textContent = state.result === "stalemate" ? "逼和（無子可動）" : state.result === "fifty" ? "五十步規則" : "子力不足";
-      small.textContent = "共走了 " + moves + " 回合";
+      small.textContent = "共走了 " + moves + " 回合・已存入複盤";
     }
     endOv.classList.remove("show");
     void endOv.offsetWidth;
     endOv.classList.add("show");
   }
-
   function hideEnd() { endOv.classList.remove("show"); clearConfetti(); }
 
-  /* ---------- 走棋 ---------- */
+  /* ================= 走棋 ================= */
   function doMove(m, promoteTo) {
     history.push(clone(state));
     var prev = state;
     var next = apply(state, m, promoteTo);
     evaluate(next);
     next.log = prev.log.concat([describe(prev, m, promoteTo, next)]);
+    next.mv = prev.mv.concat([{ fr: m.fr, fc: m.fc, tr: m.tr, tc: m.tc, p: m.promo ? (promoteTo || "Q") : null }]);
     state = next;
     selected = null; legalCache = [];
     lastDrop = [m.tr, m.tc];
     gameOver = !!state.result;
-    if (autoFlip && !gameOver) flipped = state.turn === "b";
+    if (mode === "two" && autoFlip && !gameOver) flipped = state.turn === "b";
     render();
     lastDrop = null;
-    if (gameOver) setTimeout(showEnd, 500);
-    else showTurnBanner();
+    var chk = inCheck(state, state.turn);
+    if (gameOver) {
+      if (state.result === "checkmate") { showBanner("check", "將死！", who(opp(state.turn)) + "獲勝", false); shake(); }
+      saveGame();
+      setTimeout(showEnd, state.result === "checkmate" ? 1500 : 600);
+    } else {
+      if (chk) { showBanner("check", "將軍！", who(state.turn) + "的王受到攻擊", false); shake(); }
+      else showTurnBanner();
+      maybeAI(chk ? 1500 : 1000);
+    }
   }
 
   boardEl.addEventListener("click", function (e) {
-    if (gameOver || pendingPromo) return;
+    if (view !== "game" || gameOver || pendingPromo || thinking) return;
+    if (mode === "ai" && state.turn !== human) return;
     var el = e.target.closest(".sq");
     if (!el) return;
     var r = +el.dataset.r, c = +el.dataset.c;
     var p = state.board[r][c];
     if (selected) {
+      // 再點一次已選的棋子 → 取消選取
+      if (selected[0] === r && selected[1] === c) {
+        selected = null; legalCache = [];
+        render();
+        return;
+      }
       var m = legalCache.filter(function (x) { return x.tr === r && x.tc === c; })[0];
       if (m) {
         if (m.promo) { askPromo(m); return; }
@@ -586,22 +905,93 @@
     document.getElementById("modal").classList.add("show");
   }
 
-  function startNewGame() {
+  /* ================= 視圖切換 ================= */
+  var menuEl = document.getElementById("menu");
+  function setView(v) {
+    view = v;
+    menuEl.style.display = v === "menu" ? "flex" : "none";
+    document.getElementById("gameBtns").hidden = v !== "game";
+    document.getElementById("replayBar").hidden = v !== "replay";
+  }
+  function showMenuPanel(which) {
+    document.getElementById("mMain").hidden = which !== "main";
+    document.getElementById("mSetup").hidden = which !== "setup";
+    document.getElementById("mRecList").hidden = which !== "rec";
+  }
+  function stopPlay() {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; }
+    document.getElementById("rPlay").textContent = "▶▶ 自動播放";
+  }
+
+  function startGame(cfg) {
+    aiToken++; thinking = false; stopPlay();
+    lastCfg = cfg;
+    mode = cfg.mode;
+    if (mode === "ai") {
+      level = cfg.level;
+      human = cfg.human === "r" ? (Math.random() < 0.5 ? "w" : "b") : cfg.human;
+      aiColor = opp(human);
+    }
+    gameId = "g" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    gameTs = Date.now();
     state = newState(); history = []; selected = null; legalCache = [];
-    gameOver = false; pendingPromo = null; flipped = false; lastDrop = null;
+    gameOver = false; pendingPromo = null; lastDrop = null; autoFlip = false;
+    flipped = mode === "ai" && human === "b";
+    document.getElementById("btnAuto").textContent = "自動翻轉：關";
     document.getElementById("modal").classList.remove("show");
     document.getElementById("cfm").classList.remove("show");
     hideEnd();
+    setView("game");
     render();
-    showBanner("start", "對戰開始", "白方先行 ○", true);
+    var sub = mode === "ai" ? ("你執" + (human === "w" ? "白 ○" : "黑 ●") + "・" + LV[level]) : "白方先行 ○";
+    showBanner("start", "對戰開始", sub, true);
+    if (mode === "ai" && aiColor === "w") maybeAI(2300);
   }
 
+  var cfmFn = null;
+  function askConfirm(msg, yesLabel, fn) {
+    document.getElementById("cfmMsg").textContent = msg;
+    document.getElementById("cfmYes").textContent = yesLabel;
+    cfmFn = fn;
+    document.getElementById("cfm").classList.add("show");
+  }
+  document.getElementById("cfmYes").addEventListener("click", function () {
+    document.getElementById("cfm").classList.remove("show");
+    var f = cfmFn; cfmFn = null;
+    if (f) f();
+  });
+  document.getElementById("cfmNo").addEventListener("click", function () {
+    document.getElementById("cfm").classList.remove("show");
+    cfmFn = null;
+  });
+
+  function goMenu() {
+    aiToken++; thinking = false; stopPlay();
+    if (view === "game" && !gameOver) saveGame();
+    hideEnd(); clearBanner();
+    document.getElementById("modal").classList.remove("show");
+    pendingPromo = null;
+    setView("menu");
+    showMenuPanel("main");
+  }
+
+  /* ----- 遊戲中按鈕 ----- */
   document.getElementById("btnUndo").addEventListener("click", function () {
-    if (!history.length) return;
+    if (view !== "game" || thinking) return;
     hideEnd();
-    state = history.pop();
+    if (mode === "ai") {
+      var found = -1;
+      for (var i = history.length - 1; i >= 0; i--) { if (history[i].turn === human) { found = i; break; } }
+      if (found < 0) return;
+      aiToken++;
+      state = history[found];
+      history = history.slice(0, found);
+    } else {
+      if (!history.length) return;
+      state = history.pop();
+    }
     selected = null; legalCache = []; gameOver = !!state.result; pendingPromo = null;
-    if (autoFlip) flipped = state.turn === "b";
+    if (mode === "two" && autoFlip) flipped = state.turn === "b";
     render();
     showTurnBanner();
   });
@@ -612,22 +1002,130 @@
     if (autoFlip) flipped = state.turn === "b";
     render();
   });
-
-  /* 重新一局：不用瀏覽器內建 confirm（在 iPad / 內嵌預覽中常被擋掉），改用自製確認視窗 */
   document.getElementById("btnNew").addEventListener("click", function () {
-    if (history.length && !gameOver) {
-      document.getElementById("cfmMsg").textContent = "確定要重新一局嗎？目前棋局會消失。";
-      document.getElementById("cfm").classList.add("show");
-    } else startNewGame();
+    if (state.mv.length && !gameOver) {
+      askConfirm("確定要重新一局嗎？目前棋局會以「未完成」存入複盤。", "確定重來", function () { saveGame(); startGame(lastCfg); });
+    } else startGame(lastCfg);
   });
-  document.getElementById("cfmYes").addEventListener("click", startNewGame);
-  document.getElementById("cfmNo").addEventListener("click", function () { document.getElementById("cfm").classList.remove("show"); });
-  document.getElementById("endNew").addEventListener("click", startNewGame);
+  document.getElementById("btnMenu").addEventListener("click", function () {
+    if (state.mv.length && !gameOver) {
+      askConfirm("回到主選單？目前棋局會以「未完成」存入複盤。", "回主選單", goMenu);
+    } else goMenu();
+  });
+  document.getElementById("endNew").addEventListener("click", function () { startGame(lastCfg); });
   document.getElementById("endView").addEventListener("click", hideEnd);
+  document.getElementById("endMenu").addEventListener("click", goMenu);
 
+  /* ----- 主選單 ----- */
+  var HINTS = {
+    easy: "偶爾會亂走，適合新手練習。",
+    medium: "會預想約 3 步，有基本戰術。",
+    hard: "會預想 4 步（思考約 1～2 秒），比較難贏。"
+  };
+  var selLevel = "medium", selColor = "w";
+  function updateHint() { document.getElementById("levelHint").textContent = HINTS[selLevel]; }
+  updateHint();
+
+  function bindSeg(id, setter) {
+    document.getElementById(id).addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      var all = this.querySelectorAll("button");
+      for (var i = 0; i < all.length; i++) all[i].classList.remove("on");
+      b.classList.add("on");
+      setter(b.getAttribute("data-v"));
+    });
+  }
+  bindSeg("segLevel", function (v) { selLevel = v; updateHint(); });
+  bindSeg("segColor", function (v) { selColor = v; });
+
+  document.getElementById("mAI").addEventListener("click", function () { showMenuPanel("setup"); });
+  document.getElementById("mTwo").addEventListener("click", function () { startGame({ mode: "two" }); });
+  document.getElementById("mBack1").addEventListener("click", function () { showMenuPanel("main"); });
+  document.getElementById("mStart").addEventListener("click", function () {
+    startGame({ mode: "ai", level: selLevel, human: selColor });
+  });
+  document.getElementById("mRec").addEventListener("click", function () { renderRecList(); showMenuPanel("rec"); });
+  document.getElementById("mBack2").addEventListener("click", function () { showMenuPanel("main"); });
+
+  function renderRecList() {
+    var el = document.getElementById("recs");
+    if (!records.length) { el.innerHTML = '<div class="empty">還沒有對局紀錄，先去下一局吧！</div>'; return; }
+    var h = "";
+    records.forEach(function (r, i) {
+      h += '<div class="rec" data-i="' + i + '"><div><div class="l1">' + fmtDate(r.ts) + "・" + modeText(r) + "</div>" +
+           '<div class="l2">' + resultText(r) + "・" + r.moves.length + " 步</div></div><div class=\"go\">複盤 ▶</div></div>";
+    });
+    el.innerHTML = h;
+  }
+  document.getElementById("recs").addEventListener("click", function (e) {
+    var el = e.target.closest(".rec");
+    if (!el) return;
+    openReplay(records[+el.getAttribute("data-i")]);
+  });
+
+  /* ================= 複盤 ================= */
+  function openReplay(rec) {
+    aiToken++; thinking = false; stopPlay(); hideEnd(); clearBanner();
+    replayRec = rec;
+    sts = [newState()];
+    for (var i = 0; i < rec.moves.length; i++) {
+      var mv = rec.moves[i], cur = sts[i];
+      var m = legal(cur, mv.fr, mv.fc).filter(function (x) { return x.tr === mv.tr && x.tc === mv.tc; })[0];
+      if (!m) break;
+      sts.push(apply(cur, m, mv.p || "Q"));
+    }
+    mode = rec.mode;
+    human = rec.human || "w";
+    flipped = rec.mode === "ai" && rec.human === "b";
+    selected = null; legalCache = []; lastDrop = null;
+    ridx = 0; state = sts[0];
+    setView("replay");
+    render();
+  }
+  function rgoto(i) {
+    ridx = Math.max(0, Math.min(sts.length - 1, i));
+    state = sts[ridx];
+    selected = null; legalCache = [];
+    render();
+  }
+  document.getElementById("rFirst").addEventListener("click", function () { stopPlay(); rgoto(0); });
+  document.getElementById("rPrev").addEventListener("click", function () { stopPlay(); rgoto(ridx - 1); });
+  document.getElementById("rNext").addEventListener("click", function () { stopPlay(); rgoto(ridx + 1); });
+  document.getElementById("rLast").addEventListener("click", function () { stopPlay(); rgoto(sts.length - 1); });
+  document.getElementById("rFlip").addEventListener("click", function () { flipped = !flipped; render(); });
+  document.getElementById("rPlay").addEventListener("click", function () {
+    if (playTimer) { stopPlay(); return; }
+    if (ridx >= sts.length - 1) rgoto(0);
+    this.textContent = "⏸ 暫停";
+    playTimer = setInterval(function () {
+      if (ridx >= sts.length - 1) { stopPlay(); return; }
+      rgoto(ridx + 1);
+      if (ridx >= sts.length - 1) stopPlay();
+    }, 900);
+  });
+  document.getElementById("rBack").addEventListener("click", function () {
+    stopPlay();
+    setView("menu");
+    renderRecList();
+    showMenuPanel("rec");
+  });
+  logEl.addEventListener("click", function (e) {
+    if (view !== "replay") return;
+    var el = e.target.closest(".mv");
+    if (!el) return;
+    stopPlay();
+    rgoto(+el.getAttribute("data-i") + 1);
+  });
+
+  window.addEventListener("pagehide", function () { if (view === "game" && !gameOver) saveGame(); });
+
+  /* ================= 啟動 ================= */
+  loadRecords();
   state = newState();
+  setView("menu");
+  showMenuPanel("main");
   render();
-  setTimeout(function () { showBanner("start", "對戰開始", "白方先行 ○", true); }, 250);
 })();
 </script>
 </body>
