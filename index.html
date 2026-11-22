@@ -6093,7 +6093,8 @@ button.go:active{background:#b3382b;}
   <div class="tb" id="bRun">跑</div>
   <div class="tb" id="bE">E</div>
 </div>
-<div id="hubHome" style="display:none;position:fixed;left:50%;margin-left:-21px;top:max(8px,env(safe-area-inset-top));z-index:30;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:18px;line-height:36px;text-align:center;cursor:pointer">⌂</div>
+<div id="pauseBtn" style="position:fixed;left:50%;margin-left:-40px;top:max(8px,env(safe-area-inset-top));z-index:30;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:18px;line-height:36px;text-align:center;cursor:pointer">☰</div>
+<div id="hubHome" style="display:none;position:fixed;left:50%;margin-left:4px;top:max(8px,env(safe-area-inset-top));z-index:30;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:18px;line-height:36px;text-align:center;cursor:pointer">⌂</div>
 <div id="ov">
   <div class="card" id="card"></div>
 </div>
@@ -7209,6 +7210,32 @@ requestAnimationFrame(frame);
 
 /* 測試用掛勾（不影響遊戲） */
 window.__game={bfs:bfs,WP:WAYPOINTS,INTER:INTER,S:function(){return S;},P:function(){return P;},gr:function(){return gr;},start:startGame};
+/* ===== 暫停選單 ===== */
+(function(){
+  var pb=document.getElementById('pauseBtn'),pm=null;
+  function inGame(){return S.mode==='play'||S.mode==='caught'||S.mode==='black';}
+  function home(){try{window.parent.postMessage({hub:'home'},'*');}catch(x){}}
+  function resume(){if(pm===null)return;S.mode=pm;pm=null;ov.classList.add('hide');keys={};}
+  function openMenu(){
+    if(pm!==null||!inGame())return;
+    pm=S.mode;S.mode='paused';keys={};
+    var inHub=false;try{inHub=window.parent!==window;}catch(e){}
+    card.innerHTML='<h1>暫停</h1><h2>SILENT MANOR</h2>'
+      +'<button class="go" id="pmRes">繼續遊戲</button>'
+      +'<button class="go" id="pmRe" style="background:#3a3330">重新開始</button>'
+      +'<button class="go" id="pmMenu" style="background:#3a3330">回到說明選單</button>'
+      +(inHub?'<button class="go" id="pmHome" style="background:#3a3330">回遊戲大廳</button>':'');
+    ov.classList.remove('hide');
+    document.getElementById('pmRes').onclick=resume;
+    document.getElementById('pmRe').onclick=function(){pm=null;startGame();};
+    document.getElementById('pmMenu').onclick=function(){pm=null;newGame();S.mode='menu';showStart();};
+    var ph=document.getElementById('pmHome');if(ph)ph.onclick=home;
+  }
+  var pt=function(e){e.preventDefault();e.stopPropagation();if(pm!==null)resume();else openMenu();};
+  pb.addEventListener('click',pt);
+  pb.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});
+  window.addEventListener('keydown',function(e){if(e.key==='Escape'||e.key==='p'||e.key==='P'){if(pm!==null)resume();else openMenu();}});
+})();
 /* ===== 大廳整合 ===== */
 (function(){
   var inHub=false;try{inHub=window.parent!==window;}catch(e){}
